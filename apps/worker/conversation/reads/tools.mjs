@@ -14,7 +14,9 @@ import {READ_FAMILY_GUIDANCE,SQL_FIRST_GUIDANCE,SQL_ABSENT_GUIDANCE} from './fam
 import {readGuidance} from './guidance.mjs';
 export const READ_SERVER_NAME='meri_reads';
 export const READ_TOOL_PREFIX=`mcp__${READ_SERVER_NAME}__`;
-export const MAX_DESCRIPTION=2600,MAX_LIMITS=4;
+/** 4096 holds the longest descriptor with every optional line: query_capiro_data@0.3.0 states the PostgreSQL contract
+ * (`tools.test.mjs` proves nothing of the two SQL descriptors is dropped). */
+export const MAX_DESCRIPTION=4096,MAX_LIMITS=4;
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
 /** Catalog limitations that describe the registration row (null handler, pending qualification, frozen declared types),
  * not the data: true of the catalog, false of a read that is mounted and executing. Closed patterns, no source detail. */

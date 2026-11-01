@@ -21,18 +21,20 @@ const TEXTS=Object.freeze({
  INTERNAL_ERROR:tool=>`INTERNAL_ERROR: ${tool} failed. ${NOTHING}`,
 });
 export const READ_FAILURE_CODES=Object.freeze(Object.keys(TEXTS));
-/** Fixed correction guidance per Core SQL refusal code (the closed `CapiroDataError` set). The refusal itself, with Core's
- * message, stays in the canonical result bytes; the notice tells the model what to change so it self-corrects in the same run. */
-export const SQL_REFUSAL_GUIDANCE=Object.freeze({
- INVALID_QUERY:'rowLimit must be an integer 1-1000 and sql 1-16384 UTF-8 bytes; correct the request and run it again.',
- UNSUPPORTED_SQL:'Rewrite within the accepted grammar: one SELECT (optional non-recursive CTEs) naming every column with lowercase unquoted identifiers; INNER JOIN or LEFT JOIN ... ON key equality only, other filters in WHERE; predicates from =, <>, <, <=, >, >=, AND, OR, ILIKE, IS NULL, IS NOT NULL; COUNT/SUM/AVG/MIN/MAX(...) AS name; GROUP BY base columns; ORDER BY ASC/DESC; LIMIT 0-1000 only on the final SELECT; every text, date, UUID and decimal value bound as $n. No string literals, SELECT *, IN, BETWEEN, NOT, LIKE, CASE, COALESCE, casts, arithmetic, functions, window or FILTER clauses, subqueries, OFFSET, UNION or NULLS LAST.',
- UNKNOWN_RELATION:'Use a relation name exactly as describe_capiro_data lists it (lowercase, unqualified); client projections need source client_records on both calls.',
- UNKNOWN_FIELD:'Use column names exactly as describe_capiro_data lists them, qualified by the relation alias when two relations share a name; GROUP BY and WHERE take base columns, ORDER BY may use output names. Re-read the relation with describe_capiro_data relations:[...] when unsure.',
- PARAMETER_MISMATCH:'parameters must bind $1..$n contiguously with every entry referenced; use strings for exact decimals, large integers, dates and UUIDs and numbers only for safe integers.',
- SOURCE_UNAVAILABLE:'The data source is unavailable now; this is not an empty result and must not trigger broader or unscoped retrieval.',
- QUERY_TIMEOUT:'The query exceeded its time budget; add selective WHERE filters, join fewer relations, aggregate instead of listing or lower LIMIT, then run it again.',
- OUTPUT_LIMIT:'The result exceeded the 256 KiB output budget; select fewer columns, aggregate, or lower rowLimit and page by keyset.',
-});
+/** PostgreSQL's own diagnostics on a refusal (message with 1-based character position, hint, SQLSTATE and the nearest
+ * published names), one short line for the model; absent on the gate's own refusals and on the pre-362 envelope.
+ * @param {{message?:unknown,position?:unknown,hint?:unknown,sqlstate?:unknown,candidates?:unknown}} error */
+function sqlDiagnostics(error){
+ const position=Number.isInteger(error.position)?error.position:null,hint=typeof error.hint==='string'?error.hint:null;
+ const candidates=Array.isArray(error.candidates)?error.candidates.filter(name=>typeof name==='string'):[];
+ if(position===null&&hint===null&&!candidates.length)return null;
+ const sentence=text=>/[.!?]$/u.test(text)?text:`${text}.`;
+ const parts=[sentence(`PostgreSQL${typeof error.sqlstate==='string'?` ${error.sqlstate}`:''}: ${typeof error.message==='string'?error.message:'query failed'}${position===null?'':` at character ${position}`}`)];
+ if(hint!==null)parts.push(sentence(`Hint: ${hint}`));
+ if(candidates.length)parts.push(`Did you mean: ${candidates.join(', ')}.`);
+ return parts.join(' ');
+}
+/** The reads whose source answers refusals as an ok:false envelope; their per-code guidance is owned by `guidance.mjs`. */
 const SQL_TOOLS=new Set(['describe_capiro_data','query_capiro_data']);
 const notice=(/** @type {string} */text)=>({type:/** @type {const} */('text'),text});
 /** Precise, secret-free guidance for a connected app the model cannot read now: the user acts in Meri's Connected apps
@@ -54,8 +56,9 @@ export function readNotices(operation,result,parsed){
  if(!SQL_TOOLS.has(operation.id))return [];
  const page=parsed?.result;
  if(page?.ok===false){
-  const code=page.error?.code,guidance=Object.hasOwn(SQL_REFUSAL_GUIDANCE,code)?` ${SQL_REFUSAL_GUIDANCE[/** @type {keyof typeof SQL_REFUSAL_GUIDANCE} */(code)]}`:'';
-  return [notice(`Notice: ${operation.id} refused this request with ${code}.${guidance} ${NOTHING}`)];
+  const code=page.error?.code,refusals=readGuidance(operation.id)?.refusals??{},guidance=Object.hasOwn(refusals,code)?` ${refusals[code]}`:'';
+  const diagnostics=page.error&&typeof page.error==='object'?sqlDiagnostics(page.error):null;
+  return [notice(`Notice: ${operation.id} refused this request with ${code}.${guidance}${diagnostics===null?'':` ${diagnostics}`} ${NOTHING}`)];
  }
  if(operation.id!=='query_capiro_data'||page?.ok!==true)return [];
  const lines=[`Notice: ${page.rowCount} row(s) returned of rowLimit ${page.limits?.rowLimit} from ${(page.relationsUsed??[]).join(', ')}.`];

@@ -1,7 +1,7 @@
 {
   "schema": "meri-original-skill-assets/1",
   "catalogSha256": "41aed2fc63dc40cafe987ee3059a13b605b7d3796c31f60ed6ca26939954bfcc",
-  "installationCatalogSha256": "efb54982b15c793e30229d459abb4bd3ed3c1552ed53a3bc8ab92932ab6b47ed",
+  "installationCatalogSha256": "812a0fbade3b560809da6a62dcc4ba3065f762ab4a72255786b349b50d08d4a9",
   "assets": [
     {
       "skillId": "quick_skill.bill_watch",

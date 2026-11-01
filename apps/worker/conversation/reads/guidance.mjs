@@ -8,7 +8,23 @@
  * the read's SDK name, until a catalog successor carries them. Guidance is prose only: it never widens a schema,
  * grants anything or changes result bytes, and the gateway still normalizes and validates every call. */
 import {bareReadToolName} from './vocabulary.mjs';
-/** @typedef {{usage:readonly string[],limitations:readonly string[],failures:Readonly<Record<string,string>>}} ReadGuidance */
+/** @typedef {{usage:readonly string[],limitations:readonly string[],failures:Readonly<Record<string,string>>,refusals?:Readonly<Record<string,string>>}} ReadGuidance
+ * `failures` are keyed by the gateway's closed codes; `refusals` by the codes of a source's own ok:false envelope. */
+/** Fixed correction guidance per Core SQL refusal code (the closed `CapiroDataError` set). The refusal itself, with Core's
+ * message, stays in the canonical result bytes; the notice tells the model what to change so it self-corrects in the same run.
+ * The statement gate (capiro-backend#362) runs the model's SQL verbatim: INVALID_QUERY, UNKNOWN_RELATION and UNKNOWN_FIELD
+ * are mostly PostgreSQL's own errors, rendered with their diagnostics by `results.mjs`; UNSUPPORTED_SQL and
+ * PARAMETER_MISMATCH are the gate's own rules. */
+export const SQL_REFUSAL_GUIDANCE=Object.freeze({
+ INVALID_QUERY:'rowLimit must be an integer 1-1000 and sql 1-16384 UTF-8 bytes; a PostgreSQL syntax or type error names the character position to fix. Correct the SQL or the request and run it again.',
+ UNSUPPORTED_SQL:'Send exactly one read-only SELECT or WITH ... SELECT: no second statement, SET, SHOW, COPY, LISTEN, EXPLAIN or transaction control, no INSERT, UPDATE, DELETE, MERGE (also inside a CTE) or SELECT INTO, and none of set_config, pg_sleep*, pg_terminate_backend, pg_cancel_backend, advisory locks, pg_notify, lo_*, pg_read_file, pg_ls_dir or dblink. Rewrite the statement and run it again.',
+ UNKNOWN_RELATION:'Use a relation name exactly as describe_capiro_data lists it (lowercase, unqualified); one query reads one source, so client projections need source client_records on both calls and never mix with public relations.',
+ UNKNOWN_FIELD:'Use column names exactly as describe_capiro_data lists them, qualified by the relation alias when two relations share a name. Re-read the relation with describe_capiro_data relations:[...] when unsure.',
+ PARAMETER_MISMATCH:'parameters must bind $1..$n contiguously with every entry referenced; use strings for exact decimals, large integers, dates and UUIDs and numbers only for safe integers.',
+ SOURCE_UNAVAILABLE:'The data source is unavailable now; this is not an empty result and must not trigger broader or unscoped retrieval.',
+ QUERY_TIMEOUT:'The query exceeded its time budget; add selective WHERE filters, join fewer relations, aggregate instead of listing or lower LIMIT, then run it again.',
+ OUTPUT_LIMIT:'The result exceeded the 256 KiB output budget; select fewer columns, aggregate, or lower rowLimit and page by keyset.',
+});
 const SEARCH_FAILURES=Object.freeze({
  INVALID_ARGUMENTS:'For search_public_web the query must be 1-200 characters and limit an integer 1-12; shorten or correct the arguments and call again.',
  UNAVAILABLE:'The managed web search provider is not configured, refused this search or reported an execution error; no result exists. You may retry once with different terms; otherwise tell the user web search was unavailable and, if a URL is already known, read it with scrape_web_page.',
@@ -53,10 +69,10 @@ export const READ_GUIDANCE=Object.freeze({
  })}),
  describe_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'describe_capiro_data takes optional relations (1-15 unique lowercase relation names), source ("public" or "client_records") and clientId (UUID, client_records only).',
- })}),
+ }),refusals:SQL_REFUSAL_GUIDANCE}),
  query_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source ("public" or "client_records") and clientId (UUID, client_records only).',
- })}),
+ }),refusals:SQL_REFUSAL_GUIDANCE}),
 });
 /** @param {string} sdkName the read's SDK tool name (`search_public_web`), with or without the `mcp__<server>__` prefix
  * @returns {ReadGuidance|undefined} */

@@ -116,6 +116,21 @@
         "unit": {
           "type": "string",
           "maxLength": 128
+        },
+        "pgType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "enum": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "minItems": 1,
+          "maxItems": 256,
+          "uniqueItems": true
         }
       },
       "required": [
@@ -149,6 +164,11 @@
         },
         "unit": {
           "type": "string",
+          "maxLength": 128
+        },
+        "pgType": {
+          "type": "string",
+          "minLength": 1,
           "maxLength": 128
         }
       },
@@ -350,8 +370,7 @@
         "maxOutputBytes",
         "maxSqlBytes",
         "maxParameters",
-        "maxParameterBytes",
-        "maxColumns"
+        "maxParameterBytes"
       ]
     },
     "CapiroDataQueryLimits": {
@@ -446,7 +465,10 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.1.0"
+          "enum": [
+            "0.1.0",
+            "0.2.0"
+          ]
         },
         "generatedAt": {
           "type": "string",
@@ -476,6 +498,31 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 512
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16384
+            },
+            "hint": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "sqlstate": {
+              "type": "string",
+              "pattern": "^[0-9A-Z]{5}$"
+            },
+            "candidates": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                "maxLength": 128
+              },
+              "minItems": 0,
+              "maxItems": 8,
+              "uniqueItems": true
             }
           },
           "required": [
@@ -496,7 +543,10 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.1.0"
+          "enum": [
+            "0.1.0",
+            "0.2.0"
+          ]
         },
         "generatedAt": {
           "type": "string",
@@ -531,7 +581,10 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.1.0"
+          "enum": [
+            "0.1.0",
+            "0.2.0"
+          ]
         },
         "generatedAt": {
           "type": "string",
@@ -619,7 +672,7 @@
       ]
     },
     "CapiroDataDescribeOutput": {
-      "oneOf": [
+      "anyOf": [
         {
           "$ref": "#/$defs/CapiroDataDescribeSuccess"
         },
@@ -635,7 +688,7 @@
       ]
     },
     "CapiroDataQueryOutput": {
-      "oneOf": [
+      "anyOf": [
         {
           "$ref": "#/$defs/CapiroDataQuerySuccess"
         },
@@ -881,7 +934,10 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.2.0"
+          "enum": [
+            "0.2.0",
+            "0.3.0"
+          ]
         },
         "generatedAt": {
           "type": "string",
@@ -911,6 +967,31 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 512
+            },
+            "position": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16384
+            },
+            "hint": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024
+            },
+            "sqlstate": {
+              "type": "string",
+              "pattern": "^[0-9A-Z]{5}$"
+            },
+            "candidates": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$",
+                "maxLength": 128
+              },
+              "minItems": 0,
+              "maxItems": 8,
+              "uniqueItems": true
             }
           },
           "required": [
@@ -931,7 +1012,10 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.2.0"
+          "enum": [
+            "0.2.0",
+            "0.3.0"
+          ]
         },
         "generatedAt": {
           "type": "string",
@@ -970,7 +1054,10 @@
       "additionalProperties": false,
       "properties": {
         "version": {
-          "const": "0.2.0"
+          "enum": [
+            "0.2.0",
+            "0.3.0"
+          ]
         },
         "generatedAt": {
           "type": "string",

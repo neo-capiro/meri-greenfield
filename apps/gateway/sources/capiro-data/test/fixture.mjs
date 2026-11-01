@@ -15,6 +15,26 @@ export function privateCapiroDataPage(id=ids[1],clientId=null){
   else{page.relationsUsed=['client_objectives'];page.coverage.relations[0].name='client_objectives';page.columns[0].name='outcome';delete page.columns[1].unit;for(const row of page.rows){row.outcome=row.pe_code;delete row.pe_code;}}
   return page;
 }
+/** The Core 362 generation of a synthetic page: the next envelope version, the catalog pgType on every column and field,
+ * an enumerated describe field, a timestamp cell as PostgreSQL text and describe limits without maxColumns. TRANSITIONAL:
+ * deleted together with the pre-362 pages above by fable/sql-envelope-retire-old-generation. */
+export function nextGenerationPage(page){
+  const next=structuredClone(page);next.version=next.version==='0.1.0'?'0.2.0':'0.3.0';
+  if(next.ok!==true)return next;
+  if(next.relations){
+    for(const relation of next.relations)for(const field of relation.fields)field.pgType='text';
+    next.relations[0].fields.push({name:'value_kind',type:'string',pgType:'text',nullable:false,description:'total, quantity or unit_cost',enum:['total','quantity','unit_cost']});
+    delete next.limits.maxColumns;return next;
+  }
+  for(const [column,pgType] of next.columns.map((column,i)=>[column,['text','numeric','int8','numeric'][i]]))column.pgType=pgType;
+  next.columns.push({name:'last_synced_at',type:'timestamp',pgType:'timestamptz',nullable:true});
+  next.rows[0].last_synced_at='2026-01-01 00:00:00.123456+00';next.rows[1].last_synced_at=null;
+  return next;
+}
+/** A Core 362 refusal carrying PostgreSQL's own diagnostics for the model's SQL. */
+export function sqlRefusal(error={},version='0.2.0'){
+  return {version,generatedAt:'2026-10-26T12:00:00.000Z',ok:false,error:{code:'UNKNOWN_FIELD',message:'column b.titel does not exist',position:8,hint:'Perhaps you meant "b.title".',sqlstate:'42703',candidates:['title'],...error}};
+}
 export function capiroDataCase(id=ids[1],{request=requests[id],version='0.2.0'}={}){
   const scene=billTextCase(),operation={id,version},contract=resolveOperationContract(operation),normalizationContext=request.source==='client_records'?{
     capiroDataScope:{clientId:request.clientId??null,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64)}}:{};
