@@ -39,11 +39,22 @@ export const SQL_REFUSAL_GUIDANCE=Object.freeze({
 });
 const SQL_TOOLS=new Set(['describe_capiro_data','query_capiro_data']);
 const notice=(/** @type {string} */text)=>({type:/** @type {const} */('text'),text});
+/** Precise, secret-free guidance for a connected app the model cannot read now: the user acts in Meri's Connected apps
+ * settings; nothing here is retried, invented or widened. @param {{id:string}} operation @param {{status?:unknown}|undefined} page */
+function connectedAppNotice(operation,page){
+ if(operation.id==='list_connected_app_reads'&&page?.status==='unavailable')return 'No connected app is usable for this user right now. The user can connect or reconnect an app under Connected apps in Meri. Do not invent a connection or retry this call.';
+ if(operation.id!=='read_connected_app')return null;
+ if(page?.status==='disconnected')return 'This connected app is not connected for this user now (disconnected or still authorizing). Ask the user to connect it under Connected apps in Meri. Do not retry this call.';
+ if(page?.status==='permission_required')return 'This connected app needs the user to reconnect it: its authorization expired or was revoked. Ask the user to reconnect it under Connected apps in Meri. Do not retry this call.';
+ return null;
+}
 /** Separate model guidance; canonical source bytes and their hashes remain untouched.
  * @param {{id:string}} operation @param {string} result the canonical result text @param {any} parsed its parsed envelope */
 export function readNotices(operation,result,parsed){
  if(operation.id==='find_contacts')return result.includes('update_client_profile')?
   [notice('Notice: update_client_profile is not available in Meri. Do not propose or claim a client profile change. You may offer a governed task proposal instead.')]:[];
+ const connected=connectedAppNotice(operation,parsed?.result);
+ if(connected!==null)return [notice(`Notice: ${connected}`)];
  if(!SQL_TOOLS.has(operation.id))return [];
  const page=parsed?.result;
  if(page?.ok===false){
