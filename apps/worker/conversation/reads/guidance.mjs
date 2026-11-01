@@ -28,6 +28,7 @@ export const SQL_REFUSAL_GUIDANCE=Object.freeze({
 const SEARCH_FAILURES=Object.freeze({
  INVALID_ARGUMENTS:'For search_public_web the query must be 1-200 characters and limit an integer 1-12; shorten or correct the arguments and call again.',
  UNAVAILABLE:'The managed web search provider is not configured, refused this search or reported an execution error; no result exists. You may retry once with different terms; otherwise tell the user web search was unavailable and, if a URL is already known, read it with scrape_web_page.',
+ SOURCE_UNAVAILABLE:'The managed web search did not answer this call (outage, throttling or an upstream timeout); retry once with the same terms, otherwise tell the user web search was unavailable right now.',
  INVALID_RESULT:'The search provider returned a malformed or unverifiable result that was withheld; retry once with different terms, otherwise report that web search returned no usable result.',
  DEADLINE:'The search did not complete within its time limit; retry once with a narrower query.',
  RESOURCE_LIMIT:'The run\'s read budget or the search response size limit is reached; do not search again this turn.',
@@ -37,6 +38,7 @@ const PAGE_FAILURES=Object.freeze({
  INVALID_ARGUMENTS:'For scrape_web_page the url must be an absolute http or https URL without embedded credentials (at most 2000 characters), mode "summary" or "extract", and maxChars an integer 500-20000.',
  INVALID_RESULT:'The page reader refused or could not project this URL: a non-public or blocked address, an unsupported content type (only HTML and PDF are read), too many redirects, an oversized page or a page-reader error. Try a different URL (for example a search result\'s url) and never guess the page contents.',
  UNAVAILABLE:'The page reader is not available for this conversation now; do not claim any page contents.',
+ SOURCE_UNAVAILABLE:'The site refused or did not answer this page read (a bot block or a 403/5xx answer at least as often as a timeout; the page reader itself is working), so do not call it a timeout unless the result says DEADLINE. Do not retry the same URL; try one other URL for the same item at most once, then deliver the search result you already hold (title, url, publishedAt) and tell the user the page itself could not be read.',
  DEADLINE:'The page did not load within the time limit; try once more with mode "summary" or a different URL.',
  RESOURCE_LIMIT:'The page or the run\'s read budget limit is reached; use a smaller maxChars or stop reading pages this turn.',
 });
@@ -53,11 +55,12 @@ export const READ_GUIDANCE=Object.freeze({
  search_public_web:Object.freeze({
   usage:Object.freeze([
    'Live AWS-managed public web search (not Capiro data). Arguments: query (required; 1-200 characters after whitespace normalization; a longer query is refused, never truncated) and limit (optional integer 1-12, default 6).',
-   'Result rows (result.results, total = row count): title (string or null), url (exact locator, cite it unchanged), snippet (string or null, up to 320 characters) and publishedAt (publication date string, or null when the index has none). An empty list is an honest empty discovery for that query, not an error; retry once with different terms if needed.',
-   'publishedAt is the only date evidence: when it is null say the date is unknown or read the page with scrape_web_page for its dateline. Never invent dates, titles or URLs.',
+   'Result rows (result.results, total = row count): title (string or null), url (exact locator, cite it unchanged), snippet (string or null, up to 320 characters) and publishedAt (publication date, YYYY-MM-DD when the index has one, or null when it has none). An empty list is an honest empty discovery for that query, not an error; retry once with different terms if needed.',
+   'publishedAt is the only date evidence: order "most recent" by it, and when it is null say the date is unknown or read the page with scrape_web_page for its dateline. Never invent dates, titles or URLs.',
+   'A search row is deliverable on its own: report its title, url and publishedAt as a search result, labelled as such. Read the page with scrape_web_page only to quote or verify its text; when that read fails, keep the row, say the page itself could not be read and never drop the result for that reason.',
   ]),
   limitations:Object.freeze([
-   'Discovery only: rows are untrusted index metadata, not fetched pages; neither rows nor their absence establishes truth, currency or completeness. Read a result page with scrape_web_page before quoting it.',
+   'Discovery only: rows are untrusted index metadata, not fetched pages; neither rows nor their absence establishes truth, currency or completeness. Read a result page with scrape_web_page before quoting its text.',
   ]),
   failures:SEARCH_FAILURES,
  }),

@@ -346,3 +346,38 @@ test('a gateway that never answers is DEADLINE at the request window, and a call
   options.signal.addEventListener('abort',()=>reject(options.signal.reason));setTimeout(()=>controller.abort(),5);})}));
  await assert.rejects(aborted.search({query:'q',limit:5,deadlineMs:NOW+60000,signal:controller.signal}),{message:'CANCELLED'});
 });
+
+test('a row cut at a space or inside a surrogate pair is trimmed, so the receiving contract admits the discovery',async()=>{
+ const contract=resolveOperationContract({id:'search_public_web',version:'0.2.0'});
+ // Live rows on 1 November 2026: page-text excerpts are cut at 320 characters on nearly every row, and when the 320th
+ // character was a space the trailing blank failed the contract's normalized-text check and the whole search was
+ // withheld as INVALID_RESULT ("several searches came back invalid").
+ const rows=[{title:'T'.repeat(179)+' tail',url:'https://public.example.invalid/a',text:'a'.repeat(319)+' '+'b'.repeat(50),publishedDate:'05:00PM, Wednesday, September 29 2021, PDT'},
+  {title:'Emoji',url:'https://public.example.invalid/b',text:'x'.repeat(319)+'\u{1F600} tail',publishedDate:'unknown'},
+  {title:'Short',url:'https://public.example.invalid/c',text:'s',publishedDate:'04:50AM, Thursday, October 29 2026, PDT'}];
+ const projected=rows.map(projectRow);
+ assert.equal(projected[0].title,'T'.repeat(179),'a title cut on a space is trimmed');
+ assert.equal(projected[0].snippet,'a'.repeat(319),'a snippet cut on a space is trimmed');
+ assert.equal(projected[1].snippet,'x'.repeat(319),'a cut inside a surrogate pair drops the lone surrogate');
+ assert.deepEqual(projected.map(row=>row.publishedAt),['2021-09-29',null,'2026-10-29'],'display dates become calendar dates; "unknown" is absence');
+ const s=state(rows),handler=createPublicWebHandlers({origin:'https://core.example.invalid',now:()=>NOW},[{id:'search_public_web',version:'0.2.0'}],
+  createPrimaryWebSearch(base({fetchImpl:responder(s)})))[0];
+ const out=JSON.parse(await handler.execute(storedCase('search_public_web',{request:{query:'recent announcements'}}).call()));
+ assert.equal(out.result.total,3,'the discovery reaches the model instead of INVALID_RESULT');
+ assert.deepEqual(out.result.results.map(row=>row.publishedAt),['2021-09-29',null,'2026-10-29']);
+ // the contract itself is unchanged: the trailing blank the old projection published is still refused
+ assert.throws(()=>contract.assertOutput({...out.result,total:1,results:[{...out.result.results[0],snippet:'a'.repeat(319)+' '}]},{request:{query:'recent announcements'}}),/normalized/u);
+});
+
+test('a publication date is projected only as the date it names; an unparseable value is kept whole or stays null',()=>{
+ const at=publishedDate=>projectRow({url:'https://public.example.invalid/a',publishedDate}).publishedAt;
+ assert.equal(at('2026-10-28T14:00:00Z'),'2026-10-28T14:00:00Z','an ISO instant is kept');
+ assert.equal(at('2026-10-01'),'2026-10-01');
+ assert.equal(at('July 12 2026'),'2026-07-12');assert.equal(at('Sunday, July 12, 2026'),'2026-07-12');
+ assert.equal(at('05:00PM, Sunday, July 12 2026, PDT'),'2026-07-12');
+ assert.equal(at('Fall 2026'),'Fall 2026','a short unparseable value is kept whole');
+ assert.equal(at('05:00PM, Wednesday, Septembre 29 2021, PDT'),null,'a value that neither parses nor fits the 40-character cap is never cut into a different date');
+ assert.equal(at('11:00AM, Monday, Smarch 45 2026, PDT'),'11:00AM, Monday, Smarch 45 2026, PDT','an impossible day or month is not a date; the short original is kept whole, never repaired');
+ for(const absent of ['unknown','UNKNOWN','n/a','none','null','  ',undefined,null,12])assert.equal(at(absent),null,String(absent));
+ assert.equal(projectRow({url:'https://public.example.invalid/a',publishedAt:'2026-10-02'}).publishedAt,'2026-10-02','the documented alias is read too');
+});

@@ -40,10 +40,33 @@ const DEFAULT_PROTOCOL = '2026-07-28', DEFAULT_RESPONSE_BYTES = 1048576, DEFAULT
  * one gateway invocation. Client identity travels in the documented `_meta` fields. */
 const CLIENT_INFO = Object.freeze({name: 'meri-control', version: '1.0.0'});
 
+/** Normalize whitespace, cut at the cap and trim the cut edge. The index returns page-text excerpts, so snippets are
+ * cut at 320 characters on nearly every row; a cut that landed on a space used to leave a trailing blank, which the
+ * receiving contract refuses as non-normalized text and the whole discovery was withheld as INVALID_RESULT (observed
+ * live on 1 November 2026: 2 of 3 ordinary queries). A cut inside a surrogate pair would publish a lone surrogate. */
 const boundedText = (value, cap) => {
   if (typeof value !== 'string') return null;
-  const normalized = value.replace(/\s+/gu, ' ').trim();
-  return normalized ? normalized.slice(0, cap) : null;
+  let normalized = value.replace(/\s+/gu, ' ').trim();
+  if (normalized.length > cap) normalized = normalized.slice(0, cap).replace(/[\uD800-\uDBFF]$/u, '').trim();
+  return normalized || null;
+};
+const MONTHS = Object.freeze({january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8,
+  september: 9, october: 10, november: 11, december: 12});
+/** The connector publishes `publishedDate` as a display string such as "05:00PM, Wednesday, September 29 2021, PDT"
+ * (42 characters, so the 40-character cap used to garble it to "…2021, P") or the literal "unknown" (verified live
+ * 1 November 2026). The date is projected as the calendar date it names (YYYY-MM-DD; the time and zone are dropped,
+ * nothing is inferred), an ISO value is kept, "unknown" is absence, and any other string is kept only when it fits
+ * the cap whole: a cut date would be a different date, so it stays null rather than invented. */
+const publicationDate = value => {
+  if (typeof value !== 'string') return null;
+  const text = value.replace(/\s+/gu, ' ').trim();
+  if (!text || /^(?:unknown|n\/a|none|null)$/iu.test(text)) return null;
+  const display = /^(?:\d{1,2}:\d{2} ?[AP]M, ?)?(?:[A-Za-z]+, ?)?([A-Za-z]+) (\d{1,2}),? (\d{4})(?:, ?[A-Z]{2,5})?$/u.exec(text);
+  if (display) {
+    const month = MONTHS[display[1].toLowerCase()], day = Number(display[2]);
+    if (month && day >= 1 && day <= 31) return `${display[3]}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  }
+  return text.length <= MAX_DATE ? text : null;
 };
 const clamp = (value, minimum, maximum, fallback) => {
   const parsed = typeof value === 'number' ? value : typeof value === 'string' ? Number(value) : NaN;
@@ -101,7 +124,7 @@ export function projectRow(row) {
   if (url === null) return undefined;
   return Object.freeze({title: boundedText(row.title, MAX_TITLE), url,
     snippet: boundedText(row.text ?? row.snippet, MAX_SNIPPET), source: AGENTCORE_SEARCH_PROVIDER,
-    publishedAt: boundedText(row.publishedDate ?? row.publishedAt, MAX_DATE)});
+    publishedAt: publicationDate(row.publishedDate ?? row.publishedAt)});
 }
 
 /** Bounded response read: the lifetime owns cancellation, this owns bytes. */

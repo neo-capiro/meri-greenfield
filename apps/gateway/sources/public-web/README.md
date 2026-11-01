@@ -78,7 +78,15 @@ silently truncated into a different search. Row text is untrusted source materia
 kept only when it carries a byte-exact valid `http`/`https` locator of at most 2000
 characters — the value is published unchanged, never truncated or repaired, and a row
 without one is dropped — while an absent title, snippet or publication date stays `null`
-rather than being inferred from the URL. Empty results are an honest empty discovery.
+rather than being inferred from the URL. Title and snippet are whitespace-normalized, cut at
+the contract cap and trimmed again at the cut (the index returns page-text excerpts, so a
+snippet is cut on nearly every row; a cut that landed on a space used to leave a trailing
+blank the contract refuses, and the whole discovery was withheld as `INVALID_RESULT` on 2 of
+3 ordinary queries observed live on 1 November 2026). The connector's `publishedDate` is a
+display string ("05:00PM, Wednesday, September 29 2021, PDT", longer than the 40-character
+cap) or the literal `unknown`: it is projected as the calendar date it names (`YYYY-MM-DD`),
+an ISO value is kept, `unknown` is `null`, and any other value is kept only when it fits the
+cap whole, because a cut date is a different date. Empty results are an honest empty discovery.
 401/403 fail as `ACCESS_DENIED` without retry, 400 as `INVALID_ARGUMENTS`, 404 and malformed
 bodies as `INVALID_RESULT`, and an MCP `result.isError: true` (tool execution error) or a
 JSON-RPC `error` as `UNAVAILABLE` instead of a successful empty discovery. The documented
