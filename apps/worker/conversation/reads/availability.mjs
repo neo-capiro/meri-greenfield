@@ -54,20 +54,24 @@ function preferredVersions(rows){
   return key(row.operation)===key(chosen);
  });
 }
+/** Gate 5: a `required` family, or a family's required-client operation, lists only on a run with an authorized client scope.
+ * The selected-skill source gates (control admission, the worker's plugin-path backstop) consider only reads this scope admits.
+ * @param {import('./families.mjs').ReadFamily} family @param {OperationRef} operation @param {readonly {kind:string}[]} scopes */
+export const scopeAdmitsRead=(family,operation,scopes)=>scopes.some(s=>s.kind==='client')||family.clientScope!=='required'&&!family.requiredClientOperations?.includes(operation.id);
 /** @param {{policy:{generalReads?:boolean,readFamilies?:readonly string[]},installation:{operations:readonly OperationRef[]},
  *  discovery:{operations:readonly OperationRef[]},scopes:readonly {kind:string}[],families?:Readonly<Record<string,import('./families.mjs').ReadFamily>>,
  *  narrowTo?:readonly OperationRef[],exclude?:readonly OperationRef[]}} input
  * @returns {{available:AvailableRead[],unavailable:string[]}} */
 export function resolveAvailableReads({policy,installation,discovery,scopes,families=READ_FAMILIES,narrowTo,exclude=[]}){
  const installed=among(installation.operations),eligible=among(discovery.operations),excluded=among(exclude),narrowed=narrowTo===undefined?()=>true:among(narrowTo);
- const deferred=new Set(DEFERRED_ORIGINALS),client=scopes.some(s=>s.kind==='client');
+ const deferred=new Set(DEFERRED_ORIGINALS);
  /** @type {AvailableRead[]} */const available=[];/** @type {string[]} */const unavailable=[];
  for(const row of familyReads(families)){
   const d=row.descriptor,family=families[row.family];
   const open=d.sideEffect==='none'&&d.approvalBoundary==='none'&&
    installed(row.operation)&&
    policy.generalReads===true&&(policy.readFamilies??[]).includes(row.family)&&
-   (client||family.clientScope!=='required'&&!family.requiredClientOperations?.includes(row.operation.id))&&
+   scopeAdmitsRead(family,row.operation,scopes)&&
    !deferred.has(row.operation.id)&&!deferred.has(sdkToolName(row.operation))&&
    narrowed(row.operation)&&!excluded(row.operation);
   if(open)available.push(row);else if(!excluded(row.operation))unavailable.push(d.displayName);

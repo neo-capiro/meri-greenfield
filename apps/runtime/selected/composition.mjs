@@ -8,7 +8,8 @@ import {createTransactionalApprovalMetadataStore} from '../../control/commands/a
 import {createIntentJournal} from '../../control/intents/journal.mjs';
 import {createPostgresIntentJournalStore} from '../../control/intents/postgres-journal.mjs';
 import {createNativeReadsClient} from '../reads-client.mjs';
-import {resolveAvailableReads,familyReads} from '../../worker/conversation/reads/availability.mjs';
+import {resolveAvailableReads,familyReads,scopeAdmitsRead} from '../../worker/conversation/reads/availability.mjs';
+import {READ_FAMILIES} from '../../worker/conversation/reads/families.mjs';
 import {assertAvailabilitySnapshot} from '../../worker/conversation/reads/snapshot.mjs';
 import {assertCapabilityPolicy} from '../../worker/conversation/capabilities/policy.mjs';
 import {createSelectedControl} from './control.mjs';
@@ -36,10 +37,11 @@ export function createNativeSelectedComposition({configuration,pool,store,execut
  // same three inputs the worker's mount uses: the gateway's availability snapshot (installation and discovery) under the
  // session's authority, the run capability policy for the session's Core role, and the worker's own gate (reads/availability.mjs).
  // Without the session producers every operation is unavailable: no selection is admitted on a hope.
- const GENERAL_READS=familyReads().map(row=>row.operation);
+ const GENERAL_READS=familyReads();
  async function readSkillAvailability({binding,scopes,selectedClientId,operations,expiresAtMs,signal}){
-  // Only the allowed operations some general-read family offers are this gate's to decide.
-  const considered=operations.filter(op=>GENERAL_READS.some(row=>same(row,op)));
+  // Only the allowed operations some general-read family offers, and this scope admits, are this gate's to decide: a
+  // client-only read in General is a disclosed absence by design, not an unavailable source.
+  const considered=operations.filter(op=>GENERAL_READS.some(row=>same(row.operation,op)&&scopeAdmitsRead(READ_FAMILIES[row.family],op,scopes)));
   if(readAvailability===undefined)return {considered,unavailable:considered};
   const policyRevision=scopes[0].policyRevision,role=await readSessionCapabilityRole({binding,scopes,selectedClientId,signal,deadlineMs:expiresAtMs});
   const authorityExpiresAtMs=Math.min(expiresAtMs,role.expiresAtMs),observation={binding,scopes,policyRevision,selectedClientId,expiresAtMs:authorityExpiresAtMs};

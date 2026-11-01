@@ -20,9 +20,10 @@ import {createConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {terminalReasonCode} from './terminal-reason.mjs';
 import {unavailableSkillSources} from '../../../packages/contracts/selected-skills/sources.mjs';
-import {familyReads} from './reads/availability.mjs';
-/** The operations the general `meri_reads` server can ever offer: the only ones the plugin-path source backstop decides. */
-const GENERAL_READS=familyReads().map(row=>row.operation);
+import {familyReads,scopeAdmitsRead} from './reads/availability.mjs';
+import {READ_FAMILIES} from './reads/families.mjs';
+/** The reads the general `meri_reads` server can ever offer: with the run's scope, the only ones the plugin-path source backstop decides. */
+const GENERAL_READS=familyReads();
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
 import {createQuestionRegistry} from './questions/registry.mjs';
 import {createQuestionEventJournal} from './questions/events.mjs';
@@ -184,7 +185,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
      if(!nativeSkill||!policy?.skillPlugin||!policy.generalReads||generalReads===undefined||!runtime.skillPluginDirectory||policy.skillNames!==null&&!policy.skillNames.includes(nativeSkill.name))throw fault('SKILL_RUNTIME_REFUSED');
      // The plugin skill reads only through the mounted general reads: a required source none of them covers cannot be
      // disclosed by the model, so the run fails with its name instead of answering from nothing.
-     if(unavailableSkillSources(selected.manifest,readRuntime?.available??[],selected.manifest.allowedOperations.filter(op=>GENERAL_READS.some(row=>same(row,op)))).length)throw fault('SKILL_SOURCES_UNAVAILABLE');
+     if(unavailableSkillSources(selected.manifest,readRuntime?.available??[],selected.manifest.allowedOperations.filter(op=>GENERAL_READS.some(row=>same(row.operation,op)&&scopeAdmitsRead(READ_FAMILIES[row.family],op,saved.run.scopes)))).length)throw fault('SKILL_SOURCES_UNAVAILABLE');
     }else assertInstalledSkillManifest(selected.manifest,catalog);
     // A manifest's maxCostMicroUSD bounds gateway tool charges in tariff micro-units (assertOneHoldFits), not provider spend: dividing
     // it into maxBudgetUsd gave every selected-skill run a $0.001 model budget. The tenant policy's maxBudgetUsd stays the model budget.

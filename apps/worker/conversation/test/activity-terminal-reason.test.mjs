@@ -13,7 +13,7 @@ import {sep} from 'node:path';
 import {plugin,preparedWorkspace} from './capability-fixture.mjs';
 const cwd=`/workspace/conversations/${binding.conversationId}`;
 // The plugin runs need an existing workspace beside the materialized plugin image; the fixed Bedrock workspace path need not exist.
-const pluginRuntime={cwd:preparedWorkspace(binding.conversationId).split(sep).join('/'),skillPluginDirectory:plugin};
+const pluginRuntime={cwd:preparedWorkspace(binding.conversationId).split(sep).join('/').replace(/^[A-Za-z]:/u,''),skillPluginDirectory:plugin};
 const runtime=()=>({binding,versions,cwd,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+2000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
 const frames=[{type:'stream_event',parent_tool_use_id:null,event:{type:'message_start',message:{id:'msg_1'}}},{type:'stream_event',parent_tool_use_id:null,event:{type:'content_block_delta',index:0,delta:{type:'text_delta',text:'Hello'}}},{type:'assistant',parent_tool_use_id:null,message:{id:'msg_1',content:[{type:'text',text:'Hello'}]}},{type:'result',subtype:'success',is_error:false}];
 const mail=selectSkill('quick_skill.mail_history','1.0.1'),skillInput={requestId:id(6),prompt:'Summarize the last three email threads',skill:{skillId:mail.pin.skillId,skillVersion:mail.pin.skillVersion},windowRequest:{basis:'explicit',startInclusive:'2026-10-01T00:00:00Z',endExclusive:'2026-10-24T00:00:00Z',timezone:'UTC'}};
