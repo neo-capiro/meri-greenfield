@@ -1,36 +1,39 @@
+/** The system-prompt sentence routes questions to the mounted tools and says nothing a tool description already says. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readPromptSentence} from '../options.mjs';
 
 const prefix='mcp__meri_reads__';
-const describe=prefix+'describe_capiro_data',query=prefix+'query_capiro_data';
+const describe=prefix+'describe_capiro_data',query=prefix+'query_capiro_data',memory=prefix+'search_memory';
+const mail=['mail_list_messages','mail_search_messages','mail_read_thread'].map(name=>prefix+name);
 
-test('SQL-primary policy is admitted only with both actual query tools',()=>{
- for(const tools of [[],[describe],[query]]){
-  assert.doesNotMatch(readPromptSentence(true,tools),/primary retrieval path|Before querying/);
- }
+test('SQL routing is admitted only with both actual query tools, and only as routing',()=>{
+ for(const tools of [[],[describe],[query]])assert.doesNotMatch(readPromptSentence(true,tools),/Structured questions about Capiro data/);
  assert.equal(readPromptSentence(false,[describe,query]),'No institutional source tool is enabled for this activity.');
  const prompt=readPromptSentence(true,[describe,query]);
- assert.match(prompt,/primary retrieval path.*covered by the published relations/);
- assert.match(prompt,/describe_capiro_data first.*author SELECT SQL.*bound parameters/);
+ assert.match(prompt,/Structured questions about Capiro data .* go to describe_capiro_data once per conversation and then query_capiro_data/);
+ assert.match(prompt,/public is the default source and clientId only narrows access/);
+ assert.match(prompt,/settle any ambiguity that changes the answer \(client, fiscal versus calendar period, units, budget cycle\)/);
+ assert.match(prompt,/A refusal names its correction: fix the SQL and run it again, and never switch to another source/);
+ assert.match(prompt,/Use a typed reader only when the described relations do not cover the question/);
+ assert.match(prompt,/query-bounded rows, not source completeness; generatedAt is query time/);
+ // The retired contract envelope and the per-tool argument and result detail stay out of the prompt.
+ assert.doesNotMatch(prompt,/contract grammar|rowLimitReached|byteTruncated|keyset|legacy global query tools|Use read_saved_record/);
+ assert.ok(prompt.length<1400,`${prompt.length} characters`);
 });
 
-test('SQL-primary guidance retains semantic scope, failure and provenance boundaries',()=>{
- const prompt=readPromptSentence(true,[describe,query]);
- for(const requirement of [
-  /clarify any ambiguity.*client, jurisdiction, measure, fiscal versus calendar period, currency or units/,
-  /aggregate parent amounts before joining child rows/,
-  /author SELECT SQL for query_capiro_data with bound parameters using its returned contract grammar and limits when present, otherwise the sql argument guidance/,
-  /page by keyset on the complete ordered key/,
-  /INVALID_QUERY, UNSUPPORTED_SQL, UNKNOWN_RELATION, UNKNOWN_FIELD or PARAMETER_MISMATCH refusal names the correction: rewrite the SQL within the stated grammar and run it again/,
-  /denied, unavailable, timed-out or invalid SQL query is not an empty result/,
-  /must not trigger broader or unscoped retrieval/,
-  /another enabled authorized reader only when.*do not cover.*original document\/web evidence/,
-  /generatedAt is query time, not source freshness/,
-  /missing sourceAsOf\/sourceVersion stays unknown/,
-  /clientId only narrows access and never grants it/,
-  /rowLimitReached, byteTruncated and authored LIMIT separately/,
-  /derived SQL rows and aggregates are not immutable source passages/,
- ])assert.match(prompt,requirement);
- assert.doesNotMatch(prompt,/Use read_saved_record/);
+test('memory and mail routing follow their mounted tools and never claim completeness',()=>{
+ assert.doesNotMatch(readPromptSentence(true,[describe,query]),/Saved knowledge|Email:/);
+ const recall=readPromptSentence(true,[memory]);
+ assert.match(recall,/Saved knowledge: when the user asks what Meri, they or the firm have saved, noted or remembered .* call search_memory first/);
+ assert.match(recall,/attribute each item as saved memory by title, scope and approval date/);
+ assert.match(recall,/only prepares a proposal for the user's approval: never say a memory was saved or remembered/);
+ for(const tool of mail){
+  const prompt=readPromptSentence(true,[tool]);
+  assert.match(prompt,/Email: .* come from the mail tools, never from memory or SQL/);
+  assert.match(prompt,/mail_read_thread for a thread's body before quoting it/);
+  assert.match(prompt,/stored mail of the connected mailbox up to its last synchronization, not the live inbox, and an empty page is not proof that no email exists/);
+ }
+ const all=readPromptSentence(true,[describe,query,memory,...mail]);
+ assert.ok(all.indexOf('Structured questions')<all.indexOf('Saved knowledge')&&all.indexOf('Saved knowledge')<all.indexOf('Email:'),'SQL, then memory, then mail');
 });

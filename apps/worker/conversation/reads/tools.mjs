@@ -17,6 +17,7 @@ export const READ_TOOL_PREFIX=`mcp__${READ_SERVER_NAME}__`;
 /** 4096 holds the longest descriptor with every optional line: query_capiro_data@0.3.0 states the PostgreSQL contract
  * (`tools.test.mjs` proves nothing of the two SQL descriptors is dropped). */
 export const MAX_DESCRIPTION=4096,MAX_LIMITS=4;
+export const SQL_TOOL_IDS=new Set(['describe_capiro_data','query_capiro_data']);
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
 /** Catalog limitations that describe the registration row (null handler, pending qualification, frozen declared types),
  * not the data: true of the catalog, false of a read that is mounted and executing. Closed patterns, no source detail. */
@@ -32,8 +33,10 @@ export const readToolName=row=>`${READ_TOOL_PREFIX}${sdkToolName(row.operation)}
 export function describeRead(d,family,{sqlPrimary}){
  const operational=readGuidance(sdkToolName(d.operation));
  const guidance=READ_FAMILY_GUIDANCE[family];if(!guidance)throw fault('READ_GUIDANCE_CONFIGURATION');
+ // The SQL-first routing sentence points other structured reads at the two SQL tools; on those two it would only
+ // tell them to call themselves, so they carry their own routing in the descriptor and the system prompt.
  const head=[`${d.displayName}. ${d.whenToUse}`,`Covers: ${guidance.covers}`,`Returns: ${guidance.returns}`,`Result states: ${guidance.states}`,...(operational?.usage??[]),
-  ...(guidance.structured?[sqlPrimary?SQL_FIRST_GUIDANCE:SQL_ABSENT_GUIDANCE]:[])];
+  ...(guidance.structured&&!SQL_TOOL_IDS.has(d.operation.id)?[sqlPrimary?SQL_FIRST_GUIDANCE:SQL_ABSENT_GUIDANCE]:[])];
  const tail=[`Canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}.`,'Supply literal arguments only; credentials and scope authority remain with the gateway.'];
  const limits=(operational?.limitations.length?operational.limitations:domainLimitations(d)).slice(0,MAX_LIMITS),optional=[...(limits.length?[`Limits: ${limits.join(' ')}`]:[]),...(d.negativeExamples??[]).map((/** @type {string} */example)=>`Do not: ${example}`)];
  const lines=[...head,...tail];

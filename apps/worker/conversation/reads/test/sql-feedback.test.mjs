@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {failureResult,readNotices,READ_FAILURE_CODES} from '../results.mjs';
 import {READ_GUIDANCE,SQL_REFUSAL_GUIDANCE} from '../guidance.mjs';
-import {capiroDataPage,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
+import {capiroDataPage,privateCapiroDataPage,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
 
 const NOTHING='No evidence, absence or completeness is established.';
 const query={id:'query_capiro_data'},describe={id:'describe_capiro_data'};
@@ -31,8 +31,10 @@ test('every closed Core SQL refusal code yields one fixed correction notice and 
   assert.equal(notice.text,`Notice: ${operation.id} refused this request with ${code}. ${SQL_REFUSAL_GUIDANCE[code]} ${NOTHING}`);
   assert.equal(notice.text.includes('PRIVATE'),false);
  }
- assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/current describe_capiro_data contract grammar and Core refusal message/);
- assert.doesNotMatch(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/pg_sleep|dblink|lo_\*/);
+ // Core 362's gate rules, stated as the correction; the retired contract envelope is never mentioned.
+ assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/exactly one statement that starts with SELECT or WITH \.\.\. SELECT/);
+ assert.match(SQL_REFUSAL_GUIDANCE.UNSUPPORTED_SQL,/no INSERT, UPDATE, DELETE, MERGE, SELECT INTO or data-modifying CTE/);
+ for(const text of Object.values(SQL_REFUSAL_GUIDANCE))assert.doesNotMatch(text,/contract/);
  assert.match(SQL_REFUSAL_GUIDANCE.UNKNOWN_RELATION,/one query reads one source/);
  assert.match(SQL_REFUSAL_GUIDANCE.INVALID_QUERY,/PostgreSQL syntax or type error names the character position/);
  for(const text of Object.values(SQL_REFUSAL_GUIDANCE))assert.doesNotMatch(text,/No string literals|SELECT \*|accepted grammar|key equality|base columns|NULLS LAST/);
@@ -49,7 +51,9 @@ test('a successful query gets one count line; truncation and empty pages add the
  assert.equal(notices(query,cut)[0].text,'Notice: 2 row(s) returned of rowLimit 2 from program_elements. rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n). byteTruncated: whole rows were dropped at the 256 KiB output budget; select fewer columns or lower rowLimit.');
  const empty={...page,rows:[],rowCount:0};
  assert.equal(notices(query,empty)[0].text,'Notice: 0 row(s) returned of rowLimit 2 from program_elements. Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the relation coverage limitations before concluding.');
- assert.deepEqual(notices(describe,capiroDataPage('describe_capiro_data')),[]);
+ assert.deepEqual(notices(describe,capiroDataPage('describe_capiro_data')),[{type:'text',text:'Notice: 1 public relation(s) described: program_elements. Spell relation and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each relation\'s grain and limitations; rowLimit default 200, max 1000.'}]);
+ assert.match(notices(describe,privateCapiroDataPage('describe_capiro_data'))[0].text,/^Notice: 1 client_records relation\(s\) described: client_objectives\./);
+ assert.deepEqual(notices(describe,{...capiroDataPage('describe_capiro_data'),relations:undefined}),[],'a malformed describe page gets no orientation line');
 });
 
 test('notices never touch other tools or malformed envelopes',()=>{

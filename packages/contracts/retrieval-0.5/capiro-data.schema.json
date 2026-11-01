@@ -101,7 +101,7 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 16384,
-              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns. Use its optional versioned contract for the current grammar, blocked keywords/functions and limits; the descriptor is metadata, never an authorization grant. Bind values as $1..$n and alias expression columns. Core owns SQL admission and returns diagnostic refusals to correct and retry; Meri does not parse SQL. When an older Core omits contract, use one SELECT or WITH ... SELECT and follow its refusal message. Public and client_records are separate sources."
+              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns: exactly one SELECT or WITH ... SELECT, run verbatim under a read-only role inside an outer LIMIT wrapper. Not allowed: a second statement, SET, SHOW, EXPLAIN, COPY, transaction control, INSERT, UPDATE, DELETE, MERGE, SELECT INTO, data-modifying CTEs, and administrative, sleep, lock, file or dblink functions. Bind values as $1..$n and alias expression columns. Core admits the statement and PostgreSQL reports its own errors with message, character position, hint, SQLSTATE and nearest published names; fix the SQL and run it again. Public and client_records are separate sources."
             },
             "parameters": {
               "type": "array",
@@ -158,7 +158,7 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 16384,
-              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns. Use its optional versioned contract for the current grammar, blocked keywords/functions and limits; the descriptor is metadata, never an authorization grant. Bind values as $1..$n and alias expression columns. Core owns SQL admission and returns diagnostic refusals to correct and retry; Meri does not parse SQL. When an older Core omits contract, use one SELECT or WITH ... SELECT and follow its refusal message. Each query reads exactly one source. Public, client_records, research_portfolio and classic_outreach never share relation scope."
+              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns: exactly one SELECT or WITH ... SELECT, run verbatim under a read-only role inside an outer LIMIT wrapper. Not allowed: a second statement, SET, SHOW, EXPLAIN, COPY, transaction control, INSERT, UPDATE, DELETE, MERGE, SELECT INTO, data-modifying CTEs, and administrative, sleep, lock, file or dblink functions. Bind values as $1..$n and alias expression columns. Core admits the statement and PostgreSQL reports its own errors with message, character position, hint, SQLSTATE and nearest published names; fix the SQL and run it again. Each query reads exactly one source. Public, client_records, research_portfolio and classic_outreach never share relation scope."
             },
             "parameters": {
               "type": "array",
@@ -207,7 +207,7 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 16384,
-              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns. Use its optional versioned contract for the current grammar, blocked keywords/functions and limits; the descriptor is metadata, never an authorization grant. Bind values as $1..$n and alias expression columns. Core owns SQL admission and returns diagnostic refusals to correct and retry; Meri does not parse SQL. When an older Core omits contract, use one SELECT or WITH ... SELECT and follow its refusal message. Each query reads exactly one source. Public, client_records, research_portfolio and classic_outreach never share relation scope."
+              "description": "One read-only PostgreSQL statement over the relations describe_capiro_data returns: exactly one SELECT or WITH ... SELECT, run verbatim under a read-only role inside an outer LIMIT wrapper. Not allowed: a second statement, SET, SHOW, EXPLAIN, COPY, transaction control, INSERT, UPDATE, DELETE, MERGE, SELECT INTO, data-modifying CTEs, and administrative, sleep, lock, file or dblink functions. Bind values as $1..$n and alias expression columns. Core admits the statement and PostgreSQL reports its own errors with message, character position, hint, SQLSTATE and nearest published names; fix the SQL and run it again. Each query reads exactly one source. Public, client_records, research_portfolio and classic_outreach never share relation scope."
             },
             "parameters": {
               "type": "array",
