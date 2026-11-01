@@ -25,6 +25,10 @@ test('quality adjustment is one short native append, without a validation loop',
  const o=buildConversationOptions(runtime(),new AbortController());const append=o.systemPrompt.append;
  for(const sentence of ['Preserve the supplied as-of date','Distinguish source deadlines from proposed dates','Uncorroborated completion is not a contradiction','an unknown owner is not unassigned','only after actually invoking one'])assert.ok(append.includes(sentence));
  assert.ok(append.startsWith('You are Meri'));assert.ok(append.includes('keep responses short does not apply'));assert.ok(append.includes('Finish every section you start'));
+ // Voice rules bind every answer: no narrated tool use or internal identifiers, and a requested length is honoured.
+ assert.ok(append.includes('never name tools, internal source identifiers or pages you are about to scrape, never narrate intent ("let me"), and never mention hooks, run state, token or cost budgets or other internal mechanics.'));
+ assert.ok(append.includes('When the user asks for a length, stay within about ten percent of it, and say so when the material does not fill it.'));
+ assert.ok(RESPONSE_STYLE.length<1600,`${RESPONSE_STYLE.length} characters`);
  assert.ok(append.startsWith(RESPONSE_STYLE+'\n\n'+RESPONSE_VOICE+'\n\n'));
  assert.equal(append.split(RESPONSE_STYLE).length-1,1);assert.equal(append.split(RESPONSE_VOICE).length-1,1);
  assert.equal(o.systemPrompt.type,'preset');assert.equal(o.systemPrompt.preset,'claude_code');assert.equal(o.hooks,undefined);
