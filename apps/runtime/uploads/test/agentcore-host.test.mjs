@@ -225,14 +225,24 @@ test('on the AgentCore microVM the join attests boundedResources from the verifi
    {stdout:Buffer.from(JSON.stringify({status:'available',segments:[{...SEGMENT}],limitations:[]})),receipt:{exitCode:0}};
   throw Object.assign(Error('UPLOAD_SANDBOX_REFUSED'),{code:'UPLOAD_SANDBOX_REFUSED'});
  };
- const compose=env=>composeUploadInspectionHost({environment:env,run,readFileImpl:async path=>Buffer.from('bin:'+path),scratchRoot:tempRoot,definitionsRoot,deadlineMs:Date.now()+30000});
+ // `hostCgroup` is the host-side read (`readHostCgroup`) this non-Linux check cannot perform: the live container's
+ // resolved hierarchy, one unlimited root. It is the same narrow fixture port the composition's own checks inject.
+ const hostCgroup={memoryMax:'max',pidsMax:'max',cpuMax:'max 100000',levels:1,mountRootIsRoot:true};
+ const compose=(env,host=hostCgroup)=>composeUploadInspectionHost({environment:env,run,readFileImpl:async path=>Buffer.from('bin:'+path),scratchRoot:tempRoot,definitionsRoot,deadlineMs:Date.now()+30000,
+  ...(host===undefined?{}:{hostCgroup:host})});
  const handle=await compose(environment);
  assert.deepEqual(handle.missing,[],'the microVM-bounded sandbox is admitted and the real ports are composed');
  assert.notEqual(handle.inspection,null);
  assert.equal(handle.host.admission.sandbox.boundedResources,true);
  assert.equal(handle.host.diagnostic.boundedBy,'agentcore-microvm','the admission records the platform attestation');
  assert.deepEqual(handle.host.diagnostic.resources,{memoryMax:0,pidsMax:0,cpuMax:0},'the observed facts are not rewritten');
+ assert.deepEqual(handle.host.diagnostic.cgroupHost,{resolved:true,levels:1,mountRootIsRoot:true});
  assert.equal(handle.host.diagnostic.credentials.checked,RUNTIME_CREDENTIAL_PATHS.length);
+ // Without a resolved host hierarchy the child's namespaced view (always one unlimited root under bwrap) is not
+ // evidence of the microVM shape, so the verified environment alone attests nothing.
+ const unresolved=await compose(environment,null);
+ assert.equal(unresolved.inspection,null);assert.deepEqual(unresolved.requirements,['boundedResources']);
+ assert.equal(unresolved.diagnostic.boundedBy,null);assert.equal(unresolved.diagnostic.cgroupHost.resolved,false);
  // The SAME image, shape and inventory without the verified runtime environment is still refused on boundedResources:
  // the evidence is the platform's, not a value the digest or any other variable supplies.
  const unverified=await compose({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE,AGENTCORE:'1'});

@@ -16,7 +16,7 @@ function fixture(){
  const store={
   async prepare(r){const old=[...state.rows.values()].find(v=>v.requestId===r.requestId);if(old)return copy(old);state.rows.set(r.uploadId,copy(r));return copy(r);},
   async readByRequest(owner,key){return copy([...state.rows.values()].find(r=>r.requestId===key)??null);},
-  async read(owner,key){await state.onRead?.(key);return copy(state.rows.get(key)??null);},
+  async read(owner,key){await state.onRead?.(key,owner);return copy(state.rows.get(key)??null);},
   async transition(a,b,check){await state.onTransition?.(a,b);check();if(hash(state.rows.get(a.uploadId))!==hash(a))throw Error('UPLOAD_CHANGED');state.rows.set(a.uploadId,copy(b));return copy(b);},
  };
  const objects={
@@ -115,12 +115,18 @@ test('changed bytes and reused request identity with different declaration are r
  await assert.rejects(owner.initiate({requestId:id(10),declaration:{...f.declaration,filename:'renamed.txt'}},f.options),{code:'UPLOAD_REQUEST_CONFLICT'});
 });
 function applicationFixture(overrides={}){
- const f=fixture(),authentication=()=>({principal:{sessionId:'synthetic-session',tenantId:f.binding.tenantId,actorId:f.binding.actorId,conversationId:f.binding.conversationId,runId:f.binding.runId},sessionRevision:'1',checkedAtMs:f.state.at,expiresAtMs:f.state.at+300000});
+ // `other.session` is a second authenticated principal (another actor of the same tenant) whose session the same
+ // sessions owner also admits: it reaches the upload routes, and custody refuses it the records it does not own.
+ const actorOf=credential=>credential==='other.session'?id(7):f.binding.actorId;
+ const f=fixture(),authentication=credential=>({principal:{sessionId:'synthetic-session',tenantId:f.binding.tenantId,actorId:actorOf(credential),conversationId:f.binding.conversationId,runId:f.binding.runId},sessionRevision:'1',checkedAtMs:f.state.at,expiresAtMs:f.state.at+300000});
  f.state.authCredentials=[];
- const sessions={async authenticateSession({credential}){f.state.authCredentials.push(credential);if(f.state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return authentication();},
-  async readCurrentState({authentication:auth}){return {...await f.config.current(),authenticationSha256:hash(auth)};}};
+ const sessions={async authenticateSession({credential}){f.state.authCredentials.push(credential);if(f.state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return authentication(credential);},
+  async readCurrentState({authentication:auth}){const current=await f.config.current();return {...current,binding:{...current.binding,actorId:auth.principal.actorId},authenticationSha256:hash(auth)};}};
  f.state.events=[];
- const app=createUploadApplication({...f.config,sessions,log:event=>f.state.events.push(event),...overrides});
+ // An `inspection` override given as a function wraps THIS fixture's own inspection owner (same clock), so a scripted
+ // transport fault can sit in front of the real local inspection.
+ const resolved=typeof overrides.inspection==='function'?{...overrides,inspection:overrides.inspection(f.config.inspection)}:overrides;
+ const app=createUploadApplication({...f.config,sessions,log:event=>f.state.events.push(event),...resolved});
  const request=(intent,body,headers={})=>new Request('https://control.synthetic.invalid/api/uploads/'+intent,{method:'POST',headers:{authorization:'Bearer synthetic.session','content-type':'application/json',...headers},body:JSON.stringify(body)});
  const put=uploadId=>new Request('https://control.synthetic.invalid/api/uploads/original/'+uploadId,{method:'PUT',headers:{authorization:'Bearer synthetic.session','content-type':'application/octet-stream','content-length':String(f.bytes.length)},body:f.bytes});
  const status=async uploadId=>{const response=await app.handle(request('status',{uploadId}));assert.equal(response.status,200,await response.clone().text());return response.json();};
@@ -318,11 +324,9 @@ test('a stored original is inspected server-side exactly once, and status reads 
 
 test('an unknown remote outcome is retried with the bounded budget and then settles; refusals, revocation and exhaustion are reported once',async()=>{
  const unknown=code=>Object.assign(Error(code),{code});
- const transient=applicationFixture({dispatch:{backoffMs:0}});
- let failures=2,scans=0;transient.state.onScan=()=>{scans++;};
- const inner=transient.config.inspection;
- const flaky={async inspect(...args){if(failures-->0)throw unknown('UPLOAD_INSPECTION_OUTCOME_UNKNOWN');return inner.inspect(...args);}};
- const f=applicationFixture({dispatch:{backoffMs:0},inspection:flaky});f.state.onScan=transient.state.onScan;
+ let failures=2,scans=0;
+ const f=applicationFixture({dispatch:{backoffMs:0},inspection:inner=>({async inspect(...args){if(failures-->0)throw unknown('UPLOAD_INSPECTION_OUTCOME_UNKNOWN');return inner.inspect(...args);}})});
+ f.state.onScan=()=>{scans++;};
  const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
  assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);
  const landed=await f.settled(begun.uploadId);
@@ -373,4 +377,44 @@ test('a status read that raced a concurrent publication reports the current reco
  assert.equal(current.revision,f.state.rows.get(r.uploadId).revision,'status reports the record as it is now');
  reads=0;f.state.onRead=()=>{if(++reads===2)advance();};
  await assert.rejects(owner.remove(r.uploadId,f.options),{code:'UPLOAD_CHANGED'},'an effect keeps the strict check');
+});
+
+test('the dispatch is keyed by owner: another principal\'s explicit inspect is never joined by, or stands in for, the owner\'s own',async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}});let scans=0,release;f.state.onScan=()=>{scans++;};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ // The other principal's explicit inspect of the owner's upload id is held open at its record read, so it is in
+ // flight under ITS key when the owner's put dispatches.
+ const gate=new Promise(resolve=>{release=resolve;});
+ f.state.onRead=async(key,owner)=>{if(owner.actorId===id(7))await gate;};
+ const foreign=f.app.handle(f.request('inspect',{uploadId:begun.uploadId},{authorization:'Bearer other.session'}));
+ await f.turns();
+ assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);
+ const landed=await f.settled(begun.uploadId);
+ assert.equal(landed.scanStatus,'clean','the owner\'s own dispatch ran instead of joining the foreign attempt');
+ assert.equal(scans,1);
+ release();
+ const refused=await foreign;
+ assert.equal(refused.status,403,'the other principal is refused the record it does not own');
+ assert.equal((await refused.json()).error.code,'ACCESS_DENIED');
+ assert.deepEqual(f.state.events,[]);
+});
+
+test('an unsettled event carries only an allowlisted code, and the runtime shutdown signal cancels a dispatch in flight',async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}});
+ f.state.onScan=()=>{throw Object.assign(Error('tool detail that must not leak'),{code:'CLAMAV_SEGFAULT_AT_0x7f'});};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);
+ await f.settled(begun.uploadId,()=>f.state.events.length>0);
+ assert.deepEqual(f.state.events,[{event:UPLOAD_INSPECTION_UNSETTLED_EVENT,code:'UPLOAD_UNAVAILABLE',attempts:1}]);
+ const stop=new AbortController(),g=applicationFixture({dispatch:{backoffMs:0},signal:stop.signal});let release,scans=0;
+ const gate=new Promise(resolve=>{release=resolve;});g.state.onScan=async()=>{scans++;await gate;};
+ const second=await (await g.app.handle(g.request('initiate',{requestId:id(11),...g.declaration}))).json();
+ assert.equal((await g.app.handle(g.put(second.uploadId))).status,200);
+ await g.turns();assert.equal(scans,1,'the dispatch is in flight');
+ stop.abort();release();
+ for(let i=0;i<500&&g.state.events.length===0;i++)await g.turns(1);
+ assert.equal(g.state.events.length,1);assert.equal(g.state.events[0].code,'CANCELLED');
+ assert.equal(g.state.rows.get(second.uploadId).inspection,null,'a cancelled attempt publishes nothing');
+ const after=await g.app.handle(g.put(second.uploadId));assert.equal(after.status,200);await g.turns();
+ assert.equal(scans,1,'after shutdown nothing new is dispatched');
 });

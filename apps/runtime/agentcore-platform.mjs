@@ -1,4 +1,15 @@
-/** The platform's own evidence that this process runs inside an AgentCore runtime container.
+/** Evidence that this process runs inside an AgentCore runtime container, derived from the entrypoint's VERIFIED
+ * environment (`agentcoreEnvironment`: the control origin, its pinned CA and the region) -- the same check the entrypoint
+ * runs before it serves anything.
+ *
+ * Stated plainly: this environment is set by the deployment (the AgentCore runtime version's environment variables),
+ * not an external signal the platform injects, so it proves which deployment the container was built and launched
+ * for, not by itself that the kernel underneath is a Firecracker microVM. That is the accepted limit of this
+ * attestation: it is only ever combined with the observed single unlimited root cgroup of the HOST's resolved
+ * hierarchy (`platformBoundedCgroup`), a shape the deployed container shows and a bounded EC2/local host does not,
+ * and every other requirement (namespaces, no network, no credentials, prlimit caps) is still observed. The follow-up
+ * is an AgentCore-injected discriminator (a runtime-provided variable, credential endpoint or metadata identity),
+ * which replaces this environment check once the platform documents one.
  *
  * An AgentCore microVM is a platform isolation boundary with fixed memory and CPU for the whole runtime session, and it
  * exposes exactly one unlimited root cgroup (`levels:1`, `mountRootIsRoot:true`, every bound `max`) that uid 1000 can

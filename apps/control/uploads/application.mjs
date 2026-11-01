@@ -17,8 +17,13 @@ const ROUTE_MS=Object.freeze({inspect:150000,other:30000});
 /** The server-side inspection dispatch after a stored original: bounded attempts, exponential backoff between them, and
  * ONLY an unknown remote outcome is retried (a refusal, a revoked session or a settled verdict never is). */
 export const UPLOAD_INSPECTION_DISPATCH=Object.freeze({attempts:3,backoffMs:2000});
-/** One content-free stderr event when the dispatch gave up: the closed code and the attempt count, never an identifier. */
+/** One content-free stderr event when the dispatch gave up: an allowlisted code and the attempt count, never an identifier. */
 export const UPLOAD_INSPECTION_UNSETTLED_EVENT='control.uploads.inspection.unsettled';
+/** The only codes the event may carry: the wire's closed upload codes plus the inspection transport's closed faults.
+ * Anything else (a tool's own error, a thrown string, a foreign code) is reported as UPLOAD_UNAVAILABLE. */
+const UNSETTLED_CODES=new Set([...Object.keys(uploadErrorStatuses),'UPLOAD_INSPECTION_OUTCOME_UNKNOWN','UPLOAD_INSPECTION_CLEANUP_UNKNOWN',
+ 'UPLOAD_INSPECTION_RESULT_REFUSED','UPLOAD_INSPECTION_REQUEST_REFUSED','UPLOAD_INSPECTION_TRANSPORT_UNAVAILABLE','UPLOAD_INSPECTION_CONFIGURATION',
+ 'UPLOAD_INSPECTION_EXPIRED','UPLOAD_INSPECTION_CANCELLED','UPLOAD_INSPECTION_REFUSED','UPLOAD_SANDBOX_REFUSED','UPLOAD_TOOL_RECEIPT','UPLOAD_AUTHORITY_CHANGED']);
 /** Shared with the outer CONTROL listener; the upload owner alone defines its admitted paths. */
 export function matchUploadApplicationPath(path){return /^\/api\/uploads\/(initiate|status|inspect|read|remove|original\/([a-f0-9-]{36}))$/u.exec(path);}
 export function uploadReceipt(r){
@@ -46,32 +51,37 @@ async function originalBody(request,length,life){
 /** Server-side inspection dispatch. The composer wire has initiate/original/status/remove only, so nothing else
  * inspects a stored original: once `put` stores the exact bytes the application starts ONE inspection here, through
  * the same authenticated custody (`open`) and the same composed inspection port the explicit route uses, so the
- * caller's status reads see the scan and extraction progress without a second call. It is idempotent per upload id: a put
- * retry or a concurrent explicit inspect joins the attempt in flight instead of running a second native inspection
- * over the same bytes, and custody itself reconciles a settled observation rather than re-running it. Nothing here is
- * a timer, daemon or queue: an attempt is started and not awaited, bounded by its own lifetime and the runtime fence. */
+ * caller's status reads see the scan and extraction progress without a second call. It is idempotent per OWNER and
+ * upload id: a put retry or a concurrent explicit inspect by the same authenticated owner joins the attempt in flight
+ * instead of running a second native inspection over the same bytes (custody itself reconciles a settled observation
+ * rather than re-running it), while another principal's explicit inspect of that id is a different key, so an
+ * unauthorized attempt can never be joined by, or stand in for, the owner's own. Nothing here is a timer, daemon or
+ * queue: an attempt is started and not awaited, bounded by its own lifetime and the runtime shutdown `signal`, which
+ * cancels an attempt and its backoff. */
 function createInspectionDispatch({attempts,backoffMs,now,signal,open,log}){
  const inFlight=new Map();
- const track=(uploadId,work)=>{
-  const existing=inFlight.get(uploadId);if(existing)return existing;
-  const pending=work().finally(()=>{if(inFlight.get(uploadId)===pending)inFlight.delete(uploadId);});
-  inFlight.set(uploadId,pending);return pending;
+ const key=(owner,uploadId)=>owner+'\0'+uploadId;
+ const track=(owner,uploadId,work)=>{
+  const k=key(owner,uploadId),existing=inFlight.get(k);if(existing)return existing;
+  const pending=work().finally(()=>{if(inFlight.get(k)===pending)inFlight.delete(k);});
+  inFlight.set(k,pending);return pending;
  };
  async function attempt(uploadId,credential){
   const life=createOperationLifetime({now,deadlineMs:now()+ROUTE_MS.inspect,signal,errorFactory:uploadError});
   try{const {custody,options}=await open({credential,life});return await custody.inspect(uploadId,options);}finally{life.close();}
  }
  return Object.freeze({track,
-  inFlight:uploadId=>inFlight.get(uploadId)??null,
-  start(uploadId,credential){
-   return track(uploadId,async()=>{
+  inFlight:(owner,uploadId)=>inFlight.get(key(owner,uploadId))??null,
+  start(owner,uploadId,credential){
+   return track(owner,uploadId,async()=>{
     for(let n=1;;n++){
      try{return await attempt(uploadId,credential);}
      catch(error){
-      const code=typeof error?.code==='string'?error.code:'UPLOAD_UNAVAILABLE';
+      const code=UNSETTLED_CODES.has(error?.code)?error.code:'UPLOAD_UNAVAILABLE';
       if(code!=='UPLOAD_INSPECTION_OUTCOME_UNKNOWN'||n>=attempts||signal?.aborted){log({event:UPLOAD_INSPECTION_UNSETTLED_EVENT,code,attempts:n});return null;}
      }
      if(backoffMs>0)await sleep(backoffMs*2**(n-1),undefined,{signal}).catch(()=>{});
+     if(signal?.aborted){log({event:UPLOAD_INSPECTION_UNSETTLED_EVENT,code:'CANCELLED',attempts:n});return null;}
     }
    });
   }});
@@ -85,7 +95,8 @@ export function createUploadApplication(configuration){
  if(!Number.isSafeInteger(attempts)||attempts<1||attempts>10||!Number.isSafeInteger(backoffMs)||backoffMs<0||backoffMs>60000||typeof log!=='function')fail('UPLOAD_CONFIGURATION');
  /** The ONE way to reach custody: the existing authenticated owner selects the session facts, the shared current
   * reader validates and rechecks them, and custody is bound to that reader. The request routes and the server-side
-  * dispatch both come through here, so a background inspection carries exactly the authority a request would. */
+  * dispatch both come through here, so a background inspection carries exactly the authority a request would. `owner`
+  * is the content-free hash of the selected principal facts (tenant, actor, conversation, client) the dispatch keys on. */
  async function open({credential,life}){
   const deadlineMs=life.deadline();
   const authentication=await life.run(signal=>ports.authenticateSession({credential,signal,deadlineMs}));
@@ -95,7 +106,8 @@ export function createUploadApplication(configuration){
    commandContext:{binding:selected.binding,clientResolution:selected.selectedClientId===null?null:{clientId:selected.selectedClientId,reference:selected.selectedClientId}}});
   await current.fresh(life);
   const custody=createUploadCustody({store,objects,inspection,retention,removeOriginal,now,ids,current:async()=>{const observed=await current.fresh(life);return observed.current;}});
-  return {current,custody,options:{signal:life.signal,deadlineMs:life.deadline()}};
+  const owner=hash({tenantId:selected.binding.tenantId,actorId:selected.binding.actorId,conversationId:selected.binding.conversationId,clientId:selected.selectedClientId});
+  return {current,custody,owner,options:{signal:life.signal,deadlineMs:life.deadline()}};
  }
  const dispatch=createInspectionDispatch({attempts,backoffMs,now,signal,open,log});
  return Object.freeze({async handle(request){let life,mutating=false;
@@ -111,13 +123,13 @@ export function createUploadApplication(configuration){
    if(request.headers.get('content-encoding')||request.headers.get('content-type')!==(original?'application/octet-stream':'application/json'))fail('UPLOAD_FORMAT');
    const rawLength=request.headers.get('content-length'),length=rawLength===null?null:/^(0|[1-9][0-9]*)$/u.test(rawLength)?Number(rawLength):-1;
    life=createOperationLifetime({now,deadlineMs:now()+(intent==='inspect'?ROUTE_MS.inspect:ROUTE_MS.other),signal:request.signal,errorFactory:uploadError});
-   const {current,custody,options}=await open({credential,life});
+   const {current,custody,owner,options}=await open({credential,life});
    let result;
    if(original){const uploadId=uuid(match[2]),bytes=await originalBody(request,length,life);mutating=true;result=await custody.put(uploadId,bytes,options);
     // The stored original is inspected NOW, server-side, on its own lifetime: the reply below is the pending receipt
     // and the status reads see the inspection land. A retained write (already stored and inspected, or in flight) is
     // never dispatched again.
-    if(result.state==='stored'&&result.inspection===null)dispatch.start(uploadId,credential);}
+    if(result.state==='stored'&&result.inspection===null)dispatch.start(owner,uploadId,credential);}
    else{
     const body=await jsonBody({body:request.body,length},8192,life,life.check);
     if(intent==='initiate'){const call=own(data(body),['requestId','filename','mimeType','bytes','sha256']);const {requestId,...declaration}=call;mutating=true;result=await custody.initiate({requestId,declaration},options);}
@@ -127,8 +139,8 @@ export function createUploadApplication(configuration){
      else{
       // The explicit route re-inspects an outage verdict; while the server-side attempt is still in flight it joins
       // that attempt and reports its outcome under this caller's own authority instead of running the bytes twice.
-      const shared=dispatch.inFlight(uploadId);
-      if(shared===null)result=await dispatch.track(uploadId,()=>custody.inspect(uploadId,options));
+      const shared=dispatch.inFlight(owner,uploadId);
+      if(shared===null)result=await dispatch.track(owner,uploadId,()=>custody.inspect(uploadId,options));
       else{await life.run(()=>shared.then(()=>null,()=>null));result=await custody.status(uploadId,options);}
      }}
    }

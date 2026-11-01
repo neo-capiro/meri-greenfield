@@ -124,7 +124,7 @@ export async function composeUploadNativeHost(options={}){
  const deadlineMs=options.deadlineMs??now()+60000;
  let qualification;try{qualification=await qualifyNativeUploadSandbox({imageDigest:declared.imageDigest,deadlineMs,signal:options.signal,
   credentialPaths:Array.isArray(options.credentialPaths)?options.credentialPaths:[],tempRoot,run,
-  ...(options.platform===undefined?{}:{platform:options.platform})});}
+  ...(options.platform===undefined?{}:{platform:options.platform}),...(options.hostCgroup===undefined?{}:{hostCgroup:options.hostCgroup})});}
  catch(error){return disabled(['uploads.native.sandbox'],typeof error?.code==='string'?error.code:null,[]);}
  if(qualification.admitted!==true)return disabled(['uploads.native.sandbox'],qualification.reason,qualification.missing,qualification.diagnostic??null);
  let tools;try{tools=await observeUploadTools({run,tempRoot,definitionsRoot,extractorPath,deadlineMs,signal:options.signal,

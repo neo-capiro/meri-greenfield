@@ -271,7 +271,7 @@ export async function pinnedHttpsConnect({address,port,serverName,serverFingerpr
  });
  return await done;
 }
-export async function mountUploadNativeControl({configuration,allocations,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,connect,credentialPaths,platform=null}={}){
+export async function mountUploadNativeControl({configuration,allocations,now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,connect,credentialPaths,platform=null,hostCgroup}={}){
  // The host's protected-path inventory is a REQUIRED host-owned argument: every host names its own (the runtime image's
  // for the container-side join and the CONTROL host alike), so no local composition can silently probe an inventory it
  // never declared. An EMPTY list is still an honest input -- the qualifier refuses it as unattestable -- but an omitted
@@ -351,12 +351,12 @@ export async function mountUploadNativeControl({configuration,allocations,now=Da
   }catch{return unavailable(['uploads.native.agentcore'],null);}
  }
  try{
-  // `run`/`paths`/`readFileImpl` are the host owner's narrow fixture ports, exactly as its own composition accepts
-  // them. Production startControl supplies none of the three, so from the running system they are unreachable.
+  // `run`/`paths`/`readFileImpl`/`hostCgroup` are the host owner's narrow fixture ports, exactly as its own composition
+  // accepts them. Production startControl supplies none of the four, so from the running system they are unreachable.
   // `credentialPaths` is the host's protected-path inventory the probe must prove unreadable: the qualifier refuses
   // an EMPTY inventory as unattestable. It is a host-owned list, never a request or declaration value.
   const host=await composeUploadNativeHost({configuration,now,signal,deadlineMs:deadlineMs??now()+UPLOAD_NATIVE_MOUNT_MS,
-   credentialPaths,...(platform===null?{}:{platform}),
+   credentialPaths,...(platform===null?{}:{platform}),...(hostCgroup===undefined?{}:{hostCgroup}),
    ...(typeof declared.scratchRoot==='string'?{tempRoot:declared.scratchRoot}:{}),
    ...(processing===undefined?{}:{processing}),...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),
    ...(readFileImpl===undefined?{}:{readFileImpl})});

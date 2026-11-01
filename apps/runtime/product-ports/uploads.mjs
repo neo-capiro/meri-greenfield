@@ -40,7 +40,7 @@ export function uploadsFamily(owners={}){
  const createClient=supplied.createS3Client??(({region})=>new S3Client({region,maxAttempts:1}));
  if(typeof createClient!=='function'||supplied.ids!==undefined&&typeof supplied.ids!=='function')fail('UPLOAD_CONFIGURATION');
  return function createUploadsFamily(context){
-  const {configuration,pool,now,uploadsInspection}=context,declared=compileRuntimeArtifactsConfiguration(configuration);
+  const {configuration,pool,now,uploadsInspection,signal}=context,declared=compileRuntimeArtifactsConfiguration(configuration);
   // The mounted native inspection is trusted CONTROL assembly state (uploads/control-lifecycle.mjs) reaching this family
   // alone; it is never a request field. Absent or unattested it is undefined here and this family keeps its own honest
   // UNAVAILABLE. An unusable mount is refused rather than silently ignored.
@@ -58,7 +58,9 @@ export function uploadsFamily(owners={}){
   const nativeUploadStore=Object.freeze({readOnClient:(...args)=>store.readOnClient(...args)});
   return {ports:{nativeUploadStore,uploadApplicationFactory:Object.freeze({state:()=> 'composed',create({sessions,retention}){
    if(!retention)fail('UPLOAD_CONFIGURATION');
-   return createUploadApplication({sessions,store,objects,inspection,retention,removeOriginal,now,ids:supplied.ids??randomUUID});
+   // `signal` is the control runtime's shutdown fence, reaching this family alone through its context extension: it
+   // cancels the server-side inspection dispatch an application may have in flight when CONTROL stops.
+   return createUploadApplication({sessions,store,objects,inspection,retention,removeOriginal,now,ids:supplied.ids??randomUUID,...(signal===undefined?{}:{signal})});
   },createOfficeSource({sessions,retention}){
    if(!retention)fail('UPLOAD_CONFIGURATION');
    return createOfficeOriginalReader({sessions,retention,store,objects,inspection,removeOriginal,now});

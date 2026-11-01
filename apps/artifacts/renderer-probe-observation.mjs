@@ -202,10 +202,10 @@ export function limitState(value){
  if(n>MAX_SAFE)return {kind:'unsupported',digits:text.length};
  return {kind:'finite',value:Number(n)};
 }
-/** Pure parser for the three fixed `/proc/self/limits` rows. Missing row or malformed soft/hard pair is null. */
+/** Pure parser for the four fixed `/proc/self/limits` rows. Missing row or malformed soft/hard pair is null. */
 export function parseProcLimits(text){
  if(typeof text!=='string')return null;
- const wanted={MaxFileSize:'Max file size',MaxOpenFiles:'Max open files',MaxProcesses:'Max processes'};
+ const wanted={MaxFileSize:'Max file size',MaxOpenFiles:'Max open files',MaxProcesses:'Max processes',MaxCpuTime:'Max cpu time'};
  const result={};
  for(const [key,label] of Object.entries(wanted)){
   const row=text.split('\n').find(l=>l.startsWith(label));
