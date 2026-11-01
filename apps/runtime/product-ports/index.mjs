@@ -16,9 +16,10 @@ import {createMemoryFamily} from './memory.mjs';
 import {createDocumentsFamily} from './documents.mjs';
 import {createObjectiveFamily} from './objective.mjs';
 import {createUploadsFamily} from './uploads.mjs';
+import {createDataAccessFamily} from './data-access.mjs';
 
 /** Ordered production family factories. Each entry is `[name, factory]`; the name is used only in refusals. */
-export const PRODUCT_FAMILIES=Object.freeze([['settings',createSettingsFamily],['intents',createIntentsFamily],['tasks',createTasksFamily],['lifecycle',createLifecycleFamily],['routines',createRoutinesFamily],['memory',createMemoryFamily],['documents',createDocumentsFamily],['objective',createObjectiveFamily],['uploads',createUploadsFamily]]);
+export const PRODUCT_FAMILIES=Object.freeze([['settings',createSettingsFamily],['intents',createIntentsFamily],['tasks',createTasksFamily],['lifecycle',createLifecycleFamily],['routines',createRoutinesFamily],['memory',createMemoryFamily],['documents',createDocumentsFamily],['objective',createObjectiveFamily],['uploads',createUploadsFamily],['data-access',createDataAccessFamily]]);
 
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn)&&!types.isAsyncFunction(fn)&&!types.isGeneratorFunction(fn);
 

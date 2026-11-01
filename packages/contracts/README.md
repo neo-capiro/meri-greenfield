@@ -136,3 +136,15 @@ type) is the closed `run.status` reasonCode vocabulary a worker publishes: the s
 (`SKILL_RUNTIME_REFUSED`, `SKILL_SOURCES_UNAVAILABLE`, `MODEL_TURNS_EXHAUSTED`, `MODEL_BUDGET_EXHAUSTED`, `OUTPUT_LIMIT`) and
 `EXECUTION_FAILED` only for one it cannot; the schema keeps `reasonCode` as a free string so earlier history still validates. Validation
 grants no authorization and no availability.
+
+## Actor approval inbox and data-access read — package 0.1.48
+
+`intents-application` adds the actor-scoped inbox: `POST /api/conversations/intents/inbox` (keyset page of the actor's prepared
+rows across conversations, `IntentsInboxRow` with a closed `kind`, the delivery's phase and client, and a cursor `next`) and
+`POST /api/conversations/intents/inbox-count` (the open count for a badge, read before decisions). Decisions stay on the per-conversation
+routes; the inbox grants nothing. `INTENTS_UNAVAILABLE` names a workspace without the intents application. New
+`@capiro/meri-contracts/data-access-application` carries the read-only data-access answer for Preferences → Data access:
+`POST /api/data-access/read` with an optional `clientId`, one row per read family (`covers`, `freshness`, `structured`,
+`clientScope`, `state` in `not_installed | policy_off | client_required | available`, `requires`) and the retained SQL relations
+with their state. Operation names are not on the wire. `DATA_ACCESS_UNAVAILABLE` names a workspace without the family. Validation
+grants no authorization.

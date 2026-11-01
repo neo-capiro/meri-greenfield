@@ -7,6 +7,16 @@
       "path": "/api/conversations/intents/list",
       "response": "json"
     },
+    "inbox": {
+      "method": "POST",
+      "path": "/api/conversations/intents/inbox",
+      "response": "json"
+    },
+    "inboxCount": {
+      "method": "POST",
+      "path": "/api/conversations/intents/inbox-count",
+      "response": "json"
+    },
     "decide": {
       "method": "POST",
       "path": "/api/conversations/intents/decide",
@@ -61,7 +71,8 @@
     "INTENT_RESULT_NOT_RELEASED": 502,
     "INTENT_EXECUTION_UNKNOWN": 502,
     "INTENT_JOURNAL_UNAVAILABLE": 503,
-    "INTENT_REQUEST_INVALID": 400
+    "INTENT_REQUEST_INVALID": 400,
+    "INTENTS_UNAVAILABLE": 503
   },
   "errorOutcomes": [
     "NOT_DISPATCHED",
@@ -86,8 +97,21 @@
     "mail.send",
     "memory.propose"
   ],
+  "inboxKinds": [
+    "proposal",
+    "browser_action",
+    "watch_action",
+    "legiwatch_action",
+    "client_record_action",
+    "bizdev_action",
+    "legislative_document_action",
+    "research_action",
+    "research_share"
+  ],
   "semantics": {
     "list": "read-only durable history of this conversation's prepared intents; next is the last returned deliveryId when more remain, otherwise null",
+    "inboxCount": "the badge count: prepared inbox rows still inside their release window, counted in the journal before any decision owner is read, so it can only overstate the page's awaiting_approval rows (an approved, unexecuted proposal counts until its window ends)",
+    "inbox": "read-only, newest-first page of the caller's prepared proposals across every conversation (inboxKinds only), read with the same visibility as list; rows list and link, the conversation's list/decide routes decide; pending.count counts this page's awaiting_approval rows and pending.complete says the page reached the journal's end",
     "decision": "approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves",
     "execution": "only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared",
     "executed": "status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, document.draft ArtifactCreatedResult after publication, or native mail accepted/failed durable attempt (provider acceptance is not delivery); approval alone remains approved or indeterminate",
@@ -113,13 +137,13 @@
   "sources": [
     {
       "path": "../../apps/control/intents/application-protocol.mjs",
-      "sha256": "d2a2eb46dbadf0515150b69f9bffbeefbb3a8393b137871d311ac5e1199dba63",
-      "bytes": 1751
+      "sha256": "019ded32bccebf3fd35fcf95eacd4bff5180a578a759e5703a33b33fed2bfe32",
+      "bytes": 2113
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "253a91dd08bff7757fe7844f47a821af82b70427f4163f105346d2cb18c71045",
-      "bytes": 51025
+      "sha256": "de69f87015e054fb2a4ee24499b5d35bc4d9234e3d61baa4a7a26ab7e2263186",
+      "bytes": 58011
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
@@ -128,8 +152,8 @@
     },
     {
       "path": "../../apps/control/intents/http.mjs",
-      "sha256": "9aa528f02d216533d77715eb96c14173111939d5ae8a5ac2516484d9234b9111",
-      "bytes": 2343
+      "sha256": "148f86d302bd704ffb94a49544b3146414a96e0129e60ee5310cfc9a83d61719",
+      "bytes": 4935
     },
     {
       "path": "../../apps/control/product-access/errors.mjs",
@@ -218,8 +242,8 @@
     },
     {
       "path": "generate-intents.mjs",
-      "sha256": "11398e0def4474f8356fba984ad17a65b4954e332ec1762904b7eb337cd08e71",
-      "bytes": 15164
+      "sha256": "0fb1fe7cbf4207b9c5107b7c5db85a54c1c20d5c5ee1670dce788cc759f9f7a2",
+      "bytes": 15458
     },
     {
       "path": "intents-application/boundary.mjs",
@@ -228,18 +252,18 @@
     },
     {
       "path": "intents-application/protocol.mjs",
-      "sha256": "353c4a8957aa6388777a2aa22016aa30ead23dbf024be1c95e4f714dcaed4831",
-      "bytes": 2993
+      "sha256": "1c6f5a7fa1d433a6a24077c5b24a6f02d3e7658a5169bedacb463a8b163cfede",
+      "bytes": 3631
     },
     {
       "path": "intents-application/README.md",
-      "sha256": "8bd7e5645d20f4ed93202cd435db6ee06fd94f40ee033bcee5459e9420b439f3",
-      "bytes": 8756
+      "sha256": "078ff61e7937b141d156fc07aafaf6830a96a4b8f431cae1b4dad53c1cfd53ec",
+      "bytes": 9877
     },
     {
       "path": "intents-application/receive.mjs",
-      "sha256": "4be8109851b822fccc4ba28a865f3f450c16e2f6e5b43c0cac918ae8db3d0d54",
-      "bytes": 2903
+      "sha256": "cac2d27bfd7e563627ed3f07d287400ed1a77079e9664d3b665661f1951931d8",
+      "bytes": 3164
     },
     {
       "path": "intents-application/routines.mjs",
@@ -248,13 +272,13 @@
     },
     {
       "path": "intents-application/schema.mjs",
-      "sha256": "bbaaa06a9f8a7a0c8747be9bf8a65e32d76c8d0cdcef466e2646737109791094",
-      "bytes": 25865
+      "sha256": "96728560519016a9912a558f4516c4ab1a1060b7a11fc267fd1d6b2bff2ff3d9",
+      "bytes": 27695
     },
     {
       "path": "intents-application/semantics.mjs",
-      "sha256": "d3261a00f1f4741c5c6e5914fc53ca7557ab7288a35b67a654c4c9f72bb5c374",
-      "bytes": 31750
+      "sha256": "4a4d7ee377864c4d514b590aafdf62121e473480cf54bca119a2236d87425eee",
+      "bytes": 32731
     },
     {
       "path": "meri.schema.json",
@@ -352,7 +376,7 @@
       "bytes": 3041
     }
   ],
-  "schemaSha256": "884b9247cb41de4459fb75bcbd94b34c13f756052c48ddc8923fc1054bef0235",
+  "schemaSha256": "db81b3bcc45d05323baa03dfcf17d5d33006fe3510ca233a03f4c76f342e210d",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "commands-0.2/mail-send-validation.mjs",

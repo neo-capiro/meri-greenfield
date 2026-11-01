@@ -55,3 +55,29 @@ if(!('error'in decided)&&decided.status==='executed'&&!('receipt'in decided.outc
 
 if('command'in retained&&retained.command.action==='mail.send'){const sender:string=retained.command.arguments.senderEmail;void sender;}
 if(!('error'in decided)&&decided.status==='executed'&&!('receipt'in decided.outcome)&&!('version'in decided.outcome)&&'state'in decided.outcome.result){const state:'accepted'|'failed'=decided.outcome.result.state;void state;}
+
+// The actor-wide inbox lists and links; it carries no proposal content and no decision route of its own.
+import {type IntentsInboxRequest,type IntentsInboxResponse,type IntentsInboxRow} from '@capiro/meri-contracts/intents-application';
+const inboxRequest:IntentsInboxRequest=await receiveIntentsRequest('inbox',JSON.stringify({limit:50}));
+const inbox=await receiveIntentsResponse('inbox',200,'{}',{request:inboxRequest});
+const exactInbox:IntentsInboxResponse|IntentsErrorResponse=inbox;void exactInbox;
+if(!('error'in inbox)){
+ const count:number=inbox.pending.count,complete:boolean=inbox.pending.complete;void count;void complete;
+ const cursor:{conversationId:string;deliveryId:string}|null=inbox.next;void cursor;
+ for(const row of inbox.rows){const exactRow:IntentsInboxRow=row;const conversation:string=row.conversationId;void exactRow;void conversation;
+  if(row.withheld===false){const phase:'awaiting_approval'|'approved'|'rejected'|'expired'|'executing'|'completed'|'unknown'|'unknown_decision'=row.phase;const client:string|null=row.clientId;void phase;void client;}
+  else{
+   // @ts-expect-error a withheld row carries no client, expiry or phase
+   const phase=row.phase;void phase;}
+  // @ts-expect-error inbox rows never carry the proposal; the conversation list does
+  const proposal=row.proposal;void proposal;}
+}
+const inboxPath:'/api/conversations/intents/inbox'=intentsPaths.inbox;void inboxPath;
+// @ts-expect-error an inbox answer needs no proposal and admits none
+await receiveIntentsResponse('inbox',200,'{}',{request:inboxRequest,proposal:retained});
+const countRequest=await receiveIntentsRequest('inboxCount','{}');
+const counted=await receiveIntentsResponse('inboxCount',200,'{}',{request:countRequest});
+if(!('error'in counted)){const open:number=counted.open,checkedAt:string=counted.checkedAt;void open;void checkedAt;
+ // @ts-expect-error the count carries no rows
+ const rows=counted.rows;void rows;}
+const countPath:'/api/conversations/intents/inbox-count'=intentsPaths.inboxCount;void countPath;

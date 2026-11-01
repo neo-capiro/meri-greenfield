@@ -2,6 +2,249 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:meri:intents-application:0.1.0",
   "$defs": {
+    "IntentsInboxCursor": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "$ref": "#/$defs/IntentsConversationId"
+        },
+        "deliveryId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            {
+              "$ref": "#/$defs/IntentsBrowserDeliveryId"
+            }
+          ]
+        }
+      },
+      "required": [
+        "conversationId",
+        "deliveryId"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsInboxRequest": {
+      "type": "object",
+      "properties": {
+        "after": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsInboxCursor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "IntentsInboxKind": {
+      "enum": [
+        "proposal",
+        "browser_action",
+        "watch_action",
+        "legiwatch_action",
+        "client_record_action",
+        "bizdev_action",
+        "legislative_document_action",
+        "research_action",
+        "research_share"
+      ]
+    },
+    "IntentsInboxRow": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "$ref": "#/$defs/IntentsConversationId"
+            },
+            "deliveryId": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/IntentsDeliveryId"
+                },
+                {
+                  "$ref": "#/$defs/IntentsBrowserDeliveryId"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            },
+            "operation": {
+              "$ref": "#/$defs/IntentsClientRecordOperation"
+            },
+            "kind": {
+              "$ref": "#/$defs/IntentsInboxKind"
+            },
+            "withheld": {
+              "const": true
+            }
+          },
+          "required": [
+            "conversationId",
+            "deliveryId",
+            "createdAt",
+            "operation",
+            "kind",
+            "withheld"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "conversationId": {
+              "$ref": "#/$defs/IntentsConversationId"
+            },
+            "deliveryId": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/IntentsDeliveryId"
+                },
+                {
+                  "$ref": "#/$defs/IntentsBrowserDeliveryId"
+                }
+              ]
+            },
+            "createdAt": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+            },
+            "operation": {
+              "$ref": "#/$defs/IntentsClientRecordOperation"
+            },
+            "kind": {
+              "$ref": "#/$defs/IntentsInboxKind"
+            },
+            "withheld": {
+              "const": false
+            },
+            "clientId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expiresAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "phase": {
+              "enum": [
+                "awaiting_approval",
+                "approved",
+                "rejected",
+                "expired",
+                "executing",
+                "completed",
+                "unknown",
+                "unknown_decision"
+              ]
+            }
+          },
+          "required": [
+            "conversationId",
+            "deliveryId",
+            "createdAt",
+            "operation",
+            "kind",
+            "withheld",
+            "clientId",
+            "expiresAt",
+            "phase"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "IntentsInboxResponse": {
+      "type": "object",
+      "properties": {
+        "rows": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/IntentsInboxRow"
+          },
+          "maxItems": 50
+        },
+        "next": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentsInboxCursor"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "pending": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 50
+            },
+            "complete": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "count",
+            "complete"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "rows",
+        "next",
+        "pending"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsInboxCountRequest": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "IntentsInboxCountResponse": {
+      "type": "object",
+      "properties": {
+        "open": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "checkedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        }
+      },
+      "required": [
+        "open",
+        "checkedAt"
+      ],
+      "additionalProperties": false
+    },
     "IntentsConversationId": {
       "type": "string",
       "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
@@ -2469,7 +2712,8 @@
                 "INTENT_RESULT_NOT_RELEASED",
                 "INTENT_EXECUTION_UNKNOWN",
                 "INTENT_JOURNAL_UNAVAILABLE",
-                "INTENT_REQUEST_INVALID"
+                "INTENT_REQUEST_INVALID",
+                "INTENTS_UNAVAILABLE"
               ]
             },
             "outcome": {

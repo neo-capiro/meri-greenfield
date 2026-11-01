@@ -3,13 +3,15 @@
 import {INTENTS_SCHEMA_ID} from './schema.mjs';
 export const intentsVersion='0.1.0';
 const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
-export const createIntentsMetadata=({paths,limits,errorStatuses,errorOutcomes,failureCodes,approvableActions})=>freeze({contractVersion:intentsVersion,schemaId:INTENTS_SCHEMA_ID,
+export const createIntentsMetadata=({paths,limits,errorStatuses,errorOutcomes,failureCodes,approvableActions,inboxKinds})=>freeze({contractVersion:intentsVersion,schemaId:INTENTS_SCHEMA_ID,
  routes:Object.fromEntries(Object.entries(paths).map(([route,path])=>[route,{method:'POST',path,response:'json'}])),
  authentication:{scheme:'Bearer',authority:'native session admitted by Core membership on every request; tenant, actor and clients come only from that admission, never from a body or a response'},
  limits:{requestBytes:limits.maxRequestBytes,responseBytes:limits.maxResponseBytes,requestMs:limits.maxRequestMs,listLimitDefault:20,listLimitMax:50,jsonDepth:64,jsonNodes:100000},
- errorStatuses,errorOutcomes,failureCodes,approvableActions,
+ errorStatuses,errorOutcomes,failureCodes,approvableActions,inboxKinds,
  semantics:{
   list:'read-only durable history of this conversation\'s prepared intents; next is the last returned deliveryId when more remain, otherwise null',
+  inboxCount:'the badge count: prepared inbox rows still inside their release window, counted in the journal before any decision owner is read, so it can only overstate the page\'s awaiting_approval rows (an approved, unexecuted proposal counts until its window ends)',
+  inbox:'read-only, newest-first page of the caller\'s prepared proposals across every conversation (inboxKinds only), read with the same visibility as list; rows list and link, the conversation\'s list/decide routes decide; pending.count counts this page\'s awaiting_approval rows and pending.complete says the page reached the journal\'s end',
   decision:'approved or rejected is recorded by the canonical decision owner for exactly the named proposal, command hash and approver; display, stream or model text never approves',
   execution:'only actions in approvableActions execute; any other prepared proposal answers INTENT_NOT_APPROVABLE and stays prepared',
   executed:'status executed returns the actual owner outcome: Core native task.create/task.update execution and result, a historical task.create receipt/result, document.draft ArtifactCreatedResult after publication, or native mail accepted/failed durable attempt (provider acceptance is not delivery); approval alone remains approved or indeterminate',
