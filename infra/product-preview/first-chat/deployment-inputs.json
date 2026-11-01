@@ -10,7 +10,7 @@
     "subnet-06db79cd21239de19"
   ],
   "images": {
-    "nodeRuntime": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:1421f5cb090a010be2c3e3faa8c549f2c570c30a7432641efcca839dd8a8e35d",
+    "nodeRuntime": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:98411f67c96490ceef7401eaddaf46ad2b4e83ac8da153871b8f330b4d6be048",
     "nodeRuntimeSourceCommit": "7eea1e852f177c17e3675429830b886b906e4cd6",
     "temporalServer": "967807252336.dkr.ecr.us-east-1.amazonaws.com/meri-greenfield/qualification-worker@sha256:2cbf22ccbc124ca58e60027715fc386c41ed7b148fea009e81c32f9b37a9d6d3",
     "temporalServerSourceCommit": "7eea1e852f177c17e3675429830b886b906e4cd6"
@@ -111,6 +111,9 @@
   },
   "features": {
     "sourceEnabled": true,
+    "uploads": {
+      "enabled": true
+    },
     "userPreferences": {
       "enabled": true
     },
