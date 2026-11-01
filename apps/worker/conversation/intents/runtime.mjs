@@ -11,10 +11,13 @@
  *
  * `mount:'profile'` (G3, the product path through `capabilities/mounts.mjs`): with `governedIntents` the server is ALWAYS mounted with
  * every owner-backed row; the initial offer only decides which rows are exposed for the run (never widened mid-run), and every other
- * call answers a typed UNAVAILABLE without reaching the port. The SDK options are then a function of the profile alone. */
+ * call answers a typed UNAVAILABLE without reaching the port. The SDK options are then a function of the profile alone. A failed
+ * offer is never silent: `diagnostic` receives one closed `{code, layer, elapsedMs}` fact (the layer whose bound answered: this
+ * worker, the runner client or control) and the server tells the model the write path could not be checked, not that it is off. */
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+import {INTENT_AVAILABILITY_WORKER_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {INTENT_ROWS,INTENT_SERVER_NAME,assertIntentCatalog} from './catalog.mjs';
@@ -32,8 +35,15 @@ const registered=(/** @type {{id:string,version:string}} */operation)=>{try{reso
  * `originals`/`disposition` data, so this is the same authority, not a copied list. */
 const declaredOriginals=new Set(catalog.originals.filter(o=>o.disposition==='deferred').map(o=>o.id));
 const admissible=(/** @type {{id:string,version:string}} */operation)=>registered(operation)||declaredOriginals.has(operation.id);
-const SNAPSHOT_MS=3000,OPERATION=/^[a-z][a-z_]{0,62}$/u;
+const OPERATION=/^[a-z][a-z_]{0,62}$/u;
 const key=(/** @type {{id:string,version:string}} */o)=>canonicalSha256({id:o.id,version:o.version});
+/** The closed fact of a failed offer: an own string `code` (else UNAVAILABLE), the layer that decided it (the runner client marks
+ * its own and control's answers; anything else was decided here) and the elapsed time. Never a message or stack.
+ * @param {unknown} error @param {number} elapsedMs @returns {{code:string,layer:'worker'|'runner'|'control',elapsedMs:number}} */
+const offerFailure=(error,elapsedMs)=>{
+ const ownValue=(/** @type {string} */name)=>error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,name)?.value:undefined,code=ownValue('code'),layer=ownValue('layer');
+ return Object.freeze({code:typeof code==='string'?code:'UNAVAILABLE',layer:layer==='runner'||layer==='control'?layer:'worker',elapsedMs});
+};
 /** Validate the port's availability facts for this run; anything malformed, foreign or stale refuses.
  * @param {unknown} raw @param {any} binding @param {number} at @returns {Set<string>} */
 export function assertIntentAvailability(raw,binding,at){
@@ -48,24 +58,27 @@ export function assertIntentAvailability(raw,binding,at){
 }
 /**
  * @param {{binding:unknown,scopes:any[],policy:{governedIntents?:boolean},port:{readAvailability:Function,prepare:Function},now:()=>number,deadlineMs:number,
- *  timeoutMs?:number,expectedSessionId?:string,signal?:AbortSignal,mount?:'available'|'profile'}} configuration
+ *  timeoutMs?:number,expectedSessionId?:string,signal?:AbortSignal,mount?:'available'|'profile',diagnostic?:(failure:{code:string,layer:'worker'|'runner'|'control',elapsedMs:number})=>void}} configuration
  */
 export async function createIntentRuntime(configuration){
- const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','signal','mount']);
+ const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','signal','mount','diagnostic']);
  const binding=data(c.binding),scopes=data(c.scopes),port=own(c.port,['readAvailability','prepare']);nativeSignal(c.signal);validateShape('RunBinding',binding);
- if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.prepare!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount))throw fault('INTENT_CONFIGURATION');
+ if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.prepare!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount)||
+  c.diagnostic!==undefined&&typeof c.diagnostic!=='function')throw fault('INTENT_CONFIGURATION');
  const profile=c.mount==='profile';
  scopes.forEach(s=>{validateShape('Scope',s);if(s.tenantId!==binding.tenantId)throw fault('INTENT_CONFIGURATION');});
  if(c.policy?.governedIntents!==true)return null;
  assertIntentCatalog();
  const timeoutMs=Math.min(c.timeoutMs??INTENT_TIMEOUT_MS.max,INTENT_TIMEOUT_MS.max);
  /** @param {AbortSignal|undefined} signal */
- const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+SNAPSHOT_MS,now:c.now,signal,errorFactory:fault});
+ const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+INTENT_AVAILABILITY_WORKER_MS,now:c.now,signal,errorFactory:fault});
   try{return assertIntentAvailability(await life.run(s=>port.readAvailability.call(c.port,{signal:s})),binding,c.now());}finally{life.close();}};
  const gates=(/** @type {Set<string>} */offered)=>INTENT_ROWS.filter(r=>r.unavailable===null&&offered.has(key(r.operation)));
- // Profile mount (G3): every owner-backed intent row is mounted whatever this run's offer; a failing offer exposes nothing.
+ // Profile mount (G3): every owner-backed intent row is mounted whatever this run's offer; a failing offer exposes nothing, is
+ // reported once through `diagnostic`, and marks the server `unchecked` so the model learns the write path was not checked.
  const mounted=profile?INTENT_ROWS.filter(r=>r.unavailable===null):undefined;
- /** @type {Set<string>} */let initial=new Set();try{initial=await read(c.signal);}catch{if(!profile)return null;}
+ /** @type {Set<string>} */let initial=new Set();let unchecked=false;const started=c.now();
+ try{initial=await read(c.signal);}catch(error){if(!profile)return null;unchecked=true;try{c.diagnostic?.(offerFailure(error,c.now()-started));}catch{}}
  const available=gates(initial);if(!profile&&!available.length)return null;
  const exposed=new Set(available.map(r=>key(r.operation)));
  // Mid-run revocation or a narrowed composition makes a listed intent unavailable; it is never widened mid-run.
@@ -74,7 +87,7 @@ export async function createIntentRuntime(configuration){
   let offered;try{offered=await read(signal);}catch{if(signal.aborted)throw fault('CANCELLED');return false;}
   return gates(offered).some(r=>key(r.operation)===key(operation));
  };
- const server=createIntentServer({available,...(mounted?{mounted}:{}),binding,scopes,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,
+ const server=createIntentServer({available,...(mounted?{mounted,unchecked}:{}),binding,scopes,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,
   prepare:call=>port.prepare.call(c.port,call)});
  return Object.freeze({available:Object.freeze(available.map(r=>r.operation)),
   sdkOptions:Object.freeze({mcpServers:Object.freeze({[INTENT_SERVER_NAME]:server.server}),allowedTools:server.allowedTools,canUseTool:server.canUseTool,hooks:server.hooks}),

@@ -34,16 +34,16 @@ test('mounted intents merge beside general reads: one server each, exact names, 
 });
 
 /** Activity with a scripted query and a synthetic intent port answering for the saved run. */
-async function activity({capabilities,offered=true,during}={}){
+async function activity({capabilities,offered=true,failing=false,diagnostics,during}={}){
  const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});let n=300,seen,asked=0,prepared=0;
  const runOwner={load:async a=>{const saved=await f.runOwner.load(a);return {...saved,...(capabilities?{capabilities}:{})};},append:a=>f.runOwner.append(a)};
- const governedIntents={async readAvailability(){asked++;const at=Date.now();return {binding,operations:offered?[{id:'create_task',version:'0.2.0'}]:[],checkedAtMs:at,expiresAtMs:at+60000};},async prepare(){prepared++;throw Error('not called');}};
+ const governedIntents={async readAvailability(){asked++;if(failing)throw Object.assign(Error('DEADLINE'),{code:'DEADLINE',layer:'runner'});const at=Date.now();return {binding,operations:offered?[{id:'create_task',version:'0.2.0'}]:[],checkedAtMs:at,expiresAtMs:at+60000};},async prepare(){prepared++;throw Error('not called');}};
  const query=args=>{seen=args.options;return {async *[Symbol.asyncIterator](){await during?.(seen);yield {type:'result',subtype:'success',is_error:false,result:'ok'};},close(){}};};
- const execute=createConversationActivity({runOwner,prepareRuntime:async()=>runtime(),query,newId:()=>id(n++),governedIntents});
+ const execute=createConversationActivity({runOwner,prepareRuntime:async()=>runtime(),query,newId:()=>id(n++),governedIntents,...(diagnostics?{diagnostics}:{})});
  return {f,run:()=>execute({binding}),options:()=>seen,asked:()=>asked,prepared:()=>prepared};
 }
 /** Exercise the activity's live mounted server before its owned close, including the real correlation hook. */
-async function unavailable(options,tool,operation,args){
+async function unavailable(options,tool,operation,args,answer=/^UNAVAILABLE:/u){
  const client=new Client({name:'synthetic-activity',version:'1.0.0'}),[a,b]=InMemoryTransport.createLinkedPair();
  try{
   await options.mcpServers.meri_intents.instance.connect(a);await client.connect(b);
@@ -51,9 +51,17 @@ async function unavailable(options,tool,operation,args){
   const decision=await hook({hook_event_name:'PreToolUse',session_id:SESSION,tool_name:intentToolName(tool),tool_use_id:toolUseId,tool_input:{operation,arguments:args}},toolUseId,{signal:new AbortController().signal});
   assert.equal(decision.hookSpecificOutput.permissionDecision,undefined);
   const result=await client.callTool({name:tool,arguments:decision.hookSpecificOutput.updatedInput});
-  assert.equal(result.isError,true);assert.match(result.content[0].text,/^UNAVAILABLE:/u);
+  assert.equal(result.isError,true);assert.match(result.content[0].text,answer);
  }finally{await client.close();}
 }
+test('a failed offer reaches the activity diagnostics once and the mounted profile says the write path could not be checked',async()=>{
+ const reported=[],failed=await activity({capabilities:{governedIntents:true},failing:true,diagnostics:{intentAvailability:failure=>reported.push(failure)},
+  during:o=>unavailable(o,'propose_task','create_task',{title:'Task'},/^UNAVAILABLE: mcp__meri_intents__propose_task could not be checked for this conversation right now: .*ask the user to try again/u)});
+ try{assert.deepEqual(await failed.run(),{state:'completed'});assert.equal(failed.asked(),1);assert.equal(failed.prepared(),0);
+  assert.equal(reported.length,1);assert.equal(reported[0].code,'DEADLINE');assert.equal(reported[0].layer,'runner');assert.ok(Number.isSafeInteger(reported[0].elapsedMs));
+  assert.deepEqual(failed.options().allowedTools.filter(tool=>tool.startsWith('mcp__meri_intents__')),PROFILE_TOOLS);
+ }finally{failed.f.close();}
+});
 test('the activity mounts the fixed governed-intent profile while unavailable offers never reach preparation',async()=>{
  const on=await activity({capabilities:{governedIntents:true},during:o=>unavailable(o,'propose_task_update','update_task',{taskId:id(90),title:'Changed'})});
  try{assert.deepEqual(await on.run(),{state:'completed'});const o=on.options();assert.deepEqual(Object.keys(o.mcpServers),['meri_intents']);assert.deepEqual(o.allowedTools.filter(tool=>tool.startsWith('mcp__meri_intents__')),PROFILE_TOOLS);assert.match(o.systemPrompt.append,SENTENCE);assert.equal(on.prepared(),0);}finally{on.f.close();}

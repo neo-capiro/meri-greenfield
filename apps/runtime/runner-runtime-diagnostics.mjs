@@ -133,6 +133,12 @@ export function reportRuntimeStartupFailure(role,stage,error,{write=line=>proces
  const failure=describe(error),safeRole=['agentcore','temporal-worker'].includes(role)?role:'other',safeStage=stages.has(stage)?stage:'runner-preflight';
  emit({write},`RUNTIME_STARTUP_FAILURE role=${safeRole} stage=${safeStage} code=${failure.code} class=${failure.kind} exit=${failure.exit} signal=${failure.signal} cause=${failure.cause} msg=${failure.msg} site=${failure.site}\n`);
 }
+/** A governed-intent offer that failed (worker `intents/runtime.mjs`): the run keeps its write tools mounted and prepares nothing,
+ * which is not a terminal failure, so the closed code, the layer whose bound answered and the elapsed time are printed here or the
+ * cause stays invisible. The schema admits nothing else. */
+export function reportIntentAvailability(failure){
+ const active=context.getStore();if(active?.binding)try{active.telemetry.emit('meri.intent.availability',{...active.binding,layer:failure.layer,code:failure.code,elapsedMs:failure.elapsedMs});}catch{}
+}
 /** Called only after SDK cleanup and the canonical settlement receipt validate. This is not physical runtime retirement. */
 export function reportRunnerSettlement(state){
  const active=context.getStore();if(active?.binding)try{active.telemetry.emit('meri.turn.settlement',{...active.binding,state,sdkCleanup:'closed'});}catch{}

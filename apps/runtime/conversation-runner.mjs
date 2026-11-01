@@ -20,7 +20,7 @@ import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {captureGeneralReadPort} from './general-read-port.mjs';
 import {createNativeFiles,prepareNativeTaskDirectory} from './artifacts/native-files.mjs';
 import {assertNativeFileRestore} from '../../packages/contracts/runtime-0.2/files.mjs';
-import {atRunnerStage,markRunnerStage,captureRunnerFailure,markRunnerTelemetryStage,withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
+import {atRunnerStage,markRunnerStage,captureRunnerFailure,markRunnerTelemetryStage,reportIntentAvailability,withRunnerDiagnostics} from './runner-runtime-diagnostics.mjs';
 import {createOutreachGenerationRuntime} from '../worker/conversation/outreach-generation.mjs';
 import {createObjectiveGenerationRuntime} from '../worker/conversation/objective-generation/runtime.mjs';
 import {attemptCleanup,CLEANUP_ATTEMPT_MS} from '../worker/conversation/cleanup.mjs';
@@ -156,7 +156,7 @@ export function assembleConversationRunner({configuration,native,query,credentia
    }
    return {...runtime,cwd:configuration.workspace,sessionStore,...directories,...(bashRuntime?.runtimeFacts??{}),...(plugin?{skillPluginDirectory:plugin.directory}:{})};});}finally{localLife?.close();}});
  // The activity bounds runtime preparation (the runner/runtime call, then the local stage); see ACTIVITY_PREPARATION_MAX_MS.
- const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,procedures,siteWorkflows,objectiveGeneration,outreachGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),...(browser?{browser}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure}});
+ const activity=createConversationActivity({runOwner,prepareRuntime,selectedSkills,procedures,siteWorkflows,objectiveGeneration,outreachGeneration,now,...(stages?{loadMaxMs:stages.load.maxMs,loadExpiresAtMs:stages.load.expiresAtMs,runtimeMaxMs:Math.min(stages.runtime.maxMs+stages.local.maxMs,ACTIVITY_PREPARATION_MAX_MS),runtimeExpiresAtMs:stages.local.expiresAtMs,setupBudget:stages.setup,modelDeadlineMs:stages.session.expiresAtMs,executionDeadlineMs:startup.originalExpiresAtMs,terminalAttemptMs:stages.session.maxMs}:{}),...(readPort?{generalReads:readPort}:{}),...(governedIntents?{governedIntents}:{}),...(query?{query}:{}),...(lifecycle?{lifecycle}:{}),...(browser?{browser}:{}),heartbeat:()=>{},diagnostics:{stage:markRunnerStage,failure:captureRunnerFailure,intentAvailability:reportIntentAvailability}});
   const execute=async input=>withRunnerDiagnostics(()=>atRunnerStage('activity',async()=>{try{return await activity(input);}catch(error){captureRunnerFailure(error);throw error;}finally{markRunnerStage('runner-cleanup');
    try{try{await selectedSkills.close();}catch(error){localCleanupFailed=true;throw error;}finally{await sdkSession?.close();}}
    finally{

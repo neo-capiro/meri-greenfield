@@ -6,6 +6,8 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {intentFixture,mountIntents,SESSION} from './fixture.mjs';
 import {intentDeliveryId,MAX_INTENT_CALLS} from '../server.mjs';
 import {DEFERRED_ORIGINALS} from '../../reads/availability.mjs';
+import {UNAVAILABLE_INTENT_PORT} from '../../capabilities/mounts.mjs';
+import {INTENT_AVAILABILITY_WORKER_MS} from '../../../../../packages/runtime/runner-load-budget.mjs';
 const CREATE={operation:'create_task',arguments:{title:'Task'}};
 const text=r=>r.content[0].text;
 const failed=(r,code)=>{assert.equal(r.isError,true);assert.equal(r.content.length,1);assert.match(text(r),new RegExp(`^${code}: (whether )?mcp__meri_intents__propose_task `,'u'));};
@@ -85,6 +87,33 @@ test('policy off or an unreadable port mounts nothing; mid-run withdrawal makes 
  assert.equal(await mountIntents(f,{port:{readAvailability:async()=>{throw Error('down');},prepare:v=>f.port.prepare(v)}}),null);
  let offered=true;const m=await mountIntents(f,{port:withPort(f,s=>offered?s:{...s,operations:[]})});
  try{offered=false;failed(await m.call('propose_task',CREATE),'UNAVAILABLE');assert.equal(f.metadataCalls.prepare,0);}finally{await m.close();}
+});
+
+test('a profile mount whose offer fails reports the closed failure once and tells the model the write path could not be checked, not disabled',async()=>{
+ const f=intentFixture(),reported=[],diagnostic=failure=>reported.push(failure);
+ const down={readAvailability:async()=>{throw Object.assign(Error('DEADLINE'),{code:'DEADLINE',layer:'control'});},prepare:v=>f.port.prepare(v)};
+ const m=await mountIntents(f,{mount:'profile',port:down,diagnostic});
+ try{assert.deepEqual(reported,[{code:'DEADLINE',layer:'control',elapsedMs:0}]);assert.deepEqual(m.runtime.available,[]);
+  const instructions=m.client.getInstructions();assert.match(instructions,/could not be checked right now/u);assert.match(instructions,/not disabled; ask the user to try again/u);assert.doesNotMatch(instructions,/No write request can be prepared/u);
+  const r=await m.call('propose_task',CREATE);failed(r,'UNAVAILABLE');assert.match(text(r),/^UNAVAILABLE: mcp__meri_intents__propose_task could not be checked for this conversation right now: .*not disabled; ask the user to try again in a new message\. Nothing has been changed\.$/u);
+  assert.equal(f.metadataCalls.prepare,0);assert.deepEqual(m.runtime.receipts(),[]);
+ }finally{await m.close();}
+ // A port the run never had is decided here; a port offering nothing is an honest empty offer, not a failure.
+ const absent=await mountIntents(f,{mount:'profile',port:UNAVAILABLE_INTENT_PORT,diagnostic});
+ try{assert.deepEqual(reported.at(-1),{code:'INTENT_PORT_UNAVAILABLE',layer:'worker',elapsedMs:0});}finally{await absent.close();}
+ const empty=await mountIntents(f,{mount:'profile',port:withPort(f,s=>({...s,operations:[]})),diagnostic:()=>assert.fail('an empty offer is not a failure')});
+ try{assert.match(empty.client.getInstructions(),/No write request can be prepared in this conversation right now/u);
+  assert.match(text(await empty.call('propose_task',CREATE)),/^UNAVAILABLE: mcp__meri_intents__propose_task is not available in this conversation\./u);
+ }finally{await empty.close();}
+ assert.equal(await mountIntents(f,{port:down,diagnostic:()=>assert.fail('an available mount reports nothing; it mounts no server')}),null);
+});
+
+test('an offer that takes 4 s is admitted within the shared worker bound; past it the worker is the layer that answered',async()=>{
+ const f=intentFixture(),advance=ms=>({readAvailability:async v=>{f.f.state.now+=ms;return f.port.readAvailability(v);},prepare:v=>f.port.prepare(v)});
+ const m=await mountIntents(f,{port:advance(4000)});
+ try{assert.deepEqual(m.runtime.available.map(o=>o.id),['create_task']);}finally{await m.close();}
+ const reported=[],late=await mountIntents(f,{mount:'profile',port:advance(INTENT_AVAILABILITY_WORKER_MS+1),diagnostic:failure=>reported.push(failure)});
+ try{assert.deepEqual(reported,[{code:'DEADLINE',layer:'worker',elapsedMs:INTENT_AVAILABILITY_WORKER_MS+1}]);assert.deepEqual(late.runtime.available,[]);}finally{await late.close();}
 });
 
 test('per-run write-request limit, operation/tool mismatch and token tampering are refused before the port',async()=>{
