@@ -9,7 +9,7 @@ import {createPostgresArtifactService} from '../../artifacts/postgres-service.mj
 import {configuration,requestCurrent,data,own,same,v} from './current.mjs';
 import {admitDocumentFormats,admitsDocumentFormat,admitsDocumentMime} from './format-admission.mjs';
 import {errorResponse as bodyErrorResponse} from '../action-application/http.mjs';
-import {requestInfo,jsonBody,response,errorResponse,fail} from './http.mjs';
+import {requestInfo,jsonBody,response,errorResponse,fail,faultOf} from './http.mjs';
 import {previewConfiguration,previewRoute} from './preview-route.mjs';
 import {nativeResults} from './native-results.mjs';
 import {federalWorkbenchInput,federalWorkbenchRoute} from './federal-workbench.mjs';
@@ -76,7 +76,8 @@ export function createDocumentApplication(options){
    life=createOperationLifetime({deadlineMs,now:config.now,signal:info.signal,errorFactory:code=>new CommandError(code)});
    const current=requestCurrent(config,info,life,deadlineMs);let call;
    let body;try{body=await jsonBody(info,config.limits.maxRequestBytes,life,current.check);}catch(error){return bodyErrorResponse(error,{});}
-   try{call=input(body,info.intent,admission);}catch(error){current.check();fail('INVALID_REQUEST');}
+   // A format this deployment has not admitted (PDF without a qualified renderer) is its own 422; every other malformed body is one closed refusal.
+   try{call=input(body,info.intent,admission);}catch(error){current.check();if(faultOf(error)?.code==='UNSUPPORTED_DOCUMENT_FORMAT')throw error;fail('INVALID_REQUEST');}
    await current.fresh();let result;
    if(info.intent.startsWith('federal-')){
     result=await federalWorkbenchRoute({intent:info.intent,call,config,current,life,state,

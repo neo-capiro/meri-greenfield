@@ -43,6 +43,14 @@ export async function createLocalArtifactStore({root,canonicalSha256}){
       const found=[];for(const name of names){const r=await readVersion(name.slice(0,36),signal);if(r.version.object.objectId===objectId&&r.version.binding.tenantId===tenantId&&r.version.binding.conversationId===conversationId)found.push(r.version.versionId);}
       if(found.length>1)fail('ARTIFACT_VERSION_CORRUPT');if(!found.length)throw Object.assign(new Error('ENOENT'),{code:'ENOENT'});return found[0];
     },
+    /** Metadata in immutable parent order from the current head down to the root, as the PostgreSQL owner reports it. */
+    async history(versionId,signal){
+      active();check(signal);const anchor=await readVersion(versionId,signal),artifactId=anchor.version.artifactId;
+      let current;try{current=(await readRegular(join(root,'heads',id(artifactId)),100)).toString('utf8');}catch(e){if(e.code!=='ENOENT')throw e;fail('ARTIFACT_HISTORY_RESULT');}
+      const records=[];for(let next=current;next!==null;next=records.at(-1).version.parentVersionId){if(records.length>=1024)fail('ARTIFACT_HISTORY_RESULT');const record=await readVersion(next,signal);if(record.version.artifactId!==artifactId)fail('ARTIFACT_HISTORY_RESULT');records.push(record);}
+      if(!records.some(record=>record.version.versionId===versionId))fail('ARTIFACT_HISTORY_RESULT');
+      check(signal);return {artifactId,anchorVersionId:versionId,headVersionId:current,records};
+    },
     async commit({version,spec,specSha256,requestSha256,inspection,expectedParentVersionId},signal){
       active();check(signal);id(version.versionId);id(version.artifactId);if(expectedParentVersionId!==null)id(expectedParentVersionId);
       if(specSha256!==canonicalSha256(spec)||version.parentVersionId!==expectedParentVersionId)fail('ARTIFACT_COMMIT_INPUT');

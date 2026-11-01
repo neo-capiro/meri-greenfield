@@ -128,7 +128,7 @@ async function createReviseLineage(transformer,readText){ // readText(bytes,dir)
       assert.deepEqual(f.settled,['completed','completed']);assert.equal(f.puts.length,2);assert.equal(await f.spy.launches(),2);
       // CAS: a second revision from the superseded parent is refused at commit; the head and both versions are unchanged.
       const stale=await f.service.revise(created.version.versionId,{...revised,title:'Stale'},c).then(()=>assert.fail('stale parent committed'),e=>e);
-      assert.equal(stale.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(stale.cause.code,'ARTIFACT_STALE_PARENT');assert.equal(stale.versionCommitted,false);
+      assert.equal(stale.code,'ARTIFACT_STALE_PARENT');assert.equal(stale.versionCommitted,undefined);
       await assert.rejects(f.store.versions.read(stale.versionId),e=>e.code==='ENOENT');
       assert.deepEqual((await f.service.download(created.version.versionId,c)).bytes,parent);assert.deepEqual((await f.service.download(revision.version.versionId,c)).bytes,child);
       // Revision without authority: refused before any generator launch, object write or budget reservation.

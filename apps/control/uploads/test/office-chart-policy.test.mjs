@@ -1,12 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {inspectUploadOriginal,uploadHash,UPLOAD_MIME,UPLOAD_LIMITS} from '../policy.mjs';
+import {uploadOriginalIdentity,uploadStructureRefusal,uploadHash,UPLOAD_MIME,UPLOAD_LIMITS} from '../policy.mjs';
 import {createUploadInspection} from '../extraction.mjs';
 import {inspectOfficeEdit} from '../../../artifacts/edit-sessions/inspect-office.mjs';
 import {chart} from '../../../artifacts/edit-sessions/test/embedded-chart-fixture.mjs';
 import {zip,ooxmlEntries,relationshipsXml} from '../../../artifacts/structure/test/fixtures.mjs';
 import {readZip} from '../../../artifacts/structure/zip.mjs';
 const rel='http://schemas.openxmlformats.org/officeDocument/2006/relationships/';
+/** Identity then structure, as the inspection owner composes them: the first refusal code is thrown. */
+const inspectUploadOriginal=(d,b)=>{const file=uploadOriginalIdentity(d,b),code=uploadStructureRefusal(file,b);if(code!==null)throw Object.assign(Error(code),{code});return file;};
 const declaration=bytes=>({filename:'original.pptx',mimeType:UPLOAD_MIME.pptx,bytes:bytes.length,sha256:uploadHash(bytes)});
 const inspect=entries=>{const bytes=zip(entries);return inspectUploadOriginal(declaration(bytes),bytes);};
 const refused={code:'UPLOAD_ACTIVE_CONTENT'};

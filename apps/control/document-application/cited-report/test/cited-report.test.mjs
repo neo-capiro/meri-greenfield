@@ -140,12 +140,13 @@ test('the selected client subject compiles the seven cited sections through the 
  assert.equal(claim.status,'claimed','a portfolio projection is carried as a preserved claim');
  assert.equal(claim.citations[0].kind,'portfolio-evidence');assert.equal(claim.citations[0].evidence,null,'a claim is never artifact evidence');
  assert.equal(claim.citations[0].coverage.sourceBytesVerified,false);
- assert.equal(mixed.status,'verified','both stored passages were read');
+ assert.equal(mixed.status,'cited','both stored passages were read, but a claim is never itself verified');
  assert.equal(mixed.conflict,true,'unequal cited passages are disclosed');
  assert.deepEqual(prepared.conflicts.map(entry=>entry.findingId),['mixed']);
  assert.equal(prepared.conflicts[0].note,'The two stored passages describe the review differently.');
  assert.ok(document.includes('Citation: mail / message '+MESSAGE+' / version independent-record-version-1; characters 0-'+EXCERPT.length+'; verified'));
- assert.ok(document.includes('Citation: research_portfolios / snapshot / '+CLAIM_RECORD+'; preserved claim (source bytes verified by the projection: no)'));
+ assert.ok(document.includes('Citation: research_portfolios / snapshot / '+CLAIM_RECORD+'; preserved claim (source bytes verified by the projection: no); projection revision 1; content hash '+digest('portfolio-content')+'; calculation 1.0.0'));
+ assert.deepEqual([claim.citations[0].citation.portfolioRevision,claim.citations[0].citation.contentHash,claim.citations[0].citation.calculationVersion],[1,digest('portfolio-content'),'1.0.0']);
  assert.ok(document.includes('Cited passage (UTF-16 characters 0-'+EXCERPT.length+'): '+EXCERPT));
  assert.ok(document.includes('Preserved content SHA256: '+digest(BODY)));
  assert.ok(document.includes('Claim limitation: Only retained snapshot members are projected.'));
@@ -234,6 +235,8 @@ test('a citation the source result does not prove is refused rather than restate
  await assert.rejects(compile(readFactory({selected})).prepare(input({findings:[{id:'excerpt',kind:'excerpt',text:EXCERPT,citations:[mailCitation(BODY.length,123)]}],conflicts:[]}),context(),{selection:selected}),/CITED_REPORT_CITATION/u);
  // A stored message with no citation identity, no record version and no content hash proves nothing.
  await assert.rejects(compile(readFactory({selected,edit:{id:'mail.read_thread',apply:page=>{page.messages[0].recordVersionId=null;page.messages[0].citationId=null;page.messages[0].contentSha256=null;}}})).prepare(input({findings:[{id:'excerpt',kind:'excerpt',text:EXCERPT,citations:[mailCitation()]}],conflicts:[]}),context(),{selection:selected}),/CITED_REPORT_CITATION_UNPROVEN/u);
+ // A quote that differs from the characters actually read is a fabricated quotation with a real locator.
+ await assert.rejects(compile(readFactory({selected})).prepare(input({findings:[{id:'excerpt',kind:'excerpt',text:EXCERPT.slice(0,-1)+'!',citations:[mailCitation()]}],conflicts:[]}),context(),{selection:selected}),/CITED_REPORT_CITATION_UNPROVEN/u);
  // A quoted excerpt may only cite byte-verified stored mail text.
  await assert.rejects(compile(readFactory({selected})).prepare(input({findings:[{id:'excerpt',kind:'excerpt',text:EXCERPT,citations:[portfolioCitation()]}],conflicts:[]}),context(),{selection:selected}),/CITED_REPORT_CITATION/u);
  // A portfolio claim the projection does not carry is refused.
@@ -327,6 +330,10 @@ test('an evidence-bearing revision keeps the retained evidence and immutable par
  assert.equal(second.context.evidence[second.retainedEvidence.length].binding.runId,revisionContext.binding.runId);
  assert.equal(new Set(second.context.evidence.map(item=>item.citationId)).size,second.context.evidence.length,'retained and fresh citations stay unique');
  assert.ok(body(second).includes('Retained source evidence (immutable parent)'));
+ // A fresh read that reuses the parent's retained citation id with different content is refused, never merged.
+ await assert.rejects(createCitedReportCompiler({readSource:readFactory({selected,binding:revisionContext.binding,
+  values:{'mail.read_thread':mailPage(mailRequest(),{binding:revisionContext.binding,text:EXCERPT+' amended after retention.'})}}),readBase,now:()=>NOW})
+  .prepare({...next,findings:[{id:'excerpt',kind:'excerpt',text:EXCERPT,citations:[mailCitation()]}],conflicts:[]},revisionContext,{selection:selected,base:parent}),/CITED_REPORT_RETAINED_EVIDENCE/u);
  assert.ok(body(second).includes('"parent":{"versionId":"'+created.version.versionId+'"'));
  // Without the bound retained-evidence admission the same revision cannot be written at all.
  await assert.rejects(write(second,created.version.versionId,{retainedAdmission:false}),{code:'ARTIFACT_EVIDENCE_BINDING'});

@@ -105,10 +105,11 @@ test('request/base/context/credential substitution cannot recover a completed re
   await assert.rejects(createPostgresArtifactService({...a.options,context:{...a.options.context,maxBytes:1000}}).execute(a.call,a.f.credential));
   a.invariant();
 });
-test('new revision against stale immutable base remains UNKNOWN; completed original replay succeeds',async t=>{
+test('new revision against a stale immutable base is a definite conflict without generation; completed original replay succeeds',async t=>{
   const a=await setup(t),first=await a.run(),revision={deliveryId:'next',baseVersionId:first.version.versionId,request:word('Second.')};
-  await a.run(revision);const stale={...revision,deliveryId:'stale',request:word('Stale third.')};await assert.rejects(a.run(stale));await unresolved(a.run(stale));
-  sameResult(await a.run(),first);a.invariant(3,3,2);assert.equal(a.f.stats().unknown,1);
+  await a.run(revision);const stale={...revision,deliveryId:'stale',request:word('Stale third.')};
+  await assert.rejects(a.run(stale),{code:'ARTIFACT_STALE_PARENT'});await assert.rejects(a.run(stale),e=>e.code==='CONFLICT'&&e.replayed===true);
+  sameResult(await a.run(),first);a.invariant(2,2,2);assert.equal(a.f.stats().unknown,0);assert.equal(a.f.stats().deliveries,3);
 });
 test('current revocation denies replay and retained reads while historical accounting remains available',async t=>{
   const a=await setup(t);await a.run();a.f.revoke();await unresolved(a.run());

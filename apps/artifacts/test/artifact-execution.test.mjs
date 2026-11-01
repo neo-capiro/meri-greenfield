@@ -79,7 +79,7 @@ test('immutable revision preserves original exact bytes and rejects stale parent
   const c=context(),first=await service.create(text,c),revised=await service.revise(first.version.versionId,{...text,content:{text:'revision'}},c);
   assert.equal(first.version.artifactId,revised.version.artifactId);assert.equal(revised.version.parentVersionId,first.version.versionId);assert.notEqual(first.version.object.sha256,revised.version.object.sha256);
   assert.equal((await service.download(first.version.versionId,c)).bytes.toString(),text.content.text);assert.equal((await service.download(revised.version.versionId,c)).bytes.toString(),'revision');
-  await assert.rejects(service.revise(first.version.versionId,text,c),e=>e.code==='ARTIFACT_EFFECT_UNKNOWN'&&e.cause.code==='ARTIFACT_STALE_PARENT');
+  await assert.rejects(service.revise(first.version.versionId,text,c),{code:'ARTIFACT_STALE_PARENT'});
 }));
 test('denied authority stops before generation',async()=>fixture(async({service})=>assert.rejects(service.create(text,context()),/ARTIFACT_AUTHORITY/),{authorize:async x=>({...await authorize(x),decision:'deny'}),executor:{execute:()=>assert.fail('must not execute')}}));
 test('changed authorization intent is rejected',async()=>fixture(async({service})=>assert.rejects(service.create(text,context()),/ARTIFACT_AUTHORITY/),{authorize:async x=>({...await authorize(x),requestSha256:'0'.repeat(64)}),executor:synthetic}));

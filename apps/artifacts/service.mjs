@@ -102,6 +102,9 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
         // Revision consumes the exact original bytes as well as retained spec; a suppressed base is never read.
         await servable(life,context,readBase);baseBytes=await bytesFor(life,readBase.version.object,context.maxBytes);
         resource={...resource,object:readBase.version.object};receipt=await authority(life,action,resource,requestSha256,context);
+        // The exact parent must still be the artifact head BEFORE any generation: a superseded selection is a
+        // definite conflict here, not a rendered-then-refused write. The commit CAS below remains the authority.
+        if(!office)await assertCurrentHead(life,context,baseVersionId);
       }
       const assets=[];for(const asset of context.assets){const bytes=await bytesFor(life,asset.object,2097152);assets.push({id:asset.id,bytes});}
       receipt=await authority(life,action,resource,requestSha256,context);await servable(life,context,readBase);
@@ -125,12 +128,22 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
       receipt=await authority(life,action,{...resource,object},requestSha256,context);await servable(life,context,{version});
       return {version,inspection,execution:{kind:'native-document',invocationId:invocation.invocationId,requestSha256,authorizationReceiptId:receipt.receiptId,objectCommitted:true,versionCommitted:true,nativeQualified:false}};
     }catch(cause){
-      // The canonical publisher's stale-parent refusal is definite: the uploaded
-      // immutable object may need cleanup, but no new artifact head was committed.
-      if(office&&!versionCommitted&&cause?.code==='ARTIFACT_STALE_PARENT'){cause.lifetime=life.close();throw cause;}
+      // The canonical publisher's stale-parent refusal is definite for every family: the uploaded immutable
+      // object may need cleanup, but no new artifact head was committed. An executor that refuses before any
+      // work because no qualified renderer is bound is equally definite: nothing was generated or written.
+      if(!versionCommitted&&cause?.code==='ARTIFACT_STALE_PARENT'||!writeStarted&&cause?.code==='ARTIFACT_RENDERER_UNAVAILABLE'){cause.lifetime=life.close();throw cause;}
       const error=executionStarted||writeStarted?Object.assign(new Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:allocation.versionId,versionCommitted}):cause;
       error.lifetime=life.close();throw error;
     }finally{life.close();}
+  }
+  /** Refuse a typed revision whose exact parent is no longer the head, before a generator runs. Storage without a
+   * history port (or in paged publication mode) keeps relying on the commit CAS alone. */
+  async function assertCurrentHead(life,context,baseVersionId){
+    if(typeof versions.history!=='function')return;
+    if(typeof versions.publicationSnapshot==='function'){const publication=await life.run(signal=>versions.publicationSnapshot(context.binding.tenantId,signal));if(publication.paged)return;}
+    const result=v.snapshot(await life.run(signal=>versions.history(baseVersionId,signal)));closed(result,['artifactId','anchorVersionId','headVersionId','records']);
+    if(result.anchorVersionId!==baseVersionId)fail('ARTIFACT_HISTORY_RESULT');
+    if(result.headVersionId!==baseVersionId)fail('ARTIFACT_STALE_PARENT');
   }
   async function read(versionId,contextValue,options={},download=false,revisionSource=false,editorWrite=null){
     if(typeof versionId!=='string')fail('ARTIFACT_VERSION_ID');

@@ -227,3 +227,17 @@ test('closed WOPI codec cannot issue or verify after key ownership is released',
  assert.throws(()=>codec.issue({}),{code:'WOPI_TOKEN_CONFIGURATION'});
  assert.throws(()=>codec.verify('a.b',{fileId:'f'}),{code:'WOPI_TOKEN_CONFIGURATION'});
 });
+test('every lock-bearing WOPI write with a missing or mismatched lock is 409 carrying the current lock; a same-lock re-lock is accepted',async t=>{
+ const f=await wopiFixture(t);
+ for(const [op,args] of [['refresh',{lock:'ghost'}],['unlock',{lock:'ghost'}],['relock',{lock:'new',oldLock:'ghost'}]]){
+  const r=await f.send(op,args);assert.equal(r.status,409,op+' on an unlocked file');assert.equal(r.headers.get('x-wopi-lock'),'',op+' reports the empty current lock');
+ }
+ assert.equal((await f.send('lock',{lock:'A'})).status,200);
+ assert.equal((await f.send('lock',{lock:'A'})).status,200,'re-lock with the same lock is accepted');
+ for(const [op,args] of [['lock',{lock:'B'}],['refresh',{lock:'B'}],['unlock',{lock:'B'}],['relock',{lock:'C',oldLock:'B'}],['save',{lock:'B',body:edited()}]]){
+  const r=await f.send(op,args);assert.equal(r.status,409,op+' with a mismatched lock');assert.equal(r.headers.get('x-wopi-lock'),'A',op+' carries the current lock');
+ }
+ assert.equal(f.draft.sequence,0,'a mismatched PutFile never changes the private draft');assert.equal(f.state.lock,'A');
+ assert.equal((await f.send('get')).headers.get('x-wopi-lock'),'A');
+ assert.equal((await f.send('unlock',{lock:'A'})).status,200);assert.equal(f.state.lock,'');
+});
