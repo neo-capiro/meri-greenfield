@@ -44,7 +44,10 @@ credential, cookie, device secret or persistent pairing. Worker restart requires
 new consent. The browser may stop its worker; an open port is not promised to
 keep it alive. Capture lasts at most one minute and is limited to 20,000 visited
 nodes, one second of traversal, 131,072 text characters and 256 KiB UTF-8 text.
-Oversize or timed-out pages fail without a partial share.
+Oversize or timed-out pages fail without a partial share. The pending preview is
+erased at the one-minute capture deadline without another popup action; an expiry
+during final document proof also invalidates that share. A delayed worker timer
+does not bypass the existing clock check before sharing.
 
 Pause, revoke, expiry and recipient navigation/disconnect discard pending text.
 Changing source tab, navigating (including within the same origin), or closing
@@ -62,10 +65,12 @@ receipt and status readback decide stored, refused or unknown; receipt checking
 can update the displayed outcome later. Disconnect cannot undo an upload already
 dispatched. The Capiro consumer must stop admission on account/session change,
 retain its canonical uncertain-upload recovery, and never auto-submit a chat turn.
-Worker restart discards consent and never replays a share. Full application-page
-reload recovery of an attachment not yet submitted in a chat remains a separate
-upload-owner gap: the current composer attempt ledger is memory-only. Do not
-equate a fresh extension connection with reconciliation of that old attempt.
+Worker restart discards consent and never replays a share. The current frontend
+upload owner now persists only scoped request locators and recovers through an
+explicit status read after application recreation. No page bytes, credentials or
+consent are stored by this extension. The recovery-capable frontend, public
+contracts and Control receiver must ship together; a fresh extension connection
+does not itself reconcile an old attempt.
 
 ## Source preparation and checks
 
