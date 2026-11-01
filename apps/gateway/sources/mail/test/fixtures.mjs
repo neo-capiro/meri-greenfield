@@ -41,7 +41,7 @@ export function createMailFixture(id = 'mail.list_messages', {client = false} = 
       const start = Math.min(selection.bodyOffset, bodyText.length), end = Math.min(bodyText.length, selection.bodyOffset+selection.maxCharacters);
       const message = {sourceId: 'mail', mailboxId, threadId: selection.threadId, messageId: selection.messageId ?? uuid('9'),
         recordVersionId: 'synthetic-message-v1', citationId: uuid('f'), contentSha256: createHash('sha256').update(bodyText).digest('hex'),
-        scopes: clone(current.subject.scopes), removed: false, connectionStatus: 'disconnected', bodyCompleteness: 'full',
+        scopes: clone(current.subject.scopes), removed: false, connectionStatus: 'disabled', bodyCompleteness: 'full',
         readHandle: 'synthetic-authorized-mail-body', section: {start, endExclusive: end, totalCodeUnits: bodyText.length,
           unit: 'utf16-code-unit', text: bodyText.slice(start, end), hasMore: end < bodyText.length}};
       const messages = selection.messageOffset > 0 ? [] : [message];
@@ -58,7 +58,7 @@ export function createMailFixture(id = 'mail.list_messages', {client = false} = 
     const messages = Array.from({length: count}, (_, n) => {
       const ordinal = selection.offset+n, timestamp = new Date(Date.parse(asOf)-ordinal*1000).toISOString();
       return {sourceId: 'mail', mailboxId, threadId: uuid('c'), messageId: uuid(String(9-ordinal)), recordVersionId: null,
-        citationId: null, scopes: clone(current.subject.scopes), removed: false, connectionStatus: 'disconnected',
+        citationId: null, scopes: clone(current.subject.scopes), removed: false, connectionStatus: 'disabled',
         readHandle: `synthetic-preview-${ordinal}`, internetMessageId: `<synthetic-${ordinal}@example.invalid>`,
         clientId: client ? clientId : null, receivedAt: timestamp, sentAt: null, createdAt: timestamp, effectiveAt: timestamp,
         subjectText: 'Synthetic mail candidate', preview: {kind: 'incomplete-preview', text: 'Preview excludes the decisive decision.', fullSizeKnown: false},

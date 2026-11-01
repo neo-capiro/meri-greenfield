@@ -9,9 +9,9 @@ const mail=['mail_list_messages','mail_search_messages','mail_read_thread'].map(
 
 test('SQL routing is admitted only with both actual query tools, and only as routing',()=>{
  for(const tools of [[],[describe],[query]])assert.doesNotMatch(readPromptSentence(true,tools),/Structured questions about Capiro data/);
- assert.equal(readPromptSentence(false,[describe,query]),`Capiro's data is not connected in this conversation: tell the user so in their own terms and answer from general knowledge with that caveat. Never quote internal words such as bounded, read-disabled, UNAVAILABLE, tool or activity to the user, and never recommend a third-party API or scraping as a workaround.`);
+ assert.equal(readPromptSentence(false,[describe,query]),`Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read. Never quote internal words such as bounded, read-disabled, UNAVAILABLE, tool or activity to the user, and never recommend a third-party API or scraping as a workaround.`);
  const prompt=readPromptSentence(true,[describe,query]);
- assert.match(prompt,/Structured questions about Capiro data .* go to describe_capiro_data once per conversation and then query_capiro_data/);
+ assert.match(prompt,/Structured questions about Capiro data .* go to describe_capiro_data once per source and then query_capiro_data/);
  assert.match(prompt,/public is the default source and clientId only narrows access/);
  assert.match(prompt,/settle any ambiguity that changes the answer \(client, fiscal versus calendar period, units, budget cycle\)/);
  assert.match(prompt,/A refusal names its correction: fix the SQL and run it again, and never switch to another source/);
@@ -27,7 +27,7 @@ test('memory and mail routing follow their mounted tools and never claim complet
  const recall=readPromptSentence(true,[memory]);
  assert.match(recall,/Saved knowledge: when the user asks what Meri, they or the firm have saved, noted or remembered .* call search_memory first/);
  assert.match(recall,/attribute each item as saved memory by title, scope and approval date/);
- assert.match(recall,/only prepares a proposal for the user's approval: never say a memory was saved or remembered/);
+ assert.match(recall,/happens only through a request the user approves in Meri; until then nothing is stored, so never say a memory was saved or remembered/);
  for(const tool of mail){
   const prompt=readPromptSentence(true,[tool]);
   assert.match(prompt,/Email: .* come from the mail tools, never from memory or SQL/);
@@ -40,8 +40,9 @@ test('memory and mail routing follow their mounted tools and never claim complet
 
 test('the user hears about disconnected or refused Capiro data in their own terms, never in harness vocabulary',()=>{
  const none=readPromptSentence(false,[describe,query]),mounted=readPromptSentence(true,[describe,query,memory,...mail]);
- assert.match(none,/^Capiro's data is not connected in this conversation: tell the user so in their own terms and answer from general knowledge with that caveat\./);
- assert.match(mounted,/When a call answers UNAVAILABLE or ACCESS_DENIED, tell the user in their own terms that this Capiro data is not connected or not permitted in this conversation and answer from general knowledge with that caveat\./);
+ assert.match(none,/^Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read\./);
+ assert.match(mounted,/When a call answers UNAVAILABLE or ACCESS_DENIED, tell the user in their own terms that this Capiro data is not connected or not permitted in this conversation, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read\./);
+ assert.doesNotMatch(mounted,/general knowledge|prepares a proposal|Core /,'no invented client facts, no internals');
  for(const prompt of [none,mounted])assert.match(prompt,/Never quote internal words such as bounded, read-disabled, UNAVAILABLE, tool or activity to the user, and never recommend a third-party API or scraping as a workaround\./);
  assert.doesNotMatch(none,/bounded session|read-disabled here|return UNAVAILABLE|ProPublica/);
  assert.equal(none.split(/\.\s/).length,2,'two sentences');

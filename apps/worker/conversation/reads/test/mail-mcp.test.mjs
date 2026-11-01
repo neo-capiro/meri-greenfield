@@ -21,7 +21,7 @@ test('a connected search returns the page plus one notice with counts, continuat
  const f=await generalReadFixture(),m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',f.search);assert.equal(r.isError,undefined,JSON.stringify(r));
   const page=JSON.parse(text(r));assert.equal(page.kind,'mail-candidate-source-page');assert.equal(page.messages.length,1);
-  assert.equal(r.content[1].text,'Notice: 1 stored message candidate(s) of 2 matching; more exist, continue with offset 1. Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content. Mailbox connection status disconnected: stored mail up to the last synchronization, possibly stale; the user can reconnect the mailbox in Capiro\'s mail integration settings.');
+  assert.equal(r.content[1].text,'Notice: 1 stored message candidate(s) of 2 matching; more exist, continue with offset 1. Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content. Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect the mailbox in Capiro\'s mail integration settings.');
  }finally{await m.close();}
 });
 
@@ -29,7 +29,7 @@ test('an empty page is absence within its filter only',async()=>{
  const f=await generalReadFixture();f.source.state.total=0;const m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',f.search);assert.equal(r.isError,undefined,JSON.stringify(r));
   assert.deepEqual(JSON.parse(text(r)).messages,[]);
-  assert.equal(r.content[1].text,'Notice: 0 stored message candidate(s) of 0 matching. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.');
+  assert.equal(r.content[1].text,'Notice: 0 stored message candidate(s) of 0 matching. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant, and if the user expects mail here ask them to check the mailbox connection in Capiro\'s mail integration settings.');
   assert.equal(corePaths(f).length,1);
  }finally{await m.close();}
 });
@@ -65,6 +65,6 @@ test('a thread read reports its message count, incomplete body sections and the 
  const f=await generalReadFixture({id:'mail.read_thread'}),m=await mountReads(f);
  try{const r=await m.call('mail_read_thread',f.source.args);assert.equal(r.isError,undefined,JSON.stringify(r));
   const page=JSON.parse(text(r));assert.equal(page.kind,'mail-thread-source-page');assert.equal(page.messages[0].section.hasMore,true);
-  assert.equal(r.content[1].text,'Notice: 1 message(s) of 1 in this thread. 1 body section(s) are incomplete: continue with the listed nextBodyOffsets before quoting, and say what was not read. Mailbox connection status disconnected: stored mail up to the last synchronization, possibly stale; the user can reconnect the mailbox in Capiro\'s mail integration settings.');
+  assert.equal(r.content[1].text,'Notice: 1 message(s) of 1 in this thread. 1 body section(s) are incomplete: continue with the listed nextBodyOffsets before quoting, and say what was not read. Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect the mailbox in Capiro\'s mail integration settings.');
  }finally{await m.close();}
 });

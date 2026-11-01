@@ -62,7 +62,7 @@ export function sampleNotices(){
   ['search_memory: one approved item',notices(memory,memoryPage)],
   ['search_memory: empty recall',notices(memory,emptyMemory)],
   ['search_memory: Core argument error',notices(memory,{error:'Provide a search query.'})],
-  ['mail_search_messages: one candidate from a disconnected mailbox',mailNotices(mailPage)],
+  ['mail_search_messages: one candidate from a disabled mailbox',mailNotices(mailPage)],
   ['mail_search_messages: empty page',mailNotices(emptyMail)],
   ['mail_search_messages: UNAVAILABLE (no mailbox)',[failureResult('UNAVAILABLE','mcp__meri_reads__mail_search_messages').content[0].text]],
   ['mail_search_messages: ACCESS_DENIED',[failureResult('ACCESS_DENIED','mcp__meri_reads__mail_search_messages').content[0].text]],

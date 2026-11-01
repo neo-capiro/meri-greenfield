@@ -80,3 +80,14 @@ test('PostgreSQL diagnostics on a Core 362 refusal follow the fixed notice; the 
   const text=line(refusal);assert.doesNotMatch(text,/PostgreSQL|PRIVATE|unavailable\./);assert.match(text,new RegExp(`^Notice: query_capiro_data refused this request with ${refusal.error.code}\\. `));
  }
 });
+
+test('a permission-denied or missing-schema message never names the object the model reached outside the published source',()=>{
+ const line=text=>notices(query,text)[0].text;
+ for(const [message,sqlstate] of [['permission denied for table secret_ledger','42501'],['permission denied for schema private_finance','42501'],['schema "hidden" does not exist','3F000']]){
+  const text=line(sqlRefusal({code:'UNKNOWN_RELATION',message,sqlstate,position:12,hint:undefined,candidates:['congress_bills']}));
+  assert.match(text,/PostgreSQL (42501|3F000): the statement named a relation or schema outside the published source; use only the relations describe_capiro_data lists at character 12\. Did you mean: congress_bills\./);
+  assert.doesNotMatch(text,/secret_ledger|private_finance|hidden/);
+ }
+ // PostgreSQL's own report of the model's statement still renders in full.
+ assert.match(line(sqlRefusal({code:'INVALID_QUERY',message:'could not determine data type of parameter $1',sqlstate:'42P18',position:undefined,hint:undefined,candidates:undefined})),/PostgreSQL 42P18: could not determine data type of parameter \$1\./);
+});

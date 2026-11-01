@@ -28,7 +28,7 @@ test('General: personal recall returns the canonical page, one attribution notic
   assert.equal(r.isError,undefined,JSON.stringify(r));assert.equal(r.content.length,2);
   const envelope=JSON.parse(text(r));assert.deepEqual(envelope.result,f.scene.page(f.scene.input({query:'approved allocation'})));
   assert.equal(envelope.result.records[0].payload.scope,'firm');assert.equal(envelope.result.records[0].payload.governance.status,'active');
-  assert.match(r.content[1].text,/^Notice: 1 approved memory item\(s\) returned \(at most 3 per page\); contentStatus available\. Attribute each item as saved memory by its title, scope and approvedAt from records\[\]\.payload; it records what was approved, not a fact verified now, and nothing here saves or changes memory\./);
+  assert.match(r.content[1].text,/^Notice: 1 approved memory item\(s\) returned of a page of 3; contentStatus available\. Attribute each item as saved memory by its title, scope and approvedAt from records\[\]\.payload; it records what was approved, not a fact verified now, and nothing here saves or changes memory\./);
   assert.match(r.content[1].text,/Content is partial: read an item's complete text with memoryItemId and the contentCursor from content\.nextRead/);
   assert.deepEqual(corePaths(f),['/api/clio/tools/search_memory','/api/clio/tools/search_memory_eligibility']);
   const [receipt,...rest]=m.runtime.receipts();assert.equal(rest.length,0);assert.equal(receipt.operation.id,'search_memory');
@@ -47,10 +47,10 @@ test('selected client: recall takes that client\'s UUID, and omitting it is a de
  }finally{await m.close();}
 });
 
-test('an item Core no longer deems eligible fails the whole call as ACCESS_DENIED with no receipt',async()=>{
+test('an item no longer eligible for the user fails the whole call as ACCESS_DENIED with no receipt',async()=>{
  const f=await memoryReadFixture(),m=await mountReads(f);f.eligible(false);
  try{const r=await m.call('search_memory',{query:'approved allocation'});
-  assert.equal(r.isError,true);assert.match(text(r),/^ACCESS_DENIED: /);assert.match(text(r),/every returned item must pass Core's current eligibility check/);
+  assert.equal(r.isError,true);assert.match(text(r),/^ACCESS_DENIED: /);assert.match(text(r),/every returned item must still be eligible for this user/);
   assert.deepEqual(corePaths(f),['/api/clio/tools/search_memory','/api/clio/tools/search_memory_eligibility']);assert.deepEqual(m.runtime.receipts(),[]);
  }finally{await m.close();}
 });
@@ -62,7 +62,7 @@ test('an empty recall page says no approved memory matched and that this is not 
   coverage:{...empty.coverage,recordsEvaluated:0,recordsReturned:0,sources:[{...empty.coverage.sources[0],returned:0,recordsEvaluated:0}]}});
  try{const r=await m.call('search_memory',{query:'nothing like this'});
   assert.equal(r.isError,undefined,JSON.stringify(r));
-  assert.match(r.content[1].text,/^Notice: 0 approved memory item\(s\) returned \(at most 3 per page\); contentStatus empty\. Pending proposals and retired items are never recall, so this is not proof that nothing was saved or proposed: say that no approved memory matched\.$/);
+  assert.match(r.content[1].text,/^Notice: 0 approved memory item\(s\) returned of a page of 3; contentStatus empty\. Pending proposals and retired items are never recall, so this is not proof that nothing was saved or proposed: say that no approved memory matched\.$/);
   assert.equal(corePaths(f).length,2,'an empty page still carries an eligibility receipt');
  }finally{await m.close();}
 });
@@ -79,7 +79,30 @@ test('disabled recall is UNAVAILABLE with the memory hint, never an empty succes
  const f=await memoryReadFixture(),m=await mountReads(f);f.enabled(false);
  try{const r=await m.call('search_memory',{query:'approved allocation'});
   assert.equal(r.isError,true);assert.match(text(r),/^UNAVAILABLE: mcp__meri_reads__search_memory /);
-  assert.match(text(r),/Governed memory recall is not served in this conversation .* say nothing about what is or is not saved\. No evidence, absence or completeness is established\.$/);
+  assert.match(text(r),/Governed memory recall is not available in this conversation; say nothing about what is or is not saved beyond that it could not be read\. No evidence, absence or completeness is established\.$/);
   assert.deepEqual(corePaths(f),[]);
+ }finally{await m.close();}
+});
+
+test('an empty page whose source was unavailable is blocked recall, never "nothing matched"',async()=>{
+ const f=await memoryReadFixture(),m=await mountReads(f);
+ const base=f.scene.page(f.scene.input({query:'anything'}));
+ f.page({...base,results:[],records:[],contentStatus:'unavailable',contentTruncated:false,summary:'No eligible memory was returned. Coverage distinguishes an empty result from unavailable recall.',
+  coverage:{...base.coverage,recordsEvaluated:0,recordsReturned:0,complete:false,unavailableSources:['institutional_knowledge'],sources:[{...base.coverage.sources[0],sourceStatus:'unavailable',returned:0,recordsEvaluated:0,coverageComplete:false}]}});
+ try{const r=await m.call('search_memory',{query:'anything'});
+  assert.equal(r.isError,undefined,JSON.stringify(r));
+  assert.match(r.content[1].text,/^Notice: 0 approved memory item\(s\) returned of a page of 3; contentStatus unavailable\. Recall did not complete: the memory source was unavailable or incomplete for this search\. This is not absence; tell the user saved memory could not be read right now and do not say nothing matched\.$/);
+  assert.doesNotMatch(r.content[1].text,/no approved memory matched/);
+ }finally{await m.close();}
+});
+
+test('an item read that returns nothing is unavailable or ineligible, never absence',async()=>{
+ const f=await memoryReadFixture(),m=await mountReads(f);
+ const itemId=f.scene.page().records[0].recordId,base=f.scene.page(f.scene.input({query:'Read this approved memory',memoryItemId:itemId}));
+ f.page({...base,results:[],records:[],contentStatus:'unavailable_or_ineligible',contentTruncated:false,summary:'No eligible memory was returned. Coverage distinguishes an empty result from unavailable recall.',
+  coverage:{...base.coverage,recordsEvaluated:0,recordsReturned:0,sources:[{...base.coverage.sources[0],returned:0,recordsEvaluated:0}]}});
+ try{const r=await m.call('search_memory',{query:'Read this approved memory',memoryItemId:itemId});
+  assert.equal(r.isError,undefined,JSON.stringify(r));
+  assert.match(r.content[1].text,/^Notice: 0 approved memory item\(s\) returned of a page of 1; contentStatus unavailable_or_ineligible\. The requested item could not be read: it is unavailable or no longer eligible for this user\. This is not absence/);
  }finally{await m.close();}
 });

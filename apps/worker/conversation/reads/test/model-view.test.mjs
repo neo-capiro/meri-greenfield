@@ -24,30 +24,30 @@ test('text-to-SQL: the statement rules, parameters, result shape, refusal codes 
   /rowLimit default 200, max 1000, applied as an outer LIMIT/,/byteTruncated \(256 KiB cap\)/,/Page by keyset: ORDER BY the full key and WHERE key > \$n/,/Filter value_kind, position_cycle and asserted_fy before summing budget positions/])assert.match(query.description,rule);
  // The sql argument states the gate's rules in the schema the model fills in.
  const sql=JSON.stringify(query.arguments);
- assert.match(sql,/exactly one SELECT or WITH \.\.\. SELECT, run verbatim under a read-only role inside an outer LIMIT wrapper/);
- assert.match(sql,/Not allowed: a second statement, SET, SHOW, EXPLAIN, COPY, transaction control, INSERT, UPDATE, DELETE, MERGE, SELECT INTO, data-modifying CTEs, and administrative, sleep, lock, file or dblink functions/);
- assert.match(sql,/PostgreSQL reports its own errors with message, character position, hint, SQLSTATE and nearest published names/);
+ assert.match(sql,/One read-only PostgreSQL statement \(SELECT or WITH \.\.\. SELECT\) over the relations describe_capiro_data returns; bind values as \$1\.\.\$n/);
+ assert.doesNotMatch(sql,/Not allowed|blocked|outer LIMIT wrapper|Core /,'the schema does not restate the gate or name Core');
+ assert.match(sql,/A refusal carries PostgreSQL's own message, character position, hint, SQLSTATE and nearest published names: fix the SQL and run it again/);
  assert.match(sql,/cast it \(\$1::date\) when the context does not fix the type/);
  assert.match(describe.description,/columns \(name, type, PostgreSQL pgType, nullable, unit, enum values, meaning\), primary key, declared join relationships, grain, coverage limitations and freshness field/);
  assert.match(describe.description,/Call it once before the first query of a conversation/);
  // The SQL tools are the destination of the SQL-first routing sentence, so neither tells the model to call itself.
  for(const t of [query,describe])assert.doesNotMatch(t.description,/Structured questions:/);
- assert.match(view.systemPrompt,/Structured questions about Capiro data .* go to describe_capiro_data once per conversation and then query_capiro_data/);
+ assert.match(view.systemPrompt,/Structured questions about Capiro data .* go to describe_capiro_data once per source and then query_capiro_data/);
 });
 
 test('memory: scope per conversation kind, the page size, the result fields, attribution and the no-save rule are stated',()=>{
  const memory=tool('search_memory');
- for(const rule of [/clientId \(in a selected-client conversation the selected client's UUID.*null in General/,/Core returns at most 3 items per page and nextCursor continues/,/memoryItemId with contentCursor/,
+ for(const rule of [/clientId \(in a selected-client conversation the selected client's UUID.*null in General/,/pages are small, effectivePageSize in the result says how many, and nextCursor continues/,/memoryItemId with contentCursor/,
   /payload carries title, type, scope \(personal, client or firm\), governance \(status, approvedAt, approvedByUserId, stale, validUntil\) and content/,/Attribute each item as saved memory by title, scope and approvedAt/,
   /pending proposals, rejected, withdrawn, revoked and superseded items are excluded, so an empty result is not proof/,/never say a memory was saved or remembered/,/fails the whole call as ACCESS_DENIED/])assert.match(memory.description,rule);
  assert.deepEqual(Object.keys(memory.arguments.properties),['query','clientId','k','cursor','memoryItemId','contentCursor']);
  assert.match(view.systemPrompt,/Saved knowledge: .* call search_memory first/);
  const texts=Object.fromEntries(view.notices.map(n=>[n.scenario,n.texts]));
- assert.match(texts['search_memory: one approved item'][0],/^Notice: 1 approved memory item\(s\) returned \(at most 3 per page\); contentStatus available\. Attribute each item as saved memory/);
+ assert.match(texts['search_memory: one approved item'][0],/^Notice: 1 approved memory item\(s\) returned of a page of 3; contentStatus available\. Attribute each item as saved memory/);
  assert.match(texts['search_memory: empty recall'][0],/0 approved memory item\(s\).*not proof that nothing was saved or proposed/);
  assert.match(texts['search_memory: Core argument error'][0],/refused the arguments: Provide a search query\. Pass the topic or client as query text/);
  assert.match(texts['search_memory: ACCESS_DENIED'][0],/clientId must be that client's UUID, in General it must be null/);
- assert.match(texts['search_memory: UNAVAILABLE'][0],/Governed memory recall is not served/);
+ assert.match(texts['search_memory: UNAVAILABLE'][0],/Governed memory recall is not available in this conversation; say nothing about what is or is not saved beyond that it could not be read/);
 });
 
 test('mail: the subject, filters, paging, candidate and thread fields, stale mailbox and refusals are stated',()=>{
@@ -62,8 +62,8 @@ test('mail: the subject, filters, paging, candidate and thread fields, stale mai
  assert.match(thread.description,/bodyCompleteness \(full, preview, truncated, missing or unknown\) and section \{start, endExclusive, totalCodeUnits, text, hasMore\}/);
  assert.match(view.systemPrompt,/Email: .* mail_search_messages \(from, participant or query words\) or mail_list_messages \(recent mail\), then mail_read_thread/);
  const texts=Object.fromEntries(view.notices.map(n=>[n.scenario,n.texts]));
- assert.match(texts['mail_search_messages: one candidate from a disconnected mailbox'][0],/^Notice: 1 stored message candidate\(s\) of 2 matching; more exist, continue with offset 1\. Previews are incomplete excerpts.*Mailbox connection status disconnected: stored mail up to the last synchronization, possibly stale; the user can reconnect/);
- assert.match(texts['mail_search_messages: empty page'][0],/0 stored message candidate\(s\) of 0 matching\. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists/);
+ assert.match(texts['mail_search_messages: one candidate from a disabled mailbox'][0],/^Notice: 1 stored message candidate\(s\) of 2 matching; more exist, continue with offset 1\. Previews are incomplete excerpts.*Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect/);
+ assert.match(texts['mail_search_messages: empty page'][0],/0 stored message candidate\(s\) of 0 matching\. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant, and if the user expects mail here ask them to check the mailbox connection/);
  assert.match(texts['mail_search_messages: UNAVAILABLE (no mailbox)'][0],/No connected Microsoft 365 or Google Workspace mailbox is available for this user.*do not say that no email exists/);
  assert.match(texts['mail_search_messages: ACCESS_DENIED'][0],/use \{kind:"personal"\} in General and \{kind:"client", entityId\} only for the selected client/);
 });

@@ -14,9 +14,10 @@ import {READ_FAMILY_GUIDANCE,SQL_FIRST_GUIDANCE,SQL_ABSENT_GUIDANCE} from './fam
 import {readGuidance} from './guidance.mjs';
 export const READ_SERVER_NAME='meri_reads';
 export const READ_TOOL_PREFIX=`mcp__${READ_SERVER_NAME}__`;
-/** 4096 holds the longest descriptor with every optional line: query_capiro_data@0.3.0 states the PostgreSQL contract
- * (`tools.test.mjs` proves nothing of the two SQL descriptors is dropped). */
+/** 4096 holds the longest descriptor with every optional line (`query_capiro_data` at 0.3.0 and later states the SQL rules and
+ * result shape in `whenToUse`; `tools.test.mjs` proves nothing of the two SQL descriptors is dropped). */
 export const MAX_DESCRIPTION=4096,MAX_LIMITS=4;
+/** The two text-to-SQL reads: the destination of the SQL-first routing sentence and the owners of the ok:false SQL refusal envelope. */
 export const SQL_TOOL_IDS=new Set(['describe_capiro_data','query_capiro_data']);
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
 /** Catalog limitations that describe the registration row (null handler, pending qualification, frozen declared types),

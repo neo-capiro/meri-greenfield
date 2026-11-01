@@ -5,6 +5,7 @@
  * Successful SQL, memory and mail pages get one short orientation notice (counts, continuation, what an empty page
  * means, stale mailbox); the canonical result bytes and their hashes are never touched. */
 import {readGuidance} from './guidance.mjs';
+import {SQL_TOOL_IDS} from './tools.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
 /** @type {Readonly<Record<string,(tool:string)=>string>>} */
 const TEXTS=Object.freeze({
@@ -35,13 +36,14 @@ function sqlDiagnostics(error,code){
  const postgres=typeof error.sqlstate==='string'&&typeof code==='string'&&POSTGRES_REFUSALS.has(code);
  if(position===null&&hint===null&&!candidates.length&&!postgres)return null;
  const sentence=text=>/[.!?]$/u.test(text)?text:`${text}.`;
- const parts=[sentence(`PostgreSQL${typeof error.sqlstate==='string'?` ${error.sqlstate}`:''}: ${typeof error.message==='string'?error.message:'query failed'}${position===null?'':` at character ${position}`}`)];
+ // Core 362 passes PostgreSQL's message through unsanitized. A permission or schema error confirms that something the model
+ // named exists outside the published source; the model only needs to know it is outside, never the object itself.
+ const message=typeof error.message!=='string'?'query failed':/permission denied|schema .* does not exist/iu.test(error.message)?'the statement named a relation or schema outside the published source; use only the relations describe_capiro_data lists':error.message;
+ const parts=[sentence(`PostgreSQL${typeof error.sqlstate==='string'?` ${error.sqlstate}`:''}: ${message}${position===null?'':` at character ${position}`}`)];
  if(hint!==null)parts.push(sentence(`Hint: ${hint}`));
  if(candidates.length)parts.push(`Did you mean: ${candidates.join(', ')}.`);
  return parts.join(' ');
 }
-/** The reads whose source answers refusals as an ok:false envelope; their per-code guidance is owned by `guidance.mjs`. */
-const SQL_TOOLS=new Set(['describe_capiro_data','query_capiro_data']);
 /** The mail handler returns the canonical page itself, not a `{result}` envelope. */
 const MAIL_TOOLS=new Set(['mail.list_messages','mail.search_messages','mail.read_thread']);
 const RECONNECT='the user can reconnect the mailbox in Capiro\'s mail integration settings';
@@ -53,9 +55,13 @@ const staleStatuses=messages=>[...new Set(messages.map(m=>m?.connectionStatus).f
 function memoryNotice(page){
  if(typeof page?.error==='string')return `search_memory refused the arguments: ${page.error} Pass the topic or client as query text; clientId only in a selected-client conversation.`;
  if(page?.tool!=='search_memory'||!Array.isArray(page.results))return null;
- const n=page.results.length,parts=[`${n} approved memory item(s) returned (at most 3 per page${typeof page.nextCursor==='string'?'; nextCursor continues':''}); contentStatus ${page.contentStatus}.`];
- parts.push(n===0?'Pending proposals and retired items are never recall, so this is not proof that nothing was saved or proposed: say that no approved memory matched.'
-  :'Attribute each item as saved memory by its title, scope and approvedAt from records[].payload; it records what was approved, not a fact verified now, and nothing here saves or changes memory.');
+ const n=page.results.length,size=Number.isSafeInteger(page.effectivePageSize)?` of a page of ${page.effectivePageSize}`:'';
+ const parts=[`${n} approved memory item(s) returned${size}${typeof page.nextCursor==='string'?'; nextCursor continues':''}; contentStatus ${page.contentStatus}.`];
+ // An empty page means three different things; only `empty` is an honest "nothing matched".
+ if(n===0)parts.push(page.contentStatus==='empty'?'Pending proposals and retired items are never recall, so this is not proof that nothing was saved or proposed: say that no approved memory matched.'
+  :page.contentStatus==='unavailable_or_ineligible'?'The requested item could not be read: it is unavailable or no longer eligible for this user. This is not absence; tell the user that saved memory item could not be read.'
+  :'Recall did not complete: the memory source was unavailable or incomplete for this search. This is not absence; tell the user saved memory could not be read right now and do not say nothing matched.');
+ else parts.push('Attribute each item as saved memory by its title, scope and approvedAt from records[].payload; it records what was approved, not a fact verified now, and nothing here saves or changes memory.');
  if(page.contentStatus==='metadata_only'||page.contentTruncated===true)parts.push('Content is partial: read an item\'s complete text with memoryItemId and the contentCursor from content.nextRead before quoting it.');
  return parts.join(' ');
 }
@@ -65,15 +71,20 @@ function mailNotice(page){
  if(page?.kind==='mail-candidate-source-page'){
   const messages=Array.isArray(page.messages)?page.messages:[],n=messages.length;
   const parts=[`${n} stored message candidate(s)${Number.isInteger(page.totalMatches)?` of ${page.totalMatches} matching`:''}${page.hasMore===true&&Number.isInteger(page.nextOffset)?`; more exist, continue with offset ${page.nextOffset}`:''}.`];
-  parts.push(n===0?'An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.'
+  // The page carries the mailbox connection state only per returned message; an empty page cannot report it.
+  parts.push(n===0?'An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant, and if the user expects mail here ask them to check the mailbox connection in Capiro\'s mail integration settings.'
    :'Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content.');
   const stale=staleStatuses(messages);if(stale.length)parts.push(`Mailbox connection status ${stale.join(', ')}: stored mail up to the last synchronization, possibly stale; ${RECONNECT}.`);
   return parts.join(' ');
  }
  if(page?.kind==='mail-thread-source-page'){
-  const messages=Array.isArray(page.messages)?page.messages:[],partial=messages.filter(m=>m?.bodyCompleteness!=='full'||m?.section?.hasMore===true).length;
+  const messages=Array.isArray(page.messages)?page.messages:[];
+  // Only a body that exists but was cut (preview, truncated, or a section with more) can be continued; a missing or unknown body cannot.
+  const partial=messages.filter(m=>['preview','truncated'].includes(m?.bodyCompleteness)||m?.bodyCompleteness==='full'&&m?.section?.hasMore===true).length;
+  const absent=messages.filter(m=>['missing','unknown'].includes(m?.bodyCompleteness)).length;
   const parts=[`${messages.length} message(s) of ${Number.isInteger(page.totalMessages)?page.totalMessages:'an unknown number'} in this thread${page.hasMoreMessages===true&&Number.isInteger(page.nextMessageOffset)?`; more follow at messageOffset ${page.nextMessageOffset}`:''}.`];
   if(partial)parts.push(`${partial} body section(s) are incomplete: continue with the listed nextBodyOffsets before quoting, and say what was not read.`);
+  if(absent)parts.push(`${absent} message body(ies) are not available in stored mail (missing or unknown): report that the body could not be read; nothing continues them.`);
   const stale=staleStatuses(messages);if(stale.length)parts.push(`Mailbox connection status ${stale.join(', ')}: stored mail up to the last synchronization, possibly stale; ${RECONNECT}.`);
   return parts.join(' ');
  }
@@ -97,7 +108,7 @@ export function readNotices(operation,result,parsed){
  if(connected!==null)return [notice(`Notice: ${connected}`)];
  if(MAIL_TOOLS.has(operation.id)){const text=mailNotice(parsed);return text===null?[]:[notice(`Notice: ${text}`)];}
  if(operation.id==='search_memory'){const text=memoryNotice(parsed?.result);return text===null?[]:[notice(`Notice: ${text}`)];}
- if(!SQL_TOOLS.has(operation.id))return [];
+ if(!SQL_TOOL_IDS.has(operation.id))return [];
  const page=parsed?.result;
  if(page?.ok===false){
   const code=page.error?.code,refusals=readGuidance(operation.id)?.refusals??{},guidance=Object.hasOwn(refusals,code)?` ${refusals[code]}`:'';
