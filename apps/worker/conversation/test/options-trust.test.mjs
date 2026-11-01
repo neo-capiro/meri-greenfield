@@ -1,6 +1,6 @@
 /** Public pinned SDK options are built directly from trusted run configuration. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {buildConversationOptions} from '../options.mjs';
+import {buildConversationOptions,RESPONSE_STYLE,RESPONSE_VOICE} from '../options.mjs';
 import {binding,versions} from '../../../control/conversations/test/application-fixture.mjs';
 import {BEDROCK_MODEL} from '../provider.mjs';
 const runtime=extra=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:20,maxCostMicroUSD:2000000,maxOutputBytes:1024,...extra});
@@ -25,7 +25,9 @@ test('quality adjustment is one short native append, without a validation loop',
  const o=buildConversationOptions(runtime(),new AbortController());const append=o.systemPrompt.append;
  for(const sentence of ['Preserve the supplied as-of date','Distinguish source deadlines from proposed dates','Uncorroborated completion is not a contradiction','an unknown owner is not unassigned','only after actually invoking one'])assert.ok(append.includes(sentence));
  assert.ok(append.startsWith('You are Meri'));assert.ok(append.includes('keep responses short does not apply'));assert.ok(append.includes('Finish every section you start'));
- assert.ok(append.length<1600);assert.equal(o.hooks,undefined);
+ assert.ok(append.startsWith(RESPONSE_STYLE+'\n\n'+RESPONSE_VOICE+'\n\n'));
+ assert.equal(append.split(RESPONSE_STYLE).length-1,1);assert.equal(append.split(RESPONSE_VOICE).length-1,1);
+ assert.equal(o.systemPrompt.type,'preset');assert.equal(o.systemPrompt.preset,'claude_code');assert.equal(o.hooks,undefined);
 });
 test('native task list is pinned only inside the owned private SDK configuration',()=>{
  const r=runtime({sdkConfigDirectory:'/run/meri/config/run',sdkSecureStorageDirectory:'/run/meri/secure',providerEnvironment:{CLAUDE_CODE_TASK_LIST_ID:'foreign-list'}});
