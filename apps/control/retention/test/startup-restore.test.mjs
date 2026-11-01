@@ -1,19 +1,27 @@
 /** Retention startup composition, the restore serving fence and the recovered watermark: serving is fenced from construction and opens
  * only after reconciliation records a watermark that reads back exactly; a restore (at startup or underneath a running process) is
- * refused from its first read until the ledger is replayed; ledger, projection and watermark faults close the fence; purge stays
- * inactive behind an explicit switch and nothing deletes while it is off. Synthetic: in-process journal, watermark store, ledger
- * sink and bucket; no PostgreSQL, S3 or credential. */
+ * refused from its first read until the ledger is replayed; verified ledger, projection and watermark inconsistencies close the fence
+ * while a read that merely fails refuses its own request; a gate read that meets the closed fence retries recovery once per window;
+ * purge stays inactive behind an explicit switch and nothing deletes while it is off. Synthetic: in-process journal, watermark store,
+ * ledger sink and bucket; no PostgreSQL, S3 or credential. */
 import test from 'node:test';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
 import {createRetentionStartup} from '../startup.mjs';
 import {createServingFence} from '../serving-fence.mjs';
 import {createMemoryRetentionJournal} from '../memory-journal.mjs';
 import {createMemoryLedgerSink} from '../ledger.mjs';
+import {createRetentionReadGate} from '../suppression.mjs';
 import {enumerateReferences} from '../inventory.mjs';
 import {subjectKey} from '../boundary.mjs';
 import {composeStartup,subjectOf,snapshot,planFrom,ownership} from './fixture.mjs';
 const day=86400000;
 const suppress=(f,s)=>f.startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});
 const refused=(f,s)=>assert.rejects(f.startup.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER');
+const innermost=error=>{let code=null;for(let e=error;e;e=e.cause)if(typeof e.code==='string')code=e.code;return code;};
+/** Lets a background reopen attempt over the in-process stores run to completion (all of them settle within microtasks). */
+const settle=async()=>{for(let i=0;i<20;i++)await new Promise(resolve=>setImmediate(resolve));};
+/** The fixture startup with a counted watermark `record`: only a reconciliation records, so the count tells whether one ran. */
+function countedStartup(f,{ledgerSink=f.sink,log}={}){const calls={record:0};const watermark={...f.watermark,async record(...args){calls.record++;return f.watermark.record(...args);}};
+ return {calls,startup:createRetentionStartup({journal:f.journal,watermark,ledgerSink,ownership,purge:{enabled:false},now:f.clock.now,...(log?{log}:{})})};}
 
 test('synthetic: restore after projection ACK but before watermark advance cannot certify the missing projection',async()=>{
  const f=composeStartup(),s=subjectOf();let restore=null;
@@ -24,7 +32,7 @@ test('synthetic: restore after projection ACK but before watermark advance canno
  assert.equal((await f.sink.read()).length,1);assert.equal(await f.journal.get(subjectKey(s)),null,'the just-acknowledged projection was restored away');
  assert.equal((await f.watermark.read()).sequence,0,'a sequence floor cannot substitute for the missing exact projection');
  await refused(f,s);assert.equal(f.startup.state().enabled,false);assert.equal(f.startup.state().reason,'RETENTION_PROJECTION_UNVERIFIED');
- await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
+ await f.startup.ensureServing();await assert.rejects(f.startup.gate.assertServable(s),/RETENTION_SUPPRESSED/,'readiness coalesces with the reopen the refused read started');
  assert.equal((await f.sink.read()).length,1,'ledger-only recovery does not issue another decision');
 });
 
@@ -60,7 +68,7 @@ test('synthetic: a new suppression cannot conceal a restore before the first rea
  assert.equal(f.watermark.snapshot().sequence,0,'the restore was not hidden by an advance');
  assert.equal(await f.journal.get(subjectKey(next)),null);
  await refused(f,lost);assert.equal(f.startup.state().reason,'RETENTION_WATERMARK_STALE');
- await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(lost),/RETENTION_SUPPRESSED/);
+ await f.startup.ensureServing();await assert.rejects(f.startup.gate.assertServable(lost),/RETENTION_SUPPRESSED/);
  await suppress(f,next);assert.equal(f.watermark.snapshot().sequence,2);
 });
 
@@ -103,7 +111,7 @@ test('synthetic: atomic advance floor catches a restore after a successful guard
  // Exercise the guarded journal directly so the restore lands between verification and advancement.
  restore=backup;await f.startup.journal.set(subjectKey(next),{state:'SUPPRESSED',ledgerSequence:2,entrySha256:'1'.repeat(64)});
  assert.equal(f.watermark.snapshot().sequence,0);assert.equal(f.startup.state().reason,'RETENTION_WATERMARK_STALE');
- await refused(f,lost);await f.startup.recover();await assert.rejects(f.startup.gate.assertServable(lost),/RETENTION_SUPPRESSED/);
+ await refused(f,lost);await f.startup.ensureServing();await assert.rejects(f.startup.gate.assertServable(lost),/RETENTION_SUPPRESSED/);
 });
 
 test('synthetic: another running owner cannot advance across an unseen restored-away ledger transition',async()=>{
@@ -113,7 +121,7 @@ test('synthetic: another running owner cannot advance across an unseen restored-
  await assert.rejects(other.suppression.suppress({principal:f.principal,subject:next,reason:'owner request'}),/RETENTION_WATERMARK_STALE/);
  assert.equal(f.watermark.snapshot().sequence,0,'the unseen durable decision cannot be concealed');assert.equal((await f.sink.read()).length,1,'no second decision before recovery');
  assert.equal(other.state().reason,'RETENTION_WATERMARK_STALE');await assert.rejects(other.gate.assertServable(lost),/RETENTION_RECOVERY_BARRIER/);
- await other.recover();await assert.rejects(other.gate.assertServable(lost),/RETENTION_SUPPRESSED/);await other.gate.assertServable(next);
+ await other.ensureServing();await assert.rejects(other.gate.assertServable(lost),/RETENTION_SUPPRESSED/);await other.gate.assertServable(next);
 });
 
 test('serving is fenced from construction: nothing is read or suppressed before startup reconciles, the plain enable is refused, and startup opens only with the read-back watermark',async()=>{
@@ -144,9 +152,9 @@ test('suppression before serving across a restore underneath a running process: 
  f.restore(backup);
  assert.equal(await f.journal.get(subjectKey(b)),null,'the restored projection has lost the later suppressions');
  // b's restored row says nothing: without the watermark check this read would serve suppressed data.
- await refused(f,b);await refused(f,art);await refused(f,a);assert.equal(f.startup.serving.isEnabled(),false);assert.equal(f.startup.state().reason,'RETENTION_WATERMARK_STALE');
+ await refused(f,b);assert.equal(f.startup.serving.isEnabled(),false);assert.equal(f.startup.state().reason,'RETENTION_WATERMARK_STALE');
  await assert.rejects(suppress(f,subjectOf()),/RETENTION_RECOVERY_BARRIER/,'no transition starts on a fenced projection');
- const recovered=await f.startup.ensureServing();assert.equal(recovered.sequence,3);
+ const recovered=await f.startup.ensureServing();assert.equal(recovered.sequence,3,'readiness coalesces with the reopen the refused read started');
  for(const s of [a,b,art])await assert.rejects(f.startup.gate.assertServable(s),e=>e.code==='RETENTION_SUPPRESSED');
  assert.equal((await f.sink.read()).length,3,'recovery re-applied from the ledger without writing new decisions');
 });
@@ -154,15 +162,16 @@ test('suppression before serving across a restore underneath a running process: 
 test('a restart over a restored backup is fenced until startup replays the ledger; a stale watermark that cannot be re-recorded keeps refusing to serve',async()=>{
  const f=composeStartup(),s=subjectOf();await f.startup.start();const empty=f.backup();await suppress(f,s);f.restore(empty);
  const restart=()=>createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
- const next=restart();await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER');
- f.watermark.faults.record=true;await assert.rejects(next.start(),/RETENTION_STORE_UNAVAILABLE/);assert.equal(next.serving.isEnabled(),false,'a watermark that cannot be recorded never opens serving');
+ const next=restart();f.watermark.faults.record=true;
+ await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER');assert.equal(next.serving.isEnabled(),false);
+ await assert.rejects(next.start(),/RETENTION_STORE_UNAVAILABLE/);await settle();assert.equal(next.serving.isEnabled(),false,'a watermark that cannot be recorded never opens serving, from readiness or from the gate\'s background attempt');
  await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER');
  f.watermark.faults.record=false;const lying={...f.watermark,read:async()=>({sequence:0,entrySha256:null})};
  const misread=createRetentionStartup({journal:f.journal,watermark:lying,ledgerSink:f.sink,ownership,purge:{enabled:false},now:f.clock.now});
  await assert.rejects(misread.start(),/RETENTION_WATERMARK_UNVERIFIED/,'a recorded watermark that does not read back exactly is not a recovered watermark');assert.equal(misread.serving.isEnabled(),false);
  await next.start();await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_SUPPRESSED');
- f.watermark.faults.read=true;await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_RECOVERY_BARRIER','an unreadable watermark refuses');assert.equal(next.state().reason,'RETENTION_WATERMARK_UNVERIFIED');
- f.watermark.faults.read=false;await next.ensureServing();assert.equal(next.serving.isEnabled(),true);
+ f.watermark.faults.read=true;await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_READ_UNAVAILABLE'&&innermost(e)==='RETENTION_STORE_UNAVAILABLE','an unreadable watermark refuses this request with its cause');assert.equal(next.serving.isEnabled(),true,'nothing was proven, so the fence stays open');
+ f.watermark.faults.read=false;await assert.rejects(next.gate.assertServable(s),e=>e.code==='RETENTION_SUPPRESSED','the next read serves without readiness or a sweep');
 });
 
 test('transactional faults close the fence: a lost ledger acknowledgement, a failed projection after an acknowledged entry and an unknown watermark advance each refuse serving until reconciliation proves the suppression',async()=>{
@@ -200,6 +209,80 @@ test('purge-disabled proof: with the switch off no deletion path exists; executi
  const on=composeStartup({purge:true}),t=subjectOf();await on.startup.start();const invT=enumerateReferences(snapshot(t));on.current.inventories.set(subjectKey(t),invT);on.rows.seed(subjectKey(t),invT);for(const o of invT.objects)on.store.put(on.keyFor(o),o.versionId);
  await suppress(on,t);on.clock.advance(30*day);const planT=planFrom(on,t,await on.startup.journal.get(subjectKey(t)));const done=await on.startup.purge.execute(planT);
  assert.equal(done.state,'EXECUTED');assert.equal(on.deletes.length,invT.objects.length);assert.equal(on.rowPurges.length,1);
+});
+
+test('a transient store or ledger read failure refuses one request without closing the fence; the next read serves without readiness or a sweep',async()=>{
+ const f=composeStartup(),s=subjectOf(),open=subjectOf();let failHead=false;
+ const sink={append:(...args)=>f.sink.append(...args),async read(){if(failHead)throw Object.assign(Error('synthetic ledger outage'),{code:'ECONNRESET'});return f.sink.read();}};
+ const {calls,startup}=countedStartup(f,{ledgerSink:sink});await startup.start();
+ await startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});assert.equal(calls.record,1);
+ f.watermark.faults.read=true;
+ await assert.rejects(startup.gate.assertServable(open),e=>e.code==='RETENTION_READ_UNAVAILABLE'&&innermost(e)==='RETENTION_STORE_UNAVAILABLE','a database stall refuses this request with its cause');
+ await assert.rejects(startup.ensureServing(),e=>e.code==='RETENTION_READ_UNAVAILABLE','readiness refuses the same way instead of reconciling');
+ assert.equal(startup.serving.isEnabled(),true);assert.equal(startup.state().reason,null);
+ f.watermark.faults.read=false;await startup.gate.assertServable(open);await assert.rejects(startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
+ failHead=true;await assert.rejects(startup.gate.assertServable(open),e=>e.code==='RETENTION_READ_UNAVAILABLE'&&innermost(e)==='ECONNRESET','an external ledger failure refuses this request with its cause');
+ await assert.rejects(startup.suppression.suppress({principal:f.principal,subject:open,reason:'x'}),e=>e.code==='RETENTION_READ_UNAVAILABLE','an append proof that cannot read the head refuses this request only');
+ assert.equal(startup.serving.isEnabled(),true);
+ failHead=false;await startup.gate.assertServable(open);await assert.rejects(startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
+ assert.equal(calls.record,1,'no reconciliation ran: serving resumed on the next healthy read alone');
+});
+
+test('a verified mismatch still closes the fence and keeps it closed while recovery cannot prove the position; the gate refuses and retries recovery in the background at most once per window',async()=>{
+ const f=composeStartup(),s=subjectOf(),open=subjectOf();const {calls,startup}=countedStartup(f);await startup.start();
+ await startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});assert.equal(calls.record,1);
+ await f.watermark.record({sequence:2,entrySha256:null});f.watermark.faults.record=true;
+ await assert.rejects(startup.gate.assertServable(open),e=>e.code==='RETENTION_RECOVERY_BARRIER','a persisted watermark ahead of the ledger is a proven mismatch');
+ assert.equal(startup.serving.isEnabled(),false);assert.equal(startup.state().reason,'RETENTION_WATERMARK_UNVERIFIED');await settle();assert.equal(calls.record,1,'the fence was open when this read began, so nothing retried');
+ for(let i=0;i<3;i++)await assert.rejects(startup.gate.assertServable(open),e=>e.code==='RETENTION_RECOVERY_BARRIER');
+ await settle();assert.equal(calls.record,2,'one background recovery attempt per window; it could not record, so the fence stays closed');assert.equal(startup.state().reason,'RETENTION_WATERMARK_UNVERIFIED');
+ f.clock.advance(29999);await assert.rejects(startup.gate.withRelease([open],async()=>{assert.fail('a closed fence never releases');}),e=>e.code==='RETENTION_RECOVERY_BARRIER');await settle();assert.equal(calls.record,2);
+ f.clock.advance(1);await assert.rejects(startup.gate.isSuppressed(open),e=>e.code==='RETENTION_RECOVERY_BARRIER');await settle();assert.equal(calls.record,3,'the next window retries once');
+ f.watermark.faults.record=false;f.clock.advance(30000);
+ await assert.rejects(startup.gate.assertServable(open),e=>e.code==='RETENTION_RECOVERY_BARRIER','the triggering request is still refused, never held for the reconcile');
+ await settle();assert.equal(calls.record,4);assert.equal(startup.serving.isEnabled(),true,'a recovered store reopens in the background after the window');
+ await startup.gate.assertServable(open);await assert.rejects(startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);assert.deepEqual(await f.watermark.read(),{sequence:1,entrySha256:(await f.sink.read())[0].entrySha256});
+});
+
+test('concurrent gate reads against a closed fence are all refused and start exactly one reconcile, which readiness and the sweep share',async()=>{
+ const f=composeStartup(),s=subjectOf(),open=subjectOf();const {calls,startup}=countedStartup(f);await startup.start();
+ await startup.suppression.suppress({principal:f.principal,subject:s,reason:'owner request'});assert.equal(calls.record,1);
+ startup.serving.disable('RETENTION_WATERMARK_STALE');
+ const outcomes=await Promise.allSettled([startup.gate.assertServable(open),startup.gate.isSuppressed(open),startup.gate.withRelease([open],async()=>{assert.fail('never released');}),startup.gate.assertServable(s)]);
+ assert.deepEqual(outcomes.map(o=>o.status==='rejected'?o.reason.code:'served'),Array(4).fill('RETENTION_RECOVERY_BARRIER'));
+ const position=await startup.ensureServing();assert.equal(position.sequence,1,'readiness joins the reconcile already running');
+ await settle();assert.equal(calls.record,2,'four refused reads started one reconcile');assert.equal(startup.serving.isEnabled(),true);
+ await startup.gate.assertServable(open);await assert.rejects(startup.gate.assertServable(s),/RETENTION_SUPPRESSED/);
+});
+
+test('a background reopen that fails is logged with its cause code and the fence reason; the next window retries',async()=>{
+ const f=composeStartup(),open=subjectOf(),lines=[];const {calls,startup}=countedStartup(f,{log:line=>lines.push(line)});await startup.start();
+ f.watermark.faults.record=true;startup.serving.disable('RETENTION_WATERMARK_STALE');
+ await assert.rejects(startup.gate.assertServable(open),e=>e.code==='RETENTION_RECOVERY_BARRIER');await settle();
+ assert.equal(calls.record,2);assert.equal(startup.serving.isEnabled(),false);
+ const reopen=lines.map(l=>{try{return JSON.parse(l);}catch{return null;}}).filter(l=>l?.event==='MERI_RETENTION_REOPEN');
+ assert.deepEqual(reopen,[{event:'MERI_RETENTION_REOPEN',stage:'retention',outcome:'refused',code:'RETENTION_STORE_UNAVAILABLE',cause:'RETENTION_STORE_UNAVAILABLE',reason:'RETENTION_WATERMARK_STALE'}]);
+ assert.ok(lines.some(l=>l.includes('"event":"MERI_RETENTION_GATE"')&&l.includes('"fence":"closed"')),'the gate refusal itself is reported too');
+ f.watermark.faults.record=false;f.clock.advance(30000);await assert.rejects(startup.gate.assertServable(open),e=>e.code==='RETENTION_RECOVERY_BARRIER');await settle();
+ assert.equal(calls.record,3);assert.equal(startup.serving.isEnabled(),true);assert.equal(lines.filter(l=>l.includes('MERI_RETENTION_REOPEN')).length,1,'a successful reopen is not a refusal');
+ assert.throws(()=>createRetentionStartup({journal:f.journal,watermark:f.watermark,ledgerSink:f.sink,purge:{enabled:false},log:'stderr'}),/RETENTION_CONFIGURATION/);
+});
+
+test('the gate reports each refusal that is not a suppression with the fence state and innermost cause code, so transient and latched refusals are distinguishable',async()=>{
+ const lines=[],fence=createServingFence(),rows=new Map(),s=subjectOf();let down=false;
+ const journal={async get(key){if(down)throw Object.assign(Error('RETENTION_READ_UNAVAILABLE'),{code:'RETENTION_READ_UNAVAILABLE',cause:Object.assign(Error('canceling statement due to statement timeout'),{code:'57014'})});return rows.get(key)??null;}};
+ const gate=createRetentionReadGate({journal,serving:fence,log:line=>lines.push(line)}),line=index=>JSON.parse(lines[index]);
+ await assert.rejects(gate.assertServable(s),/RETENTION_RECOVERY_BARRIER/);
+ assert.deepEqual(line(0),{event:'MERI_RETENTION_GATE',stage:'retention',outcome:'refused',code:'RETENTION_RECOVERY_BARRIER',cause:null,fence:'closed',reason:'RETENTION_STARTUP_FENCE'});
+ fence.enable({watermark:{sequence:0,entrySha256:null}});down=true;
+ await assert.rejects(gate.assertServable(s),e=>e.code==='RETENTION_READ_UNAVAILABLE'&&innermost(e)==='57014');
+ assert.deepEqual(line(1),{event:'MERI_RETENTION_GATE',stage:'retention',outcome:'refused',code:'RETENTION_READ_UNAVAILABLE',cause:'57014',fence:'open',reason:null});
+ down=false;rows.set(subjectKey(s),{state:'SUPPRESSED',ledgerSequence:1,entrySha256:'a'.repeat(64)});
+ await assert.rejects(gate.assertServable(s),/RETENTION_SUPPRESSED/);assert.equal(lines.length,2,'a suppression is an ordinary answer, not a refusal to report');
+ fence.disable('RETENTION_WATERMARK_STALE');await assert.rejects(gate.isSuppressed(s),/RETENTION_RECOVERY_BARRIER/);
+ assert.deepEqual(line(2),{event:'MERI_RETENTION_GATE',stage:'retention',outcome:'refused',code:'RETENTION_RECOVERY_BARRIER',cause:null,fence:'closed',reason:'RETENTION_WATERMARK_STALE'});
+ assert.ok(lines.every(l=>!l.includes('statement timeout')),'no store message crosses into the log, only codes');
+ assert.throws(()=>createRetentionReadGate({journal,serving:fence,log:'stderr'}),/RETENTION_CONFIGURATION/);
 });
 
 test('the fence keeps its first closing reason, refuses a stale opening proof, and reports a persisted watermark behind this process as stale',async()=>{
