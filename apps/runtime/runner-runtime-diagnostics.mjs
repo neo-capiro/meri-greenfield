@@ -35,7 +35,7 @@ const codes=new Set(['ENOENT','EACCES','EPERM','ENOTDIR','EEXIST','EADDRINUSE','
  'RUNNER_VERSION_REFUSED','RUNNER_RUNTIME_REFUSED','RUNNER_SDK_REGISTRATION_UNAVAILABLE','RUNNER_SDK_CA_REFUSED','RUNNER_SDK_DIRECTORY_REFUSED',
  'RUNNER_SDK_RESTORE_REFUSED','RUNNER_SDK_SESSION_UNKNOWN','RUNNER_SESSION_CONFIGURATION','RUNNER_SESSION_STOPPED','RUNNER_CLEANUP_UNKNOWN',
  'EXECUTION_FAILED','EXECUTION_STOPPED','SDK_CLEANUP_UNKNOWN','KICKOFF_UNKNOWN','NATIVE_EXECUTION_KICKOFF_UNKNOWN','TASK_ROUTER_REFUSED','TASK_ROUTER_UNKNOWN',
- 'RUN_NOT_QUEUED','CONTINUATION_REFUSED','CONTINUATION_UNAVAILABLE','RUNTIME_PIN_REFUSED','SKILL_PIN_REFUSED','SKILL_RUNTIME_REFUSED',
+ 'RUN_NOT_QUEUED','CONTINUATION_REFUSED','CONTINUATION_UNAVAILABLE','RUNTIME_PIN_REFUSED','SKILL_PIN_REFUSED','SKILL_RUNTIME_REFUSED','SKILL_SOURCES_UNAVAILABLE','MODEL_TURNS_EXHAUSTED','MODEL_BUDGET_EXHAUSTED',
  'SDK_STREAM_REFUSED','SESSION_PERSISTENCE_FAILED','OUTPUT_LIMIT','SDK_RESULT_DUPLICATE','SDK_EXECUTION_FAILED','SDK_RESULT_MISSING',
  'OUTPUT_PUBLICATION_UNAVAILABLE','OBJECTIVE_COMPLETION_UNAVAILABLE','STORE_UNAVAILABLE','STORE_COMMIT_UNKNOWN',
  'REMOTE_TASK_REFUSED','NATIVE_EXECUTION_SDK_PREPARATION_CONFIGURATION','NATIVE_EXECUTION_SDK_PREPARATION_REFUSED',
@@ -132,6 +132,12 @@ function emit(active,line){try{Promise.resolve(active.write(line)).catch(()=>{})
 export function reportRuntimeStartupFailure(role,stage,error,{write=line=>process.stderr.write(line)}={}){
  const failure=describe(error),safeRole=['agentcore','temporal-worker'].includes(role)?role:'other',safeStage=stages.has(stage)?stage:'runner-preflight';
  emit({write},`RUNTIME_STARTUP_FAILURE role=${safeRole} stage=${safeStage} code=${failure.code} class=${failure.kind} exit=${failure.exit} signal=${failure.signal} cause=${failure.cause} msg=${failure.msg} site=${failure.site}\n`);
+}
+/** A governed-intent offer that failed (worker `intents/runtime.mjs`): the run keeps its write tools mounted and prepares nothing,
+ * which is not a terminal failure, so the closed code, the layer whose bound answered and the elapsed time are printed here or the
+ * cause stays invisible. The schema admits nothing else. */
+export function reportIntentAvailability(failure){
+ const active=context.getStore();if(active?.binding)try{active.telemetry.emit('meri.intent.availability',{...active.binding,layer:failure.layer,code:failure.code,elapsedMs:failure.elapsedMs});}catch{}
 }
 /** Called only after SDK cleanup and the canonical settlement receipt validate. This is not physical runtime retirement. */
 export function reportRunnerSettlement(state){

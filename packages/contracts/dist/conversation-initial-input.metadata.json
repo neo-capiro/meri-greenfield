@@ -1,5 +1,5 @@
 {
-  "packageVersion": "0.1.10",
+  "packageVersion": "0.1.11",
   "initialInputVersion": "1.3.0",
   "schemaId": "urn:meri:conversation-initial-input:1.3.0",
   "sources": [
@@ -15,8 +15,8 @@
     },
     {
       "path": "../../apps/control/conversations/initial-input/http.mjs",
-      "sha256": "1a4dc80c7e1bbc3e049dacf29cc3db1c7a747bbe5e90a7492f5c79ab9df9374d",
-      "bytes": 3870
+      "sha256": "438998a77a2f5d646dd4c0a10132e31016d117832eb6b2fd46b6a10e5fedb855",
+      "bytes": 4025
     },
     {
       "path": "../../apps/control/conversations/migrations/0016_initial_inputs.sql",
@@ -30,13 +30,13 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "5eb88052622c63cf4a3ed36e0f3b3fdcfab6a505ccb6ca4ff4744653043c6b19",
-      "bytes": 40604
+      "sha256": "e08705afe928b71d2eaef8fa94f4aa0a12857ffbdd0a498e4bff12760d6fe543",
+      "bytes": 40825
     },
     {
       "path": "conversation-initial-input/protocol.mjs",
-      "sha256": "994998216af8d4fe325bfc44301d3ef6d99e739e3ca30c29f23a2317c2f0bc3a",
-      "bytes": 2378
+      "sha256": "bf86cba1fffa6a99f6af72717db046bcab71b47c67d60411745b2268daf6e9a1",
+      "bytes": 2436
     },
     {
       "path": "conversation-initial-input/receive.mjs",
@@ -45,8 +45,8 @@
     },
     {
       "path": "conversation-initial-input/schema.mjs",
-      "sha256": "6408a6febc14b6f58097102a806490d6a435a9a0b297dadecd255622d82eedfb",
-      "bytes": 1829
+      "sha256": "7b0fd1529f7005ee5ecff09ae82948cb29bdfc5ed0f4e96861ced4470ea1b196",
+      "bytes": 1927
     },
     {
       "path": "conversation-initial-input/semantics.mjs",
@@ -65,38 +65,38 @@
     },
     {
       "path": "dist/conversation-application.d.ts",
-      "sha256": "75ff26533ed69ca2760b925267fcf9ab0e193bbfc33ff1c0eecee54d8ef0ae81",
-      "bytes": 62285
+      "sha256": "06b5cf2db4d6c68376ad0edad0812ae821205aa9853e7173cabfdf0f421b7f8a",
+      "bytes": 63164
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "84feb7dd58c84b580f32aa1540bafda788bbca3cd6c89dade6978abf1250262f",
+      "sha256": "1640dee3adbf39c32caf107d46c5a2dfcac2bc1cd5d89b4bb70f04854a9ff94c",
       "bytes": 12217
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "60dad81af9c075937cf930a2ddefd4b81e740cf324e17a9a325688a9400cb591",
-      "bytes": 2064722
+      "sha256": "0e560e8cb6cad45d8454b4b592adb131c0fdc72a44c3572a5d166cf90c310190",
+      "bytes": 2072470
     },
     {
       "path": "dist/conversation-input.d.ts",
-      "sha256": "08adcc4a8c17174b3a1d58365d1cd6e57a73df25e830dd5045840f706aec0a97",
-      "bytes": 28483
+      "sha256": "6b4ba7fb37d4541618b7f16c05f5f21577ffb74b30da68baf582d731e32e27f3",
+      "bytes": 28911
     },
     {
       "path": "dist/conversation-input.metadata.json",
-      "sha256": "2b72191e2bfaca106ee1aa8fcd94d8a8686bcd1c5232b9f172b230243758ac62",
+      "sha256": "505345e57679df4d11f9825a082f97926a6a2e77617ad81e5f167c1577c86fe7",
       "bytes": 3499
     },
     {
       "path": "dist/conversation-input.mjs",
-      "sha256": "e2005b9a3f6ccb51a13482a0c6af95afa115c2f8c482cbfbcd1c2e782f04101b",
-      "bytes": 774815
+      "sha256": "d6441f2e693661496d334a4f13a77d7322b644219364dd60ea5e34d5e32d1c6e",
+      "bytes": 781287
     },
     {
       "path": "dist/conversation-input.schema.json",
-      "sha256": "8b04bedaef28e6831683d90f1bfd6f3cc07e407fac68365aae09df4468ab29dd",
-      "bytes": 38388
+      "sha256": "033191dfcaae980e8854b93bf716c816ccb2660668acf17068b95f0296af22a9",
+      "bytes": 39257
     },
     {
       "path": "document-application/boundary.mjs",
@@ -119,7 +119,7 @@
       "bytes": 4086
     }
   ],
-  "schemaSha256": "9bf51c170532c833ef2b43aa3bc44a9e9337b49a89d23874fa97ae757471be00",
+  "schemaSha256": "e61133b0cf0c866fd277c31361c469f6572b453523f3fda6355c2782d0c589d3",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-initial-input/conversation-initial-input-receiver.mjs",
@@ -136,7 +136,7 @@
     {
       "path": "./conversation-input.mjs",
       "artifact": "dist/conversation-input.mjs",
-      "sha256": "e2005b9a3f6ccb51a13482a0c6af95afa115c2f8c482cbfbcd1c2e782f04101b"
+      "sha256": "d6441f2e693661496d334a4f13a77d7322b644219364dd60ea5e34d5e32d1c6e"
     }
   ]
 }

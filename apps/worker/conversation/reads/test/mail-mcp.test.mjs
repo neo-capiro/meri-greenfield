@@ -29,7 +29,7 @@ test('an empty page is absence within its filter only',async()=>{
  const f=await generalReadFixture();f.source.state.total=0;const m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',f.search);assert.equal(r.isError,undefined,JSON.stringify(r));
   assert.deepEqual(JSON.parse(text(r)).messages,[]);
-  assert.equal(r.content[1].text,'Notice: 0 stored message candidate(s) of 0 matching. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant, and if the user expects mail here ask them to check the mailbox connection in Capiro\'s mail integration settings.');
+  assert.equal(r.content[1].text,'Notice: 0 stored message candidate(s) of 0 matching. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.');
   assert.equal(corePaths(f).length,1);
  }finally{await m.close();}
 });

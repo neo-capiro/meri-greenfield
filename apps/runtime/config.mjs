@@ -20,7 +20,8 @@ import {compileRoutinesCoreConfiguration} from './native-authority/routines-conf
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 import {compileNativeDeployment} from './native-deployment-configuration.mjs';
 export {compileControlUserPreferencesConfiguration};
-// Control carries the full read roster in its capability and admission policies.
+// Control carries the approved read roster once (`agentcore.approvedReads`); a capability platform policy names it as
+// `activeReadOperations: "approved"` (capability-policy.mjs) or narrows it with an explicit list.
 // Other role configurations and individual secret files retain their 32 KiB bound.
 export const configurationMaxBytes=role=>role==='control'?40*1024:32*1024;
 export const fault=code=>Object.assign(new Error(code),{code});

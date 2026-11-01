@@ -63,7 +63,7 @@ test('mail: the subject, filters, paging, candidate and thread fields, stale mai
  assert.match(view.systemPrompt,/Email: .* mail_search_messages \(from, participant or query words\) or mail_list_messages \(recent mail\), then mail_read_thread/);
  const texts=Object.fromEntries(view.notices.map(n=>[n.scenario,n.texts]));
  assert.match(texts['mail_search_messages: one candidate from a disabled mailbox'][0],/^Notice: 1 stored message candidate\(s\) of 2 matching; more exist, continue with offset 1\. Previews are incomplete excerpts.*Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect/);
- assert.match(texts['mail_search_messages: empty page'][0],/0 stored message candidate\(s\) of 0 matching\. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant, and if the user expects mail here ask them to check the mailbox connection/);
+ assert.match(texts['mail_search_messages: empty page'][0],/0 stored message candidate\(s\) of 0 matching\. An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant\.$/);
  assert.match(texts['mail_search_messages: UNAVAILABLE (no mailbox)'][0],/No connected Microsoft 365 or Google Workspace mailbox is available for this user.*do not say that no email exists/);
  assert.match(texts['mail_search_messages: ACCESS_DENIED'][0],/use \{kind:"personal"\} in General and \{kind:"client", entityId\} only for the selected client/);
 });

@@ -4,7 +4,7 @@ const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).for
 export const conversationInitialInputVersion='1.3.0';
 export const conversationInitialInputPath='/api/conversations/input/allocate';
 export const initialInputErrorStatuses=freeze({
- NOT_FOUND:[404],METHOD_NOT_ALLOWED:[405],INVALID_REQUEST:[400],SESSION_REFUSED:[401,403],SCOPE_REFUSED:[403],SESSION_CHANGED:[403],STALE_WRITER:[403],
+ NOT_FOUND:[404],METHOD_NOT_ALLOWED:[405],INVALID_REQUEST:[400],SKILL_SOURCES_UNAVAILABLE:[400],SKILL_SCOPE_REFUSED:[400],SESSION_REFUSED:[401,403],SCOPE_REFUSED:[403],SESSION_CHANGED:[403],STALE_WRITER:[403],
  INITIAL_INPUT_CONFLICT:[409],INITIAL_INPUT_ALREADY_EXISTS:[409],INITIAL_INPUT_EXPIRED:[408],DEADLINE:[408],CANCELLED:[408],
  INITIAL_INPUT_REQUIRED:[503],INITIAL_INPUT_CORRUPT:[503],INITIAL_INPUT_UNAVAILABLE:[503],REQUEST_TOO_LARGE:[413],UNSUPPORTED_MEDIA_TYPE:[415],
  MODEL_SELECTION_UNAVAILABLE:[409],MODEL_SETTINGS_UNAVAILABLE:[503],
@@ -13,7 +13,7 @@ export const conversationInitialInputErrorStatuses=initialInputErrorStatuses;
 export const initialInputUnknownCodes=Object.freeze(['DEADLINE','CANCELLED','INITIAL_INPUT_UNAVAILABLE','INITIAL_INPUT_CORRUPT','INITIAL_INPUT_REQUIRED']);
 /** Conservative HTTP default; a domain owner may positively prove NOT_DISPATCHED for an otherwise uncertain code. */
 export const initialInputErrorOutcomes=freeze(Object.fromEntries(Object.keys(initialInputErrorStatuses).map(code=>[code,initialInputUnknownCodes.includes(code)?'UNKNOWN':'NOT_DISPATCHED'])));
-export const conversationInitialInputMetadata=freeze({packageVersion:'0.1.10',initialInputVersion:conversationInitialInputVersion,schemaId:'urn:meri:conversation-initial-input:1.3.0',
+export const conversationInitialInputMetadata=freeze({packageVersion:'0.1.11',initialInputVersion:conversationInitialInputVersion,schemaId:'urn:meri:conversation-initial-input:1.3.0',
  routes:{allocate:{method:'POST',path:conversationInitialInputPath,response:'json'}},
  authentication:{...conversationInputMetadata.authentication},limits:{requestBytes:131072,responseBytes:131072,maxRequestMs:25000},
  bridge:{owner:'accepted conversation-input receiver',responseBytes:conversationInputMetadata.limits.responseBytes,viewOwner:'conversationInputView'},

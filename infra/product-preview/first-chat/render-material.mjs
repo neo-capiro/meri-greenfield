@@ -15,7 +15,7 @@ import {CONTROL_NODE_CA_FILE,productControlTrustsCompositeCa} from '../../../app
 import {compileAgentCoreConfiguration} from '../../../apps/runtime/agentcore-configuration.mjs';
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
 import {validateStaticProductDelivery} from '../../../apps/runtime/material-init.mjs';
-import {compileCapabilityPlatform} from '../../../apps/runtime/product-ports/capability-policy.mjs';
+import {APPROVED_READS_LITERAL,compileCapabilityPlatform} from '../../../apps/runtime/product-ports/capability-policy.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from '../../../apps/runtime/objective-generation/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -169,10 +169,6 @@ export function parseFeatures(raw,{secrets={}}={}){
    out.downloadLinks={enabled:true,...(l.ttlMs===undefined?{}:{ttlMs:l.ttlMs})};
   }
  }
- if(f.capabilityPlatform!==undefined){
-  try{compileCapabilityPlatform({capabilityPlatform:f.capabilityPlatform});}catch{fail('RENDER_INPUT_REFUSED','features.capabilityPlatform (capability-policy.mjs compileCapabilityPlatform)');}
-  out.capabilityPlatform=structuredClone(f.capabilityPlatform);
- }
  if(f.reads!==undefined){
   const fields=['serviceSecretArn','readModeServiceSecretArn','defaultCongress','approvedReads'],r=record(f.reads,'features.reads',['enabled'],fields);
   if(!bool(r.enabled,'features.reads.enabled')){if(fields.some(k=>r[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.reads: disabled reads name no secret, congress or approved reads');out.reads={enabled:false};}
@@ -189,6 +185,16 @@ export function parseFeatures(raw,{secrets={}}={}){
    out.reads={enabled:true,serviceSecretArn:r.serviceSecretArn,...(r.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretArn:r.readModeServiceSecretArn}),
     ...(r.defaultCongress===undefined?{}:{defaultCongress:r.defaultCongress}),...(approvedReads===undefined?{}:{approvedReads})};
   }
+ }
+ // The platform record compiles against the same approved roster control will carry (`agentcore.approvedReads`). A policy list equal to
+ // that roster is emitted as the literal `approved`, which the control resolves back to the identical list, so the roster renders once.
+ if(f.capabilityPlatform!==undefined){
+  const approvedReads=out.reads?.approvedReads,configuration={capabilityPlatform:f.capabilityPlatform,...(approvedReads===undefined?{}:{agentcore:{approvedReads}})};
+  try{compileCapabilityPlatform(configuration);}catch{fail('RENDER_INPUT_REFUSED','features.capabilityPlatform (capability-policy.mjs compileCapabilityPlatform)');}
+  const platform=structuredClone(f.capabilityPlatform),roster=approvedReads?.operations;
+  const isRoster=list=>Array.isArray(list)&&Array.isArray(roster)&&list.length===roster.length&&list.every((op,i)=>op.id===roster[i].id&&op.version===roster[i].version);
+  for(const policy of [platform.maximum,platform.defaults,...Object.values(platform.roleCeilings)])if(isRoster(policy.activeReadOperations))policy.activeReadOperations=APPROVED_READS_LITERAL;
+  out.capabilityPlatform=platform;
  }
  if(f.memory!==undefined){const m=record(f.memory,'features.memory',['enabled']);out.memory={enabled:bool(m.enabled,'features.memory.enabled')};}
  // Native upload inspection (uploads/control-lifecycle.mjs): a control-only opt-in. The digest is not declarable here — it

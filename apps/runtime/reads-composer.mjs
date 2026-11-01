@@ -42,5 +42,12 @@ export async function createControlReadsComposer(configuration){
   const captures=conversationStore?[createBillTextSourceCapture({store:conversationStore,defaultCongress:c.defaultCongress}),createHearingSourceCapture({store:conversationStore})]:[];
   return createReadsApplication({owner:createReadsOwner({execution,binding,approvedReads,createGateway,now,assertReadArguments:createBillWatchReadPolicy({store:conversationStore,binding}),...(conversationStore?{async captureSource(call){for(const capture of captures)await capture(call);}}:{})}),approvedReads,now});
  }
- return Object.freeze({createReadsRuntime,familyIds,missing:families.missing.map(id=>`source-composition:${id}`)});
+ /** The gateway's own availability answer (installation and discovery) for an authority observation that is not a run: the
+  * authenticated session a selection is admitted under. Only `readAvailability` of the constructed gateway is ever called. */
+ async function readAvailability({binding,current,approvedReads,capabilityPolicy=c.capabilityPolicy,readCapabilityRole,signal,deadlineMs}){
+  if(typeof capabilityPolicy?.forRun!=='function'||typeof current!=='function')deny('CONFIGURATION');
+  const gateway=await families.createGateway({binding,current,approvedReads,signal,deadlineMs,capabilityPolicy,readCapabilityRole});
+  return gateway.readAvailability({signal});
+ }
+ return Object.freeze({createReadsRuntime,readAvailability,familyIds,missing:families.missing.map(id=>`source-composition:${id}`)});
 }
