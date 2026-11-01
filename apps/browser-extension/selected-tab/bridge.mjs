@@ -5,6 +5,24 @@ import {captureRenderedText} from './capture.mjs';
 const documentId=v=>typeof v==='string'&&/^(?:[0-9A-Fa-f]{32}|[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/u.test(v);
 const webUrl=value=>{const u=new URL(value);if(!['https:','http:'].includes(u.protocol)||u.username||u.password)throw Error('TAB_UNAVAILABLE');return u;};
 
+/** Every bridge refusal the popup may show, one fixed sentence each; an unknown error keeps the generic text. */
+export const SELECTED_TAB_ERROR_TEXTS=Object.freeze({
+ PAIRING_NOT_ACTIVE:'This chat has not allowed sharing yet. Allow it in the popup first.',
+ PAIRING_NOT_WAITING:'Nothing is waiting for approval right now.',
+ PAIRING_EXPIRED:'The connection to Capiro expired. Reconnect from Capiro.',
+ CHECK_PREVIOUS_SHARE:'Check the previous share\'s upload status in Capiro before capturing again.',
+ CAPTURE_REQUIRED:'Capture the current tab before sharing.',
+ CAPTURE_EXPIRED:'The capture is too old. Capture the current tab again.',
+ SELECTION_CHANGED:'The selected tab changed. Capture the current tab again.',
+ SELECT_SOURCE_TAB:'Select the tab you want to share, not the Capiro tab.',
+ TAB_UNAVAILABLE:'The current tab cannot be shared (no ordinary window, loading, discarded or not a web page).',
+ PAGE_UNAVAILABLE:'This page cannot be read (no document body or not a web page).',
+ PAGE_LIMIT:'This page is too large to share. Share a smaller page.',
+ CAPTURE_UNAVAILABLE:'The page could not be read. Reload the tab and capture again.',
+ SHARE_NOT_SENT:'The share could not be sent; the connection to Capiro was lost. Reconnect from Capiro.',
+});
+export const describeSelectedTabError=error=>SELECTED_TAB_ERROR_TEXTS[error?.message]??'This selection is unavailable. Capture the current tab again or reconnect.';
+
 /** Native Chrome ports establish origin/document identity. The receiving app's
  * current conversation owner, never these labels, authorizes the eventual upload. */
 export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>crypto.randomUUID(),setTimer=setTimeout,clearTimer=clearTimeout}={}){
@@ -50,7 +68,9 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
     if(!transfer||message.selectionId!==transfer.selectionId)throw Error('UNKNOWN_SELECTION');
     if(transfer.state!=='stored')transfer={selectionId:transfer.selectionId,state:message.state};changed();
    }
-  }).catch(()=>{if(peer===candidate)end('revoked');});});
+  // A changed account/chat on the same port revokes the earlier consent; any other protocol failure from the
+  // app (invalid message, invalid pairing, unknown selection) is a lost connection, not a user revocation.
+  }).catch(error=>{if(peer===candidate)end(error?.message==='PAIRING_CHANGED'?'revoked':'disconnected');});});
   port.onDisconnect.addListener(()=>{if(peer===candidate){peer=null;end('disconnected');}});
   changed();return true;
  }
@@ -100,7 +120,10 @@ export function createSelectedTabBridge(chrome,{origins,now=Date.now,newId=()=>c
     if(settledSelections.size>8)settledSelections.delete(settledSelections.values().next().value);
    }
    selection=null;transfer={selectionId:chosen.packet.selectionId,state:'unknown'};
-   peer.port.postMessage(JSON.stringify(chosen.packet));
+   // A synchronous port failure means the share was never handed to Chrome: nothing was sent, so this is a
+   // lost connection, never a share whose acknowledgement is pending.
+   try{peer.port.postMessage(JSON.stringify(chosen.packet));}
+   catch{const broken=peer;peer=null;end('disconnected');broken.port.disconnect();throw Error('SHARE_NOT_SENT');}
   }finally{if(token===epoch){selection=null;busy=false;changed();}}
  }
  function tabChanged(tabId,change){

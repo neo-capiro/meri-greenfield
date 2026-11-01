@@ -235,3 +235,33 @@ test('retained source-run completion never destroys; stop is idempotent and post
   assert.equal(f.events.filter(event => event === 'physical-destroy').length, 1);
   await assert.rejects(service.start(), error => error?.code === 'BROWSER_HOST_SERVICE_TORN_DOWN');
 });
+
+test('the session owner is destroyed with the reason-derived trigger before local resources and physical teardown', async () => {
+  for (const [reason, trigger] of [['conversation-end', 'conversation-end'], ['revoked', 'revocation'], ['lease-expired', 'ttl-expiry']]) {
+    const f = serviceFixture();
+    const triggers = [];
+    f.deps.sessionHost = () => ({ownerInstanceId: 'session-facade', async open() {}, async destroy(input) { triggers.push(input.trigger); f.events.push('session-destroy'); }});
+    const service = composeBrowserOnlyHostService(f.input, f.deps);
+    await service.start();
+    await service.destroy({reason});
+    assert.deepEqual(triggers, [trigger]);
+    const at = name => f.events.indexOf(name);
+    assert.ok(at('session-destroy') >= 0 && at('session-destroy') < at('context-close') && at('session-destroy') < at('physical-destroy'), JSON.stringify(f.events));
+  }
+});
+
+test('a session owner that never opened is skipped, and an unconfirmed destruction is a cleanup problem', async () => {
+  const never = serviceFixture();
+  never.deps.sessionHost = () => ({ownerInstanceId: 'session-facade', async open() {}, async destroy() { throw Object.assign(Error('BROWSER_CUSTODY_UNAVAILABLE'), {code: 'BROWSER_CUSTODY_UNAVAILABLE'}); }});
+  const quiet = composeBrowserOnlyHostService(never.input, never.deps);
+  await quiet.start();
+  await quiet.destroy();
+  assert.ok(never.events.includes('physical-destroy'));
+  const incomplete = serviceFixture();
+  incomplete.deps.sessionHost = () => ({ownerInstanceId: 'session-facade', async open() {}, async destroy() { throw Object.assign(Error('BROWSER_DISPOSE_INCOMPLETE'), {code: 'BROWSER_DISPOSE_INCOMPLETE'}); }});
+  const service = composeBrowserOnlyHostService(incomplete.input, incomplete.deps);
+  await service.start();
+  const outcome = await service.destroy().then(value => value, error => error);
+  assert.equal(outcome?.code, 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
+  assert.ok(incomplete.events.includes('physical-destroy'), 'physical teardown still runs');
+});

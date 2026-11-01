@@ -37,3 +37,17 @@ test('late native connection after abort is closed and never returned',async()=>
  f.native.readable.write('{"bridgeReady":true}\n');const pending=f.port.create(f.request);await started.promise;abort.abort();await assert.rejects(pending);
  answer.resolve({contexts:()=>[{}],close:async()=>{closed++;}});await new Promise(resolve=>setImmediate(resolve));assert.equal(closed,1);assert.equal(f.stops,1);
 });
+
+test('logout reports what the site answered: confirmed, failed or unknown, and always closes its page',async()=>{
+ const answers=[{ok:()=>true},{ok:()=>false},null,'throw'];
+ const expected=['confirmed','failed','unknown','unknown'];
+ for(const [index,answer] of answers.entries()){
+  let closed=0;const context={async newPage(){return {async goto(){if(answer==='throw')throw Error('net::ERR_TIMED_OUT');return answer;},async close(){closed++;}};}};
+  const f=fixture({connect:()=>({contexts:()=>[context],close:async()=>{}})});f.native.readable.write('{"bridgeReady":true}\n');
+  assert.equal(await f.port.create(f.request),context);
+  assert.deepEqual(await f.port.logout({context,url:'https://records.example/logout'}),{outcome:expected[index]});
+  assert.equal(closed,1);f.native.readable.destroy();
+ }
+ const f=fixture();f.native.readable.write('{"bridgeReady":true}\n');await f.port.create(f.request);
+ await assert.rejects(f.port.logout({context:{},url:'https://records.example/logout'}),/REFUSED/);f.native.readable.destroy();
+});

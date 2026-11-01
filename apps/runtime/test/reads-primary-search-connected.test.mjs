@@ -84,6 +84,36 @@ test('without a configured target the existing Core/DDG route is unchanged',asyn
  });
 });
 
+const indexRows=count=>Array.from({length:count},(_,i)=>({text:`Excerpt ${i}`,url:`https://public.example.invalid/article-${i}`,title:`Article ${i}`,
+ ...(i%2?{}:{publishedDate:`2026-10-${String(10+i).padStart(2,'0')}`})}));
+const indexResponse=rows=>()=>Response.json({jsonrpc:'2.0',id:'gateway-fixture',result:{isError:false,content:[{type:'text',text:JSON.stringify({id:'fixture',results:rows})}]}});
+
+test('an omitted limit asks the index for the contract default and delivers six validated rows, not INVALID_RESULT',async()=>{
+ await withEnv(ENV,async()=>{
+  const gatewayCalls=[];
+  const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls,managedSearchResponse:indexResponse(indexRows(10))});
+  const result=JSON.parse(await f.port.execute({operation:f.operation,arguments:{query:'two most recent official articles'},deliveryId:'synthetic-default'})).result;
+  assert.equal(gatewayCalls[0].body.params.arguments.maxResults,6,'the index is asked for the contract default, not the provider default');
+  assert.equal(result.total,6);assert.equal(result.results.length,6);
+  assert.deepEqual(result.results.map(row=>[row.title,row.url,row.publishedAt]).slice(0,3),[
+   ['Article 0','https://public.example.invalid/article-0','2026-10-10'],['Article 1','https://public.example.invalid/article-1',null],['Article 2','https://public.example.invalid/article-2','2026-10-12']]);
+  assert.equal(result.results[0].snippet,'Excerpt 0');
+  const capped=JSON.parse(await f.port.execute({operation:f.operation,arguments:{query:'two most recent official articles',limit:40},deliveryId:'synthetic-capped'})).result;
+  assert.equal(gatewayCalls[1].body.params.arguments.maxResults,12,'an over-large limit is the contract maximum');
+  assert.equal(capped.total,10,'every index row survives when the limit allows it');
+ });
+});
+
+test('a query longer than the index bound is refused as INVALID_ARGUMENTS before any paid call',async()=>{
+ await withEnv(ENV,async()=>{
+  const gatewayCalls=[];
+  const f=await fixture('public-web','search_public_web',{primaryCredentials:CREDS,gatewayCalls});
+  await assert.rejects(()=>f.port.execute({operation:f.operation,arguments:{query:'q'.repeat(230)},deliveryId:'synthetic-long'}),{message:'INVALID_ARGUMENTS'});
+  assert.equal(gatewayCalls.length,0);
+  assert.equal(f.port.externalUsage(),undefined,'nothing was submitted');
+ });
+});
+
 test('two distinct searches aggregate into one run total instead of replacing each other',async()=>{
  await withEnv(ENV,async()=>{
   const gatewayCalls=[];

@@ -6,6 +6,8 @@ import {createPublicWebHandlers} from '../handler.mjs';
 import {createPrimaryWebSearch,createPrimarySearchReadSource,primarySearchTarget,readMcpPayload,projectRow,
  AGENTCORE_SEARCH_PROVIDER} from '../primary-search.mjs';
 import {signAwsRequest,resolveAwsCredentials,amzDate} from '../aws-signing.mjs';
+import * as payloads from './mcp-payloads.mjs';
+import {storedCase} from './fixture.mjs';
 
 // The documented gatewayUrl is the MCP invocation endpoint; the producer binds it unchanged.
 const ENDPOINT='https://meri-abc123.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp';
@@ -76,10 +78,18 @@ test('the request carries the complete stateless 2026-07-28 metadata and a SigV4
   results:[{title:'Release',url:'https://public.example.invalid/a',snippet:'Current release notes',source:AGENTCORE_SEARCH_PROVIDER,publishedAt:null}]});
 });
 
-test('query is bounded to the documented 200 characters and results to the receiving cap',async()=>{
+test('an over-long query is refused as INVALID_ARGUMENTS instead of being silently truncated',async()=>{
+ const s=state([{text:'s',url:'https://public.example.invalid/0',title:'t'}]);
+ await assert.rejects(createPrimaryWebSearch(base({fetchImpl:responder(s)})).search({query:'q'.repeat(201),limit:5,deadlineMs:NOW+5000}),{message:'INVALID_ARGUMENTS'});
+ assert.equal(s.requests.length,0,'no paid call for a query the index would truncate');
+ const exact=await createPrimaryWebSearch(base({fetchImpl:responder(s)})).search({query:' '+'q'.repeat(200)+' ',limit:5,deadlineMs:NOW+5000});
+ assert.equal(s.requests[0].body.params.arguments.query.length,200,'whitespace is normalized before the bound applies');
+ assert.equal(exact.total,1);
+});
+
+test('results are bounded to the receiving cap and the request to the documented maximum',async()=>{
  const s=state(Array.from({length:14},(_,i)=>({text:`snippet ${i}`,url:`https://public.example.invalid/${i}`,title:`row ${i}`})));
- const value=await createPrimaryWebSearch(base({fetchImpl:responder(s)})).search({query:'q'.repeat(400),limit:40,deadlineMs:NOW+5000});
- assert.equal(s.requests[0].body.params.arguments.query.length,200);
+ const value=await createPrimaryWebSearch(base({fetchImpl:responder(s)})).search({query:'q',limit:40,deadlineMs:NOW+5000});
  assert.equal(s.requests[0].body.params.arguments.maxResults,25);
  assert.equal(value.results.length,12);
 });
@@ -265,12 +275,74 @@ test('the search handler routes discovery to the primary port and keeps the page
  assert.equal(createPublicWebHandlers({origin:'https://core.example.invalid',now:()=>NOW},operations).length,2);
 });
 
-test('the frozen receiving contract does not yet admit the primary provider label',()=>{
- // Evidence for the required contract join owned by SCRUM-238: until `packages/contracts` admits the
- // AWS-managed provider and row shape, activation fails closed with INVALID_RESULT instead of
- // mislabelling results as tavily/serper/duckduckgo.
+test('the receiving contract admits the managed provider rows, including an absent title and date',()=>{
  const contract=resolveOperationContract({id:'search_public_web',version:'0.2.0'});
- assert.throws(()=>contract.assertOutput({tool:'search_public_web',contentStatus:'discovered',generatedAt:'2026-10-29T00:00:00.000Z',
-  provider:AGENTCORE_SEARCH_PROVIDER,total:1,results:[{title:null,url:'https://public.example.invalid/a',snippet:null,source:AGENTCORE_SEARCH_PROVIDER,publishedAt:null}]},
-  {query:'q',limit:5}));
+ const page={tool:'search_public_web',contentStatus:'discovered',generatedAt:'2026-10-29T00:00:00.000Z',provider:AGENTCORE_SEARCH_PROVIDER,total:2,
+  results:[{title:'Dated',url:'https://public.example.invalid/a',snippet:'s',source:AGENTCORE_SEARCH_PROVIDER,publishedAt:'2026-10-28'},
+   {title:null,url:'https://public.example.invalid/b',snippet:null,source:AGENTCORE_SEARCH_PROVIDER,publishedAt:null}]};
+ assert.deepEqual(contract.assertOutput(page,{request:{query:'q',limit:5}}),page);
+ // and the same contract refuses more rows than the (defaulted) request limit, which is why the read source
+ // must ask the index for the contract's limit rather than the provider default
+ assert.throws(()=>contract.assertOutput({...page,total:7,results:Array.from({length:7},(_,i)=>({...page.results[0],url:`https://public.example.invalid/${i}`}))},{request:{query:'q'}}));
+});
+
+test('the handler hands the index the contract-normalized input: an omitted limit asks for six rows, never the provider default',async()=>{
+ const calls=[];
+ const primary={provider:AGENTCORE_SEARCH_PROVIDER,search:async({query,limit})=>{calls.push({query,limit});return {
+  tool:'search_public_web',contentStatus:'discovered',generatedAt:'2026-10-29T00:00:00.000Z',provider:AGENTCORE_SEARCH_PROVIDER,total:0,results:[]};}};
+ const handler=createPublicWebHandlers({origin:'https://core.example.invalid',now:()=>NOW},[{id:'search_public_web',version:'0.2.0'}],primary)[0];
+ for(const [request,expected] of [[{query:'  policy   change '},{query:'policy   change',limit:6}],[{query:'policy change',limit:null},{query:'policy change',limit:6}],
+  [{query:'policy change',limit:'40'},{query:'policy change',limit:12}],[{query:'policy change',limit:0},{query:'policy change',limit:1}]]){
+  const f=storedCase('search_public_web',{request});await handler.execute(f.call());assert.deepEqual(calls.at(-1),expected,JSON.stringify(request));
+ }
+ // the retained call context, not the read source, refuses a request whose normalization differs or carries authority
+ const f=storedCase('search_public_web',{request:{query:'policy change'}});
+ await assert.rejects(handler.execute({...f.call(),input:{query:'policy change',limit:10}}),{message:'INVALID_ARGUMENTS'});
+ await assert.rejects(handler.execute({...f.call(),request:{query:'policy change',tenantId:'x'}}),{message:'INVALID_ARGUMENTS'});
+ await assert.rejects(handler.execute({...f.call(),request:{query:''}}),{message:'INVALID_ARGUMENTS'});
+ assert.equal(calls.length,4,'a refused request never reaches the index');
+});
+
+test('recorded success payloads: dated and undated rows project with title, URL, snippet and date',async()=>{
+ for(const [label,body,contentType] of [['json',JSON.stringify(payloads.success()),'application/json'],['structured',JSON.stringify(payloads.structuredSuccess()),'application/json'],['stream',payloads.streamedSuccess(),'text/event-stream']]){
+  const value=await createPrimaryWebSearch(base({fetchImpl:async()=>new Response(body,{status:200,headers:{'content-type':contentType}})})).search({query:'official articles',limit:6,deadlineMs:NOW+5000});
+  assert.equal(value.total,3,label);
+  assert.deepEqual(value.results.map(row=>[row.title,row.url,row.publishedAt]),[
+   ['Agency publishes final rule on reporting thresholds','https://public.example.invalid/news/final-rule-2026','2026-10-28T14:00:00Z'],
+   ['Proposed rule opens comment period','https://public.example.invalid/news/proposed-rule-2026','2026-10-01'],
+   ['About the agency','https://public.example.invalid/about',null]],label);
+  assert.equal(value.results[0].snippet,'The agency published its final rule on 28 October 2026, raising the reporting threshold.');
+ }
+});
+
+test('recorded refusals: inbound IAM denial is ACCESS_DENIED without retry, tool and protocol errors are UNAVAILABLE',async()=>{
+ for(const refusal of [payloads.denied,payloads.unauthenticated]){
+  let calls=0;
+  await assert.rejects(createPrimaryWebSearch(base({maxAttempts:2,fetchImpl:async()=>{calls+=1;return new Response(refusal.body,{status:refusal.status,headers:{'content-type':'application/json'}});}}))
+   .search({query:'q',limit:5,deadlineMs:NOW+5000}),{message:'ACCESS_DENIED'});
+  assert.equal(calls,1);
+ }
+ await assert.rejects(createPrimaryWebSearch(base({fetchImpl:async()=>Response.json(payloads.toolError)})).search({query:'q',limit:5,deadlineMs:NOW+5000}),{message:'UNAVAILABLE'});
+ await assert.rejects(createPrimaryWebSearch(base({fetchImpl:async()=>Response.json(payloads.protocolError)})).search({query:'q',limit:5,deadlineMs:NOW+5000}),{message:'UNAVAILABLE'});
+});
+
+test('recorded malformed payloads are INVALID_RESULT, never an empty discovery',async()=>{
+ for(const [label,body] of Object.entries(payloads.malformed)){
+  await assert.rejects(createPrimaryWebSearch(base({fetchImpl:async()=>new Response(body,{status:200,headers:{'content-type':'application/json'}})}))
+   .search({query:'q',limit:5,deadlineMs:NOW+5000}),{message:'INVALID_RESULT'},label);
+ }
+ const streamedNotificationOnly=['event: message',`data: ${JSON.stringify({jsonrpc:'2.0',method:'notifications/message',params:{}})}`,''].join('\n');
+ await assert.rejects(createPrimaryWebSearch(base({fetchImpl:async()=>new Response(streamedNotificationOnly,{status:200,headers:{'content-type':'text/event-stream'}})}))
+  .search({query:'q',limit:5,deadlineMs:NOW+5000}),{message:'INVALID_RESULT'});
+});
+
+test('a gateway that never answers is DEADLINE at the request window, and a caller abort is CANCELLED',async()=>{
+ let clock=NOW;
+ const stalled=createPrimaryWebSearch(base({now:()=>clock,maxRequestMs:1000,fetchImpl:(url,options)=>new Promise((resolve,reject)=>{
+  options.signal.addEventListener('abort',()=>reject(options.signal.reason));setTimeout(()=>{clock=NOW+1500;},5);})}));
+ await assert.rejects(stalled.search({query:'q',limit:5,deadlineMs:NOW+60000}),{message:'DEADLINE'});
+ const controller=new AbortController();
+ const aborted=createPrimaryWebSearch(base({fetchImpl:(url,options)=>new Promise((resolve,reject)=>{
+  options.signal.addEventListener('abort',()=>reject(options.signal.reason));setTimeout(()=>controller.abort(),5);})}));
+ await assert.rejects(aborted.search({query:'q',limit:5,deadlineMs:NOW+60000,signal:controller.signal}),{message:'CANCELLED'});
 });
