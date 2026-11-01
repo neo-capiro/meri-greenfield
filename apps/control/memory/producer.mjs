@@ -8,6 +8,7 @@ import {asProductError,productFailure,refuse} from '../product-access/errors.mjs
 import {buildCandidate} from './candidate.mjs';
 import {assertCorrectionTarget,assertProposalScope,visibleToProposer} from './eligibility.mjs';
 import {encodeCursor} from './wire.mjs';
+import {decisionAdmission,proposerView as view,repeatedDecision} from './review-state.mjs';
 const UUID4=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 /** `decisions` (`core-decisions.mjs`) is optional: without it the review path lists but `decide` answers MEMORY_UNAVAILABLE. */
 export function createMemoryProducer(options){
@@ -181,9 +182,7 @@ export function createMemoryProducer(options){
     await requireServable(r.candidate);
     const current=(await statuses(principal,[r],{signal,deadlineMs}))[0];
     await requireServable(r.candidate);
-    if(current.review.status==='unavailable')refuse('MEMORY_REVIEW_UNAVAILABLE');
-    const existing=existingDecision(current,decision);if(existing)return existing;
-    if(current.review.status!=='pending')refuse('MEMORY_DECISION_NOT_PENDING');
+    const admission=decisionAdmission(current,decision);if(admission.kind==='repeat')return admission.result;
     let outcome;
     try{({outcome}=await decisions.decide({candidate:r.candidate,decision,reason:request.reason,signal,deadlineMs}));}
     catch(error){
@@ -191,7 +190,7 @@ export function createMemoryProducer(options){
      // Read the original candidate within the same request budget; never repeat the POST.
      const recovered=(await statuses(principal,[r],{signal,deadlineMs}))[0];
      await requireServable(r.candidate);
-     const settled=existingDecision(recovered,decision);if(settled)return settled;
+     const settled=repeatedDecision(recovered,decision);if(settled)return settled;
      throw error;
     }
     const after=(await statuses(principal,[r],{signal,deadlineMs}))[0];
@@ -200,18 +199,4 @@ export function createMemoryProducer(options){
    }catch(error){throw asProductError(error,'MEMORY_UNAVAILABLE');}
   },
  });
-}
-/** A matching terminal Core receipt is a repeat decision, never another mutation. */
-function existingDecision(proposal,decision){
- if(!['approved','rejected'].includes(decision)||proposal.review.status!==decision)return null;
- return Object.freeze({proposal,decision:Object.freeze({decision,outcome:decision==='approved'?'duplicate':'rejected'})});
-}
-/** The proposer's view of one candidate and its review state. `review` is Core's answer, null when only the journal was consulted. */
-function view(record,review){
- const c=record.candidate;
- const status=record.submission.state!=='SUBMITTED'&&(!review||review.status==='not_found'||review.status==='unavailable')?'submission_unknown':
-  review===null?'pending':review.status==='unavailable'?'unavailable':review.status==='not_found'?'review_missing':review.status;
- return Object.freeze({candidateId:c.candidateId,candidateSha256:record.candidateSha256,kind:c.kind,scope:c.scope,clientId:c.clientId,content:c.content,key:c.key,ttlDays:c.ttlDays,
-  corrects:c.corrects,reason:c.reason,sources:c.sources,origin:c.origin,createdAt:c.createdAt,
-  review:Object.freeze({status,reviewId:review?.reviewId??record.submission.reviewId??null,decidedAt:review?.decidedAt??null,publishedMemoryId:review?.publishedMemoryId??null,checkedAt:review?.checkedAt??null})});
 }

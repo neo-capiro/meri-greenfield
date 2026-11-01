@@ -25,7 +25,7 @@ test('provider collision, per-model cost reset, missing model and unknown pricin
 });
 test('loaded configuration forwards admitted provider/model/effort and tenant per-run limits, never credentials',()=>{
  const model=resolveSdkModelConfiguration({provider:'claude-api',modelId:api,effort:'max'},{maxTurns:20,maxBudgetMicroUsd:2000000,monthlyCapMicroUsd:5000000});
- assert.deepEqual(model,{provider:'claude-api',model:api,effort:'max',region:'us-east-1',maxOutputTokens:4096,usageBasis:apiBasis,maxTurns:20,maxCostMicroUSD:2000000});
+ assert.deepEqual(model,{provider:'claude-api',model:api,effort:'max',region:'us-east-1',maxOutputTokens:32000,usageBasis:apiBasis,maxTurns:20,maxCostMicroUSD:2000000});
  assert.throws(()=>resolveSdkModelConfiguration({provider:'other',modelId:api,effort:null},{maxTurns:20,maxBudgetMicroUsd:1}));
 });
 

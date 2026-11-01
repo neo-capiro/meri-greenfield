@@ -102,8 +102,8 @@ test('addition: ack, identical replay, pending until the owner decision; approva
  // The ttl became Core's expiry; a second keyed addition for the committed key is a definite 409 (a correction is required).
  assert.equal(row.expiresAt,Date.parse(first.createdAt)+2*86400000);
  await code(t.propose(principal(),{idempotencyKey:id(2),scope:'personal',content:'Another',key:'briefing-time'}),'MEMORY_SUBMISSION_REFUSED');
- // The decided candidate cannot be decided again; another member never sees it.
- await code(t.decide(principal(),'rejected',{candidateId:first.candidateId,reason:'late'}),'MEMORY_DECISION_NOT_PENDING');
+ // Core, not Meri, refuses a decision on the decided candidate (it locks only a pending row: 404); another member never sees it.
+ await code(t.decide(principal(),'rejected',{candidateId:first.candidateId,reason:'late'}),'MEMORY_DECISION_NOT_FOUND');
  await code(t.decide(principal({actorId:OTHER}),'approved',{candidateId:first.candidateId}),'MEMORY_PROPOSAL_NOT_FOUND');
 });
 
