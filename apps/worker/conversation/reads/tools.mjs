@@ -1,20 +1,24 @@
 // @ts-check
-/** Descriptor → SDK tool definition for one available read. Names, descriptions, hints and annotations derive only
- * from the canonical catalog descriptor (FABLE-GENERAL-READ-TOOLS-20261015 §2.1); nothing is hand-written per tool.
- * Legacy aliases are never exposed as names. */
+/** Descriptor → SDK tool definition for one available read. Names, descriptions, hints and annotations derive from
+ * the canonical catalog descriptor (FABLE-GENERAL-READ-TOOLS-20261015 §2.1); the only addition is the operational
+ * guidance `guidance.mjs` owns for reads whose frozen descriptor is a pending-contract placeholder behind a live
+ * producer (its usage lines are appended and its limitations replace the placeholder ones). Legacy aliases are never
+ * exposed as names. */
 import {tool} from '@anthropic-ai/claude-agent-sdk';
 import {z} from 'zod';
 import {sdkToolName} from '../skills/mcp.mjs';
 import {advertisedArguments} from './schema.mjs';
+import {readGuidance} from './guidance.mjs';
 export const READ_SERVER_NAME='meri_reads';
 export const READ_TOOL_PREFIX=`mcp__${READ_SERVER_NAME}__`;
 const MAX_DESCRIPTION=2048,MAX_LIMITS=4;
 /** @param {{operation:{id:string,version:string}}} row */
 export const readToolName=row=>`${READ_TOOL_PREFIX}${sdkToolName(row.operation)}`;
-/** @param {any} d */
-function description(d){
- const lines=[`${d.displayName}. ${d.whenToUse}`];
- if(d.limitations?.length)lines.push(`Limits: ${d.limitations.slice(0,MAX_LIMITS).join(' ')}`);
+/** @param {any} d @param {import('./guidance.mjs').ReadGuidance|undefined} guidance */
+function description(d,guidance){
+ const lines=[`${d.displayName}. ${d.whenToUse}`,...(guidance?.usage??[])];
+ const limitations=guidance?.limitations.length?guidance.limitations:d.limitations??[];
+ if(limitations.length)lines.push(`Limits: ${limitations.slice(0,MAX_LIMITS).join(' ')}`);
  for(const example of d.negativeExamples??[])lines.push(`Do not: ${example}`);
  lines.push(`Canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}.`);
  lines.push('Supply literal arguments only; credentials and scope authority remain with the gateway.');
@@ -22,10 +26,10 @@ function description(d){
 }
 /** @param {{operation:{id:string,version:string},descriptor:any}} row @param {(raw:any,extra:any)=>Promise<any>} handler @param {boolean} alwaysLoad */
 export function defineReadTool(row,handler,alwaysLoad){
- const d=row.descriptor,advertised=advertisedArguments(d.inputSchema);
+ const d=row.descriptor,advertised=advertisedArguments(d.inputSchema),name=sdkToolName(row.operation);
  const shape={arguments:advertised.arguments,_meriInvocation:z.string().optional().describe('Reserved correlation supplied only by the trusted SDK hook')};
  const searchHint=(d.positiveExamples??[]).join(' ').slice(0,512);
- const definition=tool(sdkToolName(row.operation),description(d),shape,handler,{annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true},alwaysLoad,...(searchHint?{searchHint}:{})});
+ const definition=tool(name,description(d,readGuidance(name)),shape,handler,{annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true},alwaysLoad,...(searchHint?{searchHint}:{})});
  return Object.freeze({definition,mode:advertised.mode,shape});
 }
 /** The SDK leaves a tool out of its list when its input schema cannot become JSON Schema; that is a configuration

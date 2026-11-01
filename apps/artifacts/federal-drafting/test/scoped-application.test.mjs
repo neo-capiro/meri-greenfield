@@ -99,9 +99,9 @@ test('XML/USLM/HTML cannot be mislabeled as the native flat editing baseline',()
   assert.throws(()=>projectNativeFederalSource(selection,result),{code:'DRAFT_SOURCE_FORMAT_UNSUPPORTED'});
  }
 });
-test('whole-source removal stays refused until an empty-result export contract exists',()=>{
+test('whole-source removal is an explicit refusal with its own reason, not an empty document',()=>{
  const source=scopedSource();
- assert.throws(()=>compileFederalDraft(source,[opFor(source,{scopeId:'document',kind:'delete',expectedText:source.text})]),{code:'DRAFT_EMPTY_RESULT'});
+ assert.throws(()=>compileFederalDraft(source,[opFor(source,{scopeId:'document',kind:'delete',expectedText:source.text})]),{code:'DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED',operationId:null});
 });
 
 test('revising inserted text back to its original bytes removes that redline while preserving another edit',()=>{

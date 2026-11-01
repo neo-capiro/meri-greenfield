@@ -165,7 +165,8 @@
             "draft",
             "operative",
             "consolidated",
-            "redline"
+            "redline",
+            "docx"
           ]
         },
         "deliveryId": {
@@ -193,6 +194,17 @@
               "type": "null"
             }
           ]
+        },
+        "reviewVersionId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -202,6 +214,65 @@
         "deliveryId",
         "baseVersionId",
         "baseRevisionSha256"
+      ],
+      "additionalProperties": false
+    },
+    "FederalApproveRequest": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expectedArtifactSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "deliveryId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.:@/-]{1,255}$"
+        }
+      },
+      "required": [
+        "versionId",
+        "expectedArtifactSha256",
+        "revisionSha256",
+        "deliveryId"
+      ],
+      "additionalProperties": false
+    },
+    "FederalHistoryRequest": {
+      "type": "object",
+      "properties": {
+        "versionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "cursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "versionId",
+        "limit",
+        "cursor"
       ],
       "additionalProperties": false
     },
@@ -230,6 +301,24 @@
       ],
       "additionalProperties": false
     },
+    "FederalApproval": {
+      "type": "object",
+      "properties": {
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "reviewVersionId": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "required": [
+        "revisionSha256",
+        "reviewVersionId"
+      ],
+      "additionalProperties": false
+    },
     "FederalReview": {
       "type": "object",
       "properties": {
@@ -251,13 +340,24 @@
               "type": "null"
             }
           ]
+        },
+        "approval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FederalApproval"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
         "schema",
         "selection",
         "prepared",
-        "savedDraft"
+        "savedDraft",
+        "approval"
       ],
       "additionalProperties": false
     },
@@ -279,13 +379,25 @@
             "draft",
             "operative",
             "consolidated",
-            "redline"
+            "redline",
+            "docx"
           ]
         },
         "review": {
           "enum": [
             "unapproved",
-            "confirmed-for-export"
+            "confirmed-for-export",
+            "approved"
+          ]
+        },
+        "approval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FederalApproval"
+            },
+            {
+              "type": "null"
+            }
           ]
         },
         "publication": {
@@ -298,7 +410,88 @@
         "revisionSha256",
         "output",
         "review",
+        "approval",
         "publication"
+      ],
+      "additionalProperties": false
+    },
+    "FederalHistoryEntry": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "$ref": "#/$defs/ArtifactVersion_7f9c56fa"
+        },
+        "revisionSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourceArtifact": {
+          "$ref": "#/$defs/FederalSourceArtifact"
+        },
+        "approval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FederalApproval"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "version",
+        "revisionSha256",
+        "sourceArtifact",
+        "approval"
+      ],
+      "additionalProperties": false
+    },
+    "FederalHistory": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "meri.federal-review.v1"
+        },
+        "artifactId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "anchorVersionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "headVersionId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "revisions": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": {
+            "$ref": "#/$defs/FederalHistoryEntry"
+          }
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schema",
+        "artifactId",
+        "anchorVersionId",
+        "headVersionId",
+        "revisions",
+        "nextCursor"
       ],
       "additionalProperties": false
     },
@@ -318,6 +511,17 @@
                 "READ_UNAVAILABLE",
                 "UNKNOWN",
                 "RESULT_NOT_RELEASED"
+              ]
+            },
+            "operationId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                },
+                {
+                  "type": "null"
+                }
               ]
             }
           },
@@ -574,6 +778,138 @@
               },
               "minItems": 1,
               "maxItems": 128
+            }
+          },
+          "required": [
+            "documentId",
+            "publisher",
+            "sourceVersion",
+            "sourceUrl",
+            "publishedAt",
+            "parserVersion",
+            "sha256",
+            "text",
+            "coverage",
+            "scopes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "documentId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "publisher": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceVersion": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "sourceUrl": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            "publishedAt": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "parserVersion": {
+              "const": "federal-uslm-xml/1"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 131072
+            },
+            "coverage": {
+              "type": "object",
+              "properties": {
+                "complete": {
+                  "type": "boolean"
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "minItems": 1,
+                  "maxItems": 32
+                }
+              },
+              "required": [
+                "complete",
+                "limitations"
+              ],
+              "additionalProperties": false
+            },
+            "scopes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  },
+                  "start": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "end": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "ancestorPath": {
+                    "type": "array",
+                    "maxItems": 127,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,127}$"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "label",
+                  "start",
+                  "end",
+                  "sha256",
+                  "ancestorPath"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 1024
             }
           },
           "required": [
@@ -1748,7 +2084,8 @@
         "parserVersion": {
           "enum": [
             "federal-plain-text/1",
-            "federal-scoped-text/2"
+            "federal-scoped-text/2",
+            "federal-uslm-xml/1"
           ]
         },
         "source": {

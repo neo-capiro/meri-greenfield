@@ -34,6 +34,11 @@ const OBSERVE_IDLE_POLL_MAX_MS=250;
 const WINDOW_END_SLACK_MS=50;
 /** Typed-selection refusals the input routes report as INVALID_REQUEST: the choice, not the service, is at fault. */
 export const SKILL_SELECTION_REFUSALS=Object.freeze(['SKILL_UNAVAILABLE','SKILL_WINDOW_REQUIRED','SKILL_SCOPE_REFUSED','SKILL_ADMISSION_REFUSED']);
+/** How old a complete fused session observation may be for a streamed `message.delta` publication to reuse it instead of
+ * resolving the session again. Every other operation observes fresh, and a refused observation drops the entry, so a
+ * revocation reaches a streaming run within this bound and at once after any fresh read has observed it. */
+export const PUBLISH_REUSE_MS=2000;
+const RECENT_OBSERVATIONS_MAX=1024;
 export function createConversationService({sessions,store,dispatcher,versions,fiscalCalendars=[],now=Date.now,newId=randomUUID,maxRequestMs=3000,selectedSkillAdmission,selectedOutputPublication,procedureAdmission,siteWorkflowAdmission,retention,capabilityPolicy,readCapabilityRole,runBudgets,modelCatalog,documentRevisionSource,uploadInputSource}){
  const captureUploadSource=uploadInputSource===undefined?undefined:createUploadSourceCapture({store});
  const readCurrent=authenticatedCurrentState(sessions);
@@ -52,12 +57,18 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  const retentionGate=retention===undefined?undefined:own(retention,['assertServable'],['isSuppressed','withRelease']);
  if(retentionGate!==undefined&&(typeof retentionGate.assertServable!=='function'||Object.hasOwn(retentionGate,'withRelease')&&typeof retentionGate.withRelease!=='function'))fail('CONTROL_CONFIGURATION');
  validateShape('RuntimeVersions',versions);versions=bounded(versions);fiscalCalendars=bounded(fiscalCalendars);if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['accept','append','read'].some(k=>typeof store?.[k]!=='function')||['start','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONTROL_CONFIGURATION');
+ // The latest complete, gated observation per credential (binding digest, pinned context, authority expiry, when it began).
+ // Written by every successful non-cleanup pass, dropped by every refused one; read only by a publication that asked to reuse.
+ const recent=new Map();
+ function remember(credential,entry){recent.set(credential,entry);if(recent.size>RECENT_OBSERVATIONS_MAX){const at=now();for(const [key,value] of recent)if(at-value.checkedAtMs>PUBLISH_REUSE_MS)recent.delete(key);}}
  // untilMs: an observation window whose body releases nothing without its own post-read fresh(); it ends at untilMs instead of
  // maxRequestMs and skips the trailing recheck, which would only repeat the last release's.
- async function operation(credential,signal,body,{cleanup=false,untilMs,release,historyStage}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:untilMs??now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER,releasing=false;
+ // reuse: {bindingSha256} lets this pass run on the credential's observation of that binding made within PUBLISH_REUSE_MS, with
+ // neither the opening nor the closing fresh read; absent, or without such an observation, the pass observes fresh as always.
+ async function operation(credential,signal,body,{cleanup=false,untilMs,release,historyStage,reuse}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:untilMs??now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER,releasing=false;
   // One pass is one complete session observation: the registered owner's fused reader resolves the session once and yields both
   // receipts. A plain session port keeps the authenticate + current-state pair.
-  async function fresh(){const started=now();let authentication,current;
+  async function fresh(){const started=now();let authentication,current;try{
    reportHistoryStage(historyStage,releasing?'release_session':'session');
    if(readCurrent)({authentication,current}=bounded(await life.run(signal=>readCurrent({credential,signal,deadlineMs:started+maxRequestMs}))));
    else{authentication=bounded(await life.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs})));current=bounded(await life.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs})));}
@@ -66,9 +77,15 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    const at=now();for(const receipt of [authentication,current])if(!Number.isSafeInteger(receipt.checkedAtMs)||receipt.checkedAtMs<started||receipt.checkedAtMs>at||!Number.isSafeInteger(receipt.expiresAtMs)||receipt.expiresAtMs<=at)fail('SESSION_REFUSED');authorityExpiresAtMs=Math.min(authorityExpiresAtMs,authentication.expiresAtMs,current.expiresAtMs);life.limitDeadline(authorityExpiresAtMs);
    const selected=bounded({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId});if(pinned&&!same(pinned,selected))fail('SESSION_CHANGED');pinned??=selected;life.check();
    if(retentionGate&&!cleanup){reportHistoryStage(historyStage,releasing?'release_retention':'retention');await life.run(()=>retentionGate.assertServable({tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId}));life.check();}
+   // A cleanup pass skipped the retention gate, so it is never an observation a publication may reuse.
+   if(!cleanup)remember(credential,{bindingSha256:hash(pinned.binding),pinned,authorityExpiresAtMs,checkedAtMs:started});
    return pinned;
-  }
-  try{const context=await fresh();let result=await body(context,life,fresh,()=>authorityExpiresAtMs);releasing=true;if(untilMs===undefined)await fresh();if(release)result=await release(result,life);life.check();return result;}finally{life.close();}
+  }catch(error){recent.delete(credential);throw error;}}
+  let reused=false;
+  if(reuse!==undefined){const entry=recent.get(credential),at=now();
+   if(entry!==undefined&&at-entry.checkedAtMs<=PUBLISH_REUSE_MS&&at<entry.authorityExpiresAtMs&&entry.bindingSha256===reuse.bindingSha256){pinned=entry.pinned;authorityExpiresAtMs=entry.authorityExpiresAtMs;life.limitDeadline(authorityExpiresAtMs);reused=true;}
+   else recent.delete(credential);}
+  try{const context=reused?pinned:await fresh();let result=await body(context,life,fresh,()=>authorityExpiresAtMs);releasing=true;if(untilMs===undefined&&!reused)await fresh();if(release)result=await release(result,life);life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
  function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest','modelSelection','documentRevision','uploads','procedure','siteWorkflow','work']);if(Object.hasOwn(i,'documentRevision')){try{assertDocumentRevisionSelection(i.documentRevision);if(i.skill&&!supportsSelectedDocumentRevision(i.skill))throw 0;}catch{fail('INVALID_REQUEST');}}if(i.siteWorkflow!==undefined){try{assertSiteWorkflowSelection(i.siteWorkflow);}catch{fail('INVALID_REQUEST');}}if(i.procedure!==undefined){try{assertProcedureSelection(i.procedure);if(Object.hasOwn(i,'skill'))throw 0;}catch{fail('INVALID_REQUEST');}}if(i.uploads!==undefined){try{assertUploadSelections(i.uploads);}catch{fail('INVALID_REQUEST');}}if(i.work!==undefined){try{assertWorkSelection(i.work);}catch{fail('INVALID_REQUEST');}}uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);if(Object.hasOwn(i,'modelSelection')){try{assertModelSelection(i.modelSelection);}catch{fail('INVALID_REQUEST');}}return i;}
@@ -212,7 +229,10 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   const capabilities=await life.run(signal=>capabilityPort.forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:role.actorRole,signal}));
   return {...result,...(capabilities===null?{}:{capabilities})};
  }});}
- async function publish({credential,binding,event,signal}){validateShape('RunBinding',binding);const e=bounded(event);own(e,['eventId','createdAt','type','data']);if(!['run.status','message.delta','question.pending','question.answered'].includes(e.type))fail('EVENT_TYPE_REFUSED');return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');return result;});}
+ // A streamed text delta is the one publication that may ride the credential's observation of this binding made within
+ // PUBLISH_REUSE_MS: it carries display text only, the store still fences a terminal, held or closed run, and every status,
+ // question and usage write observes fresh (and drops a refused credential's observation for the deltas that follow).
+ async function publish({credential,binding,event,signal}){validateShape('RunBinding',binding);const e=bounded(event);own(e,['eventId','createdAt','type','data']);if(!['run.status','message.delta','question.pending','question.answered'].includes(e.type))fail('EVENT_TYPE_REFUSED');return operation(credential,signal,async(c,life)=>{if(!same(c.binding,binding))fail('STALE_WRITER');const result=await life.run(()=>store.append(binding,e,life.check,c.scopes));if(!same(result.scopes,c.scopes))fail('SCOPE_REFUSED');return result;},e.type==='message.delta'?{reuse:{bindingSha256:hash(binding)}}:{});}
  async function recordUsage({credential,binding,input,signal}){
   validateShape('RunBinding',binding);const value=assertUsageInput(input);
   if(typeof store.recordUsage!=='function'||typeof store.nextRuns?.execution!=='function'||typeof store.lifecycle?.execution!=='function')fail('SDK_USAGE_UNAVAILABLE');

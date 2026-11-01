@@ -76,12 +76,10 @@ test('a mismatched, over-claiming or oversized result is refused and the owned s
  await assert.rejects(client.inspect(DECLARATION,BYTES,{deadlineMs:call.deadlineMs()}),{code:'UPLOAD_INSPECTION_RESULT_REFUSED'});
  assert.deepEqual(calls,['invoke','stop']);
 });
-test('the exact original gate runs before dispatch: a byte, hash or declaration mismatch never reaches the runtime',async()=>{
+test('the closed request admission alone binds bytes to the declaration before dispatch: a byte, hash or declaration mismatch never reaches the runtime',async()=>{
  const f=port();
- await assert.rejects(f.client.inspect(DECLARATION,Buffer.from('other bytes','utf8'),{deadlineMs:call.deadlineMs()}),{code:'UPLOAD_ORIGINAL_MISMATCH'});
- await assert.rejects(f.client.inspect({...DECLARATION,sha256:'b'.repeat(64)},BYTES,{deadlineMs:call.deadlineMs()}),{code:'UPLOAD_ORIGINAL_MISMATCH'});
- await assert.rejects(f.client.inspect({...DECLARATION,bytes:DECLARATION.bytes+1},BYTES,{deadlineMs:call.deadlineMs()}),{code:'UPLOAD_ORIGINAL_MISMATCH'});
- await assert.rejects(f.client.inspect({...DECLARATION,filename:'note.exe'},BYTES,{deadlineMs:call.deadlineMs()}),{code:'UPLOAD_FORMAT'});
+ for(const [declaration,bytes] of [[DECLARATION,Buffer.from('other bytes','utf8')],[{...DECLARATION,sha256:'b'.repeat(64)},BYTES],[{...DECLARATION,bytes:DECLARATION.bytes+1},BYTES],[{...DECLARATION,filename:'note.exe'},BYTES],[DECLARATION,'not bytes']])
+  await assert.rejects(f.client.inspect(declaration,bytes,{deadlineMs:call.deadlineMs()}),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'});
  assert.deepEqual(f.calls,[]);
 });
 test('an unknown dispatch outcome is never retried, and the owned session is always stopped',async()=>{

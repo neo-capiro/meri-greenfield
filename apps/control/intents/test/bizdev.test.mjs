@@ -45,7 +45,7 @@ function setup({linked=true}={}){
  const owner=createIntentApprovalOwner({journal:m.store.port,bizdev:{read:client.read,decide:client.decide},now:()=>NOW,limits:{maxRequestMs:5000},enabled:true});
  const call={operation:{id:operation,version:'0.2.0'},arguments:request,deliveryId:delivery(1)};
  const decideRequest=(p,decision='approved')=>({conversationId,deliveryId:delivery(1),proposalId:p.proposalId,commandSha256:p.commandSha256,decision});
- return {state,binding,scopes,request,call,client,owner,principal,store:m.store,conversationId,linkedClientId,decideRequest,prepare:()=>m.mount.prepare(call),list:()=>owner.list({principal,request:{conversationId}}),decide:(p,decision='approved')=>owner.decide({principal,request:decideRequest(p,decision)})};
+ return {state,binding,scopes,request,call,client,owner,principal,store:m.store,conversationId,linkedClientId,decideRequest,prepare:()=>m.mount.prepare(call),prepareWith:(args,n)=>m.mount.prepare({...call,arguments:args,deliveryId:'sdk:'+String(n).padStart(64,'0')}),list:()=>owner.list({principal,request:{conversationId}}),decide:(p,decision='approved')=>owner.decide({principal,request:decideRequest(p,decision)})};
 }
 test('the prospect conversation prepares once and approval releases the exact saved version',async()=>{
  const f=setup(),{proposal,status}=await f.prepare(),p=status==='approval_required'?proposal:null;
@@ -117,4 +117,12 @@ test('an identical re-prepare derives the same request key and one proposal',asy
  const f=setup();const first=await f.prepare();const second=await f.prepare();
  assert.equal(first.proposal.request.requestKey,second.proposal.request.requestKey);
  assert.equal(second.proposal.commandSha256,first.proposal.commandSha256);
+});
+test('pre-call refusals settle FAILED and replay the same refusal without a Core call',async()=>{
+ const f=setup();
+ for(const [n,args,code] of [[7,{},'INVALID_ARGUMENTS'],[8,{...f.request,conversationId:id(77)},'ACCESS_DENIED']]){
+  await assert.rejects(f.prepareWith(args,n),{code});await assert.rejects(f.prepareWith(args,n),{code});
+  assert.equal([...f.store.rows.values()].filter(r=>r.state==='FAILED').length,n-6);
+ }
+ assert.equal(f.state.prepares,0);
 });

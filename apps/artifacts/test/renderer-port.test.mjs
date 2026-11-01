@@ -1,7 +1,7 @@
 /** Qualified-renderer port: fail-closed states, admission shape, sandbox requirements and binding identity. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createRendererPort,createLibreOfficeRendererPort,isRendererPort,admittedConverter,describeRenderer,RENDERER_SANDBOX_REQUIREMENTS} from '../renderer.mjs';
+import {createRendererPort,createLibreOfficeRendererPort,isRendererPort,admittedConverter,RENDERER_SANDBOX_REQUIREMENTS} from '../renderer.mjs';
 import {realPdf,syntheticConverter,syntheticAdmission} from './pdf-fixtures.mjs';
 
 const unavailable=async(port,reason)=>{
@@ -33,12 +33,11 @@ test('an admitted port binds the qualification into every receipt and is detache
  assert.equal(port.state,'available');assert.equal(admittedConverter(port),port);assert.equal(port.admission.qualificationId,'synthetic-test-admission');assert.equal(port.admission.sandbox.noNetwork,true);
  assert.throws(()=>{port.admission.sandbox.noNetwork=false;});
  await assert.rejects(port.transform({bytes:realPdf(['not docx']),format:'docx',target:'pdf'}),{code:'ARTIFACT_PROCESS_FAILED'});assert.equal(converter.calls.length,1);
- assert.deepEqual(describeRenderer(port),{state:'available',reason:'RENDERER_ADMITTED',sandboxRequirements:RENDERER_SANDBOX_REQUIREMENTS,missingRequirements:[],rendererId:'libreoffice',rendererVersion:'24.2.7.2',imageDigest:'sha256:'+'0'.repeat(64),qualificationId:'synthetic-test-admission'});
+ assert.equal(port.reason,'RENDERER_ADMITTED');assert.deepEqual(port.missingRequirements,[]);assert.deepEqual([port.admission.rendererId,port.admission.rendererVersion,port.admission.imageDigest],['libreoffice','24.2.7.2','sha256:'+'0'.repeat(64)]);
 });
 test('raw converters and look-alike objects are not renderer ports',()=>{
  const converter=syntheticConverter(),lookalike={state:'available',reason:'RENDERER_ADMITTED',admission:syntheticAdmission(),transform:converter.transform};
  for(const value of [converter,lookalike,null,undefined]){assert.equal(isRendererPort(value),false);assert.equal(admittedConverter(value),null);}
- assert.equal(describeRenderer(lookalike).state,'unavailable');
 });
 test('the LibreOffice port requires the admitted executable exactly and performs no IO at construction',async()=>{
  const admission=syntheticAdmission({executable:'/nonexistent/soffice'});

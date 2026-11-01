@@ -20,12 +20,12 @@ function fixture(){
   async transition(a,b,check){await state.onTransition?.(a,b);check();if(hash(state.rows.get(a.uploadId))!==hash(a))throw Error('UPLOAD_CHANGED');state.rows.set(a.uploadId,copy(b));return copy(b);},
  };
  const objects={
-  async put(r){state.puts++;await state.onPut?.();state.object={objectId:r.objectId,versionId:'NATIVE_ORIGINAL_VERSION',sha256:uploadHash(r.bytes),bytes:r.bytes.length,scopes:r.scopes};if(state.lostAck)throw Error('ACK_LOST');return copy(state.object);},
+  async put(r){state.puts++;await state.onPut?.();state.stored=Buffer.from(r.bytes);state.object={objectId:r.objectId,versionId:'NATIVE_ORIGINAL_VERSION',sha256:uploadHash(r.bytes),bytes:r.bytes.length,scopes:r.scopes};if(state.lostAck)throw Error('ACK_LOST');return copy(state.object);},
   async observePut(){return state.absent?null:copy(state.object);},
-  async get(){state.gets++;state.onGet?.();return Buffer.from(bytes);},
+  async get(){state.gets++;state.onGet?.();return Buffer.from(state.stored??bytes);},
  };
- const receipt=()=>({sourceSha256:declaration.sha256,sourceBytes:bytes.length,checkedAtMs:now()}),tool={name:'synthetic',version:'1',binarySha256:'a'.repeat(64)};
- const inspection=createUploadInspection({now,scanner:{async scan(){state.onScan?.();return {...receipt(),status:'clean',tool,definitionsSha256:'b'.repeat(64),reason:null};}},extractor:{async extract(){return state.extractionUnavailable?{...receipt(),status:'unavailable',tool:null,segments:[],limitations:['EXTRACTOR_UNAVAILABLE']}:{...receipt(),status:'available',tool,segments:state.segments??[],limitations:[]};}}});
+ const receipt=(file=declaration)=>({sourceSha256:file.sha256,sourceBytes:file.bytes,checkedAtMs:now()}),tool={name:'synthetic',version:'1',binarySha256:'a'.repeat(64)};
+ const inspection=createUploadInspection({now,scanner:{async scan({file}){state.onScan?.();return {...receipt(file),status:'clean',tool,definitionsSha256:'b'.repeat(64),reason:null};}},extractor:{async extract(){return state.extractionUnavailable?{...receipt(),status:'unavailable',tool:null,segments:[],limitations:['EXTRACTOR_UNAVAILABLE']}:{...receipt(),status:'available',tool,segments:state.segments??[],limitations:[]};}}});
  const journal=createMemoryRetentionJournal(),retention=createRetentionReadGate({journal:{...journal,get:async()=>state.suppressed?{state:'SUPPRESSED'}:null},serving:{isEnabled:()=>true}});
  const suppress=()=>journal.withTransition(`${binding.tenantId}:conversation:${binding.conversationId}`,async()=>{state.suppressed=true;});
  const removeOriginal=async({object})=>{if(state.hold)throw Error('LEGAL_HOLD');state.onDelete?.();return {deleted:true,objectId:object.objectId,versionId:object.versionId};};
@@ -51,7 +51,13 @@ test('private input source re-resolves exact original hash and actual current cl
  assert.equal(source.record.inspection.extraction.segments[0].trust,'external_untrusted');
  await assert.rejects(owner.readForInput({...selector,sha256:'0'.repeat(64)},f.options),/ORIGINAL_MISMATCH/);
  await assert.rejects(owner.readForInput({...selector,scanStatus:'clean'},f.options));
- f.state.extractionUnavailable=true;await owner.inspect(r.uploadId,f.options);await assert.rejects(owner.readForInput(selector,f.options),/EXTRACTION_UNAVAILABLE/);
+ let scans=0;f.state.onScan=()=>{scans++;};
+ // A settled observation is reconciled, not re-run: a lost inspect reply never costs a second native scan.
+ assert.deepEqual(await owner.inspect(r.uploadId,f.options),await f.create().status(r.uploadId,f.options));assert.equal(scans,0);
+ // An outage verdict (no extractor) is not settled, so a later inspect may replace it once the tool is back.
+ f.state.extractionUnavailable=true;const second=await owner.initiate({requestId:id(11),declaration:f.declaration},f.options),other={uploadId:second.uploadId,sha256:f.declaration.sha256};
+ await owner.put(second.uploadId,f.bytes,f.options);await owner.inspect(second.uploadId,f.options);await assert.rejects(owner.readForInput(other,f.options),/EXTRACTION_UNAVAILABLE/);
+ f.state.extractionUnavailable=false;await owner.inspect(second.uploadId,f.options);assert.equal(scans,2);assert.equal((await owner.readForInput(other,f.options)).record.inspection.extraction.status,'available');
  assert.deepEqual((await owner.read(r.uploadId,f.options)).bytes,f.bytes);
  f.state.denied=true;await assert.rejects(owner.readForInput(selector,f.options),/CURRENT_DENIED/);
 });
@@ -254,4 +260,27 @@ test('status HTTP request selector is closed, authenticated and never an initiat
  for(const route of ['remove','inspect','read'])assert.notEqual((await f.app.handle(f.request(route,{requestId:id(10)}))).status,200);
  assert.equal(f.state.rows.size,1);assert.equal(f.state.puts,0);f.state.denied=true;
  assert.equal((await f.app.handle(f.request('status',{requestId:id(10)}))).status,403);
+});
+
+test('a refusal after storage is reported as stored-then-refused over HTTP, with the retained reason, never as no effect',async()=>{
+ const f=applicationFixture(),original=Buffer.from([255,254,0]),declaration={filename:'binary.txt',mimeType:'text/plain',bytes:original.length,sha256:uploadHash(original)};
+ let scans=0;f.state.onScan=()=>{scans++;};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(12),...declaration}))).json();
+ const put=new Request('https://control.synthetic.invalid/api/uploads/original/'+begun.uploadId,{method:'PUT',headers:{authorization:'Bearer synthetic.session','content-type':'application/octet-stream','content-length':String(original.length)},body:original});
+ assert.equal((await f.app.handle(put)).status,200);
+ const inspected=await f.app.handle(f.request('inspect',{uploadId:begun.uploadId}));assert.equal(inspected.status,200);
+ const receipt=await inspected.json();
+ // The generated browser receiver admits the stored-then-refused receipt as a valid 200 state, not a wire mismatch.
+ const {receiveUploadRequest:admit,receiveUploadResponse:receive}=await import('../../../../packages/contracts/dist/uploads-application.mjs');
+ const admitted=admit('inspect',new TextEncoder().encode(JSON.stringify({uploadId:begun.uploadId})));
+ assert.deepEqual(receive('inspect',200,new TextEncoder().encode(JSON.stringify(receipt)),admitted),receipt);
+ assert.equal(receipt.storageStatus,'stored');assert.equal(receipt.scanStatus,'clean');assert.equal(receipt.extraction.status,'blocked');assert.deepEqual(receipt.extraction.limitations,['UPLOAD_ENCODING']);
+ assert.equal(receipt.original.versionId,'NATIVE_ORIGINAL_VERSION');assert.equal(scans,1);
+ // Reload by request identity and a repeated inspect both return the retained refusal without a second native run.
+ const reloaded=await (await f.app.handle(f.request('status',{requestId:id(12)}))).json();assert.deepEqual(reloaded,receipt);
+ assert.deepEqual(await (await f.app.handle(f.request('inspect',{uploadId:begun.uploadId}))).json(),receipt);assert.equal(scans,1);
+ // The refused original is not a conversation source, but its own exact bytes remain the user's to download or remove.
+ await assert.rejects(f.create().readForInput({uploadId:begun.uploadId,sha256:declaration.sha256},f.options),/EXTRACTION_UNAVAILABLE/);
+ const downloaded=await f.app.handle(f.request('read',{uploadId:begun.uploadId}));assert.equal(downloaded.status,200);assert.deepEqual(Buffer.from(await downloaded.arrayBuffer()),original);
+ const removed=await (await f.app.handle(f.request('remove',{uploadId:begun.uploadId}))).json();assert.equal(removed.storageStatus,'removed');
 });

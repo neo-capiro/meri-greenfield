@@ -1,6 +1,7 @@
 import {assertConversationEvent,assertNativeSourceEvent,isNativeSourceEventType,assertBrowserReceiptEvent,
  isBrowserReceiptEventType} from '../../../packages/contracts/conversation-sources/validate.mjs';
 /** Product transcript/event persistence. Borrowed pg-compatible pool; no connection on import. */
+import {randomUUID} from 'node:crypto';
 import {assertRun,rowRun,bounded,hash,same,fail,nextState,terminal,validateShape,uuid,own} from './boundary.mjs';
 import {createLifecycleJournal,HOLD_CHECKPOINT_FAILED} from './lifecycle/journal.mjs';
 import {createSelectedOutputJournal} from './skills/retention.mjs';
@@ -146,6 +147,12 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    if(r.hold_completion_id&&!(i.type==='run.status'&&['failed','cancelled'].includes(i.data?.state)))fail('RUN_HELD');
    const projection={...r.projection,state:nextState(r.projection.state,event)};if(!Number.isSafeInteger(event.sequence))fail('EVENT_LIMIT');
    if(holdFailure)await lifecycle.failUncheckpointedHold(c,b,r,check);
+   // A run that ends while a clarifying question is still pending settles that question in the same transaction, ahead of the
+   // terminal event: a reload finds a durable cancelled outcome, never an answerable question on a run that can take no answer,
+   // and a user Stop keeps its cancellation as the last sequence the stop fence reads back.
+   if(i.type==='run.status'&&terminal(event.data.state))for(const questionId of await unansweredQuestions(c,b,check)){
+    const settled={contractVersion:'0.1.0',eventId:randomUUID(),binding:b,sequence:event.sequence++,createdAt:i.createdAt,scopes:r.projection.scopes,type:'question.answered',data:{questionId,outcome:'cancelled',reasonCode:event.data.reasonCode==='USER_CANCELLED'?'USER_CANCELLED':'RUN_ENDED'}};assertConversationEvent(settled);
+    await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,settled.sequence,settled.eventId,settled,hash(settled)]);check();}
    // Execution claim uses this same conversation lock and only accepts queued runs.
    // The terminal projection itself prevents a late invocation; no ECS foreclosure is written.
    await c.query('INSERT INTO meri_conversations.events(tenant_id,conversation_id,run_id,sequence,event_id,event,event_sha256) VALUES($1,$2,$3,$4,$5,$6,$7)',[b.tenantId,b.conversationId,b.runId,event.sequence,event.eventId,event,hash(event)]);check();
@@ -153,6 +160,13 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
   // Diagnostics observe the accepted durable result, including the cancellation and reconciliation paths.
   // Their failure never changes publication ownership, its result, or its error.
   try{if(onPublished)Promise.resolve(onPublished(published)).catch(()=>{});}catch{}return published;
+ }
+ /** The questions this run asked (`question.pending`) and never settled (`question.answered`), in asking order. */
+ async function unansweredQuestions(c,b,check){
+  const rows=(await c.query(`SELECT * FROM meri_conversations.events WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 AND event->>'type' IN ('question.pending','question.answered') ORDER BY sequence`,[b.tenantId,b.conversationId,b.runId])).rows;check();
+  const pending=new Map();
+  for(const row of rows){const e=row.event;if(e?.type==='question.pending'&&typeof e.data?.questionId==='string')pending.set(e.data.questionId,true);else if(e?.type==='question.answered')pending.delete(e.data?.questionId);}
+  return [...pending.keys()];
  }
  async function readState(binding,{after=0,limit=100}={},check,optional=false){const b=bounded(binding);validateShape('RunBinding',b);if(!Number.isSafeInteger(after)||after<0||!Number.isSafeInteger(limit)||limit<1||limit>100)fail('INVALID_CURSOR');
   return tx(b,check,async c=>{const current=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows;check();if(optional&&current.length===0)return null;if(current.length!==1)fail('STORE_CORRUPT');const r=rowRun(current[0]);if(!same(r.projection.binding,b))fail('STALE_WRITER');

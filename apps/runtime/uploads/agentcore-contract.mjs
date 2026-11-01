@@ -58,8 +58,9 @@ export function uploadInspectionPurpose(session){
 /** Validate one closed inspection request and return it with the exact original bytes it binds.
  *
  * Every refusal is the same closed code, so an unauthenticated caller learns nothing about policy internals; the
- * caller-side `inspectUploadOriginal` gate still reports the specific policy code for a locally materialized byte
- * set. Bytes are refused unless they are the declaration's exact byte count, the declaration's own sha256, the
+ * caller-side `uploadOriginalIdentity` gate still reports the specific identity code for a locally materialized byte
+ * set, and the host's structural verdict travels back inside its receipt as a retained blocked extraction.
+ * Bytes are refused unless they are the declaration's exact byte count, the declaration's own sha256, the
  * declared input sha256, and a base64 round-trip identity of what was sent.
  */
 export function uploadInspectionRequest(raw){

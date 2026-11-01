@@ -127,13 +127,18 @@ test('a held run yields truthful facts: browser custody only, SDK and Bash denie
  assert.equal(browserHostFactsDigest(doc),hash(doc));
 });
 
-test('a successor run keeps browser custody but cannot inherit the original selection',async()=>{
+test('a successor run keeps browser custody of the same site workflow selection it must adopt',async()=>{
  const state={phase:'browser-successor',browserAdmitted:true,sdkAdmitted:false,bashAdmitted:false,currentUntilMs:900,deadlineMs:1000,
   scopes,originalBinding:binding,browserCustody:custody,browserHandoff:handoff,browserPolicy:validateBrowserPolicy(),savedRequest:{siteWorkflow:selection}};
  const doc=await createBrowserHostRunFacts({currentness:{readFacts:async()=>state}}).readCanonicalFacts(client,{allocation:{},binding:successor});
  assert.equal(doc.phase,'browser-successor');
- assert.equal(Object.hasOwn(doc,'siteWorkflow'),false,'the original run selection is not reused for a successor');
+ // The host adopts custody only under an identical manifest, so a successor without the selection could never
+ // resume a signed-in workflow; the selection grants nothing (the host re-resolves it for the successor binding).
+ assert.deepEqual(doc.siteWorkflow,selection,'the conversation selection travels with custody to the successor');
  assert.deepEqual(doc.admitted,{sdk:false,bash:false,browser:true});
+ const plain={...state,savedRequest:{}};
+ const none=await createBrowserHostRunFacts({currentness:{readFacts:async()=>plain}}).readCanonicalFacts(client,{allocation:{},binding:successor});
+ assert.equal(Object.hasOwn(none,'siteWorkflow'),false,'no selection is invented for an ordinary run');
 });
 
 test('a held state cannot masquerade as active and the wire refuses a policy on held facts',async()=>{

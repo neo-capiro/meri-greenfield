@@ -9,16 +9,16 @@ const binding={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),att
 const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:id(7),policyRevision:'p1'}];
 import {createIntentApprovalOwner} from '../approval.mjs';
 import {assertPreparedResult} from '../../../worker/conversation/intents/prepared.mjs';
-import {assertMailSendProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
+import {assertMailSendProposal,assertMailSendCommand} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createMailFixture,uuid,bodyText} from '../../../gateway/sources/mail/test/fixtures.mjs';
 import {assertMailThreadSourcePage} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {receiveIntentsResponse} from '../../../../packages/contracts/dist/intents-application.mjs';
 const NOW=Date.parse('2026-10-27T12:00:00.000Z'),deliveryId='sdk:'+'a'.repeat(64);
-async function fixture({mode='send',general=false}={}){
+async function fixture({mode='send',general=false,clientId}={}){
  const admitted=general?[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:'p1'}]:scopes;
  const selected=general?null:admitted[0].resourceId;
- const args={mode,clientId:selected,senderConnectionId:id(800),senderEmail:'owner@example.test',to:['reader@example.test'],cc:[],bcc:[],subject:'Reviewed subject',bodyHtml:'<p>Reviewed content</p>',files:[],original:mode==='send'?null:{threadId:id(801),messageId:id(802),updatedAt:'2026-10-27T10:00:00.000Z',bodySha256:mode==='forward'?'a'.repeat(64):null}};
+ const args={mode,clientId:clientId===undefined?selected:clientId,senderConnectionId:id(800),senderEmail:'owner@example.test',to:['reader@example.test'],cc:[],bcc:[],subject:'Reviewed subject',bodyHtml:'<p>Reviewed content</p>',files:[],original:mode==='send'?null:{threadId:id(801),messageId:id(802),updatedAt:'2026-10-27T10:00:00.000Z',bodySha256:mode==='forward'?'a'.repeat(64):null}};
  const sql=createMetadataPoolFixture(),pool={options:sql.pool.options,async connect(){const c=await sql.pool.connect();return {async query(q){const text=typeof q==='string'?q:q.text;if(/^(BEGIN|COMMIT|ROLLBACK|SET )/u.test(text))return {rows:[]};return c.query(q);},release:e=>c.release(e)};}};
  const state={rights:0,session:true,dispatches:0,stored:null,loseAck:false,unknown:false,mutate:null,decision:null};
  const preparer=createNativeMailPreparer({pool,binding,scopes:admitted,selectedClientId:selected,policyRevision:admitted[0].policyRevision,expiresAtMs:NOW+60000,now:()=>NOW,maxRequestMs:1000,
@@ -53,4 +53,11 @@ for(const mode of ['reply_all','forward'])test('typed mail read keeps exact '+mo
  const action={mode,senderConnectionId:message.mailboxId,senderEmail:'owner@example.test',subject:'Source subject',to:mode==='forward'?[]:['reader@example.test'],cc:[],original:{threadId:message.threadId,messageId:message.messageId,updatedAt:message.recordVersionId,bodySha256:mode==='forward'?message.contentSha256:null},...(mode==='forward'?{originalBodyText:bodyText}:{})};
  message.nativeActions=[action];assert.deepEqual(assertMailThreadSourcePage(page,request).messages[0].nativeActions,[action]);
  action.original.messageId=uuid('8');assert.throws(()=>assertMailThreadSourcePage(page,request));
+});
+test('a General conversation never carries a model-supplied client association on a mail proposal',async()=>{
+ await assert.rejects(fixture({general:true,clientId:scopes[0].resourceId}),{code:'ACCESS_DENIED'});
+ // The command contract refuses the same association under a private-user scope, independent of the preparer.
+ const f=await fixture({general:true});
+ assert.throws(()=>assertMailSendCommand({...f.p.command,arguments:{...f.p.command.arguments,clientId:scopes[0].resourceId}},{binding}),/Invalid native mail command/u);
+ assertMailSendCommand(f.p.command,{binding});
 });

@@ -53,10 +53,8 @@ async function durableLineage(t,transformer){
  for(const key of ['deliveries','prepared'])assert.equal(a.f.stats()[key],stats[key],key);
  // The same delivery with a different request is not a replay and starts nothing.
  await assert.rejects(a.write({deliveryId:'pdf-revision',baseVersionId:first.version.versionId,request:{...revised,title:'Other'}}));assert.deepEqual(a.counts,settled);
- // CAS: a new revision from the superseded parent is refused at commit; nothing is committed and the lineage is unchanged.
- const stale=await a.write({deliveryId:'pdf-stale',baseVersionId:first.version.versionId,request:{...revised,title:'Stale'}}).then(()=>assert.fail('stale parent committed'),e=>e);
- assert.equal(stale.code,'ARTIFACT_EFFECT_UNKNOWN');assert.equal(stale.versionCommitted,false);let cause=stale;while(cause.cause)cause=cause.cause;assert.equal(cause.code,'ARTIFACT_STALE_PARENT');
- await assert.rejects(a.inspect(stale.versionId));
+ // A revision from the superseded parent is a definite conflict before generation; nothing is rendered or committed and the lineage is unchanged.
+ await assert.rejects(a.write({deliveryId:'pdf-stale',baseVersionId:first.version.versionId,request:{...revised,title:'Stale'}}),{code:'ARTIFACT_STALE_PARENT'});assert.deepEqual(a.counts,settled);
  assert.deepEqual(await a.download(first.version.versionId),parent);assert.deepEqual(await a.download(second.version.versionId),child);
  const generations=a.counts.generations,puts=a.counts.puts;
  // No current authority: a revision is refused before any generator launch or object write.

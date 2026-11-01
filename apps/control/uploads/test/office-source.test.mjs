@@ -9,7 +9,7 @@ import {createMemoryRetentionJournal} from '../../retention/memory-journal.mjs';
 import {createRetentionReadGate} from '../../retention/suppression.mjs';
 import {preservationBytes} from '../../../artifacts/edit-sessions/test/preservation-fixture.mjs';
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`;
-async function fixture(t,{scan='clean',format='pptx'}={}){
+async function fixture(t,{scan='clean',format='pptx',original=null}={}){
  const state={now:Date.now(),denied:false,suppressed:false,rows:new Map(),puts:0,gets:0},now=()=>state.now;
  const binding={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),attemptId:id(5),workerId:id(6),writerFence:1};
  const scopes=[{tenantId:id(1),kind:'private-user',resourceId:id(2),policyRevision:'p'}];
@@ -17,7 +17,7 @@ async function fixture(t,{scan='clean',format='pptx'}={}){
   verifyIdentity:async()=>{if(state.denied)throw Error('DENIED');return {principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'i',checkedAtMs:now(),expiresAtMs:now()+60000};},
   resolveContext:async({identity})=>({identitySha256:hash(identity),binding,scopes,selectedClientId:null,contextRevision:'c',checkedAtMs:now(),expiresAtMs:now()+60000})});
  t.after(()=>sessions.close());const {credential}=await sessions.issue({identityCredential:'synthetic'}),native=authenticatedCurrentState(sessions);
- const bytes=preservationBytes(format),declaration={filename:'Original.'+format,mimeType:UPLOAD_MIME[format],bytes:bytes.length,sha256:uploadHash(bytes)};
+ const bytes=original??preservationBytes(format),declaration={filename:'Original.'+format,mimeType:UPLOAD_MIME[format],bytes:bytes.length,sha256:uploadHash(bytes)};
  const store={async prepare(r){state.rows.set(r.uploadId,structuredClone(r));return r;},async read(owner,key){return structuredClone(state.rows.get(key)??null);},
   async transition(a,b,check){check();assert.equal(hash(state.rows.get(a.uploadId)),hash(a));state.rows.set(a.uploadId,structuredClone(b));return b;}};
  const objects={async put(r){state.puts++;return {objectId:r.objectId,versionId:'STORED_ORIGINAL_VERSION',sha256:uploadHash(bytes),bytes:bytes.length,scopes:r.scopes};},
@@ -58,4 +58,12 @@ for(const change of ['access','retention','removal','object-version','scan'])tes
  if(change==='object-version')f.row().object.versionId='SUBSTITUTED';
  if(change==='scan'){f.row().inspection.scan.status='infected';f.row().inspection.scan.reason='MALWARE_DETECTED';}
  await assert.rejects(source.fresh());assert.equal(f.state.puts,1);
+});
+test('a structurally refused original is retained as stored-then-blocked and is never offered to Office',async t=>{
+ const {zip,ooxmlEntries}=await import('../../../artifacts/structure/test/fixtures.mjs');
+ const f=await fixture(t,{format:'docx',original:zip({...ooxmlEntries('docx'),'word/embeddings/embedded.xml':'<data/>'})});
+ assert.equal(f.row().state,'stored');assert.equal(f.row().inspection.scan.status,'clean');
+ assert.equal(f.row().inspection.extraction.status,'blocked');assert.deepEqual(f.row().inspection.extraction.limitations,['UPLOAD_ACTIVE_CONTENT']);
+ // custody.read serves the user's own clean bytes; the Office provenance gate refuses before any source is returned.
+ await assert.rejects(f.reader.open(f.q),{code:'UPLOAD_NOT_CLEAN'});assert.equal(f.state.puts,1);
 });

@@ -5,8 +5,8 @@
  *
  * `resolveContext({operation,request,deliveryId,signal})` is the trusted schedule-context owner: it resolves the
  * caller identity, current projection, task/destination/limit resolutions and allocates the intent ID from trusted
- * state, never from the model. No such owner exists in this repository yet (proposal P-INT-6), so no composition
- * can make schedule intents available until it does.
+ * state, never from the model. The schedule application (`schedules/application.mjs` prepareIntent) is that owner and
+ * the runtime composes it for SDK runs (`routines-intents.mjs`).
  *
  * The declared operation version is RECEIVED, never inferred: it is the exact schedule contract family pin the
  * composition prepares under (`version`, canonical pins only), the legacy pin when the composition declares none,

@@ -1,5 +1,5 @@
 /** Native SDK Read materialization of current, retained upload text. Uploaded names/config never select paths. */
-import {mkdtemp,lstat,realpath,open,unlink,rm} from 'node:fs/promises';
+import {mkdtemp,lstat,realpath,open,unlink,rm,readdir} from 'node:fs/promises';
 import {constants} from 'node:fs';
 import {join,resolve,relative,isAbsolute,sep,dirname,basename} from 'node:path';
 import {data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -8,12 +8,27 @@ import {uploadSourceManifest,uploadSourcePage} from '../../../packages/runtime/u
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 const fault=()=>Object.assign(Error('UPLOAD_SOURCE_UNAVAILABLE'),{code:'UPLOAD_SOURCE_UNAVAILABLE'});
 const key=path=>process.platform==='win32'?resolve(path).toLowerCase():resolve(path);
+const ROOT_PREFIX='.meri-upload-data-';
+/** Removes materialized upload text a crashed or restarted worker left under the conversation workspace. Runs are
+ * serialized per conversation, so every existing root is stale when a new run prepares; only real directories with
+ * the exact prefix directly under `cwd` are removed (never symlinks, never anything else). */
+async function sweepStaleUploadReadSources(cwd){
+ const parent=await realpath(cwd),removed=[];
+ for(const entry of await readdir(parent,{withFileTypes:true})){
+  if(!entry.name.startsWith(ROOT_PREFIX)||!entry.isDirectory()||entry.isSymbolicLink())continue;
+  const path=join(parent,entry.name);
+  const stat=await lstat(path);if(!stat.isDirectory()||stat.isSymbolicLink())continue;
+  await rm(path,{recursive:true,force:false});removed.push(entry.name);
+ }
+ return Object.freeze(removed);
+}
 export async function prepareUploadReadSources({binding,request,manifests,runOwner,cwd,deadlineMs,signal,now=Date.now,abort}){
  if(request.uploads===undefined){if(manifests!==undefined)throw fault();return null;}
  const selections=assertUploadSelections(request.uploads);
  if(!Array.isArray(manifests)||manifests.length!==selections.length||typeof runOwner?.readUploadSource!=='function'||typeof abort!=='function'||!isAbsolute(cwd))throw fault();
  const admitted=manifests.map((value,index)=>uploadSourceManifest(value,selections[index]));
- const parent=await realpath(cwd),root=await mkdtemp(join(parent,'.meri-upload-data-')),rootKey=key(root),paths=new Map(),pending=new Map(),seen=new Set(),busy=new Set(),receipts=[];
+ await sweepStaleUploadReadSources(cwd);
+ const parent=await realpath(cwd),root=await mkdtemp(join(parent,ROOT_PREFIX)),rootKey=key(root),paths=new Map(),pending=new Map(),seen=new Set(),busy=new Set(),receipts=[];
  let closed=false,failure;
  for(const manifest of admitted)for(let page=0;page<manifest.pageCount;page++){const path=join(root,manifest.selection.uploadId+'-'+page+'.txt');paths.set(key(path),{path,manifest,page});}
  const check=()=>{if(failure)throw failure;if(closed||signal?.aborted||now()>=deadlineMs)throw fault();};

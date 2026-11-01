@@ -67,7 +67,7 @@ function blocksFor(input,selection,findings,conflicts,reads,retained,retainedAss
  for(const f of findings){blocks.push(p(`${f.id} [${f.status}${f.conflict?'; potentially conflicting cited passages':''}]: ${f.text}`));
   for(const l of f.citations)blocks.push(p(l.status==='verified'
    ?`Citation: ${l.citation.sourceId} / message ${l.citation.recordId} / version ${l.citation.sourceVersionId}; characters ${l.citation.start}-${l.citation.end}; verified`
-   :`Citation: ${l.citation.sourceId} / ${l.citation.origin} / ${l.citation.recordId??'current view'}; preserved claim (source bytes verified by the projection: ${l.coverage.sourceBytesVerified===true?'yes':'no'})`));}
+   :`Citation: ${l.citation.sourceId} / ${l.citation.origin} / ${l.citation.recordId??'current view'}; preserved claim (source bytes verified by the projection: ${l.coverage.sourceBytesVerified===true?'yes':'no'}); projection revision ${l.citation.portfolioRevision??'unknown'}; content hash ${l.citation.contentHash??'none'}; calculation ${l.citation.calculationVersion??'unknown'}`));}
  blocks.push(p('Conflicting evidence','Heading 1'),p('Unequal cited passages are disclosed as possible conflicts; unequal text is not proof of a semantic contradiction, and an unread passage is not evidence of agreement.'));
  if(!conflicts.length)blocks.push(p('No conflicting cited passages were read for these findings; missing or partial evidence does not establish absence.'));
  for(const c of conflicts){blocks.push(p(`${c.findingId}: ${c.note??'disclosed possible conflict; no explanation supplied'}`));
@@ -123,9 +123,12 @@ export function createCitedReportCompiler({readSource,readBase,now}){
     reads.push(admitRead(group,value,{context,selected}));
    }
    const findings=assessFindings(input.findings,reads,{context,asOf:input.asOf}),conflicts=conflictsFor(input,findings),
-    evidence=[...retained,...findings.flatMap(f=>f.citations.map(l=>l.evidence).filter(Boolean))]
-     .filter((item,index,all)=>all.findIndex(candidate=>candidate.citationId===item.citationId)===index);
-   if(new Set(evidence.map(x=>x.citationId)).size!==evidence.length)fail('CITED_REPORT_RETAINED_EVIDENCE');
+    fresh=findings.flatMap(f=>f.citations.map(l=>l.evidence).filter(Boolean));
+   // A record version retained by the immutable parent must still read as the same bytes: a fresh read that
+   // reuses a retained citation id with other content, version or record is refused, never silently merged.
+   for(const item of fresh){const prior=retained.find(x=>x.citationId===item.citationId);
+    if(prior&&(prior.contentSha256!==item.contentSha256||prior.sourceVersionId!==item.sourceVersionId||prior.recordId!==item.recordId||prior.sourceId!==item.sourceId))fail('CITED_REPORT_RETAINED_EVIDENCE');}
+   const evidence=[...retained,...fresh].filter((item,index,all)=>all.findIndex(candidate=>candidate.citationId===item.citationId)===index);
    const provenance={recipe:'general-cited-report',skill:input.skill,selection:v.snapshot(selected),subject:selected.subject,asOf:input.asOf,inputSha256:v.hash(input),
     readsSha256:v.hash(reads),retainedEvidenceSha256:v.hash(retained),parent};
    const blocks=blocksFor(input,selected,findings,conflicts,reads,retained,retainedAssets,provenance);

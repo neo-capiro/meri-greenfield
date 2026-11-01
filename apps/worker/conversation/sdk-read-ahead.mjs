@@ -4,17 +4,24 @@
  * made at that moment would face) passes, so the activity meets every failure exactly where it would have without reading ahead. */
 export function createSdkReadAhead(read,{limit=512,last=()=>false,check=()=>{}}={}){
  if(typeof read!=='function'||typeof last!=='function'||typeof check!=='function'||!Number.isSafeInteger(limit)||limit<1)throw Error('READ_AHEAD_CONFIGURATION');
- const queue=[];let pending=null,stopped=false,filling=0;
+ const queue=[];let pending=null,stopped=false,filling=0,waiting=[];
+ const landed=()=>{const notify=waiting;waiting=[];for(const resolve of notify)resolve();};
  function pull(){
   if(pending||stopped||filling===0||queue.length>=limit)return;
   pending=Promise.resolve().then(read).then(result=>{queue.push({result});if(result?.done||last(result?.value))stopped=true;},error=>{queue.push({error});stopped=true;})
-   .finally(()=>{pending=null;pull();});
+   .finally(()=>{pending=null;landed();pull();});
  }
  return Object.freeze({
   /** Reads ahead while `operation` runs; a read still in flight when it settles lands in the queue. */
   async during(operation){filling++;pull();try{return await operation();}finally{filling--;}},
   /** The next message, already read, without waiting for the SDK: undefined when none is, or the next result is the end or a failure. */
   peek(){const head=queue[0];return head&&!head.error&&!head.result.done?head.result.value:undefined;},
+  /** Results already read and not yet consumed, including an end or a failure waiting at the head. */
+  queued(){return queue.length;},
+  /** True once nothing more will ever land: the end, a failure or the last message has been read and no read is in flight. */
+  settled(){return stopped&&pending===null;},
+  /** Resolves when the next result lands in the queue; at once when one is already queued or nothing more can land. */
+  arrival(){if(queue.length||stopped&&pending===null)return Promise.resolve();return new Promise(resolve=>{waiting.push(resolve);});},
   /** Consumes the message peek() returned. */
   take(){check();return queue.shift().result.value;},
   /** The next result in order: one already read, the read in flight, or a new read. */

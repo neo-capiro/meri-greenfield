@@ -10,6 +10,7 @@ import {loadObjectiveStrategyCodec} from '../../worker/conversation/objective-ge
 import {assertPreparedObjectiveSelection,assertTypedSelection} from '../../../packages/runtime/objective-generation-custody.mjs';
 import {versions} from '../../control/conversations/test/store-fixture.mjs';
 import {SDK_MODEL_CONFIGURATION} from '../../control/conversations/usage.mjs';
+import {HISTORICAL_MODEL_SELECTION} from '../../../packages/contracts/model-selection.mjs';
 
 function fixture(){
  const w=structuredClone(wire),a=w.sourceAdmission,now=w.request.requestedAtMs+1;
@@ -25,7 +26,7 @@ test('Core-produced regeneration keeps the actual basis and expected version thr
  const p=decodePublicationReply(x.publication,x.source,{admission:x.a});assert.deepEqual(p.request,x.w.request);assert.equal(p.request.basisSha256,wire.request.basisSha256);
  assert.deepEqual(assertObjectiveRunStartRecord(x.record),x.record);assert.equal(x.record.effectExpiresAtMs,x.w.request.originalExpiresAtMs);
  const run={binding:x.binding,state:'running',scopes:[{tenantId:x.binding.tenantId,kind:'client',resourceId:x.a.canonical.clientId,policyRevision:'policy1'}],createdAt:new Date(x.now).toISOString(),policyRevision:'policy1',versions};
- const owner=createObjectiveSelectionOwner({runStarts:{async read(){return {state:'STARTED',record:x.record};}},store:{async read(){return {run,request:objectiveAcceptedRequest(x.selected)};},async readModelPolicy(){return {maxTurns:20};}},now:()=>x.now});
+ const owner=createObjectiveSelectionOwner({runStarts:{async read(){return {state:'STARTED',record:x.record};}},store:{async read(){return {run,request:objectiveAcceptedRequest(x.selected)};},async readModelPolicy(){return {maxTurns:20,maxBudgetMicroUsd:2000000};},async readModelSelection(){return HISTORICAL_MODEL_SELECTION;}},now:()=>x.now});
  const actual=await owner.read({binding:x.binding});assert.deepEqual(actual.objectiveStrategy.request.basis,x.w.request.basis);
  const selected=assertPreparedObjectiveSelection(actualPair(actual),{binding:x.binding,acceptedRequest:objectiveAcceptedRequest(x.selected),expiresAtMs:x.record.effectExpiresAtMs});
  const codec=await loadObjectiveStrategyCodec(x.w.request);assert.deepEqual(codec.selection(selected).strategy.request,x.w.request);
