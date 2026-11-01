@@ -43,6 +43,7 @@ for(const filled of [false,true])test(`shared intake reaches one SDK query and r
  const writes=[],observed={queries:0,captures:0,prompt:null,options:null,descriptor:null};
  const objectiveGeneration=createObjectiveGenerationRuntime({selection:selected,now:()=>NOW,writeFile:async value=>{writes.push(value);}});
  const sessionId=id(900),proposal=payload('strategy.draft');
+ proposal.type=answers.type;
  proposal.rationale='Proposed next steps based on the authorized relationship; confirm the stated assumption.';
  proposal.coverage.assumptions=['Synthetic relationship requires confirmation before outreach.'];
  proposal.nodes[0].note='Use the recorded relationship with '+knownContactId+'.';
@@ -73,12 +74,13 @@ for(const filled of [false,true])test(`shared intake reaches one SDK query and r
  assert.equal(relationshipContext.target_recommendations[0].recommendations_jsonb[0].memberId,suggestedContactId);
  assert.equal(observed.options.systemPrompt.preset,'claude_code');assert.equal(observed.options.tools.preset,'claude_code');assert.equal(observed.options.skills,'all');
  assert.equal(observed.options.outputFormat.type,'json_schema');assert.ok(observed.options.disallowedTools.includes('AskUserQuestion'));
+ assert.deepEqual(observed.options.outputFormat.schema.properties.payload.anyOf[0].properties.type,{const:answers.type});
  assert.equal(observed.descriptor.fileSha256,rawTypedSha256(writes[0].bytes));
  const wire=await selected.read({binding:f.binding}),selection=assertPreparedObjectiveSelection({objectiveGeneration:wire.objectiveGeneration,objectiveStrategy:wire.objectiveStrategy},
   {binding:f.binding,acceptedRequest:request,expiresAtMs:wire.expiresAtMs});
  const codec=await loadTypedDraftCodec(),retained=codec.decode(writes[0].bytes,observed.descriptor,selection);
  assert.deepEqual(selection.strategy.request.source.intent.strategyIntake,answers);
- assert.deepEqual(retained.payload,proposal);assert.equal(retained.payload.type,'authorization','initial type hint remains advisory');
+ assert.deepEqual(retained.payload,proposal);assert.equal(retained.payload.type,answers.type,'shared intake binds the selected Strategy type');
  assert.ok(retained.payload.nodes[0].note.includes(knownContactId));
  assert.ok(retained.payload.nodes[1].note.includes(suggestedContactId));assert.match(retained.payload.nodes[1].note,/Recommendation only/);
 });
