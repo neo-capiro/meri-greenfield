@@ -787,6 +787,43 @@
           "type": "object",
           "properties": {
             "operation": {
+              "const": "create_word"
+            },
+            "format": {
+              "const": "xml"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "maxLength": 100000,
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "text"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "operation",
+            "format",
+            "title",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
               "const": "create_excel"
             },
             "format": {
@@ -1065,6 +1102,71 @@
               "required": [
                 "encoding",
                 "whitespace"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "sha256",
+            "bytes",
+            "format",
+            "nativeOpened",
+            "rendered",
+            "recalculated",
+            "members",
+            "details"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "format": {
+              "const": "xml"
+            },
+            "nativeOpened": {
+              "const": false
+            },
+            "rendered": {
+              "const": false
+            },
+            "recalculated": {
+              "const": false
+            },
+            "members": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "maxLength": 500
+              },
+              "maxItems": 0
+            },
+            "details": {
+              "type": "object",
+              "properties": {
+                "encoding": {
+                  "const": "UTF-8"
+                },
+                "whitespace": {
+                  "const": "unchanged"
+                },
+                "wellFormed": {
+                  "const": true
+                }
+              },
+              "required": [
+                "encoding",
+                "whitespace",
+                "wellFormed"
               ],
               "additionalProperties": false
             }
@@ -1584,6 +1686,43 @@
                 "text": {
                   "type": "string",
                   "maxLength": 100000
+                }
+              },
+              "required": [
+                "text"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "operation",
+            "format",
+            "title",
+            "content"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "operation": {
+              "const": "create_word"
+            },
+            "format": {
+              "const": "xml"
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "maxLength": 100000,
+                  "minLength": 1
                 }
               },
               "required": [

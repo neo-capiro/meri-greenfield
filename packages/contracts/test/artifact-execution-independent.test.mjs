@@ -5,6 +5,8 @@ import Ajv from 'ajv/dist/2020.js';
 import addFormats from 'ajv-formats';
 import {canonicalSha256,validateShape as validatePublicShape} from '../validate.mjs';
 import {createArtifactValidators} from '../artifacts-0.2/artifact-validation.mjs';
+import {documentSchema} from '../document-application/schema.mjs';
+import {documentAccessSchema} from '../document-access-application/schema.mjs';
 const schema=JSON.parse(readFileSync(new URL('../artifacts-0.2/artifact.schema.json',import.meta.url)));
 const publicSchema=JSON.parse(readFileSync(new URL('../meri.schema.json',import.meta.url)));
 const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);ajv.addSchema(publicSchema);ajv.addSchema(schema);
@@ -44,6 +46,39 @@ test('Word rejects malformed structural fields and unsupported rich table conten
  const input=word();input.content.blocks[0].sourceSpan={start:0,end:1};assert.throws(()=>v.request(input));
 });
 const excel=()=>({operation:'create_excel',format:'xlsx',title:'Revenues',content:{sheets:[{name:'Data',rows:[[{value:'=literal'},{value:2},{formula:'=SUM(B1:B1)'}]]}]}});
+test('XML is a distinct nonempty exact-text request; TXT retains empty text',()=>{
+ const text='\ufeff<?xml version="1.0" encoding="UTF-8"?>\r\n<bill>α &amp; β</bill>\r\n';
+ const request={operation:'create_word',format:'xml',title:'Bill',content:{text}};
+ assert.deepEqual(v.request(request),request);
+ assert.equal(v.request({...request,format:'txt',content:{text:''}}).content.text,'');
+ for(const content of [{text:''},{text:'x'.repeat(100001)},{text:'<bill/>',schemaUrl:'https://example.invalid/schema'},{blocks:[{kind:'paragraph',runs:[{text:'XML'}]}]}])assert.throws(()=>v.request({...request,content}));
+ for(const format of ['html','XML','xhtml'])assert.throws(()=>v.request({...request,format}));
+});
+test('XML inspection admits only nonempty bytes, empty members and truthful well-formedness evidence',()=>{
+ const inspection={sha256:'a'.repeat(64),bytes:7,format:'xml',nativeOpened:false,rendered:false,recalculated:false,members:[],details:{encoding:'UTF-8',whitespace:'unchanged',wellFormed:true}};
+ assert.deepEqual(v.inspection(inspection),inspection);
+ for(const change of [{bytes:0},{members:['file']},{nativeOpened:true},{details:{...inspection.details,wellFormed:false}},{details:{...inspection.details,schemaQualified:true}}])assert.throws(()=>v.inspection({...inspection,...change}));
+});
+test('XML request admission rejects malformed XML, DTDs and custom entities before dispatch',()=>{
+ for(const text of ['', ' \r\n', '<a>', '<a/><b/>', '<a>&unknown;</a>', '<p:a/>', '<a>\0</a>', '<!DOCTYPE a><a/>', '<!DOCTYPE a [<!ENTITY x "expanded">]><a>&x;</a>', '<!DOCTYPE a SYSTEM "file:///no-read"><a/>', '<!DOCTYPE a SYSTEM "https://example.invalid/no-fetch"><a/>', '<?xml version="1.0" encoding="ISO-8859-1"?><a>α</a>'])assert.throws(()=>v.request({operation:'create_word',format:'xml',title:'XML',content:{text}}));
+});
+test('XML request admission matches the fixed writer grammar without imposing xml:id validity',()=>{
+ const input=text=>({operation:'create_word',format:'xml',title:'XML',content:{text}});
+ for(const text of ['<r xml:id="not an ID"/>','<r><a xml:id="same"/><b xml:id="same"/></r>','<r>'.repeat(256)+'</r>'.repeat(256)])assert.deepEqual(v.request(input(text)),input(text));
+ for(const text of ['\ufeff\ufeff<r/>','<?xml version="1.1"?><r/>','<?xml version="1.1"?><r>&#x1;</r>','<r>'.repeat(257)+'</r>'.repeat(257)])assert.throws(()=>v.request(input(text)));
+});
+test('canonical document projections admit XML writes, inspections and retained history metadata',()=>{
+ const write=documentSchema(schema,{INVALID_REQUEST:400}),read=documentAccessSchema(schema,{INVALID_REQUEST:400});
+ ajv.addSchema(write);ajv.addSchema(read);
+ const valid=(owner,name,value)=>{const check=ajv.compile({$ref:`${owner.$id}#/$defs/${name}`});assert.ok(check(value),ajv.errorsText(check.errors));};
+ const request={operation:'create_word',format:'xml',title:'Bill',content:{text:'<bill/>'}};
+ valid(write,'DocumentCreateRequest',{deliveryId:'xml-create',request});
+ valid(write,'DocumentReviseRequest',{deliveryId:'xml-revise',baseVersionId:id(49),request});
+ const version={contractVersion:'0.1.0',artifactId:id(50),versionId:id(51),parentVersionId:null,binding,object:{objectId:id(52),versionId:'immutable',sha256:'a'.repeat(64),bytes:7,scopes:[scope]},filename:'Bill.xml',mimeType:'application/xml; charset=utf-8',scopes:[scope],evidence:[],generationStatus:'draft',previewStatus:'pending',createdAt:'2026-10-12T00:00:00.000Z'};
+ const inspection={sha256:'a'.repeat(64),bytes:7,format:'xml',nativeOpened:false,rendered:false,recalculated:false,members:[],details:{encoding:'UTF-8',whitespace:'unchanged',wellFormed:true},currentBytesVerified:true};
+ for(const owner of [write,read])valid(owner,'DocumentInspectionResponse',{version,inspection});
+ valid(read,'DocumentHistoryResponse',{anchorVersionId:id(51),artifactId:id(50),headVersionId:id(51),versions:[version],nextCursor:null});
+});
 const slides=()=>({operation:'create_powerpoint',format:'pptx',title:'Brief',content:{slides:[{title:'Overview',bullets:['First','Second'],notes:'Retained notes'},{title:'Data',table:[['Region','Amount'],['North','250']]}]}});
 const analysis=()=>({operation:'run_analysis',format:'zip',title:'Totals',content:{tables:[{name:'data',columns:['region','value'],rows:[['N',100],['N',150],['S',80]]}],source:'data',steps:[{kind:'aggregate',groupBy:['region'],column:'value',function:'sum',name:'total'}]}});
 for(const [name,make] of [['word',word],['workbook',excel],['slides',slides],['analysis',analysis]])test(`independent ${name} request is admitted and detached`,()=>{const input=make(),before=structuredClone(input),out=v.request(input);assert.deepEqual(out,before);assert.notEqual(out,input);input.title='changed';assert.equal(out.title,before.title);});

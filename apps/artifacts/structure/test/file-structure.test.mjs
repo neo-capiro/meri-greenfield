@@ -3,6 +3,16 @@ import {structurallyValid,structureCheck,readZip,STRUCTURE_REASONS} from '../fil
 import {zip,zipOffsets,ooxml,ooxmlEntries,contentTypesXml,relationshipsXml,OFFICE_DOCUMENT_TYPE,pdf,pdfIncremental,pdfXrefStream} from './fixtures.mjs';
 import {REVIEW_PROBES} from './review-probes.mjs';
 const refused=(bytes,format,reason,label)=>{assert.deepEqual(structureCheck(bytes,format),{valid:false,reason},label);assert.equal(structurallyValid(bytes,format),false,label);};
+test('XML uses the bounded UTF-8 namespace parser and preserves the supplied bytes',()=>{
+ const bytes=Buffer.from('\ufeff<?xml version="1.0" encoding="UTF-8"?>\r\n<bill xmlns="urn:fixture">α &amp; β</bill>\r\n'),before=Buffer.from(bytes);
+ assert.deepEqual(structureCheck(bytes,'xml'),{valid:true});assert.deepEqual(bytes,before);
+ for(const text of ['', ' \r\n', '<a>', '<a/><b/>', '<a>&unknown;</a>', '<p:a/>', '<a>\0</a>'])refused(Buffer.from(text),'xml','XML_MALFORMED');
+ for(const text of ['<!DOCTYPE a><a/>','<!DOCTYPE a [<!ENTITY x "expanded">]><a>&x;</a>','<!DOCTYPE a SYSTEM "file:///no-read"><a/>','<!DOCTYPE a SYSTEM "https://example.invalid/no-fetch"><a/>'])refused(Buffer.from(text),'xml','XML_DOCTYPE');
+ refused(Buffer.from([0xff]),'xml','XML_ENCODING');
+ refused(Buffer.from('<?xml version="1.0" encoding="ISO-8859-1"?><a/>'),'xml','XML_ENCODING');
+ for(const text of ['\ufeff\ufeff<r/>','<?xml version="1.1"?><r/>','<r>'.repeat(257)+'</r>'.repeat(257)])refused(Buffer.from(text),'xml','XML_MALFORMED');
+ for(const text of ['<r xml:id="not an ID"/>','<r><a xml:id="same"/><b xml:id="same"/></r>','<r>'.repeat(256)+'</r>'.repeat(256)])assert.deepEqual(structureCheck(Buffer.from(text),'xml'),{valid:true});
+});
 test('valid minimal packages of every canonical format pass, stored or deflated',()=>{
  for(const format of ['docx','xlsx','pptx']){assert.equal(structurallyValid(ooxml(format),format),true,format);assert.equal(structurallyValid(zip(ooxmlEntries(format),{method:0}),format),true,`${format} stored`);}
  assert.equal(structurallyValid(zip({'a.txt':'a','dir/b.txt':'b'}),'zip'),true);assert.equal(structurallyValid(pdf(),'pdf'),true);assert.equal(structurallyValid(Buffer.from('text ✓\n'),'txt'),true);
