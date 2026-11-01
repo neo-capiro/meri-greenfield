@@ -16,6 +16,7 @@ import {createDispatchLifetime} from '../../dispatch/dispatch-lifetime.mjs';
 import {cancelBody,responseBody} from '../json-response.mjs';
 import {ownFields} from '../source-admission.mjs';
 import {signAwsRequest,resolveAwsCredentials} from './aws-signing.mjs';
+import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 
 /** Provider label of the AWS-owned index; distinct from `tavily`, `serper`, `duckduckgo` and from Claude's builtin. */
 export const AGENTCORE_SEARCH_PROVIDER = 'agentcore-web-search';
@@ -32,7 +33,11 @@ export const AGENTCORE_SEARCH_DEFAULT_ATTEMPTS = 1, AGENTCORE_SEARCH_MAX_ATTEMPT
 const MAX_QUERY_CHARS = 200, MIN_RESULTS = 1, MAX_RESULTS = 25, DEFAULT_RESULTS = 10;
 /** Frozen receiving-contract caps (`packages/contracts/retrieval-0.2/public-web.schema.json`). */
 const MAX_ROW_RESULTS = 12, MAX_TITLE = 180, MAX_SNIPPET = 320, MAX_URL = 2000, MAX_DATE = 40;
-const DEFAULT_PROTOCOL = '2026-07-28', DEFAULT_RESPONSE_BYTES = 262144, DEFAULT_REQUEST_MS = 8000;
+/** The index returns page-text excerpts per row, so a full page of rows is far larger than its projection;
+ * the bound covers 25 generous rows and is read incrementally. A managed search is a remote index query, so the
+ * request window exceeds the typical provider latency instead of turning an ordinary slow search into DEADLINE. */
+const DEFAULT_PROTOCOL = '2026-07-28', DEFAULT_RESPONSE_BYTES = 1048576, DEFAULT_REQUEST_MS = 15000;
+const SEARCH_CONTRACT = Object.freeze({id: 'search_public_web', version: '0.2.0'});
 /** Stateless MCP revision 2026-07-28: no `initialize` handshake and no session, so one tools/call is
  * one gateway invocation. Client identity travels in the documented `_meta` fields. */
 const CLIENT_INFO = Object.freeze({name: 'meri-control', version: '1.0.0'});
@@ -56,18 +61,38 @@ const locator = value => {
   } catch { return null; }
 };
 
-/** MCP streams responses as `text/event-stream` when the gateway chooses to; both forms are documented. */
+/** MCP streams responses as `text/event-stream` when the gateway chooses to; both forms are documented.
+ * A stream may also carry notifications (`method`, no `id`) before or after the response; the response is the
+ * last JSON-RPC message that carries `result` or `error`, never a notification that merely arrived last. */
 export function readMcpPayload(contentType, body) {
   if (typeof body !== 'string' || !body) return undefined;
   if (!/text\/event-stream/iu.test(contentType ?? '')) {
     try { return JSON.parse(body); } catch { return undefined; }
   }
-  let last;
+  let last, response;
   for (const line of body.split(/\r?\n/u)) {
     const match = /^data:\s*(.+)$/u.exec(line.trim());
-    if (match) { try { last = JSON.parse(match[1]); } catch { /* ignore keep-alives */ } }
+    if (!match) continue;
+    let parsed;
+    try { parsed = JSON.parse(match[1]); } catch { continue; /* keep-alives and partial frames */ }
+    last = parsed;
+    if (parsed !== null && typeof parsed === 'object' && (Object.hasOwn(parsed, 'result') || Object.hasOwn(parsed, 'error'))) response = parsed;
   }
-  return last;
+  return response ?? last;
+}
+
+/** The documented tool result is a JSON document in the text content item; a server that also publishes
+ * MCP `structuredContent` is accepted on the same shape. Anything else is a malformed result, never discovery. */
+export function discoveryRows(result) {
+  if (result === null || typeof result !== 'object' || Array.isArray(result)) return undefined;
+  const content = Array.isArray(result.content) ? result.content : [];
+  const inner = content.find(item => item?.type === 'text' && typeof item.text === 'string')?.text;
+  if (typeof inner === 'string') {
+    try { const parsed = JSON.parse(inner); if (Array.isArray(parsed?.results)) return parsed.results; } catch { /* fall through */ }
+  }
+  const structured = result.structuredContent;
+  if (structured !== null && typeof structured === 'object' && Array.isArray(structured.results)) return structured.results;
+  return undefined;
 }
 
 /** Map one documented `results[]` row to the discovery projection. A row without a byte-exact valid
@@ -196,14 +221,9 @@ export function createPrimaryWebSearch(configuration) {
           if (payload.error !== undefined) deny('UNAVAILABLE');
           // An MCP tool execution error is a result with `isError: true`, never a successful discovery.
           if (payload.result?.isError === true) deny('UNAVAILABLE');
-          const content = payload.result?.content;
-          if (!Array.isArray(content)) deny('INVALID_RESULT');
-          const inner = content.find(item => item?.type === 'text' && typeof item.text === 'string')?.text;
-          if (typeof inner !== 'string') deny('INVALID_RESULT');
-          let parsed;
-          try { parsed = JSON.parse(inner); } catch { deny('INVALID_RESULT'); }
-          if (!Array.isArray(parsed?.results)) deny('INVALID_RESULT');
-          return parsed.results;
+          const rows = discoveryRows(payload.result);
+          if (rows === undefined) deny('INVALID_RESULT');
+          return rows;
         } catch (error) {
           // Closed gateway denials are final; transport failures stay retryable within the attempt bound.
           if (error instanceof GatewayDenied) throw error;
@@ -234,10 +254,11 @@ export function createPrimaryWebSearch(configuration) {
       const scope = count();
       try {
         const value = typeof query === 'string' ? query.replace(/\s+/gu, ' ').trim() : '';
-        if (!value) deny('INVALID_ARGUMENTS');
-        const bounded = value.slice(0, MAX_QUERY_CHARS);
+        // The documented query bound is a refusal the model can act on (shorten the query), never a silent
+        // truncation that searches for something other than what was asked.
+        if (!value || value.length > MAX_QUERY_CHARS) deny('INVALID_ARGUMENTS');
         const wanted = clamp(limit, MIN_RESULTS, MAX_RESULTS, DEFAULT_RESULTS);
-        const rows = await invoke(bounded, wanted, deadlineMs, signal, scope);
+        const rows = await invoke(value, wanted, deadlineMs, signal, scope);
         const results = rows.map(projectRow).filter(row => row !== undefined).slice(0, Math.min(wanted, MAX_ROW_RESULTS));
         report(scope, 'completed');
         return Object.freeze({tool: 'search_public_web', contentStatus: 'discovered', generatedAt: new Date(now()).toISOString(),
@@ -253,12 +274,18 @@ export function createPrimaryWebSearch(configuration) {
   });
 }
 
-/** `readSource` port of the retained read transport: primary discovery for search only. */
+/** `readSource` port of the retained read transport: primary discovery for search only.
+ * The transport hands the original flat request through; the receiving contract's own normalization pass
+ * (trim, 1-12 rows, default 6) decides what is asked of the index, so the rows delivered can never exceed
+ * the limit the same contract later enforces on the result. */
 export function createPrimarySearchReadSource(primary) {
   if (primary === null || typeof primary !== 'object' || typeof primary.search !== 'function') deny('GATEWAY_CONFIGURATION');
-  return async ({operation, input, deadlineMs, signal}) => {
+  const contract = resolveOperationContract(SEARCH_CONTRACT);
+  return async ({operation, input, context, deadlineMs, signal}) => {
     if (operation !== 'search_public_web') deny('GATEWAY_CONFIGURATION');
-    return primary.search({query: input?.query, limit: input?.limit, deadlineMs, signal});
+    let normalized;
+    try { normalized = contract.normalizeInput(input, context?.normalizationContext ?? {}).input; } catch { deny('INVALID_ARGUMENTS'); }
+    return primary.search({query: normalized.query, limit: normalized.limit, deadlineMs, signal});
   };
 }
 

@@ -1,6 +1,6 @@
 /** Synthetic discovery and consulted-page DTOs; no URL/provider/parser implementation. */
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {billTextCase} from '../../bill-text/test/fixture.mjs';
+import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createPublicWebHandlers} from '../handler.mjs';
 
 export const ids=['search_public_web','scrape_web_page'];
@@ -40,7 +40,7 @@ export function storedCase(id=ids[0],{request=requests[id],provider='tavily',kin
  }};
  const call=(raw=request,current=authority,context=normalizationContext)=>{
   const currentInput=contract.normalizeInput(raw,context);
-  return {request:raw,input:currentInput.input,argumentsSha256:currentInput.argumentsSha256,normalizationContext:context,authority:current};
+  return {request:raw,input:currentInput.input,argumentsSha256:currentInput.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };
  return {...scene,family:'public-web',operation,contract,arguments:request,normalizationContext,transport,page,nativeReadContextPorts,call,
   handler:(changes={})=>createPublicWebHandlers({...transport,now,...changes},[operation])[0].execute};

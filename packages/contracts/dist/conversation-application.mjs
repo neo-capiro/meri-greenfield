@@ -521,6 +521,13 @@ var sequence = (value) => {
   if (!Number.isSafeInteger(value) || value < 0) deny();
   return value;
 };
+var SLUG = /^[a-z][a-z0-9-]{1,63}$/u;
+function siteWorkflow(value) {
+  if (value === void 0) return void 0;
+  const w = closed(value, ["siteId", "workflowId", "version", "manifestSha256"]);
+  if (typeof w.siteId !== "string" || !SLUG.test(w.siteId) || typeof w.workflowId !== "string" || !SLUG.test(w.workflowId) || !Number.isSafeInteger(w.version) || w.version < 1 || typeof w.manifestSha256 !== "string" || !HEX.test(w.manifestSha256)) deny();
+  return { siteId: w.siteId, workflowId: w.workflowId, version: w.version, manifestSha256: w.manifestSha256 };
+}
 function sameJson(a, b) {
   if (a === b) return true;
   if (typeof a !== typeof b || a === null || b === null || typeof a !== "object") return false;
@@ -539,8 +546,9 @@ function binding(value) {
   return value;
 }
 function assertBrowserActionReceiptData(raw) {
-  const r = closed(raw, ["schema", "kind", "binding", "sessionId", "toolUseId", "action", "urlHost", "atMs", "reference", "outcome"]);
+  const r = closed(raw, ["schema", "kind", "binding", "sessionId", "toolUseId", "action", "urlHost", "atMs", "reference", "outcome"], ["siteWorkflow"]);
   if (r.schema !== BROWSER_RECEIPT_SCHEMA || r.kind !== "browser.action") deny();
+  const provenance = siteWorkflow(r.siteWorkflow);
   binding(r.binding);
   if (typeof r.action !== "string" || !r.action || r.action.length > 128) deny();
   if (!["ok", "error"].includes(r.outcome)) deny();
@@ -556,12 +564,14 @@ function assertBrowserActionReceiptData(raw) {
     urlHost: host(r.urlHost),
     atMs: at(r.atMs),
     reference: r.reference,
-    outcome: r.outcome
+    outcome: r.outcome,
+    ...provenance === void 0 ? {} : { siteWorkflow: provenance }
   });
 }
 function assertBrowserDownloadReceiptData(raw) {
-  const r = closed(raw, ["schema", "kind", "binding", "urlHost", "atMs", "reference", "sha256", "bytes", "mimeType"]);
+  const r = closed(raw, ["schema", "kind", "binding", "urlHost", "atMs", "reference", "sha256", "bytes", "mimeType"], ["siteWorkflow"]);
   if (r.schema !== BROWSER_RECEIPT_SCHEMA || r.kind !== "browser.download") deny();
+  const provenance = siteWorkflow(r.siteWorkflow);
   binding(r.binding);
   const reference = r.reference === null ? null : typeof r.reference === "string" && r.reference.length > 0 && r.reference.length <= 128 ? r.reference : deny();
   const sha = r.sha256 === null ? null : typeof r.sha256 === "string" && HEX.test(r.sha256) ? r.sha256 : deny();
@@ -577,7 +587,8 @@ function assertBrowserDownloadReceiptData(raw) {
     reference,
     sha256: sha,
     bytes,
-    mimeType: r.mimeType
+    mimeType: r.mimeType,
+    ...provenance === void 0 ? {} : { siteWorkflow: provenance }
   });
 }
 var assertBrowserReceiptData = (raw) => raw?.kind === "browser.download" ? assertBrowserDownloadReceiptData(raw) : assertBrowserActionReceiptData(raw);

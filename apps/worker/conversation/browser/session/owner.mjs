@@ -9,6 +9,8 @@ import {prepareNativeBrowserInput} from './native-input.mjs';
 import {createInputLimiter} from './input.mjs';
 import {createViewerFrameOwner} from './viewer-frame.mjs';
 import {own} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {browserRefusalCode} from '../refusals.mjs';
+import {siteSessionExpired} from '../site-workflows/manifest.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createBrowserSessionOwner({context,invoke,policy,manifest=null,current,hold,ports,now=Date.now,deadlineMs}){
  if(typeof invoke!=='function'||typeof current!=='function'||typeof hold!=='function'||!context||
@@ -33,7 +35,21 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
    const drained=fence.state();if(drained.state!=='drained'||drained.reason!=='takeover')fail('TAKEOVER_DRAIN_UNKNOWN');return drained;
   }finally{life.close();}
  }
- timer=setTimeout(()=>{void destroy('ttl-expiry').catch(()=>{});},Math.max(1,Math.min(deadlineMs,now()+(manifest?.sessionTtlMs??deadlineMs-now()))-now()));timer.unref?.();
+ // Q-A8: a site workflow's sign-in expires after `sessionTtlMs` of INACTIVITY (page effects, viewer frames, user
+ // input), never later than the run deadline; without a manifest the run deadline is the only bound. Activity re-arms
+ // the timer, and expiry settles through the same ordered destruction as every other trigger.
+ let lastActivityMs=now();
+ const touch=()=>{lastActivityMs=now();};
+ const arm=()=>{
+  clearTimeout(timer);if(closed)return;
+  const ttlMs=manifest?.sessionTtlMs,idleUntilMs=ttlMs===undefined?deadlineMs:Math.min(deadlineMs,lastActivityMs+ttlMs);
+  timer=setTimeout(()=>{
+   if(closed)return;
+   if(ttlMs!==undefined&&now()<deadlineMs&&!siteSessionExpired({lastActivityMs,ttlMs,now})){arm();return;}
+   void destroy('ttl-expiry').catch(()=>{});
+  },Math.max(1,idleUntilMs-now()));timer.unref?.();
+ };
+ arm();
  async function call({requestId,tool,args,signal}){
   if(closed)fail('BROWSER_SESSION_ENDING');if(!policy.tools.includes(tool))fail('BROWSER_TOOL_REFUSED');
   if(tool==='browser_take_screenshot')fail('BROWSER_IMAGES_WITHHELD');
@@ -52,11 +68,12 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
    const result=await life.run(()=>snapshot.capture({fenceState:fence.state().state,tool}));
    await life.run(assertCurrent);const receipt=fence.settle(requestId,{outcome:'result'});settled=true;
    if(receipt.deliver!=='result'||fence.state().state!=='agent')fail('BROWSER_STALE_RESULT');
-   return result;
+   touch();return result;
   }catch(error){
    if(admitted&&!settled){fence.settle(requestId,{outcome:dispatched?(life.signal.aborted?'timeout':'transport-error'):'result'});
     if(dispatched){void destroy('disconnect').catch(()=>{});fail('BROWSER_ACTION_OUTCOME_UNKNOWN');}}
-   throw Object.assign(Error('BROWSER_CALL_REFUSED'),{code:'BROWSER_CALL_REFUSED'});
+   // Only the closed model-visible code survives this point; upstream prose, dialogs and host detail never do.
+   fail(browserRefusalCode(error,{dispatched}));
   }finally{life.close();busy=false;}})();
   const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);try{return await operation;}finally{pending.delete(tracked);}
  }
@@ -74,7 +91,7 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
     // must not allocate a new lifecycle command when the first answer was lost.
     const held=await life.run(hold);await life.run(assertCurrent);
     const lease=fence.grant({holdApplied:held?.outcome==='APPLIED'});
-    viewer.clear();inputLimiter=createInputLimiter({now});return lease;}finally{life.close();taking=false;}
+    viewer.clear();inputLimiter=createInputLimiter({now});touch();return lease;}finally{life.close();taking=false;}
   },
   async view(raw){
    const {leaseEpoch,page,signal}=own(raw,['leaseEpoch','page'],['signal']);
@@ -85,7 +102,7 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
    const operation=(async()=>{
     await life.run(assertCurrent);assertLease();
     const result=await life.run(signal=>viewer.capture({page,leaseEpoch,signal,timeoutMs:Math.max(1,until-now()),assertLease}));
-    await life.run(assertCurrent);assertLease();viewer.assert({page,leaseEpoch,frameId:result.frameId});return result;
+    await life.run(assertCurrent);assertLease();viewer.assert({page,leaseEpoch,frameId:result.frameId});touch();return result;
    })();
    const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);
    try{return await operation;}catch{viewer.clear();fail('BROWSER_VIEWER_FRAME_REFUSED');}
@@ -108,7 +125,7 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
     snapshot.rememberInput(prepared.text);await life.run(()=>prepared.perform({assertLease:()=>{
      life.check();assertDisplayed();if(!fence.input({leaseEpoch}).accepted)fail('BROWSER_STALE_LEASE');
     }}));
-    await life.run(()=>snapshot.capture({fenceState:'agent',postLease:true}));await life.run(assertCurrent);})();
+    await life.run(()=>snapshot.capture({fenceState:'agent',postLease:true}));await life.run(assertCurrent);touch();})();
    const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);
    try{await operation;}catch{void destroy('disconnect').catch(()=>{});fail('BROWSER_USER_INPUT_UNKNOWN');}
    finally{prepared.dispose();pending.delete(tracked);life.close();busy=false;}

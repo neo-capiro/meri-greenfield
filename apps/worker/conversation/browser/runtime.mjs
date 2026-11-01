@@ -44,7 +44,10 @@ export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,
  }
  if(typeof port?.policy!=='function'||typeof now!=='function')throw fault('BROWSER_CONFIGURATION');
  let policy=await port.policy({binding:structuredClone(binding),signal}),workflow;
- const createFragment=()=>createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,modelTransport:port.modelTransport,now,assertCurrent:workflow?.assertCurrent});
+ // Receipts of a site workflow run name the exact selection they ran under (output provenance); the selection was
+ // pinned and rechecked by prepareCurrentSiteWorkflow before the fragment exists.
+ const createFragment=()=>createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,modelTransport:port.modelTransport,now,assertCurrent:workflow?.assertCurrent,
+  ...(workflow?{siteWorkflow:structuredClone(siteWorkflow)}:{})});
  let fragment=createFragment(),lifecycle=createBrowserRunLifecycle({fragment,binding,cwd,egress:port.egress,processes:port.processes,now});
  if(siteWorkflow!==undefined){
   try{

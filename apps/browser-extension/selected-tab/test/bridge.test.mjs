@@ -100,8 +100,10 @@ test('expired/overlong pairing and malformed commands do not retain data',async(
 });
 test('disconnect during share is never retried and status failure terminates without recursion',async()=>{
  const f=fixture();await f.ready();await f.bridge.capture();let count=0;
- f.port.postMessage=()=>{count++;throw Error('port disconnected');};await assert.rejects(f.bridge.share());assert.equal(count,1);
- f.bridge.pause();assert.equal(f.bridge.view().state,'disconnected');assert.equal(f.port.closed,true);
+ f.port.postMessage=()=>{count++;throw Error('port disconnected');};await assert.rejects(f.bridge.share(),/SHARE_NOT_SENT/u);assert.equal(count,1);
+ // Nothing crossed the port, so there is no pending share to check: the connection is simply lost.
+ assert.equal(f.bridge.view().state,'disconnected');assert.equal(f.bridge.view().outcome,null);assert.equal(f.port.closed,true);
+ f.bridge.pause();assert.equal(f.bridge.view().state,'disconnected');
 });
 test('republished outcomes for settled attachments do not revoke a later capture or share',async()=>{
  const f=fixture();await f.ready();await f.bridge.capture();await f.bridge.share();
@@ -115,7 +117,9 @@ test('republished outcomes for settled attachments do not revoke a later capture
  const second=f.port.sent.filter(m=>m.type==='share')[1];
  await f.send({...outcome,selectionId:second.selectionId,requestId:randomUUID()});
  assert.equal(f.bridge.view().outcome,'stored');assert.equal(f.port.sent.filter(m=>m.type==='share').length,2);
- await f.send({...outcome,selectionId:randomUUID()});assert.equal(f.bridge.view().state,'revoked');f.bridge.dispose();
+ // An outcome for a selection this pairing never shared is an app protocol failure: the connection is lost, which
+ // is not the user's revocation.
+ await f.send({...outcome,selectionId:randomUUID()});assert.equal(f.bridge.view().state,'disconnected');assert.equal(f.port.closed,true);f.bridge.dispose();
 });
 test('worker recreation restores neither consent, capture nor an unknown share',async()=>{
  const before=fixture();await before.ready();await before.bridge.capture();await before.bridge.share();
@@ -126,4 +130,48 @@ test('worker recreation restores neither consent, capture nor an unknown share',
  await after.connect();await assert.rejects(after.bridge.capture(),/NOT_ACTIVE/u);
  assert.equal(after.port.sent.filter(m=>m.type==='share').length,0);
  after.bridge.approve();await after.bridge.capture();assert.ok(after.bridge.view().selection);after.bridge.dispose();
+});
+
+test('a refused outcome or an app-sent unknown outcome leaves the next capture open',async()=>{
+ for(const state of ['refused','unknown']){
+  const f=fixture();await f.ready();await f.bridge.capture();await f.bridge.share();
+  const first=f.port.sent.find(m=>m.type==='share');
+  await f.send({schema,type:'outcome',pairingId:f.pair.pairingId,selectionId:first.selectionId,state,requestId:randomUUID()});
+  assert.equal(f.bridge.view().outcome,state);
+  if(state==='unknown')await assert.rejects(f.bridge.capture(),/CHECK_PREVIOUS_SHARE/u);
+  else{await f.bridge.capture();assert.ok(f.bridge.view().selection);await f.bridge.share();assert.equal(f.port.sent.filter(m=>m.type==='share').length,2);}
+  f.bridge.dispose();
+ }
+});
+test('a port that never pairs is dropped by the connect timer; a paired port expires by its own timer',async()=>{
+ const f=fixture();assert.equal(f.bridge.connect(f.port),true);
+ const connectTimer=[...f.timers.values()].find(timer=>timer.ms===30000);assert.ok(connectTimer);connectTimer.fn();
+ assert.equal(f.bridge.view().state,'expired');assert.equal(f.port.closed,true);
+ const g=fixture();await g.ready();
+ const pairingTimer=[...g.timers.values()].find(timer=>timer.ms===g.pair.expiresAtMs-1000);assert.ok(pairingTimer,'the pairing expiry timer is armed for the remaining pairing time');
+ pairingTimer.fn();assert.equal(g.bridge.view().state,'expired');assert.equal(g.port.closed,true);await assert.rejects(g.bridge.capture(),/PAIRING_EXPIRED/u);
+});
+test('the recipient tab, a discarded or loading tab and a page whose address moved are never captured',async()=>{
+ const cases=[['SELECT_SOURCE_TAB',{id:1,active:true,url:'https://example.invalid/page'}],['TAB_UNAVAILABLE',{id:2,active:true,url:'https://example.invalid/page',discarded:true}],
+  ['TAB_UNAVAILABLE',{id:2,active:true,url:'https://example.invalid/page',pendingUrl:'https://example.invalid/next'}],['TAB_UNAVAILABLE',{id:2,active:true,url:'chrome://settings'}]];
+ for(const [code,tab] of cases){const f=fixture();await f.ready();f.active(tab);await assert.rejects(f.bridge.capture(),new RegExp(code,'u'));assert.equal(f.calls.some(([name])=>name==='script'),false,code);f.bridge.dispose();}
+ const moved=fixture();await moved.ready();moved.hook(async args=>{if(!args.target.documentIds)moved.active({id:2,active:true,url:'https://example.invalid/elsewhere'});});
+ await assert.rejects(moved.bridge.capture(),/SELECTION_CHANGED/u);assert.equal(moved.bridge.view().selection,null);moved.bridge.dispose();
+});
+test('a capture script that answers for the wrong frame or document is CAPTURE_UNAVAILABLE',async()=>{
+ const f=fixture();await f.ready();
+ const originalScript=f.calls;f.hook(async args=>{if(!args.target.documentIds)throw Object.assign(Error('wrong frame'),{answer:true});});
+ await assert.rejects(f.bridge.capture());assert.equal(f.bridge.view().selection,null);f.bridge.dispose();
+ const g=fixture();await g.ready();g.document('not-a-document-id');
+ await assert.rejects(g.bridge.capture(),/CAPTURE_UNAVAILABLE/u);assert.equal(g.bridge.view().selection,null);g.bridge.dispose();
+});
+test('every bridge refusal has one fixed popup sentence and unknown errors keep the generic text',async()=>{
+ const {SELECTED_TAB_ERROR_TEXTS,describeSelectedTabError}=await import('../bridge.mjs');
+ const f=fixture();await f.connect();
+ const codes=['PAIRING_NOT_ACTIVE','PAIRING_NOT_WAITING','PAIRING_EXPIRED','CHECK_PREVIOUS_SHARE','CAPTURE_REQUIRED','CAPTURE_EXPIRED','SELECTION_CHANGED','SELECT_SOURCE_TAB','TAB_UNAVAILABLE','PAGE_UNAVAILABLE','PAGE_LIMIT','CAPTURE_UNAVAILABLE','SHARE_NOT_SENT'];
+ assert.deepEqual(Object.keys(SELECTED_TAB_ERROR_TEXTS).sort(),[...codes].sort());
+ for(const code of codes)assert.ok(SELECTED_TAB_ERROR_TEXTS[code].length>10);
+ assert.equal(describeSelectedTabError(Error('CAPTURE_REQUIRED')),SELECTED_TAB_ERROR_TEXTS.CAPTURE_REQUIRED);
+ assert.equal(describeSelectedTabError(Error('something private')),'This selection is unavailable. Capture the current tab again or reconnect.');
+ await assert.rejects(f.bridge.capture(),error=>describeSelectedTabError(error)===SELECTED_TAB_ERROR_TEXTS.PAIRING_NOT_ACTIVE);f.bridge.dispose();
 });

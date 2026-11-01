@@ -8,9 +8,10 @@ import {canonicalSha256,validateShape} from '../../../../packages/contracts/vali
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {validateBrowserPolicy} from './policy.mjs';
 import {BROWSER_SERVER_NAME} from './server.mjs';
+import {browserRefusalResult,isBrowserRefusalResult} from './refusals.mjs';
 const MAX_BYTES=262144;
 const fail=()=>{throw Object.assign(Error('BROWSER_CALL_REFUSED'),{code:'BROWSER_CALL_REFUSED'});};
-const refused=()=>({isError:true,content:[{type:'text',text:'BROWSER_CALL_REFUSED'}]});
+const refused=()=>browserRefusalResult('BROWSER_CALL_REFUSED');
 export function createBrowserSdkServer(configuration){
  const c=own(configuration,['binding','policy','tools','call','deadlineMs'],['now','signal']),binding=data(c.binding),policy=validateBrowserPolicy(c.policy),now=c.now??Date.now;
  validateShape('RunBinding',binding);
@@ -40,7 +41,9 @@ export function createBrowserSdkServer(configuration){
    // Preserve the MCP request identity through the run binding. No call is
    // retried here; replay and uncertain effects remain with the host fence.
    const requestId=canonicalSha256({binding,type:typeof extra.requestId,id:extra.requestId});
-   const result=data(await c.call({binding,requestId,tool,args,signal}));own(result,['content']);
+   const result=data(await c.call({binding,requestId,tool,args,signal}));own(result,['content'],['isError']);
+   // The host's closed refusal texts are the only `isError` results admitted; they carry no page content.
+   if(Object.hasOwn(result,'isError')&&!isBrowserRefusalResult(result))fail();
    if(!Array.isArray(result.content)||!result.content.length||Buffer.byteLength(JSON.stringify(result))>MAX_BYTES)fail();
    for(const raw of result.content){const block=own(raw,['type','text']);if(block.type!=='text'||typeof block.text!=='string')fail();}
    return result;

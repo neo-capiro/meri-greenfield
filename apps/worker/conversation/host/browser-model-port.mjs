@@ -4,6 +4,7 @@ import {canonicalSha256,validateShape} from '../../../../packages/contracts/vali
 import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {validateBrowserPolicy} from '../browser/policy.mjs';
+import {browserRefusalCode,browserRefusalResult,isBrowserRefusalResult} from '../browser/refusals.mjs';
 
 export const BROWSER_MODEL_MAX_BYTES=262144;
 const fail=()=>{throw Object.assign(Error('BROWSER_CALL_REFUSED'),{code:'BROWSER_CALL_REFUSED'});};
@@ -35,7 +36,13 @@ export function createBoundBrowserModelPort({binding,policy,tools,call,deadlineM
     if(typeof request.requestId!=='string'||!/^[0-9a-f]{64}$/u.test(request.requestId)||!admitted.tools.includes(request.tool)||
      !request.args||typeof request.args!=='object'||Array.isArray(request.args))fail();
     return await run(q.signal,async signal=>{
-     const result=wire(await call({...request,signal}));own(result,['content']);
+     // A closed refusal from the session owner is delivered to the model as its fixed text result; anything
+     // else stays a transport failure. The refusal carries no page content and crosses the wire unchanged.
+     let answered;
+     try{answered=await call({...request,signal});}
+     catch(error){const code=browserRefusalCode(error);if(code==='BROWSER_CALL_REFUSED')throw error;return browserRefusalResult(code);}
+     const result=wire(answered);own(result,['content'],['isError']);
+     if(Object.hasOwn(result,'isError')&&!isBrowserRefusalResult(result))fail();
      if(!Array.isArray(result.content)||!result.content.length||result.content.some(x=>!x||Object.keys(x).sort().join(',')!=='text,type'||x.type!=='text'||typeof x.text!=='string'))fail();
      return result;
     });

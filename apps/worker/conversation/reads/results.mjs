@@ -1,7 +1,8 @@
 // @ts-check
 /** Closed result texts for `meri_reads` tools. Every failure is `isError:true` with one fixed text per gateway code
- * (gateway and native source-publication codes); none carries source detail, and no failure is ever
- * rendered as a successful or empty result. */
+ * (gateway and native source-publication codes), followed by the read's own fixed next-step guidance where
+ * `guidance.mjs` owns one; none carries source detail, and no failure is ever rendered as a successful or empty result. */
+import {readGuidance} from './guidance.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
 /** @type {Readonly<Record<string,(tool:string)=>string>>} */
 const TEXTS=Object.freeze({
@@ -9,7 +10,7 @@ const TEXTS=Object.freeze({
  ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now. ${NOTHING}`,
  DEADLINE:tool=>`DEADLINE: ${tool} did not finish within its time limit. ${NOTHING}`,
  CANCELLED:tool=>`CANCELLED: ${tool} was cancelled before it finished. ${NOTHING}`,
- INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${tool==='mcp__meri_reads__meeting_read_client_meetings'?'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart. ':''}${NOTHING}`,
+ INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${NOTHING}`,
  BUDGET_UNCERTAIN:tool=>`BUDGET_UNCERTAIN: ${tool} could not be accounted for in this run; do not repeat this call. ${NOTHING}`,
  SOURCE_PUBLICATION_UNKNOWN:tool=>`SOURCE_PUBLICATION_UNKNOWN: ${tool} finished its read but saving the source could not be confirmed; do not repeat this call. ${NOTHING}`,
  SOURCE_PUBLICATION_CONFLICT:tool=>`SOURCE_PUBLICATION_CONFLICT: ${tool} reused a saved delivery identity with a different result; do not repeat this call. ${NOTHING}`,
@@ -33,6 +34,9 @@ export function failureCode(error){
 }
 /** @param {string} code @param {string} tool */
 export function failureResult(code,tool){
- const text=(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool);
+ const closed=(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool),hint=readGuidance(tool)?.failures[code];
+ // The read's fixed guidance sits between the closed code text and the evidence sentence, so every failure keeps
+ // the same `CODE: tool ...` head and the same honest tail.
+ const text=hint===undefined?closed:`${closed.slice(0,-NOTHING.length)}${hint} ${NOTHING}`;
  return {isError:true,content:[{type:/** @type {const} */('text'),text}]};
 }

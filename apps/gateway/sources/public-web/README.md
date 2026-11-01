@@ -67,21 +67,34 @@ whatever the target actually publishes — it may be prefixed and is only
 established by a `tools/list` discovery receipt. A different exposed name is
 bound through `MERI_WEB_SEARCH_TOOL`; nothing here asserts the two are equal.
 
-Documented limits honoured here: `query` <= 200 characters, `maxResults` 1-25
-(default 10), and the receiving-contract caps (12 rows, 180-character title,
-320-character snippet). Row text is untrusted source material. A row is kept only
-when it carries a byte-exact valid `http`/`https` locator of at most 2000
-characters — the value is published unchanged, never truncated or repaired, and a
-row without one is dropped — while an absent title, snippet or publication date
-stays `null` rather than being inferred from the URL. Empty results are an honest
-empty discovery. 401/403 fail as `ACCESS_DENIED` without retry, 400 as
-`INVALID_ARGUMENTS`, 404 and malformed bodies as `INVALID_RESULT`, and an MCP
-`result.isError: true` (tool execution error) as `UNAVAILABLE` instead of a
-successful empty discovery. One lifetime covers credential acquisition, dispatch
-and the bounded body read, so a stalled credential or an exhausted cutoff cannot
-start a paid search, and responses are size-bounded and cancelled on exit.
-Page consultation still uses the native Core owner; Playwright still owns page
-interaction.
+Documented limits honoured here: `query` <= 200 characters, `maxResults` 1-25, and the
+receiving-contract caps (12 rows, 180-character title, 320-character snippet). The read
+source applies the receiving contract's own normalization pass to the flat request before
+dispatch (trimmed query, `limit` 1-12 with the contract default of 6), so the index is asked
+for exactly the rows the same contract will later admit; a request without `limit` can never
+be withheld as `INVALID_RESULT` because the provider default (10) exceeded the contract
+default (6). A query longer than 200 characters is refused as `INVALID_ARGUMENTS` rather than
+silently truncated into a different search. Row text is untrusted source material. A row is
+kept only when it carries a byte-exact valid `http`/`https` locator of at most 2000
+characters — the value is published unchanged, never truncated or repaired, and a row
+without one is dropped — while an absent title, snippet or publication date stays `null`
+rather than being inferred from the URL. Empty results are an honest empty discovery.
+401/403 fail as `ACCESS_DENIED` without retry, 400 as `INVALID_ARGUMENTS`, 404 and malformed
+bodies as `INVALID_RESULT`, and an MCP `result.isError: true` (tool execution error) or a
+JSON-RPC `error` as `UNAVAILABLE` instead of a successful empty discovery. The documented
+result is a JSON document in the text content item; a server that publishes the same shape
+as MCP `structuredContent` is accepted. A streamed (`text/event-stream`) answer is read as
+the last frame carrying `result` or `error`, never as a notification that merely arrived
+last. One lifetime covers credential acquisition, dispatch and the bounded body read (1 MiB,
+15-second request window), so a stalled credential or an exhausted cutoff cannot start a
+paid search, and responses are size-bounded and cancelled on exit. Page consultation still
+uses the native Core owner; Playwright still owns page interaction.
+
+The model-facing description and the fixed failure texts for these two reads come from
+`apps/worker/conversation/reads/guidance.mjs`, because the catalog descriptor rows are a
+frozen retained snapshot whose placeholder text ("null handler, no enabled source") would
+otherwise be what the model reads. Recorded-shape MCP payloads for success, denial, tool and
+protocol error, malformed and streamed answers live in `test/mcp-payloads.mjs`.
 
 Retries are off by default (`maxAttempts: 1`): every attempt is a billable
 gateway invocation plus a billable search. `maxAttempts: 2` is allowed and is the
@@ -107,11 +120,3 @@ so the target itself is created with the documented Control API request that
 module emits. Wiring the three settings into the control task environment and
 recording the first `tools/list` discovery receipt remain deployment
 prerequisites; they are not part of this family's code.
-
-The frozen receiving contract (`retrieval-0.2`) currently admits only `tavily`,
-`serper` and `duckduckgo` providers, so an activated primary target fails closed
-with `INVALID_RESULT` until `packages/contracts` (SCRUM-238) admits the
-AWS-managed provider label and row shape. That contract change is the required
-shared join, and this module's output already carries the exact fields it needs.
-
-

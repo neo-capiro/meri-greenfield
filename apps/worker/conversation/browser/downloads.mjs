@@ -33,8 +33,8 @@ export const DOWNLOAD_IDEMPOTENCY_SCHEMA='meri-browser-download/1';
 /** Same key for every attempt of one run that ingests the same bytes under the same name. */
 export const downloadIdempotencyKey=(binding,filename,sha256)=>canonicalSha256({schema:DOWNLOAD_IDEMPOTENCY_SCHEMA,tenantId:binding.tenantId,conversationId:binding.conversationId,runId:binding.runId,filename,sha256});
 export const disabledDownloads=Object.freeze({async accept(){fail('BROWSER_DOWNLOADS_DISABLED');}});
-export function createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,reconcile,now,assertCurrent}){
- const limits=policy.downloads;
+export function createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,reconcile,now,assertCurrent,siteWorkflow=null}){
+ const limits=policy.downloads,provenance=siteWorkflow===null?{}:{siteWorkflow:structuredClone(siteWorkflow)};
  if(!limits.enabled)return disabledDownloads;
  /** `reserved` counts slots held by in-flight or completed downloads; `claimed` holds every filename in flight or done.
   * A filename whose pointer write or receipt acknowledgement was LOST stays claimed as `unknown`, so a retry
@@ -109,7 +109,7 @@ export function createDownloadPort({binding,policy,policySha256,sourceScopes,pat
   if(receiptAtMs!==original.atMs)attempts.set(filename,{key:idempotencyKey,status:'unknown',published:true,
    facts:Object.freeze({...original,atMs:receiptAtMs})});
   await receipts.record({schema:'meri-browser-receipt/1',kind:'browser.download',binding:structuredClone(binding),
-    urlHost:original.urlHost,atMs:receiptAtMs,reference:stored.versionId,sha256:original.sha256,bytes:original.bytes,mimeType:original.mimeType},{signal});
+    urlHost:original.urlHost,atMs:receiptAtMs,reference:stored.versionId,sha256:original.sha256,bytes:original.bytes,mimeType:original.mimeType,...structuredClone(provenance)},{signal});
   // A caller cancellation after the receipt must not report a late success or remove the source silently.
   if(signal?.aborted)fail('BROWSER_DOWNLOAD_CANCELLED');
   await unlink(path);

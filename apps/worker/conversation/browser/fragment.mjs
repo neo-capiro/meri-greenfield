@@ -18,7 +18,7 @@ const fail=()=>{throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BR
  * and source scopes are trusted runtime facts; receipts are always required, artifacts only when downloads are on,
  * approvals only for interaction tools (without it every interaction is denied). `approvalDeadlineMs` is an optional
  * trusted runtime setting inside APPROVAL_DEADLINE_MS (default 120 s). */
-export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,approvalDeadlineMs,now,assertCurrent,modelTransport}){
+export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawInstallation,sourceScopes:rawScopes,artifacts,receipts,approvals,approvalDeadlineMs,now,assertCurrent,modelTransport,siteWorkflow=null}){
  if(modelTransport!==undefined&&modelTransport!=='host-owned')fail();
  const installation=modelTransport==='host-owned'?validateBrowserContextInstallation(rawInstallation):validateBrowserInstallation(rawInstallation,binding);
  if(policy?.enabled!==true||typeof receipts?.record!=='function'||policy.downloads.enabled&&typeof artifacts?.ingest!=='function')fail();
@@ -38,9 +38,9 @@ export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawIns
   canUseTool:gate.canUseTool,
   hooks:Object.freeze({
    PreToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([gate.preToolUse])})]),
-   PostToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([createReceiptHook({binding,paths,cwd,server:BROWSER_SERVER_NAME,tools:policy.tools,receipts,now}),tracking.post])})]),
+   PostToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([createReceiptHook({binding,paths,cwd,server:BROWSER_SERVER_NAME,tools:policy.tools,receipts,now,siteWorkflow}),tracking.post])})]),
    PostToolUseFailure:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([tracking.failure])})])}),
   downloads:createDownloadPort({binding,policy,policySha256,sourceScopes,paths,artifacts,receipts,
-   ...(typeof artifacts?.reconcile==='function'?{reconcile:artifacts.reconcile}:{}),now,assertCurrent}),
+   ...(typeof artifacts?.reconcile==='function'?{reconcile:artifacts.reconcile}:{}),now,assertCurrent,siteWorkflow}),
   dispose:options=>disposeBrowserState(paths,options)});
 }

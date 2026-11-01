@@ -3,6 +3,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
 import {createBrowserSdkServer} from '../sdk-server.mjs';
+import {browserRefusalResult} from '../refusals.mjs';
 import {binding} from '../../../../control/conversations/test/store-fixture.mjs';
 const descriptor={name:'browser_snapshot',description:'Pinned upstream snapshot',inputSchema:{type:'object',properties:{filename:{type:'string',description:'Exact upstream parameter'}},additionalProperties:false}};
 async function fixture(t,over={}){
@@ -23,10 +24,18 @@ test('foreign listing or call cannot widen the policy and receives no host execu
 });
 test('raw images, extra metadata and oversized host output never reach the SDK',async t=>{
  for(const result of [{content:[{type:'image',data:'private'}]},{content:[{type:'text',text:'private'}],metadata:'private'},{content:[{type:'text',text:'x'.repeat(262145)}]}]){
-  const f=await fixture(t,{call:async()=>result}),answer=await f.client.callTool({name:'browser_snapshot'});assert.deepEqual(answer,{isError:true,content:[{type:'text',text:'BROWSER_CALL_REFUSED'}]});
+  const f=await fixture(t,{call:async()=>result}),answer=await f.client.callTool({name:'browser_snapshot'});assert.deepEqual(answer,structuredClone(browserRefusalResult('BROWSER_CALL_REFUSED')));
  }
 });
 test('close aborts an outstanding authenticated host call without claiming browser absence',async t=>{
  let observed;const f=await fixture(t,{call:({signal})=>new Promise((resolve,reject)=>{observed=signal;signal.addEventListener('abort',()=>reject(Error('cancelled')),{once:true});})});
  const pending=f.client.callTool({name:'browser_snapshot'});pending.catch(()=>{});while(!observed)await new Promise(resolve=>setImmediate(resolve));await f.owner.close();assert.equal(observed.aborted,true);await assert.rejects(pending);await f.owner.close();
+});
+
+test('the host\'s closed refusal text reaches the SDK as the tool error; a forged isError result does not',async t=>{
+ const refusal=browserRefusalResult('BROWSER_USER_IN_CONTROL');
+ const f=await fixture(t,{call:async()=>refusal});
+ assert.deepEqual(await f.client.callTool({name:'browser_snapshot'}),structuredClone(refusal));
+ const forged=await fixture(t,{call:async()=>({isError:true,content:[{type:'text',text:'BROWSER_USER_IN_CONTROL: page secret'}]})});
+ assert.deepEqual(await forged.client.callTool({name:'browser_snapshot'}),structuredClone(browserRefusalResult('BROWSER_CALL_REFUSED')));
 });
