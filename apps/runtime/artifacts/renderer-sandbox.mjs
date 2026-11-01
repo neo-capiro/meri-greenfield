@@ -1,10 +1,11 @@
 /** Fixed no-model child boundary in the existing ARM runtime image. Bubblewrap establishes the namespace; the canonical
  * renderer probe must observe every required restriction through this same runner before any conversion is admitted. */
-import {realpath,lstat} from 'node:fs/promises';import {dirname,basename} from 'node:path';
+import {realpath,lstat} from 'node:fs/promises';import {dirname,basename,join} from 'node:path';
 import {runArtifactProcess} from '../../artifacts/process.mjs';import {officeTransformArguments} from '../../artifacts/office-transform.mjs';
 import {RENDERER_PROBE_PATH,qualifyLibreOfficeRenderer} from '../../artifacts/renderer-qualification.mjs';
 import {rendererFault} from './renderer-contract.mjs';
 export const RENDERER_IMAGE_PATHS=Object.freeze({bwrap:'/usr/bin/bwrap',prlimit:'/usr/bin/prlimit',executable:'/usr/lib/libreoffice/program/soffice',nodeExecutable:'/usr/local/bin/node',tempRoot:'/tmp'});
+const PROBE_OBSERVATION_PATH=join(dirname(RENDERER_PROBE_PATH),'renderer-probe-observation.mjs');
 /** The image is a closed allowlist. No host /run, /home, /workspace, parent /proc, socket, environment or credential mount. */
 export function rendererSandboxArguments({executable,args,cwd}){
  const p=RENDERER_IMAGE_PATHS;if(dirname(cwd)!==p.tempRoot||!/^meri-(office|renderer-probe)-[A-Za-z0-9]{6}$/u.test(basename(cwd)))throw rendererFault('RENDERER_SANDBOX_REFUSED');
@@ -17,7 +18,8 @@ export function rendererSandboxArguments({executable,args,cwd}){
   '--dir','/etc','--ro-bind','/etc/fonts','/etc/fonts','--ro-bind-try','/etc/ld.so.cache','/etc/ld.so.cache',
   '--proc','/proc','--dev','/dev','--dir','/sys','--dir','/sys/fs','--ro-bind','/sys/fs/cgroup','/sys/fs/cgroup',
   '--dir','/opt','--dir','/opt/meri','--dir','/opt/meri/apps','--dir','/opt/meri/apps/artifacts',
-  '--ro-bind',RENDERER_PROBE_PATH,RENDERER_PROBE_PATH,'--dir','/tmp','--bind',cwd,cwd,'--chdir',cwd,'--remount-ro','/',
+  '--ro-bind',RENDERER_PROBE_PATH,RENDERER_PROBE_PATH,'--ro-bind',PROBE_OBSERVATION_PATH,PROBE_OBSERVATION_PATH,
+  '--dir','/tmp','--bind',cwd,cwd,'--chdir',cwd,'--remount-ro','/',
   '--',p.prlimit,'--fsize=16777216:16777216','--nofile=128:128','--nproc=64:64','--',executable,...args];
 }
 export async function runRendererSandbox(executable,args,options){
