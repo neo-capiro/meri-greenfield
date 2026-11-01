@@ -8,9 +8,28 @@ export const conversationErrorStatuses = freeze({
   MODEL_SELECTION_UNAVAILABLE:[409],MODEL_SETTINGS_UNAVAILABLE:[503],
   FEEDBACK_TARGET_REFUSED:[403],FEEDBACK_SOURCE_REFUSED:[403],FEEDBACK_REVISION_CHANGED:[409],
   FEEDBACK_REPLAY_REFUSED:[409],FEEDBACK_LIMIT:[409],FEEDBACK_WRITE_UNKNOWN:[503],
+  // Typed-selection refusals the UI can explain: the selected skill cannot run for this actor and scope. Both are decided
+  // before any run exists (allocate, admit, submit) and carry their detail next to `code`: `sources` names the required
+  // source ids no available read covers; `requiredScope` names the conversation scope the skill needs.
+  SKILL_SOURCES_UNAVAILABLE:[400],SKILL_SCOPE_REFUSED:[400],
 });
+/** The closed `run.status` `reasonCode` vocabulary a terminal or held run may carry (`null` on an ordinary transition).
+ * The worker publishes the specific code for a fault it can name and `EXECUTION_FAILED` only for one it cannot. */
+export const RUN_REASON_CODES=freeze([
+  'EXECUTION_FAILED',          // failed: an unnamed fault; nothing more specific is known
+  'EXECUTION_STOPPED',         // cancelled: the run's authority or deadline ended it
+  'USER_CANCELLED',            // cancelled: the user's durable Stop
+  'CONTROL_CHECKPOINTED',      // paused or waiting-for-approval: a verified control checkpoint holds the run
+  'HOLD_CHECKPOINT_FAILED',    // failed: a held run could not be checkpointed
+  'ATTEMPT_LOST',              // failed: the worker attempt was lost and the run was reconciled
+  'SKILL_RUNTIME_REFUSED',     // failed: the selected skill cannot run on this worker (plugin, reads or policy not mounted)
+  'SKILL_SOURCES_UNAVAILABLE', // failed: a required source of the selected skill has no available read
+  'MODEL_TURNS_EXHAUSTED',     // failed: the model reached its turn budget without a result
+  'MODEL_BUDGET_EXHAUSTED',    // failed: the model reached its spend budget without a result
+  'OUTPUT_LIMIT',              // failed: the answer exceeded the run's output byte limit
+]);
 export const conversationApplicationMetadata = freeze({
-  packageVersion:'0.1.15', schemaId:'urn:meri:conversation-application:0.4.0', wireContractVersion:'0.4.0',
+  packageVersion:'0.1.16', schemaId:'urn:meri:conversation-application:0.4.0', wireContractVersion:'0.4.0',
   routes:{
     submit:{method:'POST',path:'/api/conversations/submit',response:'json'},
     history:{method:'POST',path:'/api/conversations/history',response:'json'},

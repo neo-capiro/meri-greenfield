@@ -165,6 +165,15 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    life.check();return projectCapabilityRole(current,{started,now:now()});
   }finally{life.close();}
  }
+ // The same Core role read for a selection admitted before its run exists: the authenticated session's own binding,
+ // scopes and selected client stand in for the run record, and the live-session credential relay answers for it.
+ async function readSessionCapabilityRole({binding,scopes,selectedClientId,signal,deadlineMs=now()+requestMs}){
+  validateShape('RunBinding',binding);assertNativeConversationScope({binding,scopes,selectedClientId});
+  const life=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,now()+requestMs),errorFactory:code=>fault(code)});
+  try{const started=now(),current=await life.run(signal=>readCurrent({binding,run:{scopes},context:{selectedClientId},signal,deadlineMs:life.deadline()}));
+   life.check();return projectCapabilityRole(current,{started,now:now()});
+  }finally{life.close();}
+ }
 
  async function admit({binding,signal}){
   const run=(await store.read(binding,{after:0,limit:1},check(signal))).run,context=await contextFor({binding,run,signal});
@@ -314,7 +323,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    if(!method)throw fault('NATIVE_OPERATION_UNAVAILABLE');return owner[method]({...input,signal});
   };return turnTelemetry?turnTelemetry.provisional(invoke):invoke();},readiness});
  const routinesOccurrenceOwners=routinesTask===null?null:createNativeRoutinesOccurrenceOwners({configuration,native,store,now});
- return Object.freeze({execution,native,application,admitFork,readCapabilityRole,...(routineCore?{workerModelPolicy:routineCore.modelPolicy}:{}),...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
+ return Object.freeze({execution,native,application,admitFork,readCapabilityRole,readSessionCapabilityRole,...(routineCore?{workerModelPolicy:routineCore.modelPolicy}:{}),...(routinesOccurrenceOwners===null?{}:{routinesTask,routinesOccurrenceOwners}),
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
   productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),...(conversationSourceReader?{conversationSourceReader}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority,browserHostCore:core,...(procedureAdmission?{procedureAdmission}:{}),...(siteWorkflowAdmission?{siteWorkflowAdmission}:{})}),
   bindApplication(value){if(outerApplication||typeof value?.handle!=='function')throw fault('AGENTCORE_CONFIGURATION');outerApplication=value;},

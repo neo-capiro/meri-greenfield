@@ -7,7 +7,7 @@ import {conversationErrorStatuses} from '../../../packages/contracts/conversatio
 import {assertFeedbackShape} from '../../../packages/contracts/conversation-application/feedback-validate.mjs';
 import {createConversationEventSource} from './events.mjs';
 import {own,fail} from './boundary.mjs';
-import {SKILL_SELECTION_REFUSALS} from './service.mjs';
+import {SKILL_SELECTION_REFUSALS,skillRefusalBody} from './service.mjs';
 import {types} from 'node:util';
 import {randomUUID} from 'node:crypto';
 import {beginHistoryDiagnostic,historyTraceHeader} from './history-diagnostics.mjs';
@@ -56,5 +56,5 @@ export function createConversationApplication({service,now=Date.now,maxRequestBy
    try{await life.run(()=>opening.promise);life.check();}catch(error){await events.cancel().catch(()=>{});throw error;}
    const result=meriLiveEventStreamResponse({messageId:randomUUID(),events});
    result.headers.set('cache-control','no-store');result.headers.set('x-content-type-options','nosniff');return result;
-  }catch(error){const observed=error?.code??error?.message,code=['INVALID_JSON','INVALID_UTF8','INVALID_BODY','INVALID_CONTENT_LENGTH',...SKILL_SELECTION_REFUSALS].includes(observed)?'INVALID_REQUEST':observed,status=Object.hasOwn(conversationErrorStatuses,code)?conversationErrorStatuses[code].at(-1):502;return finish(response({error:{code:status===502?'CONVERSATION_UNAVAILABLE':code}},status));}finally{life?.close();}}});
+  }catch(error){const observed=error?.code??error?.message,code=['INVALID_JSON','INVALID_UTF8','INVALID_BODY','INVALID_CONTENT_LENGTH',...SKILL_SELECTION_REFUSALS].includes(observed)?'INVALID_REQUEST':observed,status=Object.hasOwn(conversationErrorStatuses,code)?conversationErrorStatuses[code].at(-1):502;return finish(response({error:skillRefusalBody(error)??{code:status===502?'CONVERSATION_UNAVAILABLE':code}},status));}finally{life?.close();}}});
 }

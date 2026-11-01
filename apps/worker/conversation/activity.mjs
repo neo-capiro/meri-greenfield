@@ -18,6 +18,8 @@ import {requestContextSuffix} from './request-context.mjs';
 import {assertAutomaticClientContext} from './automatic-client-context.mjs';
 import {createConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
+import {terminalReasonCode} from './terminal-reason.mjs';
+import {unavailableSkillSources} from '../../../packages/contracts/selected-skills/sources.mjs';
 import {readCapabilityPolicy} from './capabilities/policy.mjs';
 import {createQuestionRegistry} from './questions/registry.mjs';
 import {createQuestionEventJournal} from './questions/events.mjs';
@@ -177,6 +179,9 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     else if(selectedSkills!==undefined){
      const nativeSkill=describeSkillPlugin({selection:selected.pin}).skills.find(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion);
      if(!nativeSkill||!policy?.skillPlugin||!policy.generalReads||generalReads===undefined||!runtime.skillPluginDirectory||policy.skillNames!==null&&!policy.skillNames.includes(nativeSkill.name))throw fault('SKILL_RUNTIME_REFUSED');
+     // The plugin skill reads only through the mounted general reads: a required source none of them covers cannot be
+     // disclosed by the model, so the run fails with its name instead of answering from nothing.
+     if(unavailableSkillSources(selected.manifest,readRuntime?.available??[]).length)throw fault('SKILL_SOURCES_UNAVAILABLE');
     }else assertInstalledSkillManifest(selected.manifest,catalog);
     // A manifest's maxCostMicroUSD bounds gateway tool charges in tariff micro-units (assertOneHoldFits), not provider spend: dividing
     // it into maxBudgetUsd gave every selected-skill run a $0.001 model budget. The tenant policy's maxBudgetUsd stays the model budget.
@@ -239,7 +244,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
      const text=textDelta(m)?await foldDeltas(m,part.text):part.text;if(controls?.isHeld())break;
      diagnostic('stage','activity-output');try{await ahead.during(()=>publish('message.delta',{messageId:part.messageId,text}));}catch(error){if(!controls?.fence())throw error;}diagnostic('stage','activity-stream');}
     if(controls?.isHeld())continue;
-    if(m?.type==='result'){diagnostic('stage','activity-result');if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;await recordUsage(m);drained.resolve();if(m.subtype!=='success'||m.is_error!==false)throw fault('SDK_EXECUTION_FAILED');capabilities?.check();uploadRuntime?.check();if(controls||skillRuntime){diagnostic('stage','activity-finalize');if(controls?.canCaptureCompletion())await controls.finish({keepInputOpen:true});else {input?.close();await controls?.finish();}break;}}
+    if(m?.type==='result'){diagnostic('stage','activity-result');if(resultSeen)throw fault('SDK_RESULT_DUPLICATE');resultSeen=true;terminalResult=m;await recordUsage(m);drained.resolve();if(m.subtype!=='success'||m.is_error!==false)throw fault(m.subtype==='error_max_turns'?'MODEL_TURNS_EXHAUSTED':m.subtype==='error_max_budget_usd'?'MODEL_BUDGET_EXHAUSTED':'SDK_EXECUTION_FAILED');capabilities?.check();uploadRuntime?.check();if(controls||skillRuntime){diagnostic('stage','activity-finalize');if(controls?.canCaptureCompletion())await controls.finish({keepInputOpen:true});else {input?.close();await controls?.finish();}break;}}
     // Thinking, raw tool arguments, SDK errors and provider diagnostics are never forwarded.
    }
     diagnostic('stage','activity-finalize');capabilities?.check();uploadRuntime?.check();if(controls?.isHeld())return await controls.heldResult();controls?.check();if(!resultSeen)throw fault('SDK_RESULT_MISSING');if(skillRuntime){skillOutput=await life.run(()=>skillRuntime.finish(terminalResult));if(typeof selectedSkills.publish!=='function')throw fault('OUTPUT_PUBLICATION_UNAVAILABLE');await life.run(signal=>selectedSkills.publish({binding,output:skillOutput,signal}));}
@@ -258,7 +263,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     // shows an answerable question on a run that can no longer take an answer. A user Stop already terminalized the run; the
     // store then settles the pending questions itself and refuses this late write, which is why the attempt is bounded.
     if(claimed&&questionRegistry)await attemptCleanup(()=>questionRegistry.close(),{now,timeoutMs:terminalAttemptMs,onFailure:error=>diagnostic('failure',error)});
-    if(claimed){diagnostic('stage','activity-terminal');const ordinary={state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':'EXECUTION_FAILED'},hold={state:'failed',reasonCode:HOLD_CHECKPOINT_FAILED},createdAt=new Date(now()).toISOString();
+    if(claimed){diagnostic('stage','activity-terminal');const ordinary={state:cancelled?'cancelled':'failed',reasonCode:cancelled?'EXECUTION_STOPPED':terminalReasonCode(failure)},hold={state:'failed',reasonCode:HOLD_CHECKPOINT_FAILED},createdAt=new Date(now()).toISOString();
     const candidates=(controls?.isHeld()?[hold,ordinary]:[ordinary,hold]).map(data=>({eventId:newId(),createdAt,type:'run.status',data}));
     const terminal=async event=>{const attempt=createOperationLifetime({deadlineMs:now()+terminalAttemptMs,now,errorFactory:fault});try{await attempt.run(signal=>runOwner.append({binding,event,signal}));return true;}catch{return false;}finally{attempt.close();}};
     settle:for(let round=0;round<2;round++)for(const event of candidates)if(await terminal(event))break settle;

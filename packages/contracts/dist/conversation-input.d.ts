@@ -560,6 +560,12 @@ export type Canonical_Canonical_NormalizedWindowE50Ec0EdBabbab24 =
   | {
       basis: 'unbounded';
     };
+/**
+ * @minItems 1
+ * @maxItems 32
+ */
+export type Canonical_SkillRefusalSources_0F6C1274 = [string, ...string[]];
+export type SkillRequiredScope = 'client';
 
 export interface Canonical_ConversationSubmitRequest_9C9B616B {
   requestId: string;
@@ -1119,7 +1125,11 @@ export interface Canonical_ConversationErrorResponse_4441F55D {
       | 'FEEDBACK_REVISION_CHANGED'
       | 'FEEDBACK_REPLAY_REFUSED'
       | 'FEEDBACK_LIMIT'
-      | 'FEEDBACK_WRITE_UNKNOWN';
+      | 'FEEDBACK_WRITE_UNKNOWN'
+      | 'SKILL_SOURCES_UNAVAILABLE'
+      | 'SKILL_SCOPE_REFUSED';
+    sources?: Canonical_SkillRefusalSources_0F6C1274;
+    requiredScope?: SkillRequiredScope;
   };
 }
 
@@ -1131,7 +1141,7 @@ export type AdmittedConversationInputReceipt=Readonly<ConversationInputAdmittedR
 export type ConversationInputView=Readonly<ConversationHistoryResponse>&AdmittedConversationView;
 export declare class ConversationInputResponseError extends Error {readonly code:string;}
 export declare const conversationInputMetadata: {
-  "packageVersion": "0.1.7",
+  "packageVersion": "0.1.8",
   "inputVersion": "1.3.0",
   "schemaId": "urn:meri:conversation-input:1.3.0",
   "routes": {
@@ -1224,6 +1234,12 @@ export declare const conversationInputMetadata: {
     ],
     "FEEDBACK_WRITE_UNKNOWN": [
       503
+    ],
+    "SKILL_SOURCES_UNAVAILABLE": [
+      400
+    ],
+    "SKILL_SCOPE_REFUSED": [
+      400
     ]
   }
 };

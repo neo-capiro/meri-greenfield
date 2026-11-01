@@ -66,8 +66,8 @@ test('a portfolio-only workflow is unavailable in a client conversation without 
  for(const skillId of ['quick_skill.portfolio_changes','quick_skill.portfolio_overlap']){
   const descriptor=CONVERSATION_SKILLS.find(s=>s.skillId===skillId);assert.deepEqual(descriptor.subjectKinds,['portfolio']);
   const input={requestId:id(60),prompt:'Portfolio',skill:{skillId:descriptor.skillId,skillVersion:descriptor.version},windowRequest:{basis:'explicit',startInclusive:'2026-10-01T00:00:00Z',endExclusive:'2026-10-24T00:00:00Z',timezone:'UTC'}};
-  await assert.rejects(f.allocate(input),error=>code(error)==='SKILL_SCOPE_REFUSED');
-  const allocate=await f.allocateHttp(input);assert.equal(allocate.status,400);assert.equal((await allocate.json()).error.code,'INVALID_REQUEST');
+  await assert.rejects(f.allocate(input),error=>code(error)==='SKILL_SCOPE_REFUSED'&&error.requiredScope==='client');
+  const allocate=await f.allocateHttp(input);assert.equal(allocate.status,400);assert.deepEqual(await allocate.json(),{error:{code:'SKILL_SCOPE_REFUSED',outcome:'NOT_DISPATCHED',requiredScope:'client'}});
  }
  assert.equal(f.allocations.size,0);assert.equal(f.state.runs.size,0);
 });
@@ -98,7 +98,7 @@ test('a selection without a window and a window basis the recipe does not allow 
  await assert.rejects(f.allocate(noWindow),error=>code(error)==='SKILL_WINDOW_REQUIRED');
  const changes=offered.find(s=>s.skillId==='quick_skill.client_changes');assert.ok(!changes.windowBases.includes('unbounded'));
  const wrongBasis={requestId:id(60),prompt:'Wrong basis',skill:{skillId:changes.skillId,skillVersion:changes.version},windowRequest:{basis:'unbounded'}};
- await assert.rejects(f.allocate(wrongBasis),error=>code(error)==='SKILL_SCOPE_REFUSED');
+ await assert.rejects(f.allocate(wrongBasis),error=>code(error)==='SKILL_WINDOW_REFUSED');
  for(const input of [noWindow,wrongBasis]){const allocate=await f.allocateHttp(input);assert.equal(allocate.status,400);assert.equal((await allocate.json()).error.code,'INVALID_REQUEST');}
  assert.equal(f.allocations.size,0);assert.equal(f.state.runs.size,0);
 });

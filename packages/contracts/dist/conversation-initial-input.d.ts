@@ -2,6 +2,12 @@
 
 export type ConversationInitialInputEnvelope =
   ConversationInitialInputAllocatedResponse | ConversationInitialInputErrorResponse;
+/**
+ * @minItems 1
+ * @maxItems 32
+ */
+export type Canonical_Canonical_SkillRefusalSources_0F6C1274F79D7367 = [string, ...string[]];
+export type Canonical_Canonical_SkillRequiredScope_61C2E60CA52A55Eb = 'client';
 
 export interface ConversationInitialInputAllocatedResponse {
   allocation: ConversationInitialInputAllocation;
@@ -57,6 +63,8 @@ export interface ConversationInitialInputErrorResponse {
       | 'NOT_FOUND'
       | 'METHOD_NOT_ALLOWED'
       | 'INVALID_REQUEST'
+      | 'SKILL_SOURCES_UNAVAILABLE'
+      | 'SKILL_SCOPE_REFUSED'
       | 'SESSION_REFUSED'
       | 'SCOPE_REFUSED'
       | 'SESSION_CHANGED'
@@ -74,6 +82,8 @@ export interface ConversationInitialInputErrorResponse {
       | 'MODEL_SELECTION_UNAVAILABLE'
       | 'MODEL_SETTINGS_UNAVAILABLE';
     outcome: 'NOT_DISPATCHED' | 'UNKNOWN';
+    sources?: Canonical_Canonical_SkillRefusalSources_0F6C1274F79D7367;
+    requiredScope?: Canonical_Canonical_SkillRequiredScope_61C2E60CA52A55Eb;
   };
 }
 
@@ -89,7 +99,7 @@ export type AdmittedConversationInitialInputRequest=AdmittedConversationInputReq
 export type AdmittedConversationInitialInputReceipt=Readonly<ConversationInitialInputAllocatedResponse>&{readonly [initialInputReceipt]:true};
 export declare class ConversationInitialInputResponseError extends Error {readonly code:string;}
 export declare const conversationInitialInputMetadata: {
-  "packageVersion": "0.1.10",
+  "packageVersion": "0.1.11",
   "initialInputVersion": "1.3.0",
   "schemaId": "urn:meri:conversation-initial-input:1.3.0",
   "routes": {
@@ -125,6 +135,8 @@ export declare const conversationInitialInputMetadata: {
     "NOT_FOUND": "NOT_DISPATCHED",
     "METHOD_NOT_ALLOWED": "NOT_DISPATCHED",
     "INVALID_REQUEST": "NOT_DISPATCHED",
+    "SKILL_SOURCES_UNAVAILABLE": "NOT_DISPATCHED",
+    "SKILL_SCOPE_REFUSED": "NOT_DISPATCHED",
     "SESSION_REFUSED": "NOT_DISPATCHED",
     "SCOPE_REFUSED": "NOT_DISPATCHED",
     "SESSION_CHANGED": "NOT_DISPATCHED",
@@ -150,6 +162,12 @@ export declare const conversationInitialInputMetadata: {
       405
     ],
     "INVALID_REQUEST": [
+      400
+    ],
+    "SKILL_SOURCES_UNAVAILABLE": [
+      400
+    ],
+    "SKILL_SCOPE_REFUSED": [
       400
     ],
     "SESSION_REFUSED": [

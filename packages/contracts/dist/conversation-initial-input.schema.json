@@ -145,6 +145,8 @@
                 "NOT_FOUND",
                 "METHOD_NOT_ALLOWED",
                 "INVALID_REQUEST",
+                "SKILL_SOURCES_UNAVAILABLE",
+                "SKILL_SCOPE_REFUSED",
                 "SESSION_REFUSED",
                 "SCOPE_REFUSED",
                 "SESSION_CHANGED",
@@ -168,6 +170,12 @@
                 "NOT_DISPATCHED",
                 "UNKNOWN"
               ]
+            },
+            "sources": {
+              "$ref": "#/$defs/Canonical_SkillRefusalSources_54e0533a"
+            },
+            "requiredScope": {
+              "$ref": "#/$defs/Canonical_SkillRequiredScope_8806a8fe"
             }
           },
           "required": [
@@ -948,6 +956,28 @@
         "checkpointFormat"
       ],
       "additionalProperties": false
+    },
+    "Canonical_Canonical_SkillRefusalSources_0f6c1274_f79d7367": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true
+    },
+    "Canonical_SkillRefusalSources_54e0533a": {
+      "$ref": "#/$defs/Canonical_Canonical_SkillRefusalSources_0f6c1274_f79d7367"
+    },
+    "Canonical_Canonical_SkillRequiredScope_61c2e60c_a52a55eb": {
+      "enum": [
+        "client"
+      ]
+    },
+    "Canonical_SkillRequiredScope_8806a8fe": {
+      "$ref": "#/$defs/Canonical_Canonical_SkillRequiredScope_61c2e60c_a52a55eb"
     }
   }
 }

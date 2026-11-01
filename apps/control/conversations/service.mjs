@@ -32,8 +32,16 @@ const OBSERVE_PAGE_EVENTS=100;
 const OBSERVE_IDLE_POLL_MAX_MS=250;
 /** An idle observation window closes this long before its cap: more than one timer tick of lateness (Windows ~15.6 ms) plus loop lag. */
 const WINDOW_END_SLACK_MS=50;
-/** Typed-selection refusals the input routes report as INVALID_REQUEST: the choice, not the service, is at fault. */
-export const SKILL_SELECTION_REFUSALS=Object.freeze(['SKILL_UNAVAILABLE','SKILL_WINDOW_REQUIRED','SKILL_SCOPE_REFUSED','SKILL_ADMISSION_REFUSED']);
+/** Typed-selection refusals the input routes report as INVALID_REQUEST: the choice, not the service, is at fault. The two refusals
+ * a user can act on (SKILL_SCOPE_REFUSED with its required scope, SKILL_SOURCES_UNAVAILABLE with its source ids) keep their
+ * own public code; `skillRefusalBody` is the only projection of their detail onto the wire. */
+export const SKILL_SELECTION_REFUSALS=Object.freeze(['SKILL_UNAVAILABLE','SKILL_WINDOW_REQUIRED','SKILL_WINDOW_REFUSED','SKILL_ADMISSION_REFUSED']);
+export function skillRefusalBody(error){
+ if(error?.code==='SKILL_SCOPE_REFUSED')return {code:error.code,requiredScope:'client'};
+ if(error?.code==='SKILL_SOURCES_UNAVAILABLE'&&Array.isArray(error.sources)&&error.sources.length&&error.sources.every(s=>typeof s==='string'&&s))return {code:error.code,sources:[...error.sources]};
+ return null;
+}
+const refuse=(code,detail)=>{throw Object.assign(new Error(code),{code,...detail});};
 /** How old a complete fused session observation may be for a streamed `message.delta` publication to reuse it instead of
  * resolving the session again. Every other operation observes fresh, and a refused observation drops the entry, so a
  * revocation reaches a streaming run within this bound and at once after any fresh read has observed it. */
@@ -94,7 +102,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   * installed or a `latest` alias) refuses as SKILL_UNAVAILABLE; it never resolves to another version. */
  function installedSkill(skill){own(skill,['skillId','skillVersion']);try{return selectSkill(skill.skillId,skill.skillVersion);}catch{fail('SKILL_UNAVAILABLE');}}
  function prepareInput(i,createdAt,modelSelection){let skill=null,window=i.windowRequest?resolveWindow(i.windowRequest,{referenceAt:createdAt,fiscalCalendars}):null;
-  if(i.skill){const selected=installedSkill(i.skill);if(!selectedSkillAdmission)assertInstalledSkillManifest(selected.manifest,catalog);if(!window)fail('SKILL_WINDOW_REQUIRED');if((!selectedSkillAdmission&&!selected.manifest.subjectKinds.includes('client'))||!selected.manifest.windowBases.includes(window.basis))fail('SKILL_SCOPE_REFUSED');skill=selected.pin;}
+  if(i.skill){const selected=installedSkill(i.skill);if(!selectedSkillAdmission)assertInstalledSkillManifest(selected.manifest,catalog);if(!window)fail('SKILL_WINDOW_REQUIRED');if(!selected.manifest.windowBases.includes(window.basis))fail('SKILL_WINDOW_REFUSED');if(!selectedSkillAdmission&&!selected.manifest.subjectKinds.includes('client'))refuse('SKILL_SCOPE_REFUSED',{requiredScope:'client'});skill=selected.pin;}
   if(window)retrievalShape('NormalizedWindow',window);return {requestId:i.requestId,prompt:i.prompt,skill,window,windowRequest:i.windowRequest??null,...(i.documentRevision===undefined?{}:{documentRevision:i.documentRevision}),...(i.uploads===undefined?{}:{uploads:i.uploads}),...(i.procedure===undefined?{}:{procedure:assertProcedureSelection(i.procedure)}),...(i.siteWorkflow===undefined?{}:{siteWorkflow:assertSiteWorkflowSelection(i.siteWorkflow)}),...(i.work===undefined?{}:{work:assertWorkSelection(i.work)}),...(modelSelection===undefined?{}:{modelSelection})};
  }
  async function admitPrepared(request,context,life,fresh,credential){if(request.uploads!==undefined){if(typeof uploadInputSource?.admit!=='function')fail('CONVERSATION_UNAVAILABLE');for(const selection of assertUploadSelections(request.uploads)){await fresh();await life.run(signal=>uploadInputSource.admit({credential,binding:context.binding,selection,deadlineMs:life.deadline(),signal}));await fresh();}}if(!request.skill)return;const selected=selectSkill(request.skill.skillId,request.skill.skillVersion);if(!selectedSkillAdmission){assertInstalledSkillManifest(selected.manifest,catalog);return;}await fresh();const started=now();const receipt=assertSelectionAdmission(await life.run(signal=>admissionPort.admitSelection.call(selectedSkillAdmission,{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,deadlineMs:life.deadline(),signal})),{binding:context.binding,request,scopes:context.scopes,selectedClientId:context.selectedClientId,selected,started,now});life.limitDeadline(receipt.expiresAtMs);await fresh();}

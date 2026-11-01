@@ -297,7 +297,7 @@ async function digest(bytes2) {
 }
 
 // initial-input-generated:./generated-validator.mjs
-var validateAllocatedResponse = validate27;
+var validateAllocatedResponse = validate29;
 var schema33 = { "type": "object", "properties": { "allocation": { "$ref": "#/$defs/ConversationInitialInputAllocation" }, "state": { "enum": ["RESERVED", "ACCEPTED"] }, "created": { "type": "boolean" } }, "required": ["allocation", "state", "created"], "additionalProperties": false };
 var schema34 = { "type": "object", "properties": { "binding": { "$ref": "#/$defs/Canonical_RunBinding_84f2304c" }, "scopes": { "type": "array", "items": { "$ref": "#/$defs/Canonical_Scope_f882edb5" }, "minItems": 1, "maxItems": 100, "uniqueItems": true }, "versions": { "$ref": "#/$defs/Canonical_RuntimeVersions_7edb8efc" }, "selectedClientId": { "anyOf": [{ "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, { "type": "null" }] }, "requestId": { "type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$" }, "inputSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "requestSha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }, "allocatedAtMs": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 }, "expiresAtMs": { "type": "integer", "minimum": 1, "maximum": 9007199254740991 }, "modelSelection": { "type": "object", "properties": { "provider": { "enum": ["bedrock", "claude-api"] }, "modelId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._:/-]{0,199}$" }, "effort": { "anyOf": [{ "type": "null" }, { "type": "string", "enum": ["low", "medium", "high", "xhigh", "max"] }] } }, "required": ["provider", "modelId", "effort"], "additionalProperties": false } }, "required": ["binding", "scopes", "versions", "selectedClientId", "requestId", "inputSha256", "requestSha256", "allocatedAtMs", "expiresAtMs"], "additionalProperties": false };
 var schema36 = { "type": "object", "properties": { "tenantId": { "type": "string", "minLength": 1, "maxLength": 128 }, "kind": { "type": "string", "enum": ["tenant", "client", "mailbox", "memory", "document", "private-user", "public"] }, "resourceId": { "type": "string", "minLength": 1, "maxLength": 256 }, "policyRevision": { "type": "string", "minLength": 1, "maxLength": 128 } }, "required": ["tenantId", "kind", "resourceId", "policyRevision"], "additionalProperties": false };
@@ -1151,10 +1151,10 @@ function validate23(data, { instancePath = "", parentData, parentDataProperty, r
   return errors2 === 0;
 }
 validate23.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
-function validate27(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
+function validate29(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
   let errors2 = 0;
-  const evaluated0 = validate27.evaluated;
+  const evaluated0 = validate29.evaluated;
   if (evaluated0.dynamicProps) {
     evaluated0.props = void 0;
   }
@@ -1165,13 +1165,13 @@ function validate27(data, { instancePath = "", parentData, parentDataProperty, r
     if (data && typeof data == "object" && !Array.isArray(data)) {
       let missing0;
       if (data.allocation === void 0 && (missing0 = "allocation") || data.state === void 0 && (missing0 = "state") || data.created === void 0 && (missing0 = "created")) {
-        validate27.errors = [{ instancePath, schemaPath: "#/required", keyword: "required", params: { missingProperty: missing0 }, message: "must have required property '" + missing0 + "'" }];
+        validate29.errors = [{ instancePath, schemaPath: "#/required", keyword: "required", params: { missingProperty: missing0 }, message: "must have required property '" + missing0 + "'" }];
         return false;
       } else {
         const _errs1 = errors2;
         for (const key0 in data) {
           if (!(key0 === "allocation" || key0 === "state" || key0 === "created")) {
-            validate27.errors = [{ instancePath, schemaPath: "#/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key0 }, message: "must NOT have additional properties" }];
+            validate29.errors = [{ instancePath, schemaPath: "#/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key0 }, message: "must NOT have additional properties" }];
             return false;
             break;
           }
@@ -1192,7 +1192,7 @@ function validate27(data, { instancePath = "", parentData, parentDataProperty, r
               let data1 = data.state;
               const _errs3 = errors2;
               if (!(data1 === "RESERVED" || data1 === "ACCEPTED")) {
-                validate27.errors = [{ instancePath: instancePath + "/state", schemaPath: "#/properties/state/enum", keyword: "enum", params: { allowedValues: schema33.properties.state.enum }, message: "must be equal to one of the allowed values" }];
+                validate29.errors = [{ instancePath: instancePath + "/state", schemaPath: "#/properties/state/enum", keyword: "enum", params: { allowedValues: schema33.properties.state.enum }, message: "must be equal to one of the allowed values" }];
                 return false;
               }
               var valid0 = _errs3 === errors2;
@@ -1203,102 +1203,12 @@ function validate27(data, { instancePath = "", parentData, parentDataProperty, r
               if (data.created !== void 0) {
                 const _errs4 = errors2;
                 if (typeof data.created !== "boolean") {
-                  validate27.errors = [{ instancePath: instancePath + "/created", schemaPath: "#/properties/created/type", keyword: "type", params: { type: "boolean" }, message: "must be boolean" }];
+                  validate29.errors = [{ instancePath: instancePath + "/created", schemaPath: "#/properties/created/type", keyword: "type", params: { type: "boolean" }, message: "must be boolean" }];
                   return false;
                 }
                 var valid0 = _errs4 === errors2;
               } else {
                 var valid0 = true;
-              }
-            }
-          }
-        }
-      }
-    } else {
-      validate27.errors = [{ instancePath, schemaPath: "#/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
-      return false;
-    }
-  }
-  validate27.errors = vErrors;
-  return errors2 === 0;
-}
-validate27.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
-var validateError = validate29;
-var schema39 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "INVALID_REQUEST", "SESSION_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "INITIAL_INPUT_CONFLICT", "INITIAL_INPUT_ALREADY_EXISTS", "INITIAL_INPUT_EXPIRED", "DEADLINE", "CANCELLED", "INITIAL_INPUT_REQUIRED", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_UNAVAILABLE", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN"] } }, "required": ["code", "outcome"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
-function validate29(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
-  let vErrors = null;
-  let errors2 = 0;
-  const evaluated0 = validate29.evaluated;
-  if (evaluated0.dynamicProps) {
-    evaluated0.props = void 0;
-  }
-  if (evaluated0.dynamicItems) {
-    evaluated0.items = void 0;
-  }
-  if (errors2 === 0) {
-    if (data && typeof data == "object" && !Array.isArray(data)) {
-      let missing0;
-      if (data.error === void 0 && (missing0 = "error")) {
-        validate29.errors = [{ instancePath, schemaPath: "#/required", keyword: "required", params: { missingProperty: missing0 }, message: "must have required property '" + missing0 + "'" }];
-        return false;
-      } else {
-        const _errs1 = errors2;
-        for (const key0 in data) {
-          if (!(key0 === "error")) {
-            validate29.errors = [{ instancePath, schemaPath: "#/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key0 }, message: "must NOT have additional properties" }];
-            return false;
-            break;
-          }
-        }
-        if (_errs1 === errors2) {
-          if (data.error !== void 0) {
-            let data0 = data.error;
-            const _errs2 = errors2;
-            if (errors2 === _errs2) {
-              if (data0 && typeof data0 == "object" && !Array.isArray(data0)) {
-                let missing1;
-                if (data0.code === void 0 && (missing1 = "code") || data0.outcome === void 0 && (missing1 = "outcome")) {
-                  validate29.errors = [{ instancePath: instancePath + "/error", schemaPath: "#/properties/error/required", keyword: "required", params: { missingProperty: missing1 }, message: "must have required property '" + missing1 + "'" }];
-                  return false;
-                } else {
-                  const _errs4 = errors2;
-                  for (const key1 in data0) {
-                    if (!(key1 === "code" || key1 === "outcome")) {
-                      validate29.errors = [{ instancePath: instancePath + "/error", schemaPath: "#/properties/error/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key1 }, message: "must NOT have additional properties" }];
-                      return false;
-                      break;
-                    }
-                  }
-                  if (_errs4 === errors2) {
-                    if (data0.code !== void 0) {
-                      let data1 = data0.code;
-                      const _errs5 = errors2;
-                      if (!(data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "INVALID_REQUEST" || data1 === "SESSION_REFUSED" || data1 === "SCOPE_REFUSED" || data1 === "SESSION_CHANGED" || data1 === "STALE_WRITER" || data1 === "INITIAL_INPUT_CONFLICT" || data1 === "INITIAL_INPUT_ALREADY_EXISTS" || data1 === "INITIAL_INPUT_EXPIRED" || data1 === "DEADLINE" || data1 === "CANCELLED" || data1 === "INITIAL_INPUT_REQUIRED" || data1 === "INITIAL_INPUT_CORRUPT" || data1 === "INITIAL_INPUT_UNAVAILABLE" || data1 === "REQUEST_TOO_LARGE" || data1 === "UNSUPPORTED_MEDIA_TYPE" || data1 === "MODEL_SELECTION_UNAVAILABLE" || data1 === "MODEL_SETTINGS_UNAVAILABLE")) {
-                        validate29.errors = [{ instancePath: instancePath + "/error/code", schemaPath: "#/properties/error/properties/code/enum", keyword: "enum", params: { allowedValues: schema39.properties.error.properties.code.enum }, message: "must be equal to one of the allowed values" }];
-                        return false;
-                      }
-                      var valid1 = _errs5 === errors2;
-                    } else {
-                      var valid1 = true;
-                    }
-                    if (valid1) {
-                      if (data0.outcome !== void 0) {
-                        let data2 = data0.outcome;
-                        const _errs6 = errors2;
-                        if (!(data2 === "NOT_DISPATCHED" || data2 === "UNKNOWN")) {
-                          validate29.errors = [{ instancePath: instancePath + "/error/outcome", schemaPath: "#/properties/error/properties/outcome/enum", keyword: "enum", params: { allowedValues: schema39.properties.error.properties.outcome.enum }, message: "must be equal to one of the allowed values" }];
-                          return false;
-                        }
-                        var valid1 = _errs6 === errors2;
-                      } else {
-                        var valid1 = true;
-                      }
-                    }
-                  }
-                }
-              } else {
-                validate29.errors = [{ instancePath: instancePath + "/error", schemaPath: "#/properties/error/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
-                return false;
               }
             }
           }
@@ -1313,6 +1223,182 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
   return errors2 === 0;
 }
 validate29.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
+var validateError = validate31;
+var schema39 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "INVALID_REQUEST", "SKILL_SOURCES_UNAVAILABLE", "SKILL_SCOPE_REFUSED", "SESSION_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "INITIAL_INPUT_CONFLICT", "INITIAL_INPUT_ALREADY_EXISTS", "INITIAL_INPUT_EXPIRED", "DEADLINE", "CANCELLED", "INITIAL_INPUT_REQUIRED", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_UNAVAILABLE", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN"] }, "sources": { "$ref": "#/$defs/Canonical_SkillRefusalSources_54e0533a" }, "requiredScope": { "$ref": "#/$defs/Canonical_SkillRequiredScope_8806a8fe" } }, "required": ["code", "outcome"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
+var schema41 = { "enum": ["client"] };
+function validate31(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
+  let vErrors = null;
+  let errors2 = 0;
+  const evaluated0 = validate31.evaluated;
+  if (evaluated0.dynamicProps) {
+    evaluated0.props = void 0;
+  }
+  if (evaluated0.dynamicItems) {
+    evaluated0.items = void 0;
+  }
+  if (errors2 === 0) {
+    if (data && typeof data == "object" && !Array.isArray(data)) {
+      let missing0;
+      if (data.error === void 0 && (missing0 = "error")) {
+        validate31.errors = [{ instancePath, schemaPath: "#/required", keyword: "required", params: { missingProperty: missing0 }, message: "must have required property '" + missing0 + "'" }];
+        return false;
+      } else {
+        const _errs1 = errors2;
+        for (const key0 in data) {
+          if (!(key0 === "error")) {
+            validate31.errors = [{ instancePath, schemaPath: "#/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key0 }, message: "must NOT have additional properties" }];
+            return false;
+            break;
+          }
+        }
+        if (_errs1 === errors2) {
+          if (data.error !== void 0) {
+            let data0 = data.error;
+            const _errs2 = errors2;
+            if (errors2 === _errs2) {
+              if (data0 && typeof data0 == "object" && !Array.isArray(data0)) {
+                let missing1;
+                if (data0.code === void 0 && (missing1 = "code") || data0.outcome === void 0 && (missing1 = "outcome")) {
+                  validate31.errors = [{ instancePath: instancePath + "/error", schemaPath: "#/properties/error/required", keyword: "required", params: { missingProperty: missing1 }, message: "must have required property '" + missing1 + "'" }];
+                  return false;
+                } else {
+                  const _errs4 = errors2;
+                  for (const key1 in data0) {
+                    if (!(key1 === "code" || key1 === "outcome" || key1 === "sources" || key1 === "requiredScope")) {
+                      validate31.errors = [{ instancePath: instancePath + "/error", schemaPath: "#/properties/error/additionalProperties", keyword: "additionalProperties", params: { additionalProperty: key1 }, message: "must NOT have additional properties" }];
+                      return false;
+                      break;
+                    }
+                  }
+                  if (_errs4 === errors2) {
+                    if (data0.code !== void 0) {
+                      let data1 = data0.code;
+                      const _errs5 = errors2;
+                      if (!(data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "INVALID_REQUEST" || data1 === "SKILL_SOURCES_UNAVAILABLE" || data1 === "SKILL_SCOPE_REFUSED" || data1 === "SESSION_REFUSED" || data1 === "SCOPE_REFUSED" || data1 === "SESSION_CHANGED" || data1 === "STALE_WRITER" || data1 === "INITIAL_INPUT_CONFLICT" || data1 === "INITIAL_INPUT_ALREADY_EXISTS" || data1 === "INITIAL_INPUT_EXPIRED" || data1 === "DEADLINE" || data1 === "CANCELLED" || data1 === "INITIAL_INPUT_REQUIRED" || data1 === "INITIAL_INPUT_CORRUPT" || data1 === "INITIAL_INPUT_UNAVAILABLE" || data1 === "REQUEST_TOO_LARGE" || data1 === "UNSUPPORTED_MEDIA_TYPE" || data1 === "MODEL_SELECTION_UNAVAILABLE" || data1 === "MODEL_SETTINGS_UNAVAILABLE")) {
+                        validate31.errors = [{ instancePath: instancePath + "/error/code", schemaPath: "#/properties/error/properties/code/enum", keyword: "enum", params: { allowedValues: schema39.properties.error.properties.code.enum }, message: "must be equal to one of the allowed values" }];
+                        return false;
+                      }
+                      var valid1 = _errs5 === errors2;
+                    } else {
+                      var valid1 = true;
+                    }
+                    if (valid1) {
+                      if (data0.outcome !== void 0) {
+                        let data2 = data0.outcome;
+                        const _errs6 = errors2;
+                        if (!(data2 === "NOT_DISPATCHED" || data2 === "UNKNOWN")) {
+                          validate31.errors = [{ instancePath: instancePath + "/error/outcome", schemaPath: "#/properties/error/properties/outcome/enum", keyword: "enum", params: { allowedValues: schema39.properties.error.properties.outcome.enum }, message: "must be equal to one of the allowed values" }];
+                          return false;
+                        }
+                        var valid1 = _errs6 === errors2;
+                      } else {
+                        var valid1 = true;
+                      }
+                      if (valid1) {
+                        if (data0.sources !== void 0) {
+                          let data3 = data0.sources;
+                          const _errs7 = errors2;
+                          const _errs8 = errors2;
+                          if (errors2 === _errs8) {
+                            if (Array.isArray(data3)) {
+                              if (data3.length > 32) {
+                                validate31.errors = [{ instancePath: instancePath + "/error/sources", schemaPath: "#/$defs/Canonical_SkillRefusalSources_54e0533a/maxItems", keyword: "maxItems", params: { limit: 32 }, message: "must NOT have more than 32 items" }];
+                                return false;
+                              } else {
+                                if (data3.length < 1) {
+                                  validate31.errors = [{ instancePath: instancePath + "/error/sources", schemaPath: "#/$defs/Canonical_SkillRefusalSources_54e0533a/minItems", keyword: "minItems", params: { limit: 1 }, message: "must NOT have fewer than 1 items" }];
+                                  return false;
+                                } else {
+                                  var valid3 = true;
+                                  const len0 = data3.length;
+                                  for (let i0 = 0; i0 < len0; i0++) {
+                                    let data4 = data3[i0];
+                                    const _errs10 = errors2;
+                                    if (errors2 === _errs10) {
+                                      if (typeof data4 === "string") {
+                                        if (func2(data4) > 128) {
+                                          validate31.errors = [{ instancePath: instancePath + "/error/sources/" + i0, schemaPath: "#/$defs/Canonical_SkillRefusalSources_54e0533a/items/maxLength", keyword: "maxLength", params: { limit: 128 }, message: "must NOT have more than 128 characters" }];
+                                          return false;
+                                        } else {
+                                          if (func2(data4) < 1) {
+                                            validate31.errors = [{ instancePath: instancePath + "/error/sources/" + i0, schemaPath: "#/$defs/Canonical_SkillRefusalSources_54e0533a/items/minLength", keyword: "minLength", params: { limit: 1 }, message: "must NOT have fewer than 1 characters" }];
+                                            return false;
+                                          }
+                                        }
+                                      } else {
+                                        validate31.errors = [{ instancePath: instancePath + "/error/sources/" + i0, schemaPath: "#/$defs/Canonical_SkillRefusalSources_54e0533a/items/type", keyword: "type", params: { type: "string" }, message: "must be string" }];
+                                        return false;
+                                      }
+                                    }
+                                    var valid3 = _errs10 === errors2;
+                                    if (!valid3) {
+                                      break;
+                                    }
+                                  }
+                                  if (valid3) {
+                                    let i1 = data3.length;
+                                    let j0;
+                                    if (i1 > 1) {
+                                      const indices0 = {};
+                                      for (; i1--; ) {
+                                        let item0 = data3[i1];
+                                        if (typeof item0 !== "string") {
+                                          continue;
+                                        }
+                                        if (typeof indices0[item0] == "number") {
+                                          j0 = indices0[item0];
+                                          validate31.errors = [{ instancePath: instancePath + "/error/sources", schemaPath: "#/$defs/Canonical_SkillRefusalSources_54e0533a/uniqueItems", keyword: "uniqueItems", params: { i: i1, j: j0 }, message: "must NOT have duplicate items (items ## " + j0 + " and " + i1 + " are identical)" }];
+                                          return false;
+                                          break;
+                                        }
+                                        indices0[item0] = i1;
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            } else {
+                              validate31.errors = [{ instancePath: instancePath + "/error/sources", schemaPath: "#/$defs/Canonical_SkillRefusalSources_54e0533a/type", keyword: "type", params: { type: "array" }, message: "must be array" }];
+                              return false;
+                            }
+                          }
+                          var valid1 = _errs7 === errors2;
+                        } else {
+                          var valid1 = true;
+                        }
+                        if (valid1) {
+                          if (data0.requiredScope !== void 0) {
+                            const _errs12 = errors2;
+                            if (!(data0.requiredScope === "client")) {
+                              validate31.errors = [{ instancePath: instancePath + "/error/requiredScope", schemaPath: "#/$defs/Canonical_SkillRequiredScope_8806a8fe/enum", keyword: "enum", params: { allowedValues: schema41.enum }, message: "must be equal to one of the allowed values" }];
+                              return false;
+                            }
+                            var valid1 = _errs12 === errors2;
+                          } else {
+                            var valid1 = true;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              } else {
+                validate31.errors = [{ instancePath: instancePath + "/error", schemaPath: "#/properties/error/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+                return false;
+              }
+            }
+          }
+        }
+      }
+    } else {
+      validate31.errors = [{ instancePath, schemaPath: "#/type", keyword: "type", params: { type: "object" }, message: "must be object" }];
+      return false;
+    }
+  }
+  validate31.errors = vErrors;
+  return errors2 === 0;
+}
+validate31.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 
 // conversation-initial-input/semantics.mjs
 import { receiveConversationInputRequest, receiveConversationInputResponse } from "./conversation-input.mjs";
@@ -1332,6 +1418,8 @@ var initialInputErrorStatuses = freeze({
   NOT_FOUND: [404],
   METHOD_NOT_ALLOWED: [405],
   INVALID_REQUEST: [400],
+  SKILL_SOURCES_UNAVAILABLE: [400],
+  SKILL_SCOPE_REFUSED: [400],
   SESSION_REFUSED: [401, 403],
   SCOPE_REFUSED: [403],
   SESSION_CHANGED: [403],
@@ -1352,7 +1440,7 @@ var initialInputErrorStatuses = freeze({
 var initialInputUnknownCodes = Object.freeze(["DEADLINE", "CANCELLED", "INITIAL_INPUT_UNAVAILABLE", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_REQUIRED"]);
 var initialInputErrorOutcomes = freeze(Object.fromEntries(Object.keys(initialInputErrorStatuses).map((code) => [code, initialInputUnknownCodes.includes(code) ? "UNKNOWN" : "NOT_DISPATCHED"])));
 var conversationInitialInputMetadata = freeze({
-  packageVersion: "0.1.10",
+  packageVersion: "0.1.11",
   initialInputVersion: conversationInitialInputVersion,
   schemaId: "urn:meri:conversation-initial-input:1.3.0",
   routes: { allocate: { method: "POST", path: conversationInitialInputPath, response: "json" } },
