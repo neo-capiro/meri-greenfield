@@ -310,10 +310,12 @@ export function assembleControl(options){
  const uploadTables=Object.freeze(ports.uploadApplicationFactory?.state()==='composed'?['meri_uploads.originals']:[]);
  const memoryTables=ports.memoryApplication?MEMORY_TABLES:Object.freeze([]);
  if(!injectedTurnTelemetry)turnTelemetry.start();
- // The uploads-native mount resolves ONE allocation per operation. Its reader is bound HERE, with the
- // canonical owners this assembly just created, before any listener starts. Missing owners leave the relay
- // unbound (operations refuse) and never change unrelated startup.
- if(configuration.uploads?.native?.enabled===true&&nativeAllocations!==undefined){
+ // A DECLARED native host (`uploads.native.host`) resolves ONE allocation per operation. Its reader is bound HERE,
+ // with the canonical owners this assembly just created, before any listener starts. Missing owners leave the relay
+ // unbound (operations refuse) and never change unrelated startup. The AgentCore inspection (`uploads.native.agentcore`)
+ // and the local composition resolve no allocation and declare no host policy, so there is nothing to bind for them:
+ // reporting the host owners as missing over a healthy remote mount was a false unavailable event.
+ if(configuration.uploads?.native?.host!==undefined&&nativeAllocations!==undefined){
   try{
    if(nativeCurrentness===null)throw Error('NATIVE_CURRENTNESS_UNAVAILABLE');
    nativeAllocations.bind(createPostgresNativeAllocationReader({pool,readCanonicalNative:nativeCurrentness.readCanonicalNative,now}));
