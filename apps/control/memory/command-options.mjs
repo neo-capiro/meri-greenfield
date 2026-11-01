@@ -40,8 +40,8 @@ export function createMemoryIntentPreparer({source,metadataStore,binding,scopes,
      requiredApprover:{tenantId:selected.binding.tenantId,actorId:selected.binding.actorId},proposalExpiresAt,checkedAtMs:current.checkedAtMs,expiresAtMs:cutoff};
    };
    const approvalMetadataOwner=createCommandApprovalMetadataOwner({store:metadataStore,commandContext,preparePolicy,now,maxRequestMs,newId},'memory.propose');
-   const preparer=createCommandIntentPreparer({commandOptions:{operation:MEMORY_COMMAND_OPERATION,action:'memory.propose',outputShape:'MemoryProposeToolResult',commandContext,
-    validators:commandToolValidators,assertProposal:assertMemoryProposeProposal,approvalMetadataOwner,executor:{execute(){throw intentFault('INTENT_EXECUTION_REFUSED');}},now,limits:{maxRequestMs,maxFactBytes:131072}}});
+   const preparer=createCommandIntentPreparer({commandOptions:{operation:MEMORY_COMMAND_OPERATION,action:'memory.propose',commandContext,
+    validators:commandToolValidators,assertProposal:assertMemoryProposeProposal,approvalMetadataOwner,now,limits:{maxRequestMs,maxFactBytes:131072}}});
    return preparer.prepare({arguments:request,signal});
   },
  });

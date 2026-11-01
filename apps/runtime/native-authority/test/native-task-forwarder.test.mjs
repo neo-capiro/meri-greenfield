@@ -40,6 +40,7 @@ async function fixture(t,general,memory=false){
     state.stored??=structuredClone(outcome);
     if(state.loseAck){state.loseAck=false;throw Error('lost synthetic response');}
     if(state.releaseRevoke)state.revoked=true;
+    if(state.executeResponse)return state.executeResponse();
     return Response.json({status:'observed',outcome:state.stored},{status:state.responseStatus});
    }
    assert(url.endsWith(CORE_APPROVAL_ROUTES.executionRead));if(Object.hasOwn(state,'readResult'))return Response.json(state.readResult);return Response.json(state.stored===null?null:{state:'OUTCOME',outcome:state.stored});
@@ -67,6 +68,20 @@ for(const general of [false,true])test(`native task ${general?'General':'client'
  assert.equal(f.state.requests.filter(r=>r.url.endsWith(CORE_APPROVAL_ROUTES.execute)).length,1);
  assert(f.state.retentionChecks>=6);
 });
+for(const [name,response] of Object.entries({
+ html:()=>new Response('<html>upstream error</html>',{headers:{'content-type':'text/html'}}),
+ malformed:()=>new Response('{broken',{headers:{'content-type':'application/json'}}),
+ oversized:()=>Response.json({padding:'x'.repeat(131073)}),
+ encoding:()=>new Response('{}',{headers:{'content-type':'application/json','content-encoding':'gzip'}}),
+ mismatchedLength:()=>new Response('{}',{headers:{'content-type':'application/json','content-length':'99'}}),
+ invalidUtf8:()=>new Response(new Uint8Array([0xff]),{headers:{'content-type':'application/json'}}),
+}))test(`native task ${name} response retains unknown delivery and reads the original effect without redispatch`,async t=>{
+ const f=await fixture(t,true);f.state.executeResponse=response;
+ await assert.rejects(f.forwarder.executeTask(f.call),error=>error.effect==='unknown');
+ assert.deepEqual(await f.forwarder.readTaskExecution(f.call),{state:'OUTCOME',outcome:f.outcome});
+ assert.equal(f.state.requests.filter(request=>request.url.endsWith(CORE_APPROVAL_ROUTES.execute)).length,1);
+});
+
 test('native task lost execute ACK is read back without repeat mutation',async t=>{
  const f=await fixture(t,true);f.state.loseAck=true;
  await assert.rejects(f.forwarder.executeTask(f.call),e=>e.effect==='unknown');

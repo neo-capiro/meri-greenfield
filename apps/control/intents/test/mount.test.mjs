@@ -13,24 +13,9 @@ function setup(options){const c=commandComposition(options),{store,mount:m}=moun
 test('prepare-only: an immutable approval_required proposal, no command journal claim, no source effect',async()=>{
  const {c,store,m}=setup(),out=await call(m);
  assert.equal(out.status,'approval_required');assert.equal(out.proposal.command.action,'task.create');assert.deepEqual(out.proposal.command.binding,c.binding);
- assert.equal(c.f.state.fetches,0);assert.equal(c.f.pg.rows.size,0);assert.equal(c.f.state.reserves??0,0);
+ assert.deepEqual(Object.keys(c.preparer()).sort(),['binding','operation','owner','prepare']);
  assert.equal(c.sql.rows.size,1,'the metadata owner stored exactly one pending proposal');
  assert.deepEqual([...store.rows.values()].map(r=>r.state),['PREPARED']);
-});
-
-test('approval required before effect: the existing executor refuses until the approval control approves this exact proposal',async()=>{
- const {c,m}=setup(),{proposal}=await call(m);
- await assert.rejects(c.executeApproved(proposal));assert.equal(c.f.state.fetches,0);assert.equal(c.f.pg.rows.size,0);
- c.approve({...proposal,commandSha256:'f'.repeat(64)});await assert.rejects(c.executeApproved(proposal));assert.equal(c.f.state.fetches,0,'an approval of other content does not apply');
- c.approve(proposal);c.f.state.approvalRevoked=true;await assert.rejects(c.executeApproved(proposal));assert.equal(c.f.state.fetches,0,'a revoked approval does not apply');
- c.f.state.approvalRevoked=false;const done=await c.executeApproved(proposal);assert.equal(done.status,'observed');assert.equal(c.f.state.fetches,1);
- assert.deepEqual(await c.executeApproved(proposal),done);assert.equal(c.f.state.fetches,1,'the existing journal replays; no second effect');
-});
-
-test('authority revoked between prepare and approve: approved execution is refused with no effect',async()=>{
- const {c,m}=setup(),{proposal}=await call(m);c.approve(proposal);c.f.state.revoked=true;
- await assert.rejects(c.executeApproved(proposal));assert.equal(c.f.state.fetches,0);assert.equal(c.f.state.reserves??0,0);
- c.f.state.revoked=false;c.f.state.fence=2;await assert.rejects(c.executeApproved(proposal));assert.equal(c.f.state.fetches,0,'a stale writer fence is refused as well');
 });
 
 test('preparation itself rechecks current authority: a refused policy prepares nothing and replays the refusal',async()=>{

@@ -29,8 +29,8 @@ export function createNativeMailPreparer({pool,binding,scopes,selectedClientId,p
    return {authorized:true,selectionSha256,binding,scopes,requiredApprover:{tenantId:binding.tenantId,actorId:binding.actorId},proposalExpiresAt,checkedAtMs:rights.checkedAtMs,expiresAtMs:until};
   }
   const approvalMetadataOwner=createCommandApprovalMetadataOwner({store,commandContext,preparePolicy,now,maxRequestMs},action);
-  return createCommandIntentPreparer({commandOptions:{operation,action,outputShape:'MailSendToolResult',commandContext,
-   validators:commandToolValidators,assertProposal:assertMailSendProposal,approvalMetadataOwner,executor:{execute:deny},now,
+  return createCommandIntentPreparer({commandOptions:{operation,action,commandContext,
+   validators:commandToolValidators,assertProposal:assertMailSendProposal,approvalMetadataOwner,now,
    limits:{maxRequestMs,maxFactBytes:262144}}}).prepare({arguments:request,signal});
  }});
 }

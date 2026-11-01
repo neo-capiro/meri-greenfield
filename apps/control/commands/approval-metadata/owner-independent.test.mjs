@@ -9,13 +9,13 @@ const clone=x=>structuredClone(x);
 function setup(options={}){
  const clock={at:Date.now()},now=()=>clock.at,binding={tenantId:'tenant-review',actorId:'actor-review',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
  const commandContext={binding,clientResolution:null},scopes=[{tenantId:binding.tenantId,kind:'tenant',resourceId:binding.tenantId,policyRevision:'review-policy'}],requiredApprover={tenantId:binding.tenantId,actorId:'existing-policy-approver'};
- const state={ids:0,stored:null,inserts:0,reads:0,policy:[],executor:0},expires=new Date(clock.at+60000).toISOString();
+ const state={ids:0,stored:null,inserts:0,reads:0,policy:[]},expires=new Date(clock.at+60000).toISOString();
  const store={async insert(payload,check){state.inserts++;check();state.stored=clone(payload);check();return clone(payload);},async read(key,check){state.reads++;check();return clone(state.stored);}};
  const preparePolicy=async call=>{state.policy.push(call);return {authorized:true,selectionSha256:call.selectionSha256,binding,scopes,requiredApprover,proposalExpiresAt:expires,checkedAtMs:now(),expiresAtMs:now()+500};};
  const owner=createTaskCreateApprovalMetadataOwner({store:options.store?.(store,state)??store,commandContext,preparePolicy:options.policy?.(preparePolicy,state,clock)??preparePolicy,now,newId:()=>id(100+(state.ids++)),maxRequestMs:500});
  const request={title:'  Follow up on recommendation  ',clientId:' ',dueDate:'2026-10-14'},operation={id:'create_task',version:'0.2.0'},input=commandToolValidators.normalizeCommandToolInput('task.create',request,{commandContext}).input;
  const call={operation,action:'task.create',binding,request,input,inputSha256:canonicalSha256(input),deadlineMs:now()+500,signal:undefined};
- const tool=createCommandToolInterface({operation,action:'task.create',outputShape:'TaskCreateToolResult',commandContext,validators:commandToolValidators,assertProposal:assertProposalIntegrity,approvalMetadataOwner:owner,executor:{async execute(){state.executor++;return {status:'indeterminate',outcome:null};}},now,limits:{maxRequestMs:500,maxFactBytes:65536}});
+ const tool=createCommandToolInterface({operation,action:'task.create',commandContext,validators:commandToolValidators,assertProposal:assertProposalIntegrity,approvalMetadataOwner:owner,now,limits:{maxRequestMs:500,maxFactBytes:65536}});
  const readCall=record=>({proposalId:record.proposalId,commandSha256:state.stored.commandSha256,operation,action:'task.create',binding,deadlineMs:now()+500,signal:undefined});
  return {clock,now,binding,commandContext,scopes,requiredApprover,state,store,owner,call,tool,readCall,expires};
 }
@@ -23,7 +23,7 @@ test('independent actual command tool prepares exact immutable task proposal wit
  const t=setup(),out=await t.tool.prepare(t.call.request);assert.equal(out.status,'approval_required');assertProposalIntegrity(out.proposal);
  assert.deepEqual(out.proposal.command.arguments,{title:'Follow up on recommendation',clientId:null,dueDate:'2026-10-14T00:00:00.000Z'});
  assert.deepEqual(out.proposal.command.binding,t.binding);assert.deepEqual(out.proposal.command.scopes,t.scopes);assert.deepEqual(out.proposal.requiredApprover,t.requiredApprover);
- assert.equal(t.state.inserts,1);assert.equal(t.state.ids,3);assert.equal(t.state.executor,0);assert.equal(Object.hasOwn(out,'approved'),false);
+ assert.equal(t.state.inserts,1);assert.equal(t.state.ids,3);assert.equal(Object.hasOwn(out,'approved'),false);
  assert.deepEqual(t.state.policy.map(x=>x.phase),['prepare','before_release']);assert.equal(t.state.stored.commandSha256,out.proposal.commandSha256);
 });
 test('independent metadata read reaffirms exact original proposal with fresh observation',async()=>{
@@ -46,7 +46,7 @@ for(const kind of ['selectionSha256','binding','scopes','requiredApprover','futu
 });
 for(const kind of ['scopes','approver','expiry','denied'])test(`independent after-insert ${kind} change retains stored-not-released`,async()=>{
  const t=setup({policy:base=>async call=>{const r=clone(await base(call));if(call.phase==='before_release'){if(kind==='scopes')r.scopes[0].policyRevision='changed';if(kind==='approver')r.requiredApprover.actorId='changed';if(kind==='expiry')r.proposalExpiresAt=new Date(Date.parse(r.proposalExpiresAt)+1).toISOString();if(kind==='denied')r.authorized=false;}return r;}});
- await assert.rejects(t.owner.prepare(t.call),e=>e.outcome==='STORED_NOT_RELEASED');assert.equal(t.state.inserts,1);assert.ok(t.state.stored);assert.equal(t.state.executor,0);
+ await assert.rejects(t.owner.prepare(t.call),e=>e.outcome==='STORED_NOT_RELEASED');assert.equal(t.state.inserts,1);assert.ok(t.state.stored);
 });
 test('independent write acknowledgment loss retains UNKNOWN without automatic new identity or retry',async()=>{
  const t=setup({store:(store,state)=>({...store,async insert(payload,check){await store.insert(payload,check);throw new Error('private-insert-canary');}})});
@@ -80,13 +80,12 @@ for(const kind of ['command hash','proposal identity','raw request','original bi
  else if(kind==='proposal identity')t.state.stored.record.proposalId=id(900);
  else if(kind==='raw request')t.state.stored.record.request.title='substituted';
  else t.state.stored.record.binding.writerFence=99;
- await assert.rejects(t.owner.read(read));assert.equal(t.state.inserts,1);assert.equal(t.state.executor,0);
+ await assert.rejects(t.owner.read(read));assert.equal(t.state.inserts,1);
 });
-test('independent actual command interface rechecks retained metadata before calling existing executor',async()=>{
+test('independent metadata read rechecks current policy before releasing retained metadata',async()=>{
  let denied=false;const t=setup({policy:base=>async call=>{const r=await base(call);return denied?{...r,authorized:false}:r;}});
  const result=await t.tool.prepare(t.call.request);denied=true;
- const execution={contractVersion:'0.1.0',proposalId:result.proposal.proposalId,commandSha256:result.proposal.commandSha256,idempotencyKey:result.proposal.command.idempotencyKey,executorBinding:t.binding};
- await assert.rejects(t.tool.executeApproved(result.proposal,execution,'unused-credential'));assert.equal(t.state.executor,0);assert.equal(t.state.inserts,1);
+ await assert.rejects(t.owner.read(t.readCall(t.state.stored.record)));assert.equal(t.state.inserts,1);
 });
 test('independent hostile trusted-port rejection message accessor stays inert',async()=>{
  const {CommandError}=await import('../protocol.mjs');let hits=0;const error=new CommandError('unused');Object.defineProperty(error,'message',{get(){hits++;return 'private-error-canary';}});
@@ -97,5 +96,5 @@ test('independent actual command interface, metadata owner and concrete PG store
  const pool={options:{connectionTimeoutMillis:1000,query_timeout:1000},async connect(){return {async query(q){queries.push(q);assert.equal(q.query_timeout,1000);if(q.text.startsWith('INSERT'))retained=JSON.parse(q.values[7]);else assert.ok(q.text.startsWith('SELECT'));return {rows:[{payload:clone(retained),payload_sha256:canonicalSha256(retained)}]};},release(){releases++;}};},end(){ends++;}};
  const t=setup({store:()=>createPostgresApprovalMetadataStore({pool})}),result=await t.tool.prepare(t.call.request);
  const record=await t.owner.read({operation:t.call.operation,action:'task.create',binding:t.binding,proposalId:result.proposal.proposalId,commandSha256:result.proposal.commandSha256,deadlineMs:t.now()+500,signal:undefined});
- assert.equal(record.proposalId,result.proposal.proposalId);assert.equal(retained.commandSha256,result.proposal.commandSha256);assert.deepEqual(retained.commandContext,t.commandContext);assert.equal(queries.length,2);assert.equal(releases,2);assert.equal(ends,0);assert.equal(t.state.executor,0);assert.deepEqual(queries[1].values,[t.binding.tenantId,t.binding.actorId,result.proposal.proposalId]);
+ assert.equal(record.proposalId,result.proposal.proposalId);assert.equal(retained.commandSha256,result.proposal.commandSha256);assert.deepEqual(retained.commandContext,t.commandContext);assert.equal(queries.length,2);assert.equal(releases,2);assert.equal(ends,0);assert.deepEqual(queries[1].values,[t.binding.tenantId,t.binding.actorId,result.proposal.proposalId]);
 });

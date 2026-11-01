@@ -46,7 +46,7 @@ for(const [action,factory] of [['task.create',createTaskCreateApprovalMetadataOw
   assert.deepEqual(generic.retained(),legacy.retained());
   assert.deepEqual(await generic.owner.read(generic.readCall()),await legacy.owner.read(legacy.readCall()));
   assert.deepEqual(generic.policy.calls.map(call=>call.phase),['prepare','before_release','before_read','read_release']);
-  assert.deepEqual(generic.retained().record.action,action);assert.equal(generic.state.fetches,0);
+  assert.deepEqual(generic.retained().record.action,action);
  });
 
 for(const action of ['memory.propose','artifact.file']){
@@ -57,7 +57,7 @@ for(const action of ['memory.propose','artifact.file']){
   const expected={contractVersion:f.kind.contractVersion,commandId:record.commandId,binding:f.binding,action,
    arguments:f.command.arguments,attachments:f.command.attachments,scopes:f.scopes,idempotencyKey:record.idempotencyKey};
   assert.equal(payload.commandSha256,canonicalSha256(expected));f.kind.assertCommand(expected,f.context);
-  assert.equal(f.sql.rows.size,1);assert.equal(f.allocated(),3);assert.equal(f.state.fetches,0);
+  assert.equal(f.sql.rows.size,1);assert.equal(f.allocated(),3);
   assert.equal(Object.hasOwn(record,'approved'),false);assert.equal(Object.hasOwn(record,'executed'),false);
   const first=await f.owner.read(f.readCall()),second=await f.owner.read(f.readCall());
   assert.deepEqual(first,record);assert.deepEqual(second,record);assert.equal(f.sql.rows.size,1);assert.equal(f.allocated(),3);
@@ -75,7 +75,7 @@ for(const action of ['memory.propose','artifact.file']){
    if(changed==='inputSha256')call.inputSha256='f'.repeat(64);
    if(changed==='request')call.request.approved=true;
    await assert.rejects(f.owner.prepare(call),error=>error.outcome==='NOT_STORED');
-   assert.equal(f.sql.calls.length,0);assert.equal(f.policy.calls.length,0);assert.equal(f.allocated(),0);assert.equal(f.state.fetches,0);
+   assert.equal(f.sql.calls.length,0);assert.equal(f.policy.calls.length,0);assert.equal(f.allocated(),0);
   }
  });
 
@@ -84,7 +84,7 @@ for(const action of ['memory.propose','artifact.file']){
   await assert.rejects(f.owner.prepare(f.call),error=>error.outcome==='NOT_STORED');assert.equal(f.sql.rows.size,0);
   f.policy.state.denyPhase=null;await f.owner.prepare(f.call);const saved=structuredClone(f.retained());
   f.policy.state.denyPhase='read_release';await assert.rejects(f.owner.read(f.readCall()),error=>error.outcome==='READ_UNAVAILABLE');
-  assert.deepEqual(f.retained(),saved);assert.equal(f.sql.rows.size,1);assert.equal(f.state.fetches,0);
+  assert.deepEqual(f.retained(),saved);assert.equal(f.sql.rows.size,1);
  });
 
  test(`${action}: policy/fence drift after insertion remains stored but unreleased`,async()=>{
@@ -97,7 +97,7 @@ for(const action of ['memory.propose','artifact.file']){
     if(changed==='binding')receipt.binding={...receipt.binding,writerFence:2};
    };
    await assert.rejects(f.owner.prepare(f.call),error=>error.outcome==='STORED_NOT_RELEASED');
-   assert.equal(f.sql.rows.size,1);assert.equal(f.allocated(),3);assert.equal(f.state.fetches,0);
+   assert.equal(f.sql.rows.size,1);assert.equal(f.allocated(),3);
   }
  });
 
@@ -107,7 +107,7 @@ for(const action of ['memory.propose','artifact.file']){
   await assert.rejects(owner.prepare(f.call),error=>error.outcome==='UNKNOWN'&&!error.message.includes('private'));
   assert.equal(f.sql.rows.size,1);assert.equal(f.allocated(),3);
   assert.equal(f.sql.calls.filter(call=>typeof call==='object'&&call.text.startsWith('INSERT')).length,1);
-  assert.equal(f.policy.calls.some(call=>call.phase==='before_release'),false);assert.equal(f.state.fetches,0);
+  assert.equal(f.policy.calls.some(call=>call.phase==='before_release'),false);
  });
 
  test(`${action}: expired authority and caller cancellation refuse without source execution`,async()=>{
@@ -116,7 +116,7 @@ for(const action of ['memory.propose','artifact.file']){
   assert.equal(f.sql.rows.size,0);assert.equal(f.allocated(),0);
   await f.owner.prepare(f.call);f.clock.at+=60001;
   await assert.rejects(f.owner.read(f.readCall()),error=>error.outcome==='READ_UNAVAILABLE');
-  assert.equal(f.sql.rows.size,1);assert.equal(f.state.fetches,0);
+  assert.equal(f.sql.rows.size,1);
  });
 }
 
@@ -129,7 +129,7 @@ test('artifact metadata hashes all immutable object fields and rejects substitut
  // Even a storage envelope rehash cannot change the separately pinned input/command.
  row.payload_sha256=canonicalSha256(row.payload);
  await assert.rejects(f.owner.read(read),error=>error.outcome==='READ_UNAVAILABLE');
- assert.equal(f.sql.rows.size,1);assert.equal(f.state.fetches,0);
+ assert.equal(f.sql.rows.size,1);
 });
 
 test('an owner of another command kind or changed trusted destination cannot replay retained metadata',async()=>{
@@ -140,5 +140,5 @@ test('an owner of another command kind or changed trusted destination cannot rep
  const moved=createCommandApprovalMetadataOwner({...f.configuration,
   commandContext:{...f.context,destination:{...f.context.destination,clientId:id(90)}}},'artifact.file');
  await assert.rejects(moved.read(read),error=>error.outcome==='READ_UNAVAILABLE');
- assert.equal(f.sql.rows.size,1);assert.equal(f.state.fetches,0);
+ assert.equal(f.sql.rows.size,1);
 });

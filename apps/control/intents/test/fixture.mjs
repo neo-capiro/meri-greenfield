@@ -1,14 +1,9 @@
-/** SYNTHETIC composition for intent tests. The real intent mount, journal and preparers run over the real command tool
- * interface, task.create approval-metadata owner, command executor (approval guard, command authority, journal, HTTP
- * source), schedule tool interface and artifact validators. Only the boundaries are synthetic: an in-memory journal
- * store, the scripted metadata/command SQL pools, a fake Fetch, a fixed clock and a stub artifact write port.
- * Nothing here is PostgreSQL, Temporal, S3, SDK or live-authority evidence. */
+/** Actual preparation/intent owners over synthetic metadata SQL and journal boundaries. No execution or source adapter. */
 import {canonicalSha256,assertProposalIntegrity} from '../../../../packages/contracts/validate.mjs';
 import {commandToolValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createPostgresApprovalMetadataStore,createTaskCreateApprovalMetadataOwner,createTaskUpdateApprovalMetadataOwner} from '../../commands/approval-metadata/index.mjs';
 import {assertTaskUpdateProposal} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 import {createMetadataPoolFixture,createMetadataPolicyFixture} from '../../commands/approval-metadata/test/fixture.mjs';
-import {createCommandToolInterface} from '../../commands/tool-interface.mjs';
 import {fixture as commandFixture,id,NOW} from '../../test/commands-fixture.mjs';
 import {createIntentMount} from '../mount.mjs';
 import {createCommandIntentPreparer} from '../command-preparer.mjs';
@@ -31,8 +26,8 @@ export function createMemoryJournalStore(){
    const page=mine.slice(start,start+limit).map(([[,,,deliveryId],row],i)=>structuredClone({deliveryId,createdAt:new Date(NOW+start+i).toISOString(),record:row.record,state:row.state,outcome:row.outcome}));
    return {entries:page,next:mine.length>start+limit?page.at(-1).deliveryId:null};}}};
 }
-/** A task.create composition: real metadata owner + real command interface/executor, approvals held by `approvals`. */
-export function commandComposition({tenantId='tenant',action='task.create',approverActorId='reviewer',approvalStore:currentApprovals}={}){
+/** A task.create composition: real metadata owner + real prepare-only command interface. */
+export function commandComposition({tenantId='tenant',action='task.create',approverActorId='reviewer'}={}){
  const f=commandFixture(action);
  const binding={...f.binding,tenantId},scopes=f.scopes.map(s=>({...s,tenantId}));
  const commandContext=action==='task.update'?{binding}:{binding,clientResolution:null},sql=createMetadataPoolFixture(),metadataCalls={prepare:0};
@@ -41,15 +36,9 @@ export function commandComposition({tenantId='tenant',action='task.create',appro
  let n=100;const metadataOwner=factory({store:createPostgresApprovalMetadataStore({pool:sql.pool}),commandContext,preparePolicy:policy.preparePolicy,now:()=>f.state.now,newId:()=>id(n++)});
  const hooks={};
  const approvalMetadataOwner={async prepare(v){metadataCalls.prepare++;if(hooks.prepare)return hooks.prepare(v,metadataOwner);return metadataOwner.prepare(v);},read:v=>metadataOwner.read(v)};
- // The existing approval control's current decision store: nothing is approved until `approve(proposal)`.
- const approvals=new Map();
- const approvalStore={async getCurrent({proposalId}){const d=approvals.get(proposalId);if(!d)throw Error('no current approval');return JSON.stringify({decision:d,checkedAtMs:f.state.now,revoked:f.state.approvalRevoked});}};
- const approve=proposal=>approvals.set(proposal.proposalId,{proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,decision:'approved',decidedAt:proposal.createdAt,expiresAt:new Date(NOW+40000).toISOString(),approver:proposal.requiredApprover,policyRevision:'p1'});
- const commandOptions={operation:{id:action==='task.update'?'update_task':'create_task',version:'0.2.0'},action,outputShape:action==='task.update'?'TaskUpdateToolResult':'TaskCreateToolResult',commandContext,validators:commandToolValidators,assertProposal:action==='task.update'?assertTaskUpdateProposal:assertProposalIntegrity,
-  approvalMetadataOwner,executor:f.create({approvalStore:currentApprovals??approvalStore}),now:()=>f.state.now,limits:{maxRequestMs:1000,maxFactBytes:65536}};
- /** The existing approved-execution path (`executeApproved`) with an execution request for exactly this proposal. */
- const executeApproved=proposal=>createCommandToolInterface(commandOptions).executeApproved(proposal,{...f.execution,proposalId:proposal.proposalId,commandSha256:proposal.commandSha256,idempotencyKey:proposal.command.idempotencyKey},'synthetic');
- return {f,binding,scopes,commandOptions,metadataCalls,hooks,sql,policy,approvalStore,approve,executeApproved,preparer:()=>createCommandIntentPreparer({commandOptions})};
+ const commandOptions={operation:{id:action==='task.update'?'update_task':'create_task',version:'0.2.0'},action,commandContext,validators:commandToolValidators,assertProposal:action==='task.update'?assertTaskUpdateProposal:assertProposalIntegrity,
+  approvalMetadataOwner,now:()=>f.state.now,limits:{maxRequestMs:1000,maxFactBytes:65536}};
+ return {f,binding,scopes,commandOptions,metadataCalls,hooks,sql,policy,preparer:()=>createCommandIntentPreparer({commandOptions})};
 }
 export const delivery=n=>'sdk:'+String(n).padStart(64,'0');
 /** @param {{binding:object,preparers:object[],store?:object,now?:()=>number,enabled?:boolean,scopes?:any[],resultRelease?:object}} c */

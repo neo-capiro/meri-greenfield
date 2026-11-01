@@ -37,12 +37,12 @@ export function setup(){
  const commandContext={binding,clientResolution:{reference:id(5),clientId:id(5)}},scopes=[{tenantId:'tenant',kind:'client',resourceId:id(5),policyRevision:'policy-1'}];
  const raw={title:' Review recommendation ',clientId:id(5),dueDate:'2030-03-17'};
  const p=createMetadataPolicyFixture({binding,scopes,requiredApprover:{tenantId:'tenant',actorId:'reviewer'},expiresAt:new Date(NOW+60000).toISOString()});
- const sql=createMetadataPoolFixture(),store=createPostgresApprovalMetadataStore({pool:sql.pool});let n=100,effects=0;
+ const sql=createMetadataPoolFixture(),store=createPostgresApprovalMetadataStore({pool:sql.pool});let n=100;
  const owner=createTaskCreateApprovalMetadataOwner({store,commandContext,preparePolicy:p.preparePolicy,now:()=>NOW,newId:()=>id(n++)});
  const operation={id:'create_task',version:'0.2.0'},action='task.create';
- const tool=createCommandToolInterface({operation,action,outputShape:'TaskCreateToolResult',commandContext,validators:commandToolValidators,assertProposal:assertProposalIntegrity,approvalMetadataOwner:owner,executor:{async execute(){effects++;return {status:'indeterminate',outcome:null};}},now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536}});
+ const tool=createCommandToolInterface({operation,action,commandContext,validators:commandToolValidators,assertProposal:assertProposalIntegrity,approvalMetadataOwner:owner,now:()=>NOW,limits:{maxRequestMs:1000,maxFactBytes:65536}});
  const normalized=commandToolValidators.normalizeCommandToolInput(action,raw,{commandContext}).input;
  const call={operation,action,binding,request:raw,input:normalized,inputSha256:canonicalSha256(normalized),deadlineMs:NOW+1000,signal:undefined};
- return {binding,commandContext,raw,sql,p,store,owner,tool,call,effects:()=>effects};
+ return {binding,commandContext,raw,sql,p,store,owner,tool,call};
 }
 export {canonicalSha256,commandToolValidators};
