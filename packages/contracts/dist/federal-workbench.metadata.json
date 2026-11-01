@@ -23,7 +23,7 @@
     },
     {
       "path": "federal-workbench/receive.mjs",
-      "sha256": "259b10d845c7a79f165ac4d7793e167918200a0351fdb5373f321924c0a031f0"
+      "sha256": "4c44fc8f02c415c563cda0c96096b3a55a3343067766ab652df3630b3ae42cc1"
     },
     {
       "path": "federal-workbench/source-layout.mjs",
@@ -39,7 +39,7 @@
     },
     {
       "path": "federal-workbench/structural-dossier.mjs",
-      "sha256": "24345e511fdb441884012f278b64a4fec1dd4ed2ef9c1160003705f523a5d388"
+      "sha256": "a060712f512246d232e1722a050bb64c0cc00f2d083c6bddf982ca4a7618e904"
     },
     {
       "path": "federal-workbench/structural-receipt.mjs",
@@ -47,7 +47,7 @@
     },
     {
       "path": "federal-workbench/api.d.ts",
-      "sha256": "6fc1590758c20902af4d6be78c29ca73a754aff5eb6fb77dffc3726d0d664d00"
+      "sha256": "b665c1827e4b61cf82f5842f13d900e34c057c7479a6d4371e3cb43dd62267ed"
     },
     {
       "path": "generate-federal-workbench.mjs",
