@@ -62,6 +62,24 @@ test('the mount is opt-in: absent, disabled or unattested yields an honest unava
  assert.equal(typeof unattested.reason,'string');assert.ok(unattested.reason.length>0,'the composition reason is lifted to the mount handle');
 });
 
+test('the mount forwards the host credential inventory to the probe, and forwards none when the host names none',async()=>{
+ const tempRoot=await realpath(tmpdir()),inventory=['/run/meri','/var/run/secrets'],probes=[];
+ const run=async(role,options)=>{const paths=JSON.parse(Buffer.from(options.input??'{}').toString('utf8')).credentialPaths??[];probes.push(paths);
+  return {stdout:Buffer.from(JSON.stringify({...sandboxed(options.cwd),noNewPrivs:0,inputValid:true,
+   credentialPathsReadable:paths.map(path=>({path,readable:false}))})),receipt:{exitCode:0}};};
+ const configuration={uploads:{native:{enabled:true,imageDigest:DIGEST,scratchRoot:tempRoot}}};
+ const named=await mountUploadNativeControl({configuration,run,credentialPaths:inventory});
+ assert.equal(named.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
+ assert.deepEqual(named.requirements,['noNewPrivileges'],'an inventory the child could not read attests noCredentials');
+ assert.deepEqual(named.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:true,checked:2,readable:0});
+ // A host that names no inventory still cannot attest the credential requirement: the empty list is refused, never
+ // treated as "nothing to check".
+ const unnamed=await mountUploadNativeControl({configuration,run});
+ assert.deepEqual(unnamed.requirements,['noNewPrivileges','noCredentials']);
+ assert.equal(unnamed.diagnostic.credentials.checked,0);
+ assert.deepEqual(probes,[inventory,[]],'the probe receives exactly the host inventory, and nothing invented');
+});
+
 test('the unqualified mount handle carries the numeric resource and credential predicate diagnostic',async()=>{
  const tempRoot=await realpath(tmpdir());
  const observation={...sandboxed(tempRoot+'/meri-upload-probe-abc123'),noNewPrivs:0,
