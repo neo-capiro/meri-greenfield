@@ -54,16 +54,17 @@ test('proposer view carries the immutable candidate, the correction pin and Core
  assert.equal(decided.corrects.memoryId,candidate.corrects.memoryId,'approval publishes a successor id; the pinned target id is never rewritten in the view');
 });
 
-/** view status × requested decision → admission (`forward`, `repeat`) or a typed refusal before any Core effect. */
+/** view status × requested decision → admission (`forward`, `repeat`) or the one typed refusal. Core's decision routes lock the
+ * pending row themselves, so a decided, expired, withdrawn or never-received candidate is forwarded and refused there (404). */
 const ADMISSION_TABLE=[
  ['pending','approved','forward'],['pending','rejected','forward'],
  ['approved','approved','repeat'],['rejected','rejected','repeat'],
- ['approved','rejected','MEMORY_DECISION_NOT_PENDING'],['rejected','approved','MEMORY_DECISION_NOT_PENDING'],
- ['expired','approved','MEMORY_DECISION_NOT_PENDING'],['withdrawn','rejected','MEMORY_DECISION_NOT_PENDING'],
- ['submission_unknown','approved','MEMORY_DECISION_NOT_PENDING'],['review_missing','rejected','MEMORY_DECISION_NOT_PENDING'],
+ ['approved','rejected','forward'],['rejected','approved','forward'],
+ ['expired','approved','forward'],['withdrawn','rejected','forward'],
+ ['submission_unknown','approved','forward'],['review_missing','rejected','forward'],
  ['unavailable','approved','MEMORY_REVIEW_UNAVAILABLE'],['unavailable','rejected','MEMORY_REVIEW_UNAVAILABLE'],
 ];
-test('decision admission table: only a pending candidate is forwarded, a matching terminal receipt repeats, everything else refuses',()=>{
+test('decision admission table: a matching terminal receipt repeats, an unreadable review refuses, everything else is forwarded for Core to decide',()=>{
  const covered=new Set();
  for(const [status,decision,expected] of ADMISSION_TABLE){
   const proposal={candidateId:id(1),review:{status,reviewId:null,decidedAt:null,publishedMemoryId:null,checkedAt:null}};covered.add(status);
@@ -171,7 +172,9 @@ test('correction invariants: pending leaves the active record and its hash untou
  assert.deepEqual(rejected.decision,{decision:'rejected',outcome:'rejected'});assert.equal(rejected.proposal.review.status,'rejected');
  assert.equal(rejected.proposal.content,'Afternoons');assert.deepEqual(rejected.proposal.corrects,pending.corrects);
  assert.deepEqual(await t.target(p,memoryId),before);assert.equal(t.core.memories[0].value,'Mornings');
- await code(t.decide(p,'approved',{candidateId:pending.candidateId}),'MEMORY_DECISION_NOT_PENDING');
+ // Core alone refuses the opposite decision on the decided candidate: its version route finds no pending row (404 → NOT_FOUND).
+ await code(t.decide(p,'approved',{candidateId:pending.candidateId}),'MEMORY_DECISION_NOT_FOUND');
+ assert.equal(t.core.calls.filter(c=>c.path.endsWith('/approve')).length,1,'the refused approval reached Core and was refused there');
  // A second correction of the same target, approved: Core publishes an immutable successor version distinct from the pinned target.
  const second=await t.correct(p,{idempotencyKey:id(22),targetMemoryId:memoryId,content:'Evenings',reason:'newer source',sources:[{kind:'document',reference:'d2'}]});
  assert.equal(second.review.status,'pending');assert.notEqual(second.candidateId,pending.candidateId);

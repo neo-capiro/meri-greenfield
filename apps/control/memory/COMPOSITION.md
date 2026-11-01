@@ -314,7 +314,8 @@ Five stages are distinct owners and never collapse into one another. A list labe
 | 5. Recall | gateway `search_memory` (`apps/gateway/sources/client-knowledge/http-adapter.mjs` + `memory-eligibility.mjs`), worker family `client-knowledge-memory` | approved records only, each released against Core's per-record eligibility receipt |
 
 `review-state.mjs` is the proposer-side state machine for stages 3–4: the view status table over journal submission state × Core
-answer, decision admission (forward / repeat / refuse) and the correction invariant (the pin `{memoryId, memorySha256}` beside the
+answer, decision admission (repeat a terminal receipt, refuse an unreadable review, otherwise forward: Core locks the pending row and
+refuses or recovers a decided candidate itself, so Meri keeps no duplicate "not pending" gate) and the correction invariant (the pin `{memoryId, memorySha256}` beside the
 proposed content; nothing changes the active record until Core approves). `test/review-state.test.mjs` is table-driven over every
 combination, the personal/client/firm walls, target hiding/ineligibility, conflict (stale pin → Core 409, nothing recorded), client
 revocation (hidden on status, reload, decision and inbox) and pending-never-overwrites (keyed surface addition refused; keyed command

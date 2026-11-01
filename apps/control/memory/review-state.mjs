@@ -15,8 +15,9 @@
  *
  *   unavailable                              → MEMORY_REVIEW_UNAVAILABLE (nothing forwarded)
  *   approved × approved, rejected × rejected → repeat: Core's terminal receipt is answered again, never another mutation
- *   pending                                  → forward to Core's canonical owner
- *   anything else                            → MEMORY_DECISION_NOT_PENDING (nothing forwarded)
+ *   anything else                            → forward to Core's canonical owner, which locks the pending candidate itself and answers
+ *                                              404 (MEMORY_DECISION_NOT_FOUND) or its own recovery for a decided, expired, withdrawn
+ *                                              or never-received candidate; Meri keeps no second "is it pending" gate in front of it
  *
  * A pending correction never changes its target: the view carries the proposed `content` beside the immutable `corrects`
  * pin `{memoryId, memorySha256}`; the active record stays what Core serves until Core's approval creates the successor. */
@@ -44,11 +45,10 @@ export function repeatedDecision(proposal,decision){
  return Object.freeze({proposal,decision:Object.freeze({decision,outcome:DECISION_OUTCOMES[decision]})});
 }
 /** Whether a proposer decision may be forwarded to Core for the candidate as currently viewed: `{kind:'repeat',result}` answers the
- * existing receipt, `{kind:'forward'}` lets the producer call Core; every other state refuses before any Core effect. */
+ * existing receipt without another POST, `{kind:'forward'}` lets the producer call Core; an unreadable review state refuses. */
 export function decisionAdmission(proposal,decision){
  if(!DECISIONS.includes(decision))refuse('PRODUCT_CONFIGURATION');
  if(proposal.review.status==='unavailable')refuse('MEMORY_REVIEW_UNAVAILABLE');
  const repeat=repeatedDecision(proposal,decision);if(repeat)return Object.freeze({kind:'repeat',result:repeat});
- if(proposal.review.status!=='pending')refuse('MEMORY_DECISION_NOT_PENDING');
  return Object.freeze({kind:'forward'});
 }
