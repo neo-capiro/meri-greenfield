@@ -8,6 +8,7 @@
  * `record({sequence,entrySha256},{exclusive})` (exact, recovery only). The PostgreSQL adapter is `postgres-watermark.mjs`. */
 import {fail,hash,own,data} from './boundary.mjs';
 import {advanceProof,projectionSequence} from './projection-proof.mjs';
+import {CORRUPT_READ} from './serving-fence.mjs';
 /** Test and contract store; `snapshot`/`restore` model a database backup taken and restored together with the journal. */
 export function createMemoryWatermarkStore({journal}={}){
  if(typeof journal?.assertProjection!=='function'||typeof journal?.readProjection!=='function')fail('RETENTION_CONFIGURATION');
@@ -27,14 +28,16 @@ export function createMemoryWatermarkStore({journal}={}){
 /** The journal every transition owner writes through: after the projection write succeeds, the watermark advances to the ledger
  * position it carries and the fence learns it; an advance whose outcome is unknown closes the fence (the projection itself stands,
  * and reconciliation re-proves the watermark before serving resumes). Ordinary reads require a store-owned atomic projection and
- * watermark snapshot; split reads cannot detect ABA across recovery owners. Exclusive recovery reads bypass the serving fence. */
+ * watermark snapshot; split reads cannot detect ABA across recovery owners. A snapshot that cannot be read or is malformed proves
+ * nothing and refuses only its request (`RETENTION_READ_UNAVAILABLE`); a corrupt stored answer and the fence's own position checks
+ * close it. Exclusive recovery reads bypass the serving fence. */
 export function watermarkedJournal({journal,watermark,fence,ledger}){
  if(typeof journal?.get!=='function'||typeof journal?.set!=='function'||typeof journal?.exclusive!=='function'||typeof journal?.withTransition!=='function'||typeof watermark?.advanceProjection!=='function'||typeof watermark?.read!=='function'||typeof watermark?.readProjection!=='function'||typeof ledger?.head!=='function'||['observe','disable','verify','state'].some(m=>typeof fence?.[m]!=='function'))fail('RETENTION_CONFIGURATION');
  async function readVerified(key,readSnapshot){
   if(!fence.state().enabled)fail('RETENTION_RECOVERY_BARRIER');
-  let snapshot;try{snapshot=own(data(await readSnapshot()),['projection','watermark']);
-   if(snapshot.projection!==null&&(typeof snapshot.projection!=='object'||Array.isArray(snapshot.projection)))fail('RETENTION_WATERMARK_UNVERIFIED');
-  }catch{fence.disable('RETENTION_WATERMARK_UNVERIFIED');fail('RETENTION_WATERMARK_UNVERIFIED');}
+  let raw;try{raw=await readSnapshot();}catch(error){if(CORRUPT_READ.has(error?.code)){fence.disable(error.code);throw error;}fail('RETENTION_READ_UNAVAILABLE',error);}
+  let snapshot;try{snapshot=own(data(raw),['projection','watermark']);}catch(error){fail('RETENTION_READ_UNAVAILABLE',error);}
+  if(snapshot.projection!==null&&(typeof snapshot.projection!=='object'||Array.isArray(snapshot.projection)))fail('RETENTION_READ_UNAVAILABLE');
   await fence.verify(()=>snapshot.watermark,()=>ledger.head());
   if(snapshot.projection!==null&&projectionSequence(snapshot.projection)>snapshot.watermark.sequence)fail('RETENTION_RECOVERY_BARRIER');
   return snapshot.projection;

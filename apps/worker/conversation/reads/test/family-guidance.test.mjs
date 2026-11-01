@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {READ_FAMILIES} from '../families.mjs';
 import {READ_FAMILY_GUIDANCE,READ_FAMILY_GUIDANCE_IDS,GUIDANCE_LIMITS,RESULT_STATE_GUIDANCE,SQL_FIRST_GUIDANCE,SQL_ABSENT_GUIDANCE} from '../family-guidance.mjs';
-import {describeRead,domainLimitations,MAX_DESCRIPTION} from '../tools.mjs';
+import {describeRead,domainLimitations,MAX_DESCRIPTION,SQL_TOOL_IDS} from '../tools.mjs';
 import {readGuidance} from '../guidance.mjs';
 import {sdkToolName} from '../../skills/mcp.mjs';
 import {familyReads} from '../availability.mjs';
@@ -32,11 +32,13 @@ test('structured families route counts and filters to text-to-SQL first only whe
  const structured=rows.filter(row=>READ_FAMILY_GUIDANCE[row.family].structured),narrative=rows.filter(row=>!READ_FAMILY_GUIDANCE[row.family].structured);
  assert.ok(structured.some(row=>row.family==='federal-market')&&structured.some(row=>row.family==='program-elements')&&structured.some(row=>row.family==='bill-text'));
  assert.ok(narrative.some(row=>row.family==='public-web')&&narrative.some(row=>row.family==='mail')&&narrative.some(row=>row.family==='graph-paths'));
- for(const row of structured){
+ for(const row of structured.filter(row=>!SQL_TOOL_IDS.has(row.operation.id))){
   assert.ok(describeRead(row.descriptor,row.family,{sqlPrimary:true}).includes(SQL_FIRST_GUIDANCE),row.operation.id);
   assert.ok(describeRead(row.descriptor,row.family,{sqlPrimary:false}).includes(SQL_ABSENT_GUIDANCE),row.operation.id);
  }
- for(const row of narrative)for(const sqlPrimary of [true,false])assert.doesNotMatch(describeRead(row.descriptor,row.family,{sqlPrimary}),/Structured questions:/u,row.operation.id);
+ // The two SQL tools are the destination of that routing sentence, so they never carry it themselves.
+ const sqlRows=structured.filter(row=>SQL_TOOL_IDS.has(row.operation.id));assert.ok(sqlRows.length>=2);
+ for(const row of [...narrative,...sqlRows])for(const sqlPrimary of [true,false])assert.doesNotMatch(describeRead(row.descriptor,row.family,{sqlPrimary}),/Structured questions:/u,row.operation.id);
  assert.match(SQL_FIRST_GUIDANCE,/describe_capiro_data first and query_capiro_data/u);
 });
 test('registration-era catalog limitations never reach the model; data limitations still do',()=>{
