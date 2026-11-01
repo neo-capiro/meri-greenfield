@@ -15,7 +15,7 @@ const INPUT_SCHEMA=Object.freeze({type:'object',additionalProperties:false,prope
 /** One approved read-only capability of one personal Slack connection. */
 export const CAPABILITY=Object.freeze({connectionId:uuid('d'),provider:'slack',tool:'search_messages',inputSchema:INPUT_SCHEMA,
  schemaHash:createHash('sha256').update(JSON.stringify(INPUT_SCHEMA)).digest('hex')});
-export const ARGUMENTS=Object.freeze({query:'quarterly',cursor:'page-2'});
+const ARGUMENTS=Object.freeze({query:'quarterly',cursor:'page-2'});
 const OK_RESULT=Object.freeze({content:[{type:'text',text:'Quarterly plan'}],structuredContent:{messages:[{id:'m2',text:'Quarterly plan'}],next_cursor:'page-3',has_more:true}});
 const DENIED_RESULT=Object.freeze({isError:true,content:[{type:'text',text:'missing_scope: channels:history'}]});
 /** Recorded provider exchanges (streamable HTTP JSON-RPC 2.0) behind each Core outcome. */
