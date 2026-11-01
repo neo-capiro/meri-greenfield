@@ -15,7 +15,8 @@
           },
           "minItems": 1,
           "maxItems": 15,
-          "uniqueItems": true
+          "uniqueItems": true,
+          "description": "Relation names to describe; omit to list every published relation of the selected source. Names are lowercase and must be spelled exactly as query_capiro_data uses them."
         },
         "source": {
           "type": "string",
@@ -40,7 +41,8 @@
         "sql": {
           "type": "string",
           "minLength": 1,
-          "maxLength": 16384
+          "maxLength": 16384,
+          "description": "One read-only PostgreSQL SELECT, optionally preceded by non-recursive CTEs, over relations listed by describe_capiro_data. Lowercase unquoted identifiers; name every column (no SELECT *). Projections are column references or COUNT/SUM/AVG/MIN/MAX(...) AS name. Joins are INNER JOIN or LEFT JOIN ... ON equality of declared key columns only (other filters go in WHERE). Predicates use =, <>, <, <=, >, >=, AND, OR, ILIKE, IS NULL and IS NOT NULL. GROUP BY base columns, HAVING, DISTINCT, ORDER BY columns or output names ASC/DESC and LIMIT 0-1000 on the final SELECT are accepted. Every text, date, timestamp, UUID and decimal value is bound as $1, $2, ... in parameters; only safe integers and true/false may be literal. String literals, IN, BETWEEN, NOT, LIKE, CASE, COALESCE, casts, arithmetic, functions, window or FILTER clauses, subqueries, OFFSET, UNION, NULLS LAST, quoted or schema-qualified names, SET and writes are refused before execution with an error code and message to correct from."
         },
         "parameters": {
           "type": "array",
@@ -61,12 +63,14 @@
             ]
           },
           "minItems": 0,
-          "maxItems": 64
+          "maxItems": 64,
+          "description": "Values bound to $1..$n in order; required, so pass [] when the SQL binds nothing, and every entry must be referenced. Use strings for text, dates (YYYY-MM-DD), timestamps (ISO 8601 UTC), UUIDs and exact decimals or large integers; numbers only for safe integers; booleans; null (compare nulls with IS NULL, not = $n)."
         },
         "rowLimit": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 1000
+          "maximum": 1000,
+          "description": "Maximum rows returned, 1-1000 (default 200), independent of the SQL LIMIT. rowLimitReached in the result reports that more rows matched; page by keyset (ORDER BY the full key, WHERE key > $n) instead of OFFSET."
         },
         "source": {
           "type": "string",

@@ -32,6 +32,22 @@ test('row and byte truncation remain independent through the mounted receiving b
     assert.equal(result.rowLimitReached,rowLimitReached);assert.equal(result.byteTruncated,byteTruncated);assert.equal(result.rowCount,result.rows.length);
   }
 });
+test('a Core SQL refusal reaches the model with its code and message plus fixed correction guidance, and is still receipted',async t=>{
+  const scene=capiroDataCase();scene.state.page={version:'0.1.0',generatedAt:scene.page.generatedAt,ok:false,error:{code:'UNKNOWN_FIELD',message:'Unknown or ambiguous published column.'}};
+  const f=await fixture('capiro-data','query_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
+  assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
+  const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.state.page);
+  assert.match(out.content[1].text,/^Notice: query_capiro_data refused this request with UNKNOWN_FIELD\. Use column names exactly as describe_capiro_data lists them/);
+  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
+});
+test('a successful query carries a separate count line that names truncation without touching the canonical bytes',async t=>{
+  const scene=capiroDataCase();scene.page.rowLimitReached=true;
+  const f=await fixture('capiro-data','query_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
+  assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
+  assert.deepEqual(JSON.parse(out.content[0].text).result,scene.page);
+  assert.equal(out.content[1].text,'Notice: 2 row(s) returned of rowLimit 2 from program_elements. rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');
+  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(JSON.parse(out.content[0].text)));
+});
 test('current revocation and Core denial publish no result receipt',async t=>{
   for(const action of ['revoke','deny']){
     const scene=capiroDataCase(),f=await fixture('capiro-data','query_capiro_data',{scene}),m=await connect(t,f);f[action]();
