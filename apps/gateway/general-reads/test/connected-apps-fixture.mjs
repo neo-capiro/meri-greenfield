@@ -49,11 +49,11 @@ export const LIST_OUTCOMES=Object.freeze([
  {id:'registry unavailable',status:'unavailable',managedAvailability:'unavailable',capabilities:[],notice:/Connected apps/u},
 ].map(Object.freeze));
 
-export function listPage({clientId,observedAt},outcome=LIST_OUTCOMES[0]){
+function listPage({clientId,observedAt},outcome=LIST_OUTCOMES[0]){
  return {operation:'list_connected_app_reads',clientId,observedAt,status:outcome.status,untrusted:true,complete:false,scope:'current_connection_catalog',
   managedAvailability:outcome.managedAvailability,capabilities:structuredClone(outcome.capabilities)};
 }
-export function readPage({clientId,observedAt},outcome=READ_OUTCOMES[0]){
+function readPage({clientId,observedAt},outcome=READ_OUTCOMES[0]){
  return {operation:'read_connected_app',clientId,connectionId:CAPABILITY.connectionId,provider:CAPABILITY.provider,tool:CAPABILITY.tool,schemaHash:CAPABILITY.schemaHash,
   observedAt,status:outcome.status,untrusted:true,scope:'connection_permissions',completeness:'provider_page',reason:outcome.reason,content:outcome.content,providerResult:structuredClone(outcome.providerResult)};
 }
