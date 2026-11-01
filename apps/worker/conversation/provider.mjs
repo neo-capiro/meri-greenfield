@@ -2,6 +2,7 @@
 /** The SDK receives only the selected provider's explicit environment. Bedrock uses the
  * platform role; the runtime alone supplies a Secrets Manager API key for Claude API. */
 import path from 'node:path';
+import {HISTORICAL_MODEL_SELECTION} from '../../../packages/contracts/model-selection.mjs';
 /** A fresh run-owned sibling of the conversation's config parent. Keeping the path short
  * also leaves room for the SDK's Unix socket names. The directory owner creates it before query. */
 export function sdkTemporaryDirectory(configDirectory){
@@ -10,7 +11,8 @@ export function sdkTemporaryDirectory(configDirectory){
  if(!paths.isAbsolute(configDirectory)||paths.resolve(configDirectory)!==configDirectory)throw Error('SDK_PROVIDER_CONFIGURATION_REFUSED');
  return paths.join(paths.dirname(paths.dirname(configDirectory)),'tmp-'+paths.basename(configDirectory));
 }
-export const BEDROCK_MODEL='us.anthropic.claude-sonnet-4-6';
+/** Legacy fixture default; admitted production turns carry the deployment-selected model explicitly. */
+export const BEDROCK_MODEL=HISTORICAL_MODEL_SELECTION.modelId;
 export const BEDROCK_REGION='us-east-1';
 export const NATIVE_CACHE_SETTINGS=Object.freeze({promptCacheTtl:'5m',subagentPromptCacheTtl:'5m'});
 const prohibited=['DATABASE_URL','PGPASSWORD','TEMPORAL_API_KEY','ANTHROPIC_API_KEY','ANTHROPIC_AUTH_TOKEN','ANTHROPIC_BASE_URL',

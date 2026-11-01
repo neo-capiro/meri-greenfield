@@ -3,6 +3,7 @@
  * A missing/reset baseline is unavailable, never a zero-cost run. Thinking is already in outputTokens.
  */
 import {assertSdkUsageSnapshot,projectSdkUsage} from '../../../packages/contracts/runtime-0.2/usage.mjs';
+import {assertModelSelection,HISTORICAL_MODEL_SELECTION,MODEL_PROVIDERS} from '../../../packages/contracts/model-selection.mjs';
 
 const COUNTERS=Object.freeze(['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens']);
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(value);
@@ -17,17 +18,19 @@ const consistentEstimate=value=>{
  return Math.abs(sum-value.sdkEstimateUsd)<=64*Number.EPSILON*Math.max(1,sum,value.sdkEstimateUsd);
 };
 export const SDK_USAGE_BASIS=Object.freeze({sdk:'0.3.295',cli:'2.1.295',provider:'bedrock',cacheWriteTtl:'5m',priceRevision:'sdk-list-estimate-0.3.295'});
-const sameBasis=(value,historical=false)=>object(value)&&Object.keys(value).length===5&&value.sdk===SDK_USAGE_BASIS.sdk&&value.cli===SDK_USAGE_BASIS.cli&&['bedrock','claude-api'].includes(value.provider)&&value.cacheWriteTtl==='5m'&&(value.priceRevision===SDK_USAGE_BASIS.priceRevision||historical&&value.provider==='bedrock'&&value.priceRevision==='bedrock-us-sonnet-4-6-2026-10-23');
+const sameBasis=(value,historical=false)=>object(value)&&Object.keys(value).length===5&&value.sdk===SDK_USAGE_BASIS.sdk&&value.cli===SDK_USAGE_BASIS.cli&&MODEL_PROVIDERS.includes(value.provider)&&value.cacheWriteTtl==='5m'&&(value.priceRevision===SDK_USAGE_BASIS.priceRevision||historical&&value.provider==='bedrock'&&value.priceRevision==='bedrock-us-sonnet-4-6-2026-10-23');
 
 /** Native projection is shared; application-owned pricing/configuration stays here. */
 export const sdkUsageSnapshot=(result,basis=SDK_USAGE_BASIS)=>projectSdkUsage(result,basis);
 /** Per-message output ceiling handed to the SDK (CLAUDE_CODE_MAX_OUTPUT_TOKENS). Thinking shares it with visible text, so
  * the old 4096 cut answers off mid-brief; Sonnet 4.6 on Bedrock serves 64k, and 32k leaves room for a complete answer. */
 export const SDK_MAX_OUTPUT_TOKENS=32000;
-export const SDK_MODEL_CONFIGURATION=Object.freeze({model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:SDK_MAX_OUTPUT_TOKENS,usageBasis:SDK_USAGE_BASIS});
+/** Compatibility fixtures use the immutable pre-selection model, never the deployment's current default. */
+export const SDK_MODEL_CONFIGURATION=Object.freeze({model:HISTORICAL_MODEL_SELECTION.modelId,region:'us-east-1',maxOutputTokens:SDK_MAX_OUTPUT_TOKENS,usageBasis:SDK_USAGE_BASIS});
 /** Selection was validated against the deployment catalog at admission and load. No key/ARN crosses this port. */
 export function resolveSdkModelConfiguration(selection,modelPolicy){
- if(!object(selection)||!['bedrock','claude-api'].includes(selection.provider)||typeof selection.modelId!=='string'||selection.effort!==null&&!['low','medium','high','xhigh','max'].includes(selection.effort)||!object(modelPolicy)||!Number.isSafeInteger(modelPolicy.maxTurns)||modelPolicy.maxTurns<1||modelPolicy.maxTurns>100||!Number.isSafeInteger(modelPolicy.maxBudgetMicroUsd)||modelPolicy.maxBudgetMicroUsd<1)throw Error('SDK_MODEL_CONFIGURATION_REFUSED');
+ try{selection=assertModelSelection(selection);}catch{throw Error('SDK_MODEL_CONFIGURATION_REFUSED');}
+ if(!object(modelPolicy)||!Number.isSafeInteger(modelPolicy.maxTurns)||modelPolicy.maxTurns<1||modelPolicy.maxTurns>100||!Number.isSafeInteger(modelPolicy.maxBudgetMicroUsd)||modelPolicy.maxBudgetMicroUsd<1)throw Error('SDK_MODEL_CONFIGURATION_REFUSED');
  return {provider:selection.provider,model:selection.modelId,effort:selection.effort,region:'us-east-1',maxOutputTokens:SDK_MAX_OUTPUT_TOKENS,usageBasis:{...SDK_USAGE_BASIS,provider:selection.provider},maxTurns:modelPolicy.maxTurns,maxCostMicroUSD:modelPolicy.maxBudgetMicroUsd};
 }
 

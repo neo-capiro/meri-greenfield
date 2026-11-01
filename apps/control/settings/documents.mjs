@@ -20,6 +20,7 @@ export function releasedUserPreferences(stored,principal){
  return stored.defaultClientId!==null&&!principal.clientIds.includes(stored.defaultClientId)?Object.freeze({...stored,defaultClientId:null}):stored;
 }
 export const TENANT_SETTINGS_DEFAULTS=Object.freeze({defaultTimezone:'UTC',capabilityPolicy:Object.freeze({})});
+// Tenant execution limits are independent of catalog availability; model rows/defaults belong to the deployment policy.
 export const DEFAULT_MODEL_LIMITS=Object.freeze({maxTurns:20,maxBudgetMicroUsd:2000000});
 /** Explicit admin input cannot clear a configured cap. A missing persisted cap refuses run admission. */
 export function modelSettings(value){

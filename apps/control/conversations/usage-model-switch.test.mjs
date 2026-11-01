@@ -1,10 +1,29 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {accountSdkUsage,sdkUsageSnapshot,SDK_USAGE_BASIS,resolveSdkModelConfiguration} from './usage.mjs';
+import {readFile} from 'node:fs/promises';
+import {availableModelSelection} from '../../../packages/contracts/model-selection.mjs';
+import {storedModelSettings} from '../settings/documents.mjs';
 const session='10000000-0000-4000-8000-000000000001',fork='10000000-0000-4000-8000-000000000002';
 const bedrock='us.anthropic.claude-sonnet-4-6',api='claude-opus-4-6';
 const row=(provider,costUSD,n=10)=>({provider,costBasis:'list',costUSD,inputTokens:n,outputTokens:n,cacheReadInputTokens:n,cacheCreationInputTokens:n,webSearchRequests:1});
 const result=(models,total_cost_usd,session_id=session)=>({type:'result',session_id,total_cost_usd,modelUsage:models});
 const apiBasis={...SDK_USAGE_BASIS,provider:'claude-api'};
+
+test('deployment catalog changes flow through tenant limits into SDK configuration without a second model list',async()=>{
+ const policy=JSON.parse(await readFile(new URL('../../../infra/product-preview/first-chat/policy.json',import.meta.url),'utf8'));
+ const limits=storedModelSettings({monthly_cap_micro_usd:5000000});
+ const selection=availableModelSelection(policy.models,policy.models.defaultSelection);
+ const config=resolveSdkModelConfiguration(selection,limits);
+ assert.equal(config.model,selection.modelId);assert.equal(config.maxTurns,limits.maxTurns);assert.equal(config.maxCostMicroUSD,limits.maxBudgetMicroUsd);
+ // Synthetic qualified deployment only: changing the catalog requires no settings or accounting source edit.
+ const future={provider:'bedrock',modelId:'us.anthropic.claude-synthetic-next',effort:'high'};
+ const catalog=structuredClone(policy.models);catalog.models.push({...future,label:'Synthetic next',efforts:['high'],available:true,unavailableReason:null});delete catalog.models.at(-1).effort;catalog.defaultSelection=future;
+ const next=resolveSdkModelConfiguration(availableModelSelection(catalog,catalog.defaultSelection),limits);
+ assert.equal(next.model,future.modelId);assert.equal(next.effort,future.effort);assert.equal(next.maxTurns,config.maxTurns);assert.equal(next.maxCostMicroUSD,config.maxCostMicroUSD);
+ for(const row of policy.models.models.filter(row=>!row.available))for(const effort of row.efforts)assert.throws(()=>availableModelSelection(policy.models,{provider:row.provider,modelId:row.modelId,effort}));
+ for(const row of policy.pendingModels)for(const effort of row.efforts)assert.throws(()=>availableModelSelection(policy.models,{provider:row.provider,modelId:row.modelId,effort}));
+ for(const invalid of [{...selection,effort:'ultra'},{...selection,modelId:''},{...selection,apiKey:'synthetic'}])assert.throws(()=>resolveSdkModelConfiguration(invalid,limits),/SDK_MODEL_CONFIGURATION_REFUSED/);
+});
 test('three turns across models/providers charge only each native cumulative estimate delta',()=>{
  const first=result({[bedrock]:row('bedrock',0.1)},0.1),second=result({[bedrock]:row('bedrock',0.1),[api]:row('firstParty',0.04)},0.14);
  const initial=accountSdkUsage({mode:'new',result:first});assert.equal(initial.chargeMicroUsd,100000);
