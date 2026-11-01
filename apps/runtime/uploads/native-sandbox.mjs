@@ -1,6 +1,6 @@
 /** Fixed no-model native child boundary for upload scan/extraction. This is the upload-role counterpart of
  * `apps/runtime/artifacts/renderer-sandbox.mjs`: one bubblewrap plan spine (user/mount/network namespaces, non-root
- * 1000:1000, cap-drop all, read-only root, private owned workspace, prlimit file/fd/proc caps) shared by the probe and by
+ * 1000:1000, cap-drop all, read-only root, private owned workspace, prlimit file/fd/proc/cpu caps) shared by the probe and by
  * every real child, so the boundary that is observed is the boundary that scans and extracts. Only host-owned, fixed
  * programs and arguments are admitted; an uploaded executable, argument, environment value, plugin or configuration can
  * never reach a child.
@@ -15,7 +15,7 @@ import {runArtifactProcess} from '../../artifacts/process.mjs';
 import {RENDERER_SANDBOX_REQUIREMENTS} from '../../artifacts/renderer.mjs';
 import {RENDERER_PROBE_PATH,RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../artifacts/renderer-qualification.mjs';
 import {CGROUP_MOUNT,CGROUP_FILES,cgroupLevels,cgroupRelativePath,parseCgroupPath,parseCgroupMount,parseCgroupMountRoot,
- resolveEffectiveCgroup,combineCgroupBounds} from '../../artifacts/renderer-probe-observation.mjs';
+ resolveEffectiveCgroup,combineCgroupBounds,platformBoundedCgroup} from '../../artifacts/renderer-probe-observation.mjs';
 export {resolveEffectiveCgroup,combineCgroupBounds,cgroupRelativePath,parseCgroupPath,parseCgroupMount,parseCgroupMountRoot};
 /** The shared probe imports this pure helper. The fixed child filesystem is a fresh directory, so the helper must be
  * an explicit read-only bind entry beside the probe; otherwise the actual upload child cannot resolve its import. */
@@ -44,6 +44,13 @@ export const UPLOAD_EXTRACT_FORMATS=Object.freeze(['txt','md','pdf','docx','xlsx
 /** The single scan target name a scanner child may read; the scanner port writes exactly this file into the workspace. */
 export const UPLOAD_SCAN_INPUT='input.original';
 export const UPLOAD_MAX_OBSERVATION_BYTES=65536,UPLOAD_FSIZE=16777216;
+/** RLIMIT_CPU for every fixed child, in CPU seconds: the per-process resource bound that holds on the AgentCore microVM,
+ * where no finite cgroup exists below the root. It covers the scan budget (`--max-scantime` 30s plus database load) and
+ * the extraction budget (parse 30s + OCR 90s wall clock) with headroom, and a child that exceeds it is killed by the
+ * kernel, not merely abandoned. No RLIMIT_AS is set on purpose: V8 reserves its 4 GiB pointer-compression cage up front
+ * (the probe is `node`) and ClamAV maps the whole signed database (>1 GiB), so any address-space cap low enough to
+ * bound anything would refuse the fixed children themselves; memory stays bounded by the cgroup or the microVM. */
+export const UPLOAD_CPU_SECONDS=120;
 const ROLES=Object.freeze(Object.keys(UPLOAD_ROLE_PREFIX));
 export const uploadFault=code=>Object.assign(new Error(code),{code});
 const refuse=()=>{throw uploadFault('UPLOAD_SANDBOX_REFUSED');};
@@ -87,7 +94,7 @@ export function uploadSandboxArguments({role,cwd,definitionsRoot,extractorPath,f
   '--dir','/etc','--ro-bind-try','/etc/ld.so.cache','/etc/ld.so.cache',
   '--proc','/proc','--dev','/dev','--dir','/sys','--dir','/sys/fs','--ro-bind','/sys/fs/cgroup','/sys/fs/cgroup',
   ...roots,'--dir','/tmp','--bind',cwd,cwd,'--chdir',cwd,'--remount-ro','/',
-  '--',p.prlimit,'--fsize='+UPLOAD_FSIZE+':'+UPLOAD_FSIZE,'--nofile=128:128','--nproc=64:64','--',executable,...args];
+  '--',p.prlimit,'--fsize='+UPLOAD_FSIZE+':'+UPLOAD_FSIZE,'--nofile=128:128','--nproc=64:64','--cpu='+UPLOAD_CPU_SECONDS+':'+UPLOAD_CPU_SECONDS,'--',executable,...args];
 }
 /** Run one fixed role child. Same host modality checks the renderer runner applies: Linux, real UID 1000, an owned
  * non-symlink 0700 realpath-stable workspace directly under the temp root. */
@@ -154,8 +161,11 @@ export async function readHostCgroup({readText=HOST_READ,before=undefined,platfo
  return resolveEffectiveCgroup({cgroupPath:identityBefore.cgroupPath,mountRoot:identityBefore.mountRoot,mount:CGROUP_MOUNT,read:path=>values.get(path)??null});
 }
 /** Pure: one probe observation -> the eight shared requirement flags. Mirrors the renderer evaluator but accepts the
- * upload probe workspace prefix; malformed input is all false and never throws. */
-export function evaluateUploadSandbox(observation,{tempRoot}={}){
+ * upload probe workspace prefix; malformed input is all false and never throws. `platform` is the runtime's own verified
+ * evidence (`agentcoreRuntimePlatform`): with it, the AgentCore microVM's single unlimited root cgroup attests
+ * `boundedResources` as `diagnostic.boundedBy:'agentcore-microvm'` (`platformBoundedCgroup`); without it, or on any
+ * other shape, only finite observed bounds do (`'cgroup'`). */
+export function evaluateUploadSandbox(observation,{tempRoot,platform=null}={}){
  const o=observation!==null&&typeof observation==='object'&&!Array.isArray(observation)?observation:{};
  const linux=o.schema===RENDERER_PROBE_SCHEMA&&o.platform==='linux';
  const caps=o.capabilities&&typeof o.capabilities==='object'?o.capabilities:{};
@@ -163,6 +173,8 @@ export function evaluateUploadSandbox(observation,{tempRoot}={}){
  const ifaces=Array.isArray(o.interfaces)?o.interfaces:null,env=Array.isArray(o.envNames)?o.envNames:null;
  const creds=Array.isArray(o.credentialPathsReadable)?o.credentialPathsReadable:null;
  const ws=o.workspace&&typeof o.workspace==='object'?o.workspace:null;
+ const finite=linux&&finiteLimit(cg.memoryMax)&&finiteLimit(cg.pidsMax)&&finiteLimit(cg.cpuMax,{quota:true});
+ const bound=linux&&!finite?platformBoundedCgroup(cg,platform):null;
  const sandbox={
   nonRootUser:linux&&positiveIds(o.uid)&&positiveIds(o.gid),
   noNetwork:linux&&ifaces!==null&&ifaces.length>0&&ifaces.every(name=>name==='lo'),
@@ -172,7 +184,7 @@ export function evaluateUploadSandbox(observation,{tempRoot}={}){
   privateWorkspace:linux&&typeof o.cwd==='string'&&typeof tempRoot==='string'&&dirname(o.cwd)===tempRoot&&
    basename(o.cwd).startsWith(UPLOAD_ROLE_PREFIX.probe)&&/^[A-Za-z0-9]{6}$/u.test(basename(o.cwd).slice(UPLOAD_ROLE_PREFIX.probe.length))&&
    o.home===o.cwd&&o.tmpdir===o.cwd&&ws!==null&&ws.mode===0o700&&positiveIds(o.uid)&&ws.uid===o.uid[1],
-  boundedResources:linux&&finiteLimit(cg.memoryMax)&&finiteLimit(cg.pidsMax)&&finiteLimit(cg.cpuMax,{quota:true}),
+  boundedResources:finite||bound!==null,
   noCredentials:false,
  };
  const envAllowed=env!==null&&env.every(name=>UPLOAD_CHILD_ENV.includes(name));
@@ -182,6 +194,7 @@ export function evaluateUploadSandbox(observation,{tempRoot}={}){
   creds!==null&&creds.length>0&&creds.every(c=>c&&c.readable===false);
  const diagnostic=Object.freeze({
   resources:Object.freeze({memoryMax:numericLimit(cg.memoryMax),pidsMax:numericLimit(cg.pidsMax),cpuMax:numericLimit(cg.cpuMax,{quota:true})}),
+  boundedBy:finite?'cgroup':bound?.boundedBy??null,
   credentials:Object.freeze({networkIsolated:sandbox.noNetwork,envCount:env===null?0:env.length,
    allowedCount:UPLOAD_CHILD_ENV.length,envAllowed,
    checked:creds===null?0:creds.length,readable:creds===null?0:creds.filter(c=>c&&c.readable===true).length})
@@ -208,7 +221,8 @@ export function projectObservation(observation){
   processLimits:Object.freeze({
    MaxFileSize:limitPairProjection(limits.MaxFileSize),
    MaxOpenFiles:limitPairProjection(limits.MaxOpenFiles),
-   MaxProcesses:limitPairProjection(limits.MaxProcesses)}),
+   MaxProcesses:limitPairProjection(limits.MaxProcesses),
+   MaxCpuTime:limitPairProjection(limits.MaxCpuTime)}),
   cgroup:Object.freeze({
    source:typeof cg.source==='string'&&SOURCE_LABELS.includes(cg.source)?cg.source:null,
    membershipResolved:cg.membershipResolved===true,
@@ -219,9 +233,10 @@ export function projectObservation(observation){
 }
 /** Observe the upload child boundary and issue an admission only when every shared requirement is attested. The probe
  * runs through the identical `runUploadSandbox('probe',...)` path scan/extract use, in the same owned workspace kind. */
-export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,credentialPaths=[],tempRoot=UPLOAD_IMAGE_PATHS.tempRoot,run=runUploadSandbox,hostCgroup}={}){
+export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,credentialPaths=[],tempRoot=UPLOAD_IMAGE_PATHS.tempRoot,run=runUploadSandbox,hostCgroup,platform=null}={}){
  if(typeof imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(imageDigest)||!Number.isSafeInteger(deadlineMs)||
-  !Array.isArray(credentialPaths)||credentialPaths.length>64||!credentialPaths.every(p=>typeof p==='string'&&isAbsolute(p)))
+  !Array.isArray(credentialPaths)||credentialPaths.length>64||!credentialPaths.every(p=>typeof p==='string'&&isAbsolute(p))||
+  platform!==null&&typeof platform!=='object')
   throw uploadFault('UPLOAD_QUALIFICATION_CONFIGURATION');
  const workspace=await mkdtemp(join(tempRoot,UPLOAD_ROLE_PREFIX.probe));
  try{
@@ -246,11 +261,17 @@ export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,
   const host=hostCgroup!==undefined?hostCgroup:(realHost?await readHostCgroup({before:hostBefore}):null);
   const projected=projectObservation(base);
   const combined=host===null||host===undefined?null:combineCgroupBounds(base.cgroup,host);
-  const observation=combined===null?base:{...base,cgroup:{...base.cgroup,...combined}};
-  const evaluation=evaluateUploadSandbox(observation,{tempRoot:await realpath(tempRoot).catch(()=>null)});
+  // The host's effective hierarchy is the authority for the inherited membership's values AND shape: when it resolved,
+  // its level count and mount root are the facts the platform attestation is judged on, never a child-reported shape.
+  const observation=combined===null?base:{...base,cgroup:{...base.cgroup,...combined,levels:host.levels,mountRootIsRoot:host.mountRootIsRoot===true}};
+  // The platform attestation is judged on the HOST's resolved hierarchy only. Without a host read the observation
+  // falls back to the child's namespaced view, which inside bwrap is always one unlimited root (the same shape the
+  // microVM shows), so the attestation would rest on the environment evidence alone; it is withheld instead.
+  const hostResolved=host!==null&&host!==undefined&&Number.isSafeInteger(host?.levels)&&host.levels>0;
+  const evaluation=evaluateUploadSandbox(observation,{tempRoot:await realpath(tempRoot).catch(()=>null),platform:hostResolved?platform:null});
   const missing=evaluation.findings.map(f=>f.requirement);
   const diagnostic=Object.freeze({...evaluation.diagnostic,
-   cgroupHost:Object.freeze({resolved:host!==null&&host!==undefined&&Number.isSafeInteger(host?.levels)&&host.levels>0,levels:host?.levels??0,mountRootIsRoot:host?.mountRootIsRoot===true})});
+   cgroupHost:Object.freeze({resolved:hostResolved,levels:host?.levels??0,mountRootIsRoot:host?.mountRootIsRoot===true})});
   if(missing.length)return {admitted:false,reason:'UPLOAD_SANDBOX_UNQUALIFIED',evaluation,observation:projected,missing,diagnostic};
   // Tool/definition roots are read-only bind entries of the fixed plan above, so they share this admission.
   return {admitted:true,reason:'UPLOAD_SANDBOX_QUALIFIED',admission:Object.freeze({role:'upload-native',imageDigest,qualificationId:'upload-native-'+imageDigest.slice(7),

@@ -9,7 +9,7 @@ import {createSdkProviderCredentials} from './sdk-provider-credentials.mjs';
 import {reportRuntimeStartupFailure} from './runner-runtime-diagnostics.mjs';
 import {createRuntimeRendererApplication} from './artifacts/renderer-http.mjs';
 import {createUploadInspectionApplication,composeUploadInspectionHost,uploadInspectionHostConfiguration} from './uploads/agentcore-http.mjs';
-import {beginUploadNativeProvisioning,UPLOAD_NATIVE_UNAVAILABLE_EVENT} from './uploads/control-lifecycle.mjs';
+import {beginUploadNativeProvisioning,UPLOAD_NATIVE_UNAVAILABLE_EVENT,UPLOAD_NATIVE_AVAILABLE_EVENT} from './uploads/control-lifecycle.mjs';
 export async function main(argv=process.argv.slice(2)){
  if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('AgentCore HTTP runtime: /invocations and /ping on8080. Configure MERI_CONTROL_ORIGIN, MERI_CONTROL_CA_BASE64, MERI_CONTROL_CA_SHA256, AWS_REGION. Exit0 graceful;2 configuration;3 unknown shutdown.\n');return 0;}
  if(argv.length)return 2;let transport,listener,application,providerCredentials,stage='agentcore-config';const stop=new AbortController(),shutdown=()=>stop.abort();
@@ -29,6 +29,8 @@ export async function main(argv=process.argv.slice(2)){
    ...(typeof inspectionHost.reason==='string'?{reason:inspectionHost.reason}:{}),
    ...(Array.isArray(inspectionHost.requirements)&&inspectionHost.requirements.length?{requirements:inspectionHost.requirements}:{}),
    ...(inspectionHost.diagnostic&&typeof inspectionHost.diagnostic==='object'?{diagnostic:inspectionHost.diagnostic}:{})})+'\n');
+  else process.stderr.write(JSON.stringify({event:UPLOAD_NATIVE_AVAILABLE_EVENT,boundedBy:inspectionHost.host?.diagnostic?.boundedBy??null,
+   ...(inspectionHost.host?.diagnostic?.cgroupHost?{cgroupHost:inspectionHost.host.diagnostic.cgroupHost}:{})})+'\n');
   const inspection=createUploadInspectionApplication({inspection:inspectionHost.inspection,imageDigest:process.env.MERI_RENDERER_IMAGE_DIGEST,signal:stop.signal});
   application=createAgentCoreApplication({execute,renderer,inspection,signal:stop.signal});
   stage='agentcore-listen';listener=await listenRuntime({configuration:{http:{hostname:'0.0.0.0',port:8080},limits:{requestMs:900000,shutdownMs:15000}},application,readiness:async()=>{},signal:stop.signal,exposeReadiness:false});

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createUploadCustody,hash} from '../custody.mjs';
 import {createUploadInspection} from '../extraction.mjs';
 import {uploadHash} from '../policy.mjs';
-import {createUploadApplication} from '../application.mjs';
+import {createUploadApplication,UPLOAD_INSPECTION_DISPATCH,UPLOAD_INSPECTION_UNSETTLED_EVENT} from '../application.mjs';
 import {createMemoryRetentionJournal} from '../../retention/memory-journal.mjs';
 import {createRetentionReadGate} from '../../retention/suppression.mjs';
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`,copy=structuredClone;
@@ -16,7 +16,7 @@ function fixture(){
  const store={
   async prepare(r){const old=[...state.rows.values()].find(v=>v.requestId===r.requestId);if(old)return copy(old);state.rows.set(r.uploadId,copy(r));return copy(r);},
   async readByRequest(owner,key){return copy([...state.rows.values()].find(r=>r.requestId===key)??null);},
-  async read(owner,key){return copy(state.rows.get(key)??null);},
+  async read(owner,key){await state.onRead?.(key,owner);return copy(state.rows.get(key)??null);},
   async transition(a,b,check){await state.onTransition?.(a,b);check();if(hash(state.rows.get(a.uploadId))!==hash(a))throw Error('UPLOAD_CHANGED');state.rows.set(a.uploadId,copy(b));return copy(b);},
  };
  const objects={
@@ -25,7 +25,7 @@ function fixture(){
   async get(){state.gets++;state.onGet?.();return Buffer.from(state.stored??bytes);},
  };
  const receipt=(file=declaration)=>({sourceSha256:file.sha256,sourceBytes:file.bytes,checkedAtMs:now()}),tool={name:'synthetic',version:'1',binarySha256:'a'.repeat(64)};
- const inspection=createUploadInspection({now,scanner:{async scan({file}){state.onScan?.();return {...receipt(file),status:'clean',tool,definitionsSha256:'b'.repeat(64),reason:null};}},extractor:{async extract(){return state.extractionUnavailable?{...receipt(),status:'unavailable',tool:null,segments:[],limitations:['EXTRACTOR_UNAVAILABLE']}:{...receipt(),status:'available',tool,segments:state.segments??[],limitations:[]};}}});
+ const inspection=createUploadInspection({now,scanner:{async scan({file}){await state.onScan?.();return {...receipt(file),status:'clean',tool,definitionsSha256:'b'.repeat(64),reason:null};}},extractor:{async extract(){return state.extractionUnavailable?{...receipt(),status:'unavailable',tool:null,segments:[],limitations:['EXTRACTOR_UNAVAILABLE']}:{...receipt(),status:'available',tool,segments:state.segments??[],limitations:[]};}}});
  const journal=createMemoryRetentionJournal(),retention=createRetentionReadGate({journal:{...journal,get:async()=>state.suppressed?{state:'SUPPRESSED'}:null},serving:{isEnabled:()=>true}});
  const suppress=()=>journal.withTransition(`${binding.tenantId}:conversation:${binding.conversationId}`,async()=>{state.suppressed=true;});
  const removeOriginal=async({object})=>{if(state.hold)throw Error('LEGAL_HOLD');state.onDelete?.();return {deleted:true,objectId:object.objectId,versionId:object.versionId};};
@@ -114,14 +114,27 @@ test('changed bytes and reused request identity with different declaration are r
  await assert.rejects(owner.put(r.uploadId,Buffer.from('different bytes'),f.options),{code:'UPLOAD_ORIGINAL_MISMATCH'});assert.equal(f.state.puts,0);
  await assert.rejects(owner.initiate({requestId:id(10),declaration:{...f.declaration,filename:'renamed.txt'}},f.options),{code:'UPLOAD_REQUEST_CONFLICT'});
 });
-function applicationFixture(){
- const f=fixture(),authentication=()=>({principal:{sessionId:'synthetic-session',tenantId:f.binding.tenantId,actorId:f.binding.actorId,conversationId:f.binding.conversationId,runId:f.binding.runId},sessionRevision:'1',checkedAtMs:f.state.at,expiresAtMs:f.state.at+300000});
+function applicationFixture(overrides={}){
+ // `other.session` is a second authenticated principal (another actor of the same tenant) whose session the same
+ // sessions owner also admits: it reaches the upload routes, and custody refuses it the records it does not own.
+ const actorOf=credential=>credential==='other.session'?id(7):f.binding.actorId;
+ const f=fixture(),authentication=credential=>({principal:{sessionId:'synthetic-session',tenantId:f.binding.tenantId,actorId:actorOf(credential),conversationId:f.binding.conversationId,runId:f.binding.runId},sessionRevision:'1',checkedAtMs:f.state.at,expiresAtMs:f.state.at+300000});
  f.state.authCredentials=[];
- const sessions={async authenticateSession({credential}){f.state.authCredentials.push(credential);if(f.state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return authentication();},
-  async readCurrentState({authentication:auth}){return {...await f.config.current(),authenticationSha256:hash(auth)};}};
- const app=createUploadApplication({...f.config,sessions});
+ const sessions={async authenticateSession({credential}){f.state.authCredentials.push(credential);if(f.state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return authentication(credential);},
+  async readCurrentState({authentication:auth}){const current=await f.config.current();return {...current,binding:{...current.binding,actorId:auth.principal.actorId},authenticationSha256:hash(auth)};}};
+ f.state.events=[];
+ // An `inspection` override given as a function wraps THIS fixture's own inspection owner (same clock), so a scripted
+ // transport fault can sit in front of the real local inspection.
+ const resolved=typeof overrides.inspection==='function'?{...overrides,inspection:overrides.inspection(f.config.inspection)}:overrides;
+ const app=createUploadApplication({...f.config,sessions,log:event=>f.state.events.push(event),...resolved});
  const request=(intent,body,headers={})=>new Request('https://control.synthetic.invalid/api/uploads/'+intent,{method:'POST',headers:{authorization:'Bearer synthetic.session','content-type':'application/json',...headers},body:JSON.stringify(body)});
- return {...f,app,request};
+ const put=uploadId=>new Request('https://control.synthetic.invalid/api/uploads/original/'+uploadId,{method:'PUT',headers:{authorization:'Bearer synthetic.session','content-type':'application/octet-stream','content-length':String(f.bytes.length)},body:f.bytes});
+ const status=async uploadId=>{const response=await app.handle(request('status',{uploadId}));assert.equal(response.status,200,await response.clone().text());return response.json();};
+ /** The server-side dispatch is started and not awaited, so a check observes it the way the composer does: through
+  * status reads. Bounded, and it settles within a few turns because every port here is scripted. */
+ const settled=async(uploadId,ready=receipt=>receipt.scanStatus!=='pending')=>{for(let i=0;i<500;i++){const receipt=await status(uploadId);if(ready(receipt))return receipt;await new Promise(resolve=>setImmediate(resolve));}assert.fail('the dispatched inspection never settled');};
+ const turns=async(n=25)=>{for(let i=0;i<n;i++)await new Promise(resolve=>setImmediate(resolve));};
+ return {...f,app,request,put,status,settled,turns};
 }
 test('upload HTTP accepts canonical bearer characters unchanged and still delegates actual access to sessions',async()=>{
  for(const credential of ['plain-opaque','base64url.token-_','opaque~token','opaque+token/x','opaque==','x'.repeat(8192)+'==']){
@@ -139,9 +152,14 @@ test('upload HTTP accepts canonical bearer characters unchanged and still delega
 test('real CONTROL HTTP mount admits only canonical current sessions and bounded inert bodies',async()=>{
  const f=applicationFixture(),denied=await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration},{authorization:''}));assert.equal(denied.status,403);assert.equal(f.state.rows.size,0);
  const begun=await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}));assert.equal(begun.status,200);const receipt=await begun.json();assert.equal(receipt.storageStatus,'awaiting_upload');assert.equal(receipt.originalBytesAvailable,false);assert.equal(Object.hasOwn(receipt,'scopes'),false);
- const put=()=>new Request('https://control.synthetic.invalid/api/uploads/original/'+receipt.uploadId,{method:'PUT',headers:{authorization:'Bearer synthetic.session','content-type':'application/octet-stream','content-length':String(f.bytes.length)},body:f.bytes});
- assert.equal((await f.app.handle(put())).status,200);
+ // The scanner is down for the server-side dispatch, so the stored original stays uninspected until the explicit
+ // route re-inspects it once the tool is back: a refusal is reported once and never retried.
+ f.state.onScan=()=>{throw Object.assign(Error('SCANNER_DOWN'),{code:'UPLOAD_UNAVAILABLE'});};
+ assert.equal((await f.app.handle(f.put(receipt.uploadId))).status,200);
+ await f.settled(receipt.uploadId,()=>f.state.events.length>0);
+ assert.deepEqual(f.state.events,[{event:UPLOAD_INSPECTION_UNSETTLED_EVENT,code:'UPLOAD_UNAVAILABLE',attempts:1}]);
  assert.equal((await f.app.handle(f.request('read',{uploadId:receipt.uploadId}))).status,409);
+ f.state.onScan=null;
  const scanned=await f.app.handle(f.request('inspect',{uploadId:receipt.uploadId}));assert.equal(scanned.status,200);assert.equal((await scanned.json()).scanStatus,'clean');
  const downloaded=await f.app.handle(f.request('read',{uploadId:receipt.uploadId}));assert.equal(downloaded.status,200);assert.equal(downloaded.headers.get('cache-control'),'no-store');assert.deepEqual(Buffer.from(await downloaded.arrayBuffer()),f.bytes);
  f.state.denied=true;assert.equal((await f.app.handle(f.request('status',{uploadId:receipt.uploadId}))).status,403);
@@ -283,4 +301,120 @@ test('a refusal after storage is reported as stored-then-refused over HTTP, with
  await assert.rejects(f.create().readForInput({uploadId:begun.uploadId,sha256:declaration.sha256},f.options),/EXTRACTION_UNAVAILABLE/);
  const downloaded=await f.app.handle(f.request('read',{uploadId:begun.uploadId}));assert.equal(downloaded.status,200);assert.deepEqual(Buffer.from(await downloaded.arrayBuffer()),original);
  const removed=await (await f.app.handle(f.request('remove',{uploadId:begun.uploadId}))).json();assert.equal(removed.storageStatus,'removed');
+});
+
+test('a stored original is inspected server-side exactly once, and status reads see the verdict land without a second call',async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}});let scans=0;f.state.onScan=()=>{scans++;};
+ f.state.segments=[{ordinal:0,text:f.bytes.toString(),method:'native',confidence:null,location:{page:null,slide:null,sheet:null,rowStart:null,rowEnd:null}}];
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ const stored=await (await f.app.handle(f.put(begun.uploadId))).json();
+ assert.equal(stored.storageStatus,'stored');assert.equal(stored.scanStatus,'pending');assert.equal(stored.extraction.status,'pending');
+ const landed=await f.settled(begun.uploadId);
+ assert.equal(landed.scanStatus,'clean');assert.equal(landed.extraction.status,'available');assert.equal(landed.originalBytesAvailable,true);
+ assert.equal(scans,1,'exactly one native scan for the stored bytes');assert.deepEqual(f.state.events,[]);
+ // A put retry of the same original is reconciled, never re-sent and never re-dispatched; the explicit route reports
+ // the settled observation without running the bytes again.
+ assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);await f.turns();
+ assert.equal(f.state.puts,1);assert.equal(scans,1);
+ const again=await (await f.app.handle(f.request('inspect',{uploadId:begun.uploadId}))).json();
+ assert.equal(again.scanStatus,'clean');assert.equal(scans,1);
+ assert.equal((await f.app.handle(f.request('read',{uploadId:begun.uploadId}))).status,200);
+ assert.deepEqual(UPLOAD_INSPECTION_DISPATCH,{attempts:3,backoffMs:2000});
+});
+
+test('an unknown remote outcome is retried with the bounded budget and then settles; refusals, revocation and exhaustion are reported once',async()=>{
+ const unknown=code=>Object.assign(Error(code),{code});
+ let failures=2,scans=0;
+ const f=applicationFixture({dispatch:{backoffMs:0},inspection:inner=>({async inspect(...args){if(failures-->0)throw unknown('UPLOAD_INSPECTION_OUTCOME_UNKNOWN');return inner.inspect(...args);}})});
+ f.state.onScan=()=>{scans++;};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);
+ const landed=await f.settled(begun.uploadId);
+ assert.equal(landed.scanStatus,'clean');assert.equal(failures,-1,'two unknown outcomes, then the third attempt settled');
+ assert.equal(scans,1);assert.deepEqual(f.state.events,[]);
+ // Exhaustion: every attempt unknown. The dispatch gives up after the declared attempts, reports once, and the
+ // original stays honestly pending for the explicit route.
+ const g=applicationFixture({dispatch:{attempts:2,backoffMs:0},inspection:{async inspect(){throw unknown('UPLOAD_INSPECTION_OUTCOME_UNKNOWN');}}});
+ const second=await (await g.app.handle(g.request('initiate',{requestId:id(11),...g.declaration}))).json();
+ assert.equal((await g.app.handle(g.put(second.uploadId))).status,200);
+ await g.settled(second.uploadId,()=>g.state.events.length>0);
+ assert.deepEqual(g.state.events,[{event:UPLOAD_INSPECTION_UNSETTLED_EVENT,code:'UPLOAD_INSPECTION_OUTCOME_UNKNOWN',attempts:2}]);
+ assert.equal((await g.status(second.uploadId)).scanStatus,'pending');
+ // A revoked session is never retried: the dispatch carries exactly a request's authority and stops when it is gone.
+ const h=applicationFixture({dispatch:{backoffMs:0}});
+ const third=await (await h.app.handle(h.request('initiate',{requestId:id(12),...h.declaration}))).json();
+ h.state.onScan=()=>{h.state.denied=true;};
+ assert.equal((await h.app.handle(h.put(third.uploadId))).status,200);
+ for(let i=0;i<500&&h.state.events.length===0;i++)await h.turns(1);
+ assert.equal(h.state.events.length,1);assert.equal(h.state.events[0].attempts,1);assert.equal(h.state.rows.get(third.uploadId).inspection,null);
+ for(const dispatch of [{attempts:0},{attempts:11},{backoffMs:-1},{backoffMs:1.5},{other:1}])assert.throws(()=>createUploadApplication({...f.config,sessions:{authenticateSession(){},readCurrentState(){}},dispatch}),{code:'UPLOAD_CONFIGURATION'});
+});
+
+test('an explicit inspect and a put retry join the inspection in flight instead of running the bytes twice',async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}});let release,scans=0;
+ const gate=new Promise(resolve=>{release=resolve;});f.state.onScan=async()=>{scans++;await gate;};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);
+ await f.turns();assert.equal(scans,1,'the dispatched scan is in flight');
+ const joined=f.app.handle(f.request('inspect',{uploadId:begun.uploadId}));
+ assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);
+ await f.turns();assert.equal(scans,1,'neither the explicit route nor the retry starts a second scan');
+ assert.equal((await f.status(begun.uploadId)).scanStatus,'pending','a status read during the scan is honest, not blocked');
+ release();
+ const explicit=await (await joined).json();
+ assert.equal(explicit.scanStatus,'clean','the explicit caller reports the joined outcome under its own authority');
+ assert.equal(scans,1);assert.equal(f.state.puts,1);
+ assert.equal((await f.settled(begun.uploadId)).scanStatus,'clean');
+});
+
+test('a status read that raced a concurrent publication reports the current record; effects still refuse UPLOAD_CHANGED',async()=>{
+ const f=fixture(),owner=f.create(),r=await f.initiate(owner);await owner.put(r.uploadId,f.bytes,f.options);
+ let reads=0;const advance=()=>{const row=f.state.rows.get(r.uploadId);f.state.rows.set(r.uploadId,{...row,revision:row.revision+1,updatedAtMs:row.updatedAtMs+1});};
+ // The second read of the status operation is its guard re-read: the row advanced in between, exactly as the
+ // server-side inspection landing between the two does.
+ f.state.onRead=()=>{if(++reads===2)advance();};
+ const current=await owner.status(r.uploadId,f.options);
+ assert.equal(current.revision,f.state.rows.get(r.uploadId).revision,'status reports the record as it is now');
+ reads=0;f.state.onRead=()=>{if(++reads===2)advance();};
+ await assert.rejects(owner.remove(r.uploadId,f.options),{code:'UPLOAD_CHANGED'},'an effect keeps the strict check');
+});
+
+test('the dispatch is keyed by owner: another principal\'s explicit inspect is never joined by, or stands in for, the owner\'s own',async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}});let scans=0,release;f.state.onScan=()=>{scans++;};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ // The other principal's explicit inspect of the owner's upload id is held open at its record read, so it is in
+ // flight under ITS key when the owner's put dispatches.
+ const gate=new Promise(resolve=>{release=resolve;});
+ f.state.onRead=async(key,owner)=>{if(owner.actorId===id(7))await gate;};
+ const foreign=f.app.handle(f.request('inspect',{uploadId:begun.uploadId},{authorization:'Bearer other.session'}));
+ await f.turns();
+ assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);
+ const landed=await f.settled(begun.uploadId);
+ assert.equal(landed.scanStatus,'clean','the owner\'s own dispatch ran instead of joining the foreign attempt');
+ assert.equal(scans,1);
+ release();
+ const refused=await foreign;
+ assert.equal(refused.status,403,'the other principal is refused the record it does not own');
+ assert.equal((await refused.json()).error.code,'ACCESS_DENIED');
+ assert.deepEqual(f.state.events,[]);
+});
+
+test('an unsettled event carries only an allowlisted code, and the runtime shutdown signal cancels a dispatch in flight',async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}});
+ f.state.onScan=()=>{throw Object.assign(Error('tool detail that must not leak'),{code:'CLAMAV_SEGFAULT_AT_0x7f'});};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ assert.equal((await f.app.handle(f.put(begun.uploadId))).status,200);
+ await f.settled(begun.uploadId,()=>f.state.events.length>0);
+ assert.deepEqual(f.state.events,[{event:UPLOAD_INSPECTION_UNSETTLED_EVENT,code:'UPLOAD_UNAVAILABLE',attempts:1}]);
+ const stop=new AbortController(),g=applicationFixture({dispatch:{backoffMs:0},signal:stop.signal});let release,scans=0;
+ const gate=new Promise(resolve=>{release=resolve;});g.state.onScan=async()=>{scans++;await gate;};
+ const second=await (await g.app.handle(g.request('initiate',{requestId:id(11),...g.declaration}))).json();
+ assert.equal((await g.app.handle(g.put(second.uploadId))).status,200);
+ await g.turns();assert.equal(scans,1,'the dispatch is in flight');
+ stop.abort();release();
+ for(let i=0;i<500&&g.state.events.length===0;i++)await g.turns(1);
+ assert.equal(g.state.events.length,1);assert.equal(g.state.events[0].code,'CANCELLED');
+ assert.equal(g.state.rows.get(second.uploadId).inspection,null,'a cancelled attempt publishes nothing');
+ const after=await g.app.handle(g.put(second.uploadId));assert.equal(after.status,200);await g.turns();
+ assert.equal(scans,1,'after shutdown nothing new is dispatched');
 });

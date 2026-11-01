@@ -138,3 +138,11 @@ test('current native resolver advertises direct saved-note owner beside governed
  for(const operation of ['save_note','watch_action','save_business_development_brief','create_client','apply_legiwatch_suggestion','prepare_legiwatch_briefing','mail_send'])assert(ids.includes(operation),operation);
  assert.equal(f.sql.state.rows.size,0);
 });
+test('an availability snapshot may name every catalog intent (client scope mounts all 33); one more refuses',async()=>{
+ const {runnerIntentAvailability}=await import('../intents-client.mjs');
+ const {INTENT_ROWS}=await import('../../../worker/conversation/intents/catalog.mjs');
+ const operations=INTENT_ROWS.map(row=>({id:row.operation.id,version:row.operation.version}));
+ const at=1_700_000_000_000,snapshot={binding,operations,checkedAtMs:at,expiresAtMs:at+60_000};
+ assert.equal(runnerIntentAvailability(snapshot,binding,at).operations.length,INTENT_ROWS.length);
+ assert.throws(()=>runnerIntentAvailability({...snapshot,operations:[...operations,operations[0]]},binding,at),{code:'UNAVAILABLE'});
+});

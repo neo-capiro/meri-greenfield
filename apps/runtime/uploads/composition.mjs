@@ -123,7 +123,8 @@ export async function composeUploadNativeHost(options={}){
  const extractorPath=typeof declared.extractorPath==='string'?declared.extractorPath:UPLOAD_EXTRACTOR_PATH;
  const deadlineMs=options.deadlineMs??now()+60000;
  let qualification;try{qualification=await qualifyNativeUploadSandbox({imageDigest:declared.imageDigest,deadlineMs,signal:options.signal,
-  credentialPaths:Array.isArray(options.credentialPaths)?options.credentialPaths:[],tempRoot,run});}
+  credentialPaths:Array.isArray(options.credentialPaths)?options.credentialPaths:[],tempRoot,run,
+  ...(options.platform===undefined?{}:{platform:options.platform}),...(options.hostCgroup===undefined?{}:{hostCgroup:options.hostCgroup})});}
  catch(error){return disabled(['uploads.native.sandbox'],typeof error?.code==='string'?error.code:null,[]);}
  if(qualification.admitted!==true)return disabled(['uploads.native.sandbox'],qualification.reason,qualification.missing,qualification.diagnostic??null);
  let tools;try{tools=await observeUploadTools({run,tempRoot,definitionsRoot,extractorPath,deadlineMs,signal:options.signal,
@@ -146,8 +147,10 @@ export async function composeUploadNativeHost(options={}){
   * lifecycle wiring stays with the host owner — and every scan remains unavailable until an ACTUAL fresh snapshot
   * resolves. */
  const provisionDefinitions=definitionComposition.provisionDefinitions;
+ // The admission's diagnostic travels with the composed host too, so an admitted container can report WHICH layer
+ // attested `boundedResources` (`boundedBy`: the finite cgroup, or the AgentCore microVM) and the cgroup facts it saw.
  return Object.freeze({scanner:host.scanner,extractor:host.extractor,definitions,admission:qualification.admission,describe:host.describe,
-  provisionDefinitions,
+  provisionDefinitions,diagnostic:qualification.diagnostic,
   definitionsProvisioning:provisioningState(),definitionsProvisioningState:provisioningState,missing:Object.freeze([])});
 }
 export {UPLOAD_DEFINITIONS_MAX_AGE_MS};

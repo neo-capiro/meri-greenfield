@@ -23,7 +23,7 @@ import {nativeInspection} from './agentcore-fixture.mjs';
 
 const SDK='@aws-sdk/client-bedrock-agentcore';
 const RUNTIME='arn:aws:bedrock-agentcore:us-east-1:111122223333:runtime/meri_synthetic';
-const DECLARED_IMAGE='sha256:'+'c'.repeat(64);
+const DECLARED_IMAGE='sha256:'+'c'.repeat(64),INVENTORY=Object.freeze(['/run/meri','/var/run/secrets']);
 const sent=[],clients=[];let onInvoke=null,onStop=null;
 class FakeClient{
  constructor(options){this.options=options;this.destroyed=false;clients.push(this);}
@@ -100,7 +100,7 @@ test('the declaration selects the transport, and a remote declaration carries no
 test('the mount chooses the remote port for a genuine runtime, and never runs the bytes locally',async()=>{
  const invoked=[];
  const run=async name=>{invoked.push(String(name));return {stdout:Buffer.alloc(0)};};
- const disabled=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:false}}},now:Date.now,run});
+ const disabled=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:{enabled:false}}},now:Date.now,run});
  assert.equal(disabled.inspection,null);
  assert.deepEqual(disabled.missing,['uploads.native.enabled']);
  // A remote declaration without the runtime it depends on is an honest UNAVAILABLE, never a local fallback.
@@ -109,12 +109,12 @@ test('the mount chooses the remote port for a genuine runtime, and never runs th
   {uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE}}},agentcore:{qualifier:'preview'}},
   {uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE}}},agentcore:{runtimeArn:'not-an-arn',qualifier:'preview'}},
   {uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE}}},agentcore:{runtimeArn:RUNTIME,qualifier:'!'}}]){
-  const unavailable=await mountUploadNativeControl({configuration,now:Date.now,run});
+  const unavailable=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration,now:Date.now,run});
   assert.equal(unavailable.inspection,null);
   assert.deepEqual(unavailable.missing,['uploads.native.agentcore']);
  }
  assert.deepEqual(invoked,[],'no local sandbox composition is attempted for a remote declaration');
- const mounted=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE}}},
+ const mounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE}}},
   agentcore:runtime()},now:Date.now,run});
  assert.deepEqual(mounted.missing,[]);
  assert.equal(typeof mounted.inspection.inspect,'function','the remote port is what the uploads family receives');
@@ -122,7 +122,7 @@ test('the mount chooses the remote port for a genuine runtime, and never runs th
  assert.equal(mounted.provisionDefinitions,null,'CONTROL does not provision the runtime container');
  assert.deepEqual(invoked,[],'CONTROL never executes the uploaded bytes for a remote declaration');
  // The LOCAL declaration still takes the local path, and an unattested host is still honestly unavailable.
- const localMounted=await mountUploadNativeControl({configuration:{uploads:{native:{enabled:true,imageDigest:DECLARED_IMAGE}}},
+ const localMounted=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native:{enabled:true,imageDigest:DECLARED_IMAGE}}},
   now:Date.now,run});
  assert.equal(localMounted.inspection,null);
  assert.deepEqual(localMounted.missing,['uploads.native.sandbox'],'the local path is the one that composes a sandbox');
@@ -162,7 +162,7 @@ test('a mounted remote port inspects the exact original, and freshness denies be
  const state={at:Date.now(),denied:false,gets:0,rows:new Map(),object:null};
  clock=()=>state.at;
  const configuration={uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE}}},agentcore:runtime()};
- const mountedPort=await mountUploadNativeControl({configuration,now:Date.now,
+ const mountedPort=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration,now:Date.now,
   run:async()=>{throw Error('the remote selection must not compose a local sandbox');}});
  assert.equal(mountedPort.inspection!==null,true);
  const call=await mounted({inspection:mountedPort.inspection,state});
@@ -205,7 +205,7 @@ test('an uncertain dispatch is surfaced by custody and never retried, and the se
  await mocked();sent.length=0;onInvoke=async()=>{throw Error('synthetic delivery unknown');};
  const state={at:Date.now(),denied:false,gets:0,rows:new Map(),object:null};
  const configuration={uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE}}},agentcore:runtime()};
- const mountedPort=await mountUploadNativeControl({configuration,now:Date.now});
+ const mountedPort=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration,now:Date.now});
  const call=await mounted({inspection:mountedPort.inspection,state});
  await call.owner.put(call.prepared.uploadId,call.bytes,call.options);
  await assert.rejects(call.owner.inspect(call.prepared.uploadId,call.options),{code:'UPLOAD_INSPECTION_OUTCOME_UNKNOWN'});
@@ -226,7 +226,7 @@ test('the mounted CONTROL handle destroys the ONE client it owns, after the owne
  const state={at:Date.now(),denied:false,gets:0,rows:new Map(),object:null};
  clock=()=>state.at;
  const configuration={uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE}}},agentcore:runtime()};
- const mountedPort=await mountUploadNativeControl({configuration,now:Date.now});
+ const mountedPort=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration,now:Date.now});
  const call=await mounted({inspection:mountedPort.inspection,state});
  await call.owner.put(call.prepared.uploadId,call.bytes,call.options);
  const inspected=await call.owner.inspect(call.prepared.uploadId,call.options);

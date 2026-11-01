@@ -45,6 +45,7 @@ import {createNativeExecutionPrerequisite} from './native-execution-prerequisite
 import {NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS} from './native-host-provisioning.mjs';
 import {createCanonicalNativeCurrentness,createCanonicalHostAuthority} from '../control/browser-hosts/native-currentness.mjs';
 import {UPLOAD_NATIVE_MOUNT_MS,UPLOAD_NATIVE_UNAVAILABLE_EVENT,beginUploadNativeProvisioning,mountUploadNativeControl} from './uploads/control-lifecycle.mjs';
+import {RUNTIME_CREDENTIAL_PATHS} from './credential-inventory.mjs';
 import {capabilityDigest} from './native-authority/task-verifier.mjs';
 import {createPostgresRetentionJournal} from '../control/retention/postgres-journal.mjs';
 import {createPostgresWatermarkStore} from '../control/retention/postgres-watermark.mjs';
@@ -122,13 +123,14 @@ export function retentionGate(configuration,pool,ports={},binding=null,now=Date.
   ...(purge.enabled?{sweep:createConversationRetentionSweep({startup,now})}:{}),artifactRecovery:recovery.state,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
 }
 export function assembleControl(options){
- const {configuration,pool:injectedPool,client,native,execution,now=Date.now,telemetry,turnTelemetry:injectedTurnTelemetry,canonicalProductPorts,uploadsNative,createReadsRuntime,readAvailability,workerModelPolicy,readCapabilityRole,readSessionCapabilityRole,officeMaterial,...binding}=own(options,['configuration','pool','client','native','execution'],['now','telemetry','turnTelemetry','canonicalProductPorts','uploadsNative','productPorts','productPortsFactory','createReadsRuntime','readAvailability','workerModelPolicy','readCapabilityRole','readSessionCapabilityRole','browserHostMaterial','browserHostDeclaration','nativeAllocations','officeMaterial']);
+ const {configuration,pool:injectedPool,client,native,execution,now=Date.now,telemetry,turnTelemetry:injectedTurnTelemetry,canonicalProductPorts,uploadsNative,createReadsRuntime,readAvailability,workerModelPolicy,readCapabilityRole,readSessionCapabilityRole,officeMaterial,...binding}=own(options,['configuration','pool','client','native','execution'],['now','telemetry','turnTelemetry','canonicalProductPorts','uploadsNative','productPorts','productPortsFactory','createReadsRuntime','readAvailability','workerModelPolicy','readCapabilityRole','readSessionCapabilityRole','browserHostMaterial','browserHostDeclaration','nativeAllocations','officeMaterial','signal']);
  if(workerModelPolicy!==undefined&&typeof workerModelPolicy!=='function')throw fault('CONTROL_CONFIGURATION');
  const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment,now}),pool=countingPool(injectedPool,turnTelemetry);
  if(telemetry!==undefined&&typeof telemetry?.observeRunOwner!=='function')throw fault('TELEMETRY_CONFIGURATION');
  // Protected browser-host material is loaded by startControl (owner of the trusted reader) and only
  // consumed here; it is not a product port and must not reach productBinding's closed shape.
- const {browserHostMaterial,browserHostDeclaration,nativeAllocations,...productOptions}=binding;
+ const {browserHostMaterial,browserHostDeclaration,nativeAllocations,signal:shutdownSignal,...productOptions}=binding;
+ if(shutdownSignal!==undefined)nativeSignal(shutdownSignal);
  const captured=productBinding(productOptions),canonical=captureRuntimePorts(canonicalProductPorts);
  const artifactRecovery=configuration.retention===undefined?null:createArtifactRecoveryBinding({journal:createPostgresRetentionJournal({pool,now})});
  let supplied,productContext;
@@ -137,7 +139,9 @@ export function assembleControl(options){
   // A mounted native upload inspection reaches the uploads family and nothing else, as a per-family context extension:
   // the shared context stays byte-identical because it is identity-keyed by the retention/session binders and is closed
   // by the memory and intents families, so widening it would refuse an unrelated product.
-  supplied=Reflect.apply(captured.factory,undefined,[productContext,uploadsNative?.inspection?{uploads:{uploadsInspection:uploadsNative.inspection}}:undefined]);
+  // The uploads family also receives the runtime shutdown signal, so its server-side inspection dispatch stops with CONTROL.
+  const uploadsExtension={...(uploadsNative?.inspection?{uploadsInspection:uploadsNative.inspection}:{}),...(shutdownSignal===undefined?{}:{signal:shutdownSignal})};
+  supplied=Reflect.apply(captured.factory,undefined,[productContext,Object.keys(uploadsExtension).length?{uploads:uploadsExtension}:undefined]);
   if(supplied===undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
   // Ordinary functions can still return a rejected Promise. Consume only native
   // Promise rejection while refusing it; never inspect or execute then getters.
@@ -383,11 +387,11 @@ export async function startControl(configuration,options={}){
   // handle is declared with the other closables above, because a remote mount owns an SDK client that shutdown must
   // destroy -- and it stays undefined until the mount resolves, so a startup failure closes nothing it never created.
   nativeAllocations=createNativeAllocationRelay();
-  uploadsNative=configuration.uploads?.native?.enabled===true?await mountUploadNativeControl({configuration,allocations:nativeAllocations,now:Date.now,signal,deadlineMs:Date.now()+Math.min(configuration.limits.startupMs,UPLOAD_NATIVE_MOUNT_MS)}):null;
+  uploadsNative=configuration.uploads?.native?.enabled===true?await mountUploadNativeControl({configuration,allocations:nativeAllocations,now:Date.now,signal,credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],deadlineMs:Date.now()+Math.min(configuration.limits.startupMs,UPLOAD_NATIVE_MOUNT_MS)}):null;
   checkAuthorization();if(configuration.uploads?.native?.enabled===true&&uploadsNative.missing.length)process.stderr.write(JSON.stringify({event:UPLOAD_NATIVE_UNAVAILABLE_EVENT,missing:uploadsNative.missing})+'\n');
   const officeDeclared=compileOfficeConfiguration(configuration);
   officeMaterial=officeDeclared?.enabled===true?await prepareOfficeMaterial({configuration,office:officeDeclared,signal,readMaterial:owners.readMaterial??readSecret}):null;
-  assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,nativeAllocations,createReadsRuntime,...(readAvailability?{readAvailability}:{}),readCapabilityRole:candidate.readCapabilityRole,...(candidate.readSessionCapabilityRole?{readSessionCapabilityRole:candidate.readSessionCapabilityRole}:{}),turnTelemetry,...(candidate.workerModelPolicy?{workerModelPolicy:candidate.workerModelPolicy}:{}),...(telemetry?{telemetry}:{}),...mounted,...(uploadsNative?{uploadsNative}:{}),...(browserHostMaterial?{browserHostMaterial}:{}),...(browserHostDeclaration?{browserHostDeclaration}:{}),...(candidate?{canonicalProductPorts:candidate.productPorts}:{}),...(officeMaterial?{officeMaterial}:{})});boundNativeNeed=assembly.nativeNeed;boundNativeReady=assembly.nativeReady;boundNativeHostAuthority=assembly.nativeHostAuthority;candidate?.bindApplication({...fence.wrap(assembly.application),sweepRetention:input=>{checkAuthorization();if(typeof assembly.retention?.sweep!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');return assembly.retention.sweep({...input,signal:input.signal?AbortSignal.any([input.signal,fence.signal]):fence.signal});}});
+  assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,nativeAllocations,signal,createReadsRuntime,...(readAvailability?{readAvailability}:{}),readCapabilityRole:candidate.readCapabilityRole,...(candidate.readSessionCapabilityRole?{readSessionCapabilityRole:candidate.readSessionCapabilityRole}:{}),turnTelemetry,...(candidate.workerModelPolicy?{workerModelPolicy:candidate.workerModelPolicy}:{}),...(telemetry?{telemetry}:{}),...mounted,...(uploadsNative?{uploadsNative}:{}),...(browserHostMaterial?{browserHostMaterial}:{}),...(browserHostDeclaration?{browserHostDeclaration}:{}),...(candidate?{canonicalProductPorts:candidate.productPorts}:{}),...(officeMaterial?{officeMaterial}:{})});boundNativeNeed=assembly.nativeNeed;boundNativeReady=assembly.nativeReady;boundNativeHostAuthority=assembly.nativeHostAuthority;candidate?.bindApplication({...fence.wrap(assembly.application),sweepRetention:input=>{checkAuthorization();if(typeof assembly.retention?.sweep!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');return assembly.retention.sweep({...input,signal:input.signal?AbortSignal.any([input.signal,fence.signal]):fence.signal});}});
   // RC1 option A: the reads composer's late-bound live-session relay reaches this control's own action-session owner only.
   readCredentialRelay?.bind(assembly.sessions);
   // Proposal continuation binds to this control's durable conversation store.

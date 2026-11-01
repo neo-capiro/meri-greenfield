@@ -153,3 +153,25 @@ test('real LibreOffice version and probe on this host (opt-in MERI_ARTIFACT_SOFF
  assert.notEqual(r.admission,null,r.receipt.failure);assert.match(r.admission.rendererVersion,/^[0-9]/u);
  if(process.platform!=='linux')assert.equal(r.port.state,'unavailable');
 });
+
+test('the renderer gate composes on the same platform attestation: the AgentCore microVM shape needs the evidence, a finite cgroup does not',async()=>{
+ const platform={runtime:'agentcore'};
+ const microvm={memoryMax:'max',pidsMax:'max',cpuMax:'max 100000',levels:1,mountRootIsRoot:true,membershipResolved:true,identityChanged:false,source:'cgroup2'};
+ const attested=evaluateRendererSandbox(sandboxed({cgroup:microvm}),{tempRoot:ROOT,platform});
+ assert.deepEqual(attested.findings,[]);assert.equal(attested.boundedBy,'agentcore-microvm');
+ const unattested=evaluateRendererSandbox(sandboxed({cgroup:microvm}),{tempRoot:ROOT});
+ assert.deepEqual(unattested.findings.map(f=>f.requirement),['boundedResources']);assert.equal(unattested.boundedBy,null);
+ for(const changes of [{levels:2},{mountRootIsRoot:false},{source:'v1-fallback',membershipResolved:false},{identityChanged:true},{memoryMax:null}])
+  assert.equal(evaluateRendererSandbox(sandboxed({cgroup:{...microvm,...changes}}),{tempRoot:ROOT,platform}).sandbox.boundedResources,false,JSON.stringify(changes));
+ assert.equal(evaluateRendererSandbox(sandboxed(),{tempRoot:ROOT,platform}).boundedBy,'cgroup');
+ assert.equal(evaluateRendererSandbox(sandboxed(),{tempRoot:ROOT}).boundedBy,'cgroup');
+ assert.equal(evaluateRendererSandbox(sandboxed({platform:'win32',cgroup:microvm}),{tempRoot:ROOT,platform}).boundedBy,null,'a non-Linux observation attests nothing');
+ // Through the real qualifier the attestation reaches the admission and is recorded on the receipt; without the
+ // evidence the same scripted container stays unavailable and names boundedResources.
+ const {base}=await scripted(atCwd({cgroup:microvm}));
+ const admitted=await qualifyLibreOfficeRenderer({...base,platform});
+ assert.equal(admitted.port.state,'available');assert.equal(admitted.admission.sandbox.boundedResources,true);assert.equal(admitted.receipt.boundedBy,'agentcore-microvm');
+ const refused=await qualifyLibreOfficeRenderer(base);
+ assert.equal(refused.port.state,'unavailable');assert.deepEqual([...refused.port.missingRequirements],['boundedResources']);assert.equal(refused.receipt.boundedBy,null);
+ await assert.rejects(qualifyLibreOfficeRenderer({...base,platform:'agentcore'}),{code:'RENDERER_QUALIFICATION_CONFIGURATION'});
+});

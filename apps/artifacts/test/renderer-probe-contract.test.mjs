@@ -65,14 +65,16 @@ test('exact process-limit states never round a 20-digit value',()=>{
  const table=[
   'Max file size        1048576              1048576              bytes',
   'Max open files       1024                 4096                 files',
-  'Max processes        64                   64                   processes'
+  'Max processes        64                   64                   processes',
+  'Max cpu time         120                  120                  seconds'
  ].join('\n');
  const parsed=parseProcLimits(table);
  assert.equal(parsed.MaxFileSize.soft.value,1048576);
  assert.equal(parsed.MaxOpenFiles.hard.value,4096);
  assert.equal(parsed.MaxProcesses.soft.value,64);
+ assert.equal(parsed.MaxCpuTime.hard.value,120);
  const garbage=parseProcLimits('garbage');
- assert.deepEqual(garbage,{MaxFileSize:null,MaxOpenFiles:null,MaxProcesses:null},'missing labels stay null');
+ assert.deepEqual(garbage,{MaxFileSize:null,MaxOpenFiles:null,MaxProcesses:null,MaxCpuTime:null},'missing labels stay null');
  const missing=parseProcLimits('Max file size 1\n');
  assert.equal(missing.MaxOpenFiles,null);
 });
