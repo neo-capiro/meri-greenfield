@@ -20,6 +20,9 @@ test('SQL-primary guidance retains semantic scope, failure and provenance bounda
  for(const requirement of [
   /clarify any ambiguity.*client, jurisdiction, measure, fiscal versus calendar period, currency or units/,
   /aggregate parent amounts before joining child rows/,
+  /author SELECT SQL for query_capiro_data with bound parameters in the grammar its sql argument states/,
+  /page by keyset on the complete ordered key/,
+  /INVALID_QUERY, UNSUPPORTED_SQL, UNKNOWN_RELATION, UNKNOWN_FIELD or PARAMETER_MISMATCH refusal names the correction: rewrite the SQL within the stated grammar and run it again/,
   /denied, unavailable, timed-out or invalid SQL query is not an empty result/,
   /must not trigger broader or unscoped retrieval/,
   /another enabled authorized reader only when.*do not cover.*original document\/web evidence/,

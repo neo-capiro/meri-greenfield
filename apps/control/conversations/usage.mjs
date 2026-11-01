@@ -21,11 +21,14 @@ const sameBasis=(value,historical=false)=>object(value)&&Object.keys(value).leng
 
 /** Native projection is shared; application-owned pricing/configuration stays here. */
 export const sdkUsageSnapshot=(result,basis=SDK_USAGE_BASIS)=>projectSdkUsage(result,basis);
-export const SDK_MODEL_CONFIGURATION=Object.freeze({model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,usageBasis:SDK_USAGE_BASIS});
+/** Per-message output ceiling handed to the SDK (CLAUDE_CODE_MAX_OUTPUT_TOKENS). Thinking shares it with visible text, so
+ * the old 4096 cut answers off mid-brief; Sonnet 4.6 on Bedrock serves 64k, and 32k leaves room for a complete answer. */
+export const SDK_MAX_OUTPUT_TOKENS=32000;
+export const SDK_MODEL_CONFIGURATION=Object.freeze({model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:SDK_MAX_OUTPUT_TOKENS,usageBasis:SDK_USAGE_BASIS});
 /** Selection was validated against the deployment catalog at admission and load. No key/ARN crosses this port. */
 export function resolveSdkModelConfiguration(selection,modelPolicy){
  if(!object(selection)||!['bedrock','claude-api'].includes(selection.provider)||typeof selection.modelId!=='string'||selection.effort!==null&&!['low','medium','high','xhigh','max'].includes(selection.effort)||!object(modelPolicy)||!Number.isSafeInteger(modelPolicy.maxTurns)||modelPolicy.maxTurns<1||modelPolicy.maxTurns>100||!Number.isSafeInteger(modelPolicy.maxBudgetMicroUsd)||modelPolicy.maxBudgetMicroUsd<1)throw Error('SDK_MODEL_CONFIGURATION_REFUSED');
- return {provider:selection.provider,model:selection.modelId,effort:selection.effort,region:'us-east-1',maxOutputTokens:4096,usageBasis:{...SDK_USAGE_BASIS,provider:selection.provider},maxTurns:modelPolicy.maxTurns,maxCostMicroUSD:modelPolicy.maxBudgetMicroUsd};
+ return {provider:selection.provider,model:selection.modelId,effort:selection.effort,region:'us-east-1',maxOutputTokens:SDK_MAX_OUTPUT_TOKENS,usageBasis:{...SDK_USAGE_BASIS,provider:selection.provider},maxTurns:modelPolicy.maxTurns,maxCostMicroUSD:modelPolicy.maxBudgetMicroUsd};
 }
 
 function snapshot(value){

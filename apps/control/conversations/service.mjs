@@ -19,6 +19,7 @@ import {assertConversationInputReceipt} from '../../../packages/contracts/conver
 import {assertOriginalInputFacts,assertOriginalInputActive,assertOriginalInputAcceptance,prepareOriginalInputFacts,sameOriginalInputIdentity,originalInputReceipt} from './initial-input-facts.mjs';
 import {ProductError} from '../product-access/errors.mjs';
 import {authenticatedCurrentState} from '../action-host/session/owner.mjs';
+import {reportHistoryStage} from './history-diagnostics.mjs';
 import {resolveSdkModelConfiguration} from './usage.mjs';
 import {assertModelSelection,availableModelSelection,storedModelSelection,HISTORICAL_MODEL_SELECTION} from '../../../packages/contracts/model-selection.mjs';
 import {assertUsageInput} from '../../../packages/contracts/runtime-0.2/usage.mjs';
@@ -51,20 +52,21 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  validateShape('RuntimeVersions',versions);versions=bounded(versions);fiscalCalendars=bounded(fiscalCalendars);if(['authenticateSession','readCurrentState'].some(k=>typeof sessions?.[k]!=='function')||['accept','append','read'].some(k=>typeof store?.[k]!=='function')||['start','cancel'].some(k=>typeof dispatcher?.[k]!=='function')||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('CONTROL_CONFIGURATION');
  // untilMs: an observation window whose body releases nothing without its own post-read fresh(); it ends at untilMs instead of
  // maxRequestMs and skips the trailing recheck, which would only repeat the last release's.
- async function operation(credential,signal,body,{cleanup=false,untilMs,release}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:untilMs??now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER;
+ async function operation(credential,signal,body,{cleanup=false,untilMs,release,historyStage}={}){if(typeof credential!=='string'||!credential||credential.length>8192)fail('SESSION_REFUSED');const life=createOperationLifetime({deadlineMs:untilMs??now()+maxRequestMs,now,signal,errorFactory:failError});let pinned,authorityExpiresAtMs=Number.MAX_SAFE_INTEGER,releasing=false;
   // One pass is one complete session observation: the registered owner's fused reader resolves the session once and yields both
   // receipts. A plain session port keeps the authenticate + current-state pair.
   async function fresh(){const started=now();let authentication,current;
+   reportHistoryStage(historyStage,releasing?'release_session':'session');
    if(readCurrent)({authentication,current}=bounded(await life.run(signal=>readCurrent({credential,signal,deadlineMs:started+maxRequestMs}))));
    else{authentication=bounded(await life.run(signal=>sessions.authenticateSession({credential,signal,deadlineMs:started+maxRequestMs})));current=bounded(await life.run(signal=>sessions.readCurrentState({authentication,signal,deadlineMs:started+maxRequestMs})));}
    if(current.authenticationSha256!==hash(authentication)||authentication.principal?.tenantId!==current.binding?.tenantId||authentication.principal?.actorId!==current.binding?.actorId||authentication.principal?.conversationId!==current.binding?.conversationId||authentication.principal?.runId!==current.binding?.runId)fail('SESSION_REFUSED');validateShape('RunBinding',current.binding);if(!Array.isArray(current.scopes)||!current.scopes.length||current.scopes.length>100)fail('SCOPE_REFUSED');
    for(const scope of current.scopes){validateShape('Scope',scope);if(scope.tenantId!==current.binding.tenantId)fail('SCOPE_REFUSED');}if(new Set(current.scopes.map(hash)).size!==current.scopes.length||new Set(current.scopes.map(s=>s.policyRevision)).size!==1)fail('SCOPE_REFUSED');
    const at=now();for(const receipt of [authentication,current])if(!Number.isSafeInteger(receipt.checkedAtMs)||receipt.checkedAtMs<started||receipt.checkedAtMs>at||!Number.isSafeInteger(receipt.expiresAtMs)||receipt.expiresAtMs<=at)fail('SESSION_REFUSED');authorityExpiresAtMs=Math.min(authorityExpiresAtMs,authentication.expiresAtMs,current.expiresAtMs);life.limitDeadline(authorityExpiresAtMs);
    const selected=bounded({binding:current.binding,scopes:current.scopes,selectedClientId:current.selectedClientId});if(pinned&&!same(pinned,selected))fail('SESSION_CHANGED');pinned??=selected;life.check();
-   if(retentionGate&&!cleanup){await life.run(()=>retentionGate.assertServable({tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId}));life.check();}
+   if(retentionGate&&!cleanup){reportHistoryStage(historyStage,releasing?'release_retention':'retention');await life.run(()=>retentionGate.assertServable({tenantId:pinned.binding.tenantId,kind:'conversation',subjectId:pinned.binding.conversationId}));life.check();}
    return pinned;
   }
-  try{const context=await fresh();let result=await body(context,life,fresh,()=>authorityExpiresAtMs);if(untilMs===undefined)await fresh();if(release)result=await release(result,life);life.check();return result;}finally{life.close();}
+  try{const context=await fresh();let result=await body(context,life,fresh,()=>authorityExpiresAtMs);releasing=true;if(untilMs===undefined)await fresh();if(release)result=await release(result,life);life.check();return result;}finally{life.close();}
  }
  const event=(binding,scopes,type,data)=>({contractVersion:'0.1.0',eventId:newId(),binding,sequence:1,createdAt:new Date(now()).toISOString(),scopes,type,data});
  function inputIntent(raw){const i=bounded(raw);own(i,['requestId','prompt'],['skill','windowRequest','modelSelection','documentRevision','uploads','procedure','siteWorkflow','work']);if(Object.hasOwn(i,'documentRevision')){try{assertDocumentRevisionSelection(i.documentRevision);if(i.skill&&!supportsSelectedDocumentRevision(i.skill))throw 0;}catch{fail('INVALID_REQUEST');}}if(i.siteWorkflow!==undefined){try{assertSiteWorkflowSelection(i.siteWorkflow);}catch{fail('INVALID_REQUEST');}}if(i.procedure!==undefined){try{assertProcedureSelection(i.procedure);if(Object.hasOwn(i,'skill'))throw 0;}catch{fail('INVALID_REQUEST');}}if(i.uploads!==undefined){try{assertUploadSelections(i.uploads);}catch{fail('INVALID_REQUEST');}}if(i.work!==undefined){try{assertWorkSelection(i.work);}catch{fail('INVALID_REQUEST');}}uuid(i.requestId);if(typeof i.prompt!=='string'||!i.prompt.trim()||i.prompt.length>100000)fail('INVALID_REQUEST');if(i.windowRequest)retrievalShape('WindowRequest',i.windowRequest);if(Object.hasOwn(i,'modelSelection')){try{assertModelSelection(i.modelSelection);}catch{fail('INVALID_REQUEST');}}return i;}
@@ -128,7 +130,7 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
  // One saved page under the pinned context. An admitted conversation has no run row until its first input is accepted: that is
  // "no saved turns yet" (404), not corruption.
  async function readPage(c,life,after,limit){const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null)fail('NOT_FOUND');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;}
- async function history({credential,after=0,limit=100,signal}){return operation(credential,signal,(c,life)=>readPage(c,life,after,limit));}
+ async function history({credential,after=0,limit=100,signal,historyStage}){return operation(credential,signal,(c,life)=>{reportHistoryStage(historyStage,'store');return readPage(c,life,after,limit);},{historyStage});}
  async function feedbackRead({credential,input,signal}){
   if(typeof store.feedback?.read!=='function')fail('CONVERSATION_UNAVAILABLE');
   return operation(credential,signal,(c,life)=>life.run(()=>store.feedback.read(c,input,life.check)));

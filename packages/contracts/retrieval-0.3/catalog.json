@@ -12003,18 +12003,18 @@
         "version": "0.3.0"
       },
       "displayName": "Describe Capiro data",
-      "whenToUse": "Discover the published public or currently authorized client-record Capiro SQL relations, columns, canonical keys, join relationships, units and coverage limits. Publication is not evidence of populated data or current grants. Use query_capiro_data for bounded model-authored SQL; use existing canonical readers for complete source evidence.",
+      "whenToUse": "List the SQL relations query_capiro_data can read, with each relation's columns (name, type, nullable, unit, meaning), primary key, declared join relationships, grain, coverage limitations and freshness field. Call it once before the first query of a conversation, or with relations:[...] to re-read specific relations after an UNKNOWN_RELATION or UNKNOWN_FIELD refusal; the public catalog is static, so do not repeat it for every query. Public relations (the default) cover federal bills, bill subjects, cosponsors and members, DoD program elements, projects and budget positions, state bills, committee hearings, agenda items, state bill calendar events, Grants.gov opportunities and SAM.gov notices. source client_records lists the fourteen client projections the current conversation may read. Publication is not evidence of populated rows or current grants.",
       "limitations": [
-        "Current installation, authorization and source availability are required; catalog publication alone enables nothing.",
-        "Coverage is ingested and query-bounded; unknown source freshness/version is null. Empty output is not complete source absence.",
-        "Derived query rows do not become immutable source evidence cards. Use canonical source readers for full evidence.",
-        "Client-record SQL covers the fourteen published current-authorized client projections, including saved profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
+        "Current installation, authorization and source availability are required; publication alone enables nothing.",
+        "Coverage is ingested and query-bounded with unknown (null) freshness; an empty result is not proof of absence.",
+        "Derived rows are not immutable source evidence; use canonical readers for decisive bill text, report passages and consolidated PE funding.",
+        "Client-record SQL covers the fourteen published projections of the current authorized scope; General may narrow with clientId, selected-client chat cannot broaden, saved jobs have no private SQL admission."
       ],
       "positiveExamples": [
-        "Inspect the declared stored projection within the current authorized source scope."
+        "Discover relation names, column types, join keys and grains before authoring SQL; re-read one relation after an unknown column refusal."
       ],
       "negativeExamples": [
-        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+        "Treat a listed relation as proof of populated rows, current grants or source freshness."
       ],
       "sourceRequirements": [
         {
@@ -12025,11 +12025,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataDescribeRequest",
-        "sha256": "2fb858a992e5834acb6fd39839c1e0b9841ff7cadbb191193c8286ef5f774b11"
+        "sha256": "cbd596476a7d7fe13b18254a806a2f96ab2db7e10138fa0e076b79d68562eb64"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataDescribeOutput",
-        "sha256": "2fb858a992e5834acb6fd39839c1e0b9841ff7cadbb191193c8286ef5f774b11"
+        "sha256": "cbd596476a7d7fe13b18254a806a2f96ab2db7e10138fa0e076b79d68562eb64"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -12069,18 +12069,18 @@
         "version": "0.3.0"
       },
       "displayName": "Query Capiro data",
-      "whenToUse": "Query published public or currently authorized client-record Capiro relations using model-authored PostgreSQL SELECT and separately bound scalar parameters. Discover names, canonical join keys, grains and units with describe_capiro_data first. Integer and decimal cells are exact strings. Inspect rowLimitReached, byteTruncated and query-bounded coverage; returned rows never prove source completeness. Preserve PE cycle, asserted fiscal year, value kind and units; aggregate parent amounts before project joins to avoid fanout. Use canonical bill IDs and Bioguide IDs, not names. Existing canonical readers provide full source evidence.",
+      "whenToUse": "Run one read-only PostgreSQL 16 SELECT over the relations describe_capiro_data lists: public by default, or source client_records for the authorized client projections. The sql argument states the grammar, checked before execution; a refusal (ok:false with error code INVALID_QUERY, UNSUPPORTED_SQL, UNKNOWN_RELATION, UNKNOWN_FIELD or PARAMETER_MISMATCH and a message) means fix the SQL and run again, not switch sources. Bind every text, date, UUID and decimal value as $1..$n and filter in WHERE, never in SQL literals or ON. A result carries typed columns, rows as objects with exact-string integer, decimal and timestamp cells and explicit nulls, rowCount, relationsUsed, rowLimitReached (rowLimit default 200, max 1000) and byteTruncated (256 KiB cap). Page by keyset: ORDER BY the full key and WHERE key > $n. Filter value_kind, position_cycle and asserted_fy before summing budget positions, aggregate parent amounts before joining projects, and join on canonical bill IDs and Bioguide IDs, not names.",
       "limitations": [
-        "Current installation, authorization and source availability are required; catalog publication alone enables nothing.",
-        "Coverage is ingested and query-bounded; unknown source freshness/version is null. Empty output is not complete source absence.",
-        "Derived query rows do not become immutable source evidence cards. Use canonical source readers for full evidence.",
-        "Client-record SQL covers the fourteen published current-authorized client projections, including saved profiles, teams, targets, engagement and outreach tracking. Saved records are not fresh enrichment. General may narrow to an authorized client; selected-client chat cannot broaden. Saved jobs have no private SQL admission."
+        "Current installation, authorization and source availability are required; publication alone enables nothing.",
+        "Coverage is ingested and query-bounded with unknown (null) freshness; an empty result is not proof of absence.",
+        "Derived rows are not immutable source evidence; use canonical readers for decisive bill text, report passages and consolidated PE funding.",
+        "Client-record SQL covers the fourteen published projections of the current authorized scope; General may narrow with clientId, selected-client chat cannot broaden, saved jobs have no private SQL admission."
       ],
       "positiveExamples": [
-        "Inspect the declared stored projection within the current authorized source scope."
+        "Count bills by congress; list active cosponsors of a bill by Bioguide ID; sum PE budget positions for one position_cycle, asserted_fy and value_kind; list a client's objectives or tracked bills."
       ],
       "negativeExamples": [
-        "Treat a model selector, empty page, cursor, timestamp or reported coverage as proof of authorization, freshness or exhaustive absence."
+        "Put string literals, SELECT *, IN lists, functions or expressions in the SQL text; treat an empty page or reported coverage as proof of authorization, freshness or absence."
       ],
       "sourceRequirements": [
         {
@@ -12091,11 +12091,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataQueryRequest",
-        "sha256": "2fb858a992e5834acb6fd39839c1e0b9841ff7cadbb191193c8286ef5f774b11"
+        "sha256": "cbd596476a7d7fe13b18254a806a2f96ab2db7e10138fa0e076b79d68562eb64"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:capiro-data:0.3.0#/$defs/CapiroDataQueryOutput",
-        "sha256": "2fb858a992e5834acb6fd39839c1e0b9841ff7cadbb191193c8286ef5f774b11"
+        "sha256": "cbd596476a7d7fe13b18254a806a2f96ab2db7e10138fa0e076b79d68562eb64"
       },
       "aliases": [],
       "sideEffect": "none",

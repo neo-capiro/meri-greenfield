@@ -42,7 +42,8 @@ test('registration-era catalog limitations never reach the model; data limitatio
  for(const row of rows){
   const text=describeRead(row.descriptor,row.family,{sqlPrimary:true});
   assert.doesNotMatch(text,stale,row.operation.id);
-  for(const limitation of domainLimitations(row.descriptor).slice(0,4))assert.ok(text.includes(limitation)||text.length>MAX_DESCRIPTION-limitation.length,row.operation.id);
+  const limits=domainLimitations(row.descriptor).slice(0,4);
+  if(limits.length){const line=`Limits: ${limits.join(' ')}`;assert.ok(text.includes(line)||text.length+line.length+1>MAX_DESCRIPTION,`${row.operation.id}: limits are shown unless they cannot fit`);}
  }
  const market=rows.find(row=>row.operation.id==='search_federal_contract_awards').descriptor;
  assert.equal(domainLimitations(market).length,2);assert.equal(market.limitations.length,5);
