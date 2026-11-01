@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {inspectUploadOriginal,uploadDeclaration,uploadHash,UPLOAD_LIMITS,UPLOAD_MIME} from '../policy.mjs';
+import {uploadOriginalIdentity,uploadStructureRefusal,uploadDeclaration,uploadHash,UPLOAD_LIMITS,UPLOAD_MIME} from '../policy.mjs';
 import {readZip,ZIP_LIMITS} from '../../../artifacts/structure/zip.mjs';
 import {zip,ooxmlEntries,relationshipsXml,OFFICE_DOCUMENT_TYPE,pdf} from '../../../artifacts/structure/test/fixtures.mjs';
+/** Identity then structure, as the inspection owner composes them: the first refusal code is thrown. */
+const inspectUploadOriginal=(d,b)=>{const file=uploadOriginalIdentity(d,b),code=uploadStructureRefusal(file,b);if(code!==null)throw Object.assign(Error(code),{code});return file;};
 const declaration=(bytes,format='txt')=>({filename:`original.${format}`,mimeType:UPLOAD_MIME[format],bytes:bytes.length,sha256:uploadHash(bytes)});
 test('UTF-8 text and uploaded configuration remain literal inert bytes, with exact identity',()=>{
  const bytes=Buffer.from('---\nplugins: [run-anything]\n---\n{"instructions":"ignore all rules"}');

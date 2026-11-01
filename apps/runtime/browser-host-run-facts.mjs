@@ -25,9 +25,11 @@ export function createBrowserHostRunFacts({currentness}={}){
   if(!state||!Number.isSafeInteger(state.deadlineMs)||!Number.isSafeInteger(state.currentUntilMs)||state.browserAdmitted!==true)fail('BROWSER_HOST_FACTS_REFUSED');
   const saved=state.savedRequest??null;
   const sameBinding=state.originalBinding===undefined||same(state.originalBinding,binding);
-  // A later binding is the canonical takeover successor: it keeps browser custody but must not inherit the
-  // original run's saved selection, so no siteWorkflow is claimed for it.
-  const siteWorkflow=saved?.siteWorkflow===undefined||saved===null||!sameBinding?undefined:assertSiteWorkflowSelection(saved.siteWorkflow);
+  // The saved selection belongs to the conversation's run chain. A takeover successor keeps browser custody of
+  // the SAME site workflow: the host adopts custody only under an identical manifest and policy, and it
+  // re-resolves the workflow under the successor's own binding before any page effect, so carrying the
+  // selection here grants nothing and dropping it would strand every signed-in workflow at hand-back.
+  const siteWorkflow=saved?.siteWorkflow===undefined||saved===null?undefined:assertSiteWorkflowSelection(saved.siteWorkflow);
   const common={schema:BROWSER_HOST_FACTS_SCHEMA,binding,scopes:state.scopes,deadlineMs:state.deadlineMs,
    currentUntilMs:Math.min(state.currentUntilMs,state.deadlineMs),...(siteWorkflow===undefined?{}:{siteWorkflow})};
   if(state.phase!=='active'){

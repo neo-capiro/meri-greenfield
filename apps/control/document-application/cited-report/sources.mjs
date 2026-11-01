@@ -76,7 +76,8 @@ function portfolioLink(read,citation){
  const data=read.result.data;
  if(data.portfolioId!==citation.portfolioId||data.origin!==citation.origin||(citation.recordId!==undefined&&data.id!==citation.recordId))fail('CITED_REPORT_CITATION');
  const coverage=data.coverage;
- return {kind:'portfolio-evidence',status:'claimed',citation:Object.freeze({sourceId:'research_portfolios',portfolioId:data.portfolioId,origin:data.origin,recordId:data.id??null}),
+ return {kind:'portfolio-evidence',status:'claimed',citation:Object.freeze({sourceId:'research_portfolios',portfolioId:data.portfolioId,origin:data.origin,recordId:data.id??null,
+   portfolioRevision:data.portfolioRevision??null,contentHash:data.contentHash??null,calculationVersion:data.calculationVersion??null}),
   coverage:Object.freeze({scope:coverage.scope,sourceView:coverage.sourceView,corpusComplete:coverage.corpusComplete,sourceBytesVerified:coverage.sourceBytesVerified}),
   limitations:Object.freeze([...coverage.limitations,...(data.limitations??[])]),observedAt:data.observedAt??data.readAt??data.updatedAt??null,evidence:null};
 }
@@ -91,9 +92,14 @@ export function assessFindings(findings,reads,{context,asOf}){
    return read.kind==='mail'?mailLink(read,citation,{context,asOf}):portfolioLink(read,citation);
   });
   if(finding.kind==='excerpt'&&citations.some(link=>link.status!=='verified'))fail('CITED_REPORT_CITATION_UNPROVEN');
+  // A quoted excerpt IS the stored passage: a quote that differs from the characters we read is a fabricated
+  // quotation with a real locator, and it is refused rather than printed as verified.
+  if(finding.kind==='excerpt'&&citations[0].passage!==finding.text)fail('CITED_REPORT_CITATION_UNPROVEN');
   const passages=citations.filter(link=>link.passageSha256).map(link=>link.passageSha256);
+  // Only an excerpt is itself verified. A claim is model prose: when every citation is byte-verified it is
+  // `cited`, otherwise `claimed`; neither label upgrades the claim text into read evidence.
   return {id:finding.id,kind:finding.kind,text:finding.text,
-   status:citations.every(link=>link.status==='verified')?'verified':'claimed',
+   status:finding.kind==='excerpt'?'verified':citations.every(link=>link.status==='verified')?'cited':'claimed',
    conflict:passages.length>1&&new Set(passages).size>1,citations};
  });
 }

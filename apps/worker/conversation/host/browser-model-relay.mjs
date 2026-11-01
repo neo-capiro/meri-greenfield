@@ -8,8 +8,9 @@ import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {playwrightServerConfig} from '../browser/server.mjs';
 import {createBoundBrowserModelPort} from './browser-model-port.mjs';
+import {browserRefusalResult} from '../browser/refusals.mjs';
 const fail=()=>{throw Error('BROWSER_RELAY_REFUSED');};
-const refused=()=>({isError:true,content:[{type:'text',text:'BROWSER_CALL_REFUSED'}]});
+const refused=()=>browserRefusalResult('BROWSER_CALL_REFUSED');
 export function createNativeBrowserModelRelay({binding,policy,installation,paths,readable,writable,onDisconnect}){
  if(!(readable instanceof Readable)||!(writable instanceof Writable)||typeof onDisconnect!=='function'||
   readable.destroyed||readable.readableEnded||writable.destroyed||writable.writableEnded)fail();

@@ -8,8 +8,10 @@
  * steer/pause/approval behaviour is exactly the lifecycle owner's.
  *
  * It owns no store and no authority: the registry is the durable pending-question owner and the control service decides
- * whether the ack is allowed. A refused answer (stale, duplicate, revoked, cross-tenant) is acknowledged as UNKNOWN, so
- * the control owner's own state machine reports the refusal instead of this adapter inventing a success.
+ * whether the ack is allowed. A refused answer (stale, duplicate, expired, malformed) is acknowledged as UNKNOWN, so the
+ * control owner's own state machine reports the refusal instead of this adapter inventing a success. The control itself was
+ * pinned to this run by the control journal and refused by the pump's envelope check otherwise, so no run or tenant check
+ * is repeated here.
  */
 /** @param {unknown} runOwner */
 const isControlOwner=runOwner=>typeof /** @type {{claimControl?:unknown}} */(runOwner)?.claimControl==='function'&&
@@ -25,7 +27,7 @@ export function createQuestionControlDispatch({runOwner,registry,binding}){
   // without that digest is not deliverable here: it stays with the lifecycle owner instead of being half-applied.
   const {commandSha256,command}=claim.control;
   if(typeof commandSha256!=='string'||!/^[a-f0-9]{64}$/u.test(commandSha256))return claim;
-  const outcome=await registry.deliver({questionId:command.questionId,answers:command.answers,binding});
+  const outcome=await registry.deliver({questionId:command.questionId,answers:command.answers});
   // A delivered answer is only clean once the same bounded control owner has accepted the ack for that exact digest.
   const receipt=await runOwner.ackControl({binding,input:{controlId:command.controlId,commandSha256,outcome:outcome==='ANSWERED'?'APPLIED':'UNKNOWN'},
    ...(input?.signal===undefined?{}:{signal:input.signal})});

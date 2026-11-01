@@ -4,6 +4,8 @@ import assert from 'node:assert/strict';
 import {READ_FAMILIES} from '../families.mjs';
 import {READ_FAMILY_GUIDANCE,READ_FAMILY_GUIDANCE_IDS,GUIDANCE_LIMITS,RESULT_STATE_GUIDANCE,SQL_FIRST_GUIDANCE,SQL_ABSENT_GUIDANCE} from '../family-guidance.mjs';
 import {describeRead,domainLimitations,MAX_DESCRIPTION} from '../tools.mjs';
+import {readGuidance} from '../guidance.mjs';
+import {sdkToolName} from '../../skills/mcp.mjs';
 import {familyReads} from '../availability.mjs';
 import {READ_FAILURE_CODES} from '../results.mjs';
 const rows=familyReads();
@@ -42,7 +44,8 @@ test('registration-era catalog limitations never reach the model; data limitatio
  for(const row of rows){
   const text=describeRead(row.descriptor,row.family,{sqlPrimary:true});
   assert.doesNotMatch(text,stale,row.operation.id);
-  const limits=domainLimitations(row.descriptor).slice(0,4);
+  const operational=readGuidance(sdkToolName(row.operation));
+  const limits=(operational?.limitations.length?operational.limitations:domainLimitations(row.descriptor)).slice(0,4);
   if(limits.length){const line=`Limits: ${limits.join(' ')}`;assert.ok(text.includes(line)||text.length+line.length+1>MAX_DESCRIPTION,`${row.operation.id}: limits are shown unless they cannot fit`);}
  }
  const market=rows.find(row=>row.operation.id==='search_federal_contract_awards').descriptor;

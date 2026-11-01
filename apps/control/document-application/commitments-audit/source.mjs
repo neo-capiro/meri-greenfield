@@ -2,13 +2,17 @@
 import {types} from 'node:util';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {artifactValidators as v,assertSubject,assertWindow,resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {selectSkill} from '../../../../packages/skills/index.mjs';
+import {selectSkill,selectCompilerSkill} from '../../../../packages/skills/index.mjs';
+/** The recipe's original installed definition. Every version registered to this compiler keeps its operations,
+ * sources and window bases; only the whole-run budget differs, and that is read from the exact selected version. */
 export const asset=selectSkill('quick_skill.commitments_audit','1.0.0');
 export const same=(a,b)=>v.hash(a)===v.hash(b);
 const stableSubject=subject=>{const {authorizationDecisionId,...rest}=subject;return rest;};
 export const fail=code=>{throw Object.assign(new Error(code),{code});};
+/** The installed asset of an exact registered pin, or a refusal before any read. */
+export function installed(pin){try{return selectCompilerSkill(pin,asset.pin.skillId);}catch{fail('COMMITMENTS_SKILL_PIN');}}
 export function input(raw){const i=own(v.snapshot(raw),['skill','title','target','asOf','observations']);
- if(!same(i.skill,asset.pin))fail('COMMITMENTS_SKILL_PIN');
+ installed(i.skill);
  for(const [value,max]of[[i.title,200],[i.target?.query,200]])if(typeof value!=='string'||!value.trim()||value.length>max||!value.isWellFormed())fail('COMMITMENTS_INPUT');
  own(i.target,['query']);if(typeof i.asOf!=='string'||!Number.isFinite(Date.parse(i.asOf))||new Date(i.asOf).toISOString()!==i.asOf||!Array.isArray(i.observations)||i.observations.length>250)fail('COMMITMENTS_INPUT');
  for(const row of i.observations){own(row,['id','kind','relatedPromiseId','owner','dueDate','passage']);own(row.passage,['sourceId','recordId','recordVersionId','start','end','quote']);

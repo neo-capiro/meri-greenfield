@@ -4,12 +4,14 @@
  * displayName/whenToUse/negative examples plus the family's reviewed guidance (`family-guidance.mjs`: what the family
  * covers and returns, how its result declares absent/partial/stale data, and the SQL-first routing sentence for
  * structured families). Registration-era catalog limitations that are false for a mounted read are never shown.
+ * Per-operation live guidance preserves the argument/result detail and replacement limits owned by `guidance.mjs`.
  * Legacy aliases are never exposed as names. */
 import {tool} from '@anthropic-ai/claude-agent-sdk';
 import {z} from 'zod';
 import {sdkToolName} from '../skills/mcp.mjs';
 import {advertisedArguments} from './schema.mjs';
 import {READ_FAMILY_GUIDANCE,SQL_FIRST_GUIDANCE,SQL_ABSENT_GUIDANCE} from './family-guidance.mjs';
+import {readGuidance} from './guidance.mjs';
 export const READ_SERVER_NAME='meri_reads';
 export const READ_TOOL_PREFIX=`mcp__${READ_SERVER_NAME}__`;
 export const MAX_DESCRIPTION=2600,MAX_LIMITS=4;
@@ -26,11 +28,12 @@ export const readToolName=row=>`${READ_TOOL_PREFIX}${sdkToolName(row.operation)}
  * text stays within MAX_DESCRIPTION, so nothing is ever cut mid-sentence.
  * @param {any} d @param {string} family @param {{sqlPrimary:boolean}} options */
 export function describeRead(d,family,{sqlPrimary}){
+ const operational=readGuidance(sdkToolName(d.operation));
  const guidance=READ_FAMILY_GUIDANCE[family];if(!guidance)throw fault('READ_GUIDANCE_CONFIGURATION');
- const head=[`${d.displayName}. ${d.whenToUse}`,`Covers: ${guidance.covers}`,`Returns: ${guidance.returns}`,`Result states: ${guidance.states}`,
+ const head=[`${d.displayName}. ${d.whenToUse}`,`Covers: ${guidance.covers}`,`Returns: ${guidance.returns}`,`Result states: ${guidance.states}`,...(operational?.usage??[]),
   ...(guidance.structured?[sqlPrimary?SQL_FIRST_GUIDANCE:SQL_ABSENT_GUIDANCE]:[])];
  const tail=[`Canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}.`,'Supply literal arguments only; credentials and scope authority remain with the gateway.'];
- const limits=domainLimitations(d).slice(0,MAX_LIMITS),optional=[...(limits.length?[`Limits: ${limits.join(' ')}`]:[]),...(d.negativeExamples??[]).map((/** @type {string} */example)=>`Do not: ${example}`)];
+ const limits=(operational?.limitations.length?operational.limitations:domainLimitations(d)).slice(0,MAX_LIMITS),optional=[...(limits.length?[`Limits: ${limits.join(' ')}`]:[]),...(d.negativeExamples??[]).map((/** @type {string} */example)=>`Do not: ${example}`)];
  const lines=[...head,...tail];
  if(lines.join('\n').length>MAX_DESCRIPTION)throw fault('READ_DESCRIPTION_LIMIT');
  for(const line of optional)if([...lines,line].join('\n').length<=MAX_DESCRIPTION)lines.splice(lines.length-tail.length,0,line);

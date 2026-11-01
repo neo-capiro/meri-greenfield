@@ -66,3 +66,9 @@ test('LIFECYCLE: a CHANGED fresh authority against the original pinned current i
   custodyContext:{record:RECORD,current:original,assertCurrent:async()=>changed}}),
   e=>e?.code==='UPLOAD_AUTHORITY_CHANGED');
 });
+test('ADMISSION: the closed request admission alone binds bytes to the declaration; a mismatch is refused before any connect',async()=>{
+ let connects=0;const client=build(async()=>{connects++;throw Error('never reached');});
+ for(const [declaration,bytes] of [[DECL,Buffer.from('other bytes')],[{...DECL,sha256:'d'.repeat(64)},BYTES],[{...DECL,bytes:DECL.bytes+1},BYTES],[{...DECL,filename:'note.exe'},BYTES],[DECL,'not bytes']])
+  await assert.rejects(client.inspect(declaration,bytes,{deadlineMs:Date.now()+2000,custodyContext:custodyContext()}),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'});
+ assert.equal(connects,0);
+});

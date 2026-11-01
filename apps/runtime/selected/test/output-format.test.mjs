@@ -8,7 +8,7 @@ import {runtimeFixture} from '../../../worker/conversation/skills/test/runtime-f
 import {input as commitmentsInput} from '../../../control/document-application/commitments-audit/source.mjs';
 import {input as relationshipInput} from '../../../control/document-application/relationship-brief/input.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {listSkills,selectSkill} from '../../../../packages/skills/index.mjs';
+import {listSkills,selectSkill,documentCompiler} from '../../../../packages/skills/index.mjs';
 import {fixture} from './fixture.mjs';
 
 const ids=['quick_skill.commitments_audit','quick_skill.relationship_brief'];
@@ -68,7 +68,7 @@ for(const skillId of ids)test(`${skillId}: activity output reaches its actual co
  }finally{await x.task.close();await x.control.close();}
 });
 
-for(const asset of listSkills().filter(asset=>!ids.includes(asset.skillId)&&!(asset.skillId==='quick_skill.bill_watch'&&asset.skillVersion==='2.0.0')&&!(asset.skillId==='quick_skill.cited_report'&&asset.skillVersion==='1.0.0')))test(`${asset.skillId}@${asset.skillVersion}: unadmitted original output fails before native task preparation`,async()=>{
+for(const asset of listSkills().filter(asset=>documentCompiler(asset)===null))test(`${asset.skillId}@${asset.skillVersion}: unadmitted original output fails before native task preparation`,async()=>{
  const f=runtimeFixture(),c=f.configuration,request={...c.request,skill:selectSkill(asset.skillId,asset.skillVersion).pin};let calls=0;
  const task=createTaskSelectedSkills({sourceEnabled:true,now:c.now,native:{async call(){calls++;}}});
  try{await assert.rejects(task.prepare({binding:c.binding,versions:c.versions,request,scopes:c.scopes}),{code:'SKILL_OUTPUT_FORMAT_UNAVAILABLE'});assert.equal(calls,0);}finally{await task.close();}

@@ -7,7 +7,7 @@ import {savedUsage,payload} from '../usage-read/test/fixture.mjs';
 const body=response=>response.json();
 test('records factual correction with immutable message revision, server model evidence and truthful readback',async t=>{
  const f=await feedbackFixture();t.after(f.close);
- const response=await f.post('feedback',f.input);assert.equal(response.status,200);
+ const response=await f.post('feedback',f.input);assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'no-store');
  const result=await body(response),r=result.receipt;
  assert.equal(r.actorId,binding.actorId);assert.equal(r.target.messageId,id(20));assert.equal(r.execution.status,'recorded');
  assert.deepEqual(r.execution.models,['model.alpha','model.beta']);assert.equal(r.execution.attribution,'run_including_subagents');
@@ -78,4 +78,14 @@ test('selected source revision and approval/checkpoint links bind immutable owne
 test('absent usage and unknown cumulative delta do not substitute the selected model',()=>{
  assert.deepEqual(feedbackExecution({request:{modelSelection:{modelId:'selected'}}}),{status:'unavailable',reason:'usage_not_recorded'});
  const usage=savedUsage(payload(),{mode:'resume',parentSessionId:id(70),baseline:null});assert.equal(feedbackExecution({projection:{binding},sdk_usage:usage,sdk_usage_sha256:hash(usage)}).reason,'run_model_delta_unavailable');
+});
+test('a saved upload source binds to feedback by its immutable event, like bill and hearing sources',async t=>{
+ const f=await feedbackFixture();t.after(f.close);const sha='a'.repeat(64),scope=f.rows[0].event.scopes[0];
+ const data={schemaVersion:'meri.native-upload-source/1',deliveryId:'delivery-1',operation:{id:'read_upload_source',version:'0.2.0'},requestSha256:sha,argumentsSha256:sha,resultSha256:sha,executionSha256:sha,policyRevision:scope.policyRevision,
+  source:{authoritativeOwner:'upload_custody',uploadId:id(320),sha256:sha,versionId:'v1',filename:'synthetic.pdf',mimeType:'application/pdf',bytes:1024,extractedSourceSha256:sha,extractionStatus:'available',limitations:[]},
+  page:{number:0,count:1,sha256:sha,nextPage:null,fragmentCount:0,extractionStatus:'available',limitations:[]}};
+ const event={...f.rows[0].event,eventId:id(310),sequence:8,type:'source.native-upload',data};f.rows.push({...f.rows[0],sequence:8,event_id:event.eventId,event,event_sha256:hash(event)});
+ f.row().last_sequence=8;
+ const response=await f.post('feedback',{...f.input,target:{...f.input.target,throughSequence:8},sourceEventId:id(310)});assert.equal(response.status,200);
+ assert.deepEqual((await body(response)).receipt.sourceRevision,{status:'bound',eventId:id(310),eventSha256:hash(event)});
 });

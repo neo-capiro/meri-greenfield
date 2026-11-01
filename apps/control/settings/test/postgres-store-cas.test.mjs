@@ -8,6 +8,7 @@ import {productFailure} from '../../product-access/errors.mjs';
 import {createSettingsPoolFixture as scriptedPool} from './postgres-store-fixture.mjs';
 import {createUserPreferencesService} from '../user-service.mjs';
 import {USER_PREFERENCE_DEFAULTS,DEFAULT_MODEL_LIMITS} from '../documents.mjs';
+import {MODEL_CATALOG} from '../../../../packages/contracts/test/model-selection-fixture.mjs';
 
 const hash=canonicalSha256;
 const defaultModel={monthlyCapMicroUsd:null,...DEFAULT_MODEL_LIMITS};
@@ -74,8 +75,8 @@ test('audit changed fields come from the locked revision; user saves never take 
   {match:update('user'),rows:[row(2,value)]},
   {match:auditSql,inspect(params){assert.equal(params[7],hash(before));assert.equal(params[8],hash(value));assert.deepEqual(params[10],['density']);}},
  ]}]);
- const service=createUserPreferencesService({store:createPostgresSettingsStore({pool:p.pool}),newId:()=> '00000000-0000-4000-8000-000000000001'});
- assert.deepEqual(await service.saveUser({principal:{tenantId:'tenant-synthetic',actorId:'subject-synthetic',clientIds:[]},body:{expectedRevision:1,preferences:value}}),{revision:2,preferences:value});
+ const service=createUserPreferencesService({store:createPostgresSettingsStore({pool:p.pool}),newId:()=> '00000000-0000-4000-8000-000000000001',modelCatalog:MODEL_CATALOG});
+ assert.deepEqual(await service.saveUser({principal:{tenantId:'tenant-synthetic',actorId:'subject-synthetic',clientIds:[]},body:{expectedRevision:1,preferences:value}}),{revision:2,preferences:value,modelCatalog:MODEL_CATALOG});
  assert.equal(p.calls.filter(v=>v.sql.startsWith('SELECT')).length,1);assert.ok(p.calls.find(v=>v.sql.startsWith('SELECT')).sql.endsWith('FOR UPDATE'));
  assert.deepEqual(p.committed.map(v=>v.kind),['document','audit']);
 });

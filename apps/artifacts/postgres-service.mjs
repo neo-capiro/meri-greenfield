@@ -53,7 +53,11 @@ export function createPostgresArtifactService(options){
   }
   let result;
   try{result=await (call.baseVersionId===null?service.create(call.request,context,{signal,invocation}):service.revise(call.baseVersionId,call.request,context,{signal,invocation}));check();}
-  catch(cause){try{await journal.settle({...key,state:'UNKNOWN',outcome:null});}catch{}throw cause;}
+  catch(cause){
+   // A definite refusal (superseded parent, no qualified renderer) left no effect: the delivery settles FAILED
+   // and replays as the same refusal. Anything else stays UNKNOWN until canonical reconciliation.
+   const definite=cause?.code==='ARTIFACT_STALE_PARENT'?'CONFLICT':cause?.code==='ARTIFACT_RENDERER_UNAVAILABLE'?'UNAVAILABLE':null;
+   try{await journal.settle({...key,...(definite===null?{state:'UNKNOWN',outcome:null}:{state:'FAILED',outcome:{code:definite}})});}catch{}throw cause;}
   try{await journal.settle({...key,state:'PREPARED',outcome:{result,release:{binding,scopes:context.scopes,expiresAtMs:context.deadlineMs}}});check();}
   catch(cause){throw Object.assign(Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:invocation.versionId,versionCommitted:true});}
   return result;

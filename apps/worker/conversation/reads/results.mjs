@@ -1,14 +1,9 @@
 // @ts-check
 /** Closed result texts for `meri_reads` tools. Every failure is `isError:true` with one fixed text per gateway code
- * (gateway and native source-publication codes); none carries source detail, and no failure is ever
- * rendered as a successful or empty result. */
+ * (gateway and native source-publication codes), followed by the read's own fixed next-step guidance where
+ * `guidance.mjs` owns one; none carries source detail, and no failure is ever rendered as a successful or empty result. */
+import {readGuidance} from './guidance.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
-/** Fixed per-tool guidance appended to an argument refusal, so the model corrects the call instead of guessing. */
-const ARGUMENT_HINTS=Object.freeze({
- mcp__meri_reads__meeting_read_client_meetings:'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart. ',
- mcp__meri_reads__describe_capiro_data:'describe_capiro_data takes optional relations (1-15 unique lowercase relation names), source ("public" or "client_records") and clientId (UUID, client_records only). ',
- mcp__meri_reads__query_capiro_data:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source ("public" or "client_records") and clientId (UUID, client_records only). ',
-});
 /** @type {Readonly<Record<string,(tool:string)=>string>>} */
 const TEXTS=Object.freeze({
  UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not enabled, installed or served for this request in this conversation (an unsupported operation or a source-side refusal that is neither a denied scope nor an outage). ${NOTHING}`,
@@ -16,7 +11,7 @@ const TEXTS=Object.freeze({
  ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now (denied scope, not absent data). ${NOTHING}`,
  DEADLINE:tool=>`DEADLINE: ${tool} did not finish within its time limit. ${NOTHING}`,
  CANCELLED:tool=>`CANCELLED: ${tool} was cancelled before it finished. ${NOTHING}`,
- INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${Object.hasOwn(ARGUMENT_HINTS,tool)?ARGUMENT_HINTS[/** @type {keyof typeof ARGUMENT_HINTS} */(tool)]:''}${NOTHING}`,
+ INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${NOTHING}`,
  BUDGET_UNCERTAIN:tool=>`BUDGET_UNCERTAIN: ${tool} could not be accounted for in this run; do not repeat this call. ${NOTHING}`,
  SOURCE_PUBLICATION_UNKNOWN:tool=>`SOURCE_PUBLICATION_UNKNOWN: ${tool} finished its read but saving the source could not be confirmed; do not repeat this call. ${NOTHING}`,
  SOURCE_PUBLICATION_CONFLICT:tool=>`SOURCE_PUBLICATION_CONFLICT: ${tool} reused a saved delivery identity with a different result; do not repeat this call. ${NOTHING}`,
@@ -78,6 +73,9 @@ export function failureCode(error){
 }
 /** @param {string} code @param {string} tool */
 export function failureResult(code,tool){
- const text=(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool);
+ const closed=(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool),hint=readGuidance(tool)?.failures[code];
+ // The read's fixed guidance sits between the closed code text and the evidence sentence, so every failure keeps
+ // the same `CODE: tool ...` head and the same honest tail.
+ const text=hint===undefined?closed:`${closed.slice(0,-NOTHING.length)}${hint} ${NOTHING}`;
  return {isError:true,content:[{type:/** @type {const} */('text'),text}]};
 }

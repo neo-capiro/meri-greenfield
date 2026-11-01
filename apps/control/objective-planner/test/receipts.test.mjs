@@ -1,6 +1,6 @@
 // Synthetic source controls only; trusted Core identity, stored creation custody and SQL are not exercised.
 import test from 'node:test';import assert from 'node:assert/strict';
-import {work,workflowId,requestId,selection,materializationInput,hash} from '../identity.mjs';
+import {work,requestId,selection,materializationInput,hash} from '../identity.mjs';
 import {strategyApplication,plannerObservation} from '../core-receipts.mjs';
 import {fixture,id,clone,at} from './fixtures.mjs';
 test('actual ObjectiveReceipt shape binds requested revision and actual saved StrategyVersion, not model completion',()=>{
@@ -13,9 +13,9 @@ for(const key of ['sourceDigest','coverageDigest','inputDigest','contextPacketId
 test('incomplete context, stale failure, provider envelopes and invalid timestamps refuse',()=>{
  for(const edit of [r=>r.context.state='incomplete',r=>r.context.issues.push({group:'context',code:'missing',message:'Missing'}),r=>r.failure={code:'FAILED',message:'failed'},r=>r.providerData={},r=>r.result.savedAt='tomorrow']){const f=fixture();edit(f.receipt);assert.throws(()=>strategyApplication({receipt:f.receipt,status:'completed',canonical:f.canonical}));}
 });
-test('canonical intent + original actor retain one request/workflow identity when job/version changes',()=>{
- const f=fixture(),changed={...f.work,generationJobId:id(99),strategyVersionId:id(98)};assert.equal(workflowId(f.work),workflowId(changed));assert.equal(f.work.plannerRequestId,changed.plannerRequestId);assert.notEqual(hash(f.work),hash(changed));
- const next=clone(f.work);next.canonical.requestedIntentId=id(97);next.plannerRequestId=requestId({canonical:next.canonical,actorId:next.actorId});assert.notEqual(workflowId(next),workflowId(f.work));
+test('canonical intent + original actor retain one request identity when job/version changes',()=>{
+ const f=fixture(),changed={...f.work,generationJobId:id(99),strategyVersionId:id(98)};assert.equal(f.work.plannerRequestId,changed.plannerRequestId);assert.notEqual(hash(f.work),hash(changed));work(changed);
+ const next=clone(f.work);next.canonical.requestedIntentId=id(97);next.plannerRequestId=requestId({canonical:next.canonical,actorId:next.actorId});assert.notEqual(next.plannerRequestId,f.work.plannerRequestId);work(next);
 });
 test('caller selection cannot supply actor, outputs, authority, credentials or a model result',()=>{
  const wanted={canonicalPlanId:id(1),requestedIntentId:id(7),generationJobId:id(11)};assert.deepEqual(selection(wanted),wanted);

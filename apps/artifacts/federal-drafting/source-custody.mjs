@@ -13,7 +13,8 @@ export async function readFederalSourceEnvelope(read,selection,{deadlineMs,signa
  const exact=federalSourceSelection(selection),result=await read({selection:exact,deadlineMs,signal});
  contract.assertOutput(result,{request:exact});
  if(result.currentStatus!=='available')fault('DRAFT_SOURCE_STALE');
- return {schema:FEDERAL_SOURCE_SCHEMA,selection:exact,source:projectNativeFederalSource(exact,result)};
+ // The workbench envelope admits a retained USLM extraction as a structured baseline; the frozen SDK tool stays flat.
+ return {schema:FEDERAL_SOURCE_SCHEMA,selection:exact,source:projectNativeFederalSource(exact,result,{structured:true})};
 }
 export async function currentFederalSource(raw,read,options){
  if(raw?.schema!==FEDERAL_SOURCE_SCHEMA)return raw;

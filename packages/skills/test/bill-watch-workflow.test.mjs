@@ -92,8 +92,9 @@ test('registered successor changes only the explicit default while keeping every
  assert.equal(canonicalSha256(selected.manifest),canonicalSha256(manifest));assert.equal(selected.prose,prose);
  assert.equal(new Set(listSkills().map(row=>row.skillId)).size,15);
  const plugin=describeSkillPlugin();assert.equal(plugin.skills.length,15);
- assert.equal(plugin.skills.find(skill=>skill.skillId===selected.pin.skillId).skillVersion,'1.1.0');
- assert.equal(plugin.skills.find(skill=>skill.skillId==='quick_skill.pe_deep_dive').skillVersion,'1.1.0');
+ assert.equal(plugin.skills.find(skill=>skill.skillId===selected.pin.skillId).skillVersion,'1.1.1','new selections are offered the runtime-budget successor');
+ assert.equal(describeSkillPlugin({selection:selected.pin}).skills.find(skill=>skill.skillId===selected.pin.skillId).skillVersion,'1.1.0','a persisted 1.1.0 pin still launches as itself');
+ assert.equal(plugin.skills.find(skill=>skill.skillId==='quick_skill.pe_deep_dive').skillVersion,'1.1.1');
  assert.throws(()=>selectSkill('quick_skill.bill_watch','latest'),/SKILL_VERSION_UNAVAILABLE/u);
  assert.throws(()=>describeSkillPlugin({selection:{...selected.pin,proseSha256:'0'.repeat(64)}}),/SKILL_PLUGIN_SELECTION_PIN/u);
 });

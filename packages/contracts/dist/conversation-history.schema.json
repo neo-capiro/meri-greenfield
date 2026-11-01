@@ -887,10 +887,40 @@
                         "type": "object",
                         "properties": {
                           "skillId": {
+                            "const": "quick_skill.bill_watch"
+                          },
+                          "skillVersion": {
+                            "const": "2.0.1"
+                          }
+                        },
+                        "required": [
+                          "skillId",
+                          "skillVersion"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "skillId": {
                             "const": "quick_skill.cited_report"
                           },
                           "skillVersion": {
                             "const": "1.0.0"
+                          }
+                        },
+                        "required": [
+                          "skillId",
+                          "skillVersion"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "skillId": {
+                            "const": "quick_skill.cited_report"
+                          },
+                          "skillVersion": {
+                            "const": "1.0.1"
                           }
                         },
                         "required": [

@@ -55,3 +55,16 @@ test('next() waits for a read still in flight when during() ends instead of star
  const pending=ahead.next();await settle();assert.equal(reads,1);release();
  assert.deepEqual(await pending,{done:false,value:'slow'});assert.equal(reads,1);
 });
+
+test('queued(), settled() and arrival() describe what has landed: arrival resolves when a read lands, at once when nothing more can',async()=>{
+ let release;const read=()=>new Promise(resolve=>{release=()=>resolve({done:false,value:'a'});});
+ const ahead=createSdkReadAhead(read,{last:value=>value==='a'});
+ assert.equal(ahead.queued(),0);assert.equal(ahead.settled(),false);
+ let arrived=false;const waiting=ahead.arrival().then(()=>{arrived=true;});
+ await ahead.during(async()=>{await settle();assert.equal(arrived,false,'nothing has landed yet');release();await waiting;});
+ assert.equal(arrived,true);assert.equal(ahead.queued(),1);assert.equal(ahead.settled(),true,'the last message landed and no read is in flight');
+ await ahead.arrival();// at once: a result is queued
+ assert.equal(ahead.take(),'a');assert.equal(ahead.queued(),0);
+ await ahead.arrival();// at once: nothing more can land
+ const ended=createSdkReadAhead(sdk([]).read);await ended.during(settle);assert.equal(ended.queued(),1,'the end is queued');assert.equal(ended.peek(),undefined);assert.equal(ended.settled(),true);
+});

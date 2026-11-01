@@ -37,7 +37,13 @@ export function createConfinedContextPort({native,binding,policy,installation,pa
   finally{life.signal.removeEventListener('abort',wire.close);life.close();}
  },async logout({context:requested,url}){
   if(!context||requested!==context||signal?.aborted)fail();const page=await context.newPage();
-  try{await page.goto(url,{timeout:10000,waitUntil:'domcontentloaded'});return {outcome:'unknown'};}finally{await page.close();}
+  // The outcome is what the site answered: a successful response from the logout URL is `confirmed`, a refusal
+  // is `failed`, and no response (navigation timeout, same-document, transport loss) stays `unknown`.
+  try{const response=await page.goto(url,{timeout:10000,waitUntil:'domcontentloaded'});
+   if(!response||typeof response.ok!=='function')return {outcome:'unknown'};
+   return {outcome:response.ok()?'confirmed':'failed'};}
+  catch{return {outcome:'unknown'};}
+  finally{await page.close();}
  }});
 }
 export function pinnedBrowserUpstream(installation){

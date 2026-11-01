@@ -30,7 +30,7 @@ export function describeSkillPlugin({selection,execution=false}={}){
  if(selected&&!skills.some(s=>s.skillId===selected.pin.skillId&&s.skillVersion===selected.pin.skillVersion))fail('SKILL_PLUGIN_SELECTION_REFUSED');
  for(const [skillId,skillVersion]of Object.entries(assets.sdkDefaults??{}))if(!skills.some(s=>s.skillId===skillId&&(selected?.pin.skillId===skillId||s.skillVersion===skillVersion)))fail('SKILL_PLUGIN_DEFAULT_REFUSED');
  if(new Set(skills.map(s=>s.name)).size!==skills.length)fail('SKILL_PLUGIN_NAME_COLLISION');
- if(execution){const i=skills.findIndex(s=>s.skillId==='quick_skill.bill_watch'&&s.skillVersion==='1.1.0');
+ if(execution){const i=skills.findIndex(s=>s.skillId==='quick_skill.bill_watch'&&s.skillVersion===assets.sdkDefaults?.['quick_skill.bill_watch']);
   if(i!==-1&&selected?.pin.skillId!=='quick_skill.bill_watch'){const [s]=skills.splice(i,1);excluded.push({skillId:s.skillId,skillVersion:s.skillVersion,reason:'PERSISTED_SELECTION_REQUIRED'});}}
  skills.sort((a,b)=>order.indexOf(a.skillId)-order.indexOf(b.skillId));
  return freeze({name:PLUGIN_NAME,version:'1.0.0',skills,excluded});
