@@ -42,7 +42,7 @@ test('article request and context authority injection fail before native credent
  await assert.rejects(f.handler()({...call,argumentsSha256:'0'.repeat(64)}),{message:'INVALID_ARGUMENTS'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
 });
 test('article operation decision, tenant and source authority cannot be substituted',async()=>{
- for(const change of [a=>a.decision.operation='query_intelligence@0.2.0',a=>a.decision.decision='denied',a=>a.decision.actor.actorId='other',a=>a.claims.binding.tenantId='other',a=>a.sourceIds=['other'],a=>a.claims.actions=[]]){
+ for(const change of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
   const f=storedCase(),call=structuredClone(f.call());change(call.authority);await assert.rejects(f.handler()(call));assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
  }
 });
@@ -52,9 +52,10 @@ test('article credential revocation, transport ceilings and post-source cancella
  const h=storedCase(),controller=new AbortController();h.state.afterSource=()=>controller.abort();await assert.rejects(h.handler()({...h.call(),signal:controller.signal}),{message:'CANCELLED'});
 });
 test('article native failures and noncanonical dates fail closed',async()=>{
- for(const response of [()=>Response.json({error:'PRIVATE'}),()=>Response.json({},{status:403}),p=>Response.json({...p,generatedAt:'2026-02-30T00:00:00.000Z'})]){
+ for(const response of [()=>Response.json({error:'PRIVATE'}),p=>Response.json({...p,generatedAt:'2026-02-30T00:00:00.000Z'})]){
   const f=storedCase();f.state.responseFactory=response;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
  }
+ const denied=storedCase();denied.state.responseFactory=()=>Response.json({},{status:403});await assert.rejects(denied.handler()(denied.call()),{message:'ACCESS_DENIED'});
 });
 test('article constructor refuses foreign, duplicate and wrong-version operation mappings',()=>{
  const f=storedCase();for(const operations of [[],[f.operation,f.operation],[{id:'query_intelligence',version:'0.2.0'}],[{id,version:'0.1.0'}]])assert.throws(()=>createStoredIntelligenceHandlers({...f.transport,now:f.now},operations));assert.equal(f.wire.length,0);

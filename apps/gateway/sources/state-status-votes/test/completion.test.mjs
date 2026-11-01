@@ -82,8 +82,7 @@ test('resolved native empty status/votes stay separate from unresolved designati
 });
 
 test('designation selection retains current exact actor/tenant/operation/source grants before credential factories',async()=>{
- for(const id of ids)for(const mutate of [a=>a.decision.decision='denied',a=>a.claims.actions=[],a=>a.decision.scopes=[],
-  a=>a.binding.tenantId='other',a=>a.decision.actor.actorId='other',a=>a.sourceIds=[]]){
+ for(const id of ids)for(const mutate of [a=>a.binding.tenantId='other',a=>a.subject.actorId='other',a=>a.policyRevision='0'.repeat(64),a=>a.scopes=[],a=>a.sourceIds=['other'],a=>a.subject.scopes=[{...a.subject.scopes[0],kind:'client',resourceId:'ffffffff-ffff-4fff-8fff-ffffffffffff'}],a=>a.executionSha256='not-a-digest']){
   const f=storedCase(id,{request:{billId:'TX HB 1234'}}),call=structuredClone(f.call()),{getCredentials,...configuration}=f.transport;let factories=0;mutate(call.authority);
   const [handler]=createStateStatusVotesHandlers({...configuration,now:f.now,credentialsForCall:()=>{factories++;return getCredentials;}},[f.operation]);
   await assert.rejects(handler.execute(call));assert.equal(factories,0);assert.equal(f.wire.length,0);assert.equal(f.credentialCalls.length,0);
@@ -101,9 +100,9 @@ test('raw designation and retained hash/context cannot be replaced by a canonica
 });
 
 test('native HTTP failure, denial, response limits, cancellation and timeout cannot synthesize or retry a result',async()=>{
- for(const id of ids)for(const status of [400,401,403,404,429,500]){
+ for(const id of ids)for(const [status,code] of [[400,'INVALID_RESULT'],[401,'ACCESS_DENIED'],[403,'ACCESS_DENIED'],[404,'UNAVAILABLE'],[429,'SOURCE_UNAVAILABLE'],[500,'SOURCE_UNAVAILABLE']]){
   const f=storedCase(id,{request:{billId:'TX HB 1234'}});f.state.responseFactory=()=>Response.json({error:'PRIVATE'},{status});
-  await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});assert.equal(f.wire.length,1);
+  await assert.rejects(f.handler()(f.call()),{message:code});assert.equal(f.wire.length,1);
  }
  const f=storedCase(status,{request:{billId:'TX HB 1234'}});await assert.rejects(f.handler({getCredentials:async()=>{deny('ACCESS_DENIED');}})(f.call()),{message:'ACCESS_DENIED'});assert.equal(f.wire.length,0);
  const g=storedCase(status,{request:{billId:'TX HB 1234'}}),controller=new AbortController();g.state.afterSource=()=>controller.abort();
