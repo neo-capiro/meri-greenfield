@@ -21556,7 +21556,7 @@ function validate90(data, { instancePath = "", parentData, parentDataProperty, r
 validate90.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 
 // artifacts-0.2/artifact-formats.mjs
-var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
+var ARTIFACT_MIME_TYPES = Object.freeze({ docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", txt: "text/plain; charset=utf-8", xml: "application/xml; charset=utf-8", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pdf: "application/pdf", zip: "application/zip" });
 
 // document-application/boundary.mjs
 var errors = /* @__PURE__ */ new WeakSet();

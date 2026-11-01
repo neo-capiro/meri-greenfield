@@ -1,17 +1,34 @@
 import {snapshotOperationData} from '../retrieval-0.2/operation-contracts.mjs';
 import {ARTIFACT_MIME_TYPES,artifactFilename,assertNativeArtifactInspectionCorrelations,assertNativeArtifactEvidenceBinding} from './artifact-formats.mjs';
+import {SaxesParser} from 'saxes';
+import addFormats from 'ajv-formats';
 const fail = message => { throw new Error(message); };
 const functions = new Set(['SUM','AVERAGE','MIN','MAX','COUNT','IF','ABS','ROUND']);
+const xmlNamespaceUri=addFormats.get('uri-reference');
 export const ARTIFACT_OPERATION_IDS = Object.freeze(['create_word','create_excel','create_powerpoint','run_analysis']);
 export const artifactSchemaId = 'urn:meri:artifacts:0.2.0';
+/** Data-only XML 1.0, matching the fixed writer's 256-level parser bound; no DTD or external resources. */
+export function assertArtifactXmlText(text){
+  const invalid=code=>{throw Object.assign(new Error(code),{code});};
+  if(typeof text!=='string'||!text.isWellFormed())invalid('XML_ENCODING');
+  const parser=new SaxesParser({xmlns:true,position:false});let depth=0;
+  parser.on('doctype',()=>invalid('XML_DOCTYPE'));
+  parser.on('xmldecl',declaration=>{if(declaration.version!=='1.0')invalid('XML_MALFORMED');if(declaration.encoding!==undefined&&!/^utf-8$/iu.test(declaration.encoding))invalid('XML_ENCODING');});
+  parser.on('opentag',tag=>{
+    if(++depth>256)invalid('XML_MALFORMED');
+    for(const uri of Object.values(tag.ns))if(uri!==''&&(!xmlNamespaceUri.test(uri)||uri.includes('"')))invalid('XML_MALFORMED');
+  });parser.on('closetag',()=>{depth--;});
+  try{parser.write(text).close();}catch(error){if(['XML_DOCTYPE','XML_ENCODING'].includes(error.code))throw error;invalid('XML_MALFORMED');}
+}
 export function createArtifactValidators({validateShape,validatePublicShape,canonicalSha256}) {
   const snapshot = value => snapshotOperationData(value);
   function request(value) {
     const data=snapshot(value);validateShape('ArtifactRequest',data);
     const walk=value=>{if(typeof value==='string'&&!value.isWellFormed())fail('Malformed Unicode');if(value&&typeof value==='object')for(const child of Object.values(value))walk(child);};walk(data);
     if(Buffer.byteLength(JSON.stringify(data))>2*1024*1024)fail('Artifact request too large');
+    if(data.operation==='create_word'&&data.format==='xml')assertArtifactXmlText(data.content.text);
     const chart=value=>{if(value.series.some(series=>series.values.length!==value.categories.length))fail('Chart category/value count mismatch');};
-    if(data.operation==='create_word'&&data.format!=='txt')for(const b of data.content.blocks){
+    if(data.operation==='create_word'&&!['txt','xml'].includes(data.format))for(const b of data.content.blocks){
       if(b.kind==='table'&&b.rows.some(r=>r.length!==b.rows[0].length))fail('Ragged document table');
       if(b.kind==='chart')chart(b.chart);
     }

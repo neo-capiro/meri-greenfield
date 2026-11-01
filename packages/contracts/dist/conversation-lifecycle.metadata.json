@@ -39,13 +39,13 @@
     },
     {
       "path": "dist/browser-viewer.mjs",
-      "sha256": "e5640bd8dae8e37c12b01f653959a31dc2431d0458392d1cc08bd1d062609e1b",
-      "bytes": 11882
+      "sha256": "6a020928bb8635587df4b121f1ab666380d7ec58f4119ce66f7e6097572bd903",
+      "bytes": 11921
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "309f1d1c6c6eb370d3ac094b0e789142142440085d15813747b346b1a710bb57",
-      "bytes": 2064135
+      "sha256": "60dad81af9c075937cf930a2ddefd4b81e740cf324e17a9a325688a9400cb591",
+      "bytes": 2064722
     },
     {
       "path": "document-application/boundary.mjs",

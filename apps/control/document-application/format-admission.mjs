@@ -14,10 +14,10 @@ export function admitDocumentDescriptor(value,{pdf=false}={}){
  const canonical={operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements};
  if(!same(descriptor,canonical))fail('DOCUMENT_CONFIGURATION',500);
  // This application admits a bounded subset; canonical validators still own each request.
- return data({descriptor,formats:id==='create_word'?['docx','txt',...(pdf?['pdf']:[])]:id==='create_excel'?['xlsx']:id==='create_powerpoint'?['pptx']:['zip']});
+ return data({descriptor,formats:id==='create_word'?['docx','txt','xml',...(pdf?['pdf']:[])]:id==='create_excel'?['xlsx']:id==='create_powerpoint'?['pptx']:['zip']});
 }
 export const admitsDocumentFormat=(admission,format)=>admission.formats.includes(format);
 export const admitsDocumentMime=(admission,mime)=>admission.formats.some(format=>ARTIFACT_MIME_TYPES[format]===mime);
 
 /** Public requests select only a canonical typed format; Core owns operation permission. */
-export function admitDocumentFormats({pdf=false}={}){if(typeof pdf!=='boolean')fail('DOCUMENT_CONFIGURATION',500);return data({formats:['docx','txt','xlsx','pptx','zip',...(pdf?['pdf']:[])]});}
+export function admitDocumentFormats({pdf=false}={}){if(typeof pdf!=='boolean')fail('DOCUMENT_CONFIGURATION',500);return data({formats:['docx','txt','xml','xlsx','pptx','zip',...(pdf?['pdf']:[])]});}

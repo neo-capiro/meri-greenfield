@@ -35,6 +35,24 @@ export type DocumentInspectionResponse =
         | {
             sha256: string;
             bytes: number;
+            format: 'xml';
+            nativeOpened: false;
+            rendered: false;
+            recalculated: false;
+            /**
+             * @maxItems 0
+             */
+            members: [];
+            details: {
+              encoding: 'UTF-8';
+              whitespace: 'unchanged';
+              wellFormed: true;
+            };
+            currentBytesVerified: true;
+          }
+        | {
+            sha256: string;
+            bytes: number;
             format: 'docx';
             nativeOpened: false;
             rendered: false;
@@ -143,6 +161,7 @@ export type DocumentVersion = Canonical_ArtifactVersion_7F9C56Fa & {
   mimeType?:
     | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     | 'text/plain; charset=utf-8'
+    | 'application/xml; charset=utf-8'
     | 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     | 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     | 'application/pdf'
@@ -332,7 +351,9 @@ export interface DocumentErrorResponse {
       | 'ARTIFACT_PREVIEW_PENDING'
       | 'ARTIFACT_PREVIEW_UNSUPPORTED'
       | 'ARTIFACT_RENDERER_UNAVAILABLE'
+      | 'ARTIFACT_STALE_PARENT'
       | 'CANCELLED'
+      | 'CONFLICT'
       | 'DEADLINE'
       | 'DOCUMENT_CLOCK'
       | 'DOCUMENT_CONFIGURATION'
@@ -443,6 +464,7 @@ export declare const documentAccessMetadata:{
   "formats": [
     "docx",
     "txt",
+    "xml",
     "xlsx",
     "pptx",
     "pdf",
@@ -451,6 +473,7 @@ export declare const documentAccessMetadata:{
   "mimeTypes": {
     "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "txt": "text/plain; charset=utf-8",
+    "xml": "application/xml; charset=utf-8",
     "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
     "pdf": "application/pdf",
@@ -465,11 +488,13 @@ export declare const documentAccessMetadata:{
   "operationFormats": {
     "create_word": [
       "docx",
-      "txt"
+      "txt",
+      "xml"
     ],
     "create_word_with_pdf": [
       "docx",
       "txt",
+      "xml",
       "pdf"
     ],
     "create_excel": [
@@ -494,7 +519,9 @@ export declare const documentAccessMetadata:{
     "ARTIFACT_PREVIEW_PENDING": 409,
     "ARTIFACT_PREVIEW_UNSUPPORTED": 422,
     "ARTIFACT_RENDERER_UNAVAILABLE": 503,
+    "ARTIFACT_STALE_PARENT": 409,
     "CANCELLED": 499,
+    "CONFLICT": 409,
     "DEADLINE": 408,
     "DOCUMENT_CLOCK": 500,
     "DOCUMENT_CONFIGURATION": 500,

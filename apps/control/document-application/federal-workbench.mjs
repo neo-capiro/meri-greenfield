@@ -5,6 +5,10 @@ import {federalDraftExportRequests} from '../../artifacts/federal-drafting/prepa
 import {federalSourceSelection,readFederalSourceEnvelope,federalSourceRequest} from '../../artifacts/federal-drafting/source-custody.mjs';
 import {FEDERAL_REVIEW_SCHEMA,federalRevisionRecord,federalApprovalRecord,encodeFederalReview,decodeFederalReview,assertFederalApprovalBinds} from '../../artifacts/federal-drafting/review-record.mjs';
 import {federalDraftDossier} from '../../artifacts/federal-drafting/dossier.mjs';
+import {structuralDossierMaterial} from '../../../packages/contracts/federal-workbench/structural-dossier.mjs';
+import {isSchemaUslm} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
+import {admitsDocumentFormat} from './format-admission.mjs';
+import {federalValidatorForOperation} from '../../artifacts/federal-drafting/schema-qualification.mjs';
 import {receiveFederalRequest} from '@capiro/meri-contracts/federal-workbench';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -12,8 +16,8 @@ import {fail} from './http.mjs';
 
 const uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u.test(v);
 const sha=v=>typeof v==='string'&&/^[0-9a-f]{64}$/u.test(v);
-const kinds=['draft','operative','consolidated','redline','docx'];
-const labels={draft:'Federal review',operative:'Operative amendment',consolidated:'Consolidated text',redline:'Legal redline',docx:'Federal review dossier'};
+const kinds=['draft','operative','consolidated','redline','docx','xml','pdf'];
+const labels={draft:'Federal review',operative:'Operative amendment',consolidated:'Consolidated text',redline:'Legal redline',docx:'Federal review dossier',xml:'Consolidated XML',pdf:'Federal review dossier'};
 const delivery=v=>typeof v==='string'&&/^[A-Za-z0-9_.:@/-]{1,255}$/u.test(v);
 function selection(raw){
  const s=data(own(raw,['versionId','expectedArtifactSha256','operations']));
@@ -24,7 +28,7 @@ function selection(raw){
 export function federalWorkbenchInput(intent,raw){
  const q=data(raw);
  if(intent==='federal-import'){
-  own(q,['selection','deliveryId'],['representation']);if(!delivery(q.deliveryId)||q.representation!==undefined&&q.representation!=='retained-raw-utf8/1')fail('INVALID_REQUEST');
+  try{receiveFederalRequest('federal-import',new TextEncoder().encode(JSON.stringify(q)));}catch{fail('INVALID_REQUEST');}
   return {...q,selection:federalSourceSelection(q.selection)};
  }
  if(intent==='federal-load'){
@@ -83,6 +87,8 @@ async function reviewHistory(reads,call,context,life){
  return {schema:FEDERAL_REVIEW_SCHEMA,artifactId:page.artifactId,anchorVersionId:page.anchorVersionId,headVersionId:page.headVersionId,revisions,nextCursor:page.nextCursor};
 }
 export async function federalWorkbenchRoute({intent,call,config,current,life,state,releasePublication}){
+ if(intent==='federal-publish'&&['xml','pdf'].includes(call.output)&&!admitsDocumentFormat(config.formatAdmission,call.output))fail('UNSUPPORTED_DOCUMENT_FORMAT',422);
+ const federalValidator=federalValidatorForOperation(config.federalValidator);
  const context=config.options.context,reads=createArtifactService({...config.options,authorize:current.authorize});
  state.readStarted=true;
  // Compiler refusals are released as their exact reason: the public error keeps `code` as the reason and names the
@@ -90,14 +96,15 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
  const sourceFailure=error=>{
   const code=error?.code;
   if(code==='DRAFT_SOURCE_STALE')fail(code,409);
+  if(code==='DRAFT_SCHEMA_VALIDATOR_UNAVAILABLE')fail(code,503);
   if(code==='DRAFT_SOURCE_READER_UNAVAILABLE')fail('UNAVAILABLE',503);
   if(typeof code==='string'&&code.startsWith('DRAFT_'))fail(code,422,{operationId:typeof error.operationId==='string'?error.operationId:null});
   throw error;
  };
- const prepare=selected=>life.run(signal=>reads.prepareFederalDraft(selected,context,{signal,readNative:config.federalSource?.read})).catch(sourceFailure);
+ const prepare=selected=>life.run(signal=>reads.prepareFederalDraft(selected,context,{signal,readNative:config.federalSource?.read,federalValidator})).catch(sourceFailure);
  const writer=authorize=>{const {ids,...options}=config.options;return createPostgresArtifactService({...options,authorize});};
  if(intent==='federal-import'){
-  const read=()=>life.run(signal=>readFederalSourceEnvelope(config.federalSource?.read,call.selection,{signal,deadlineMs:context.deadlineMs,representation:call.representation})).catch(sourceFailure);
+  const read=()=>life.run(signal=>readFederalSourceEnvelope(config.federalSource?.read,call.selection,{signal,deadlineMs:context.deadlineMs,representation:call.representation,validationProfile:call.validationProfile,sourceProfile:call.sourceProfile,federalValidator})).catch(sourceFailure);
   const envelope=await read();
   let request;try{request=config.options.validators.request(federalSourceRequest(envelope));}catch{fail('DRAFT_OUTPUT_UNEXPORTABLE',422);}
   const recheck=async()=>{if(hash(await read())!==hash(envelope))fail('DRAFT_SOURCE_STALE',409);};
@@ -121,7 +128,7 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
  if(prepared.revisionSha256!==call.revisionSha256)fail('DRAFT_REVIEW_CHANGED',409);
  const recheckSource=async()=>{const fresh=await prepare(selected);
   if(fresh.revisionSha256!==prepared.revisionSha256)fail('DRAFT_REVIEW_CHANGED',409);};
- let request,baseVersionId;
+ let request,baseVersionId,structuralMaterial;
  if(intent==='federal-approve'){
   // An approval is its own immutable child of the exact version it approves; approving an approval is refused.
   if(approval!==null)fail('DRAFT_REVIEW_ALREADY_APPROVED',409);
@@ -140,16 +147,23 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
    approval=reviewed.approval;
   }
   baseVersionId=call.baseVersionId;
+  if(call.output==='xml'){
+   if(!isSchemaUslm(prepared.draft.source.parserVersion))fail('DRAFT_SCHEMA_PROFILE_REQUIRED',422);
+   if(prepared.draft.resultKind==='source-text-removed')fail('DRAFT_XML_REMOVED',422);
+  }
   const selectedRequest=call.output==='draft'?{operation:'create_word',format:'txt',title:labels.draft,content:{text:encodeFederalReview(federalRevisionRecord(prepared))}}
-   :call.output==='docx'?(()=>{try{return federalDraftDossier(prepared,approval);}catch{fail('DRAFT_OUTPUT_UNEXPORTABLE',422);}})()
+   :['docx','pdf'].includes(call.output)?(()=>{try{return federalDraftDossier(prepared,approval,call.output);}catch(error){sourceFailure(error);}})()
+   :call.output==='xml'?{operation:'create_word',format:'xml',content:{text:prepared.draft.outputs.consolidated}}
    :federalDraftExportRequests(prepared,prepared.revisionSha256)[call.output];
   // Persist the complete reviewed revision in the canonical immutable request.
   // Even equal output bytes from different source/operation pins cannot reuse a delivery.
   request={...selectedRequest,title:`${labels[call.output]} [${prepared.revisionSha256}]: ${prepared.draft.source.documentId}`.slice(0,160)};
+  if(['docx','pdf'].includes(call.output)&&prepared.draft.source.parserVersion==='federal-uslm-xml/3')structuralMaterial=structuralDossierMaterial(prepared,approval,call.output,request.title);
  }
  // Use the canonical request receiver before effect admission; large review
  // bundles refuse without a partial write or a second artifact format owner.
  let exact;try{exact=config.options.validators.request(request);}catch{fail('DRAFT_OUTPUT_UNEXPORTABLE',422);}
+ if(structuralMaterial&&hash(structuralMaterial.request)!==hash(exact))fail('DRAFT_OUTPUT_UNEXPORTABLE',422);
  const writes=writer(async request=>{await recheckSource();return current.authorize(request);});
  await current.fresh();state.writeStarted=true;
  const write={deliveryId:call.deliveryId,baseVersionId,request:exact};
@@ -157,6 +171,10 @@ export async function federalWorkbenchRoute({intent,call,config,current,life,sta
  state.completed=true;
  await recheckSource();
  if(intent==='federal-approve')return {schema:FEDERAL_REVIEW_SCHEMA,selection:selected,prepared,savedDraft:publication.version,approval};
+ const structuralReceipt=structuralMaterial?{structuralReceipt:{profile:'uslm-word/1',sourceSha256:prepared.draft.source.sha256,
+  consolidatedSha256:prepared.draft.outputHashes.consolidated,revisionSha256:prepared.revisionSha256,specSha256:hash(exact),
+  executionRequestSha256:publication.execution.requestSha256,mappingSha256:hash({mapping:structuralMaterial.mapping,omissions:structuralMaterial.omissions}),
+  mapping:structuralMaterial.mapping,omissions:structuralMaterial.omissions}}:{};
  return {schema:FEDERAL_REVIEW_SCHEMA,sourceArtifact:prepared.sourceArtifact,revisionSha256:prepared.revisionSha256,
-  output:call.output,review:call.output==='draft'?'unapproved':approval===null?'confirmed-for-export':'approved',approval:call.output==='draft'?null:approval,publication};
+  output:call.output,review:call.output==='draft'?'unapproved':approval===null?'confirmed-for-export':'approved',approval:call.output==='draft'?null:approval,publication,...structuralReceipt};
 }

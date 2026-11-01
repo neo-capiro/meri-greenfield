@@ -5,10 +5,13 @@
 import {createHash} from 'node:crypto';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {assertFederalTextLayout,FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER,FEDERAL_PARSERS} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
+import {assertFederalTextLayout,FEDERAL_SCOPED_TEXT_PARSER,FEDERAL_USLM_XML_PARSER,FEDERAL_USLM_SCHEMA_PARSER,FEDERAL_USLM_RUN_PARSER,isFederalUslm,isSchemaUslm,FEDERAL_PARSERS} from '../../../packages/contracts/federal-workbench/source-layout.mjs';
+import {federalStructuralProjection} from './structural-projection.mjs';
 import {scopedApplication} from './scoped-application.mjs';
 import {deriveUslmScopes,assertUslmResult,USLM_ROOT_SCOPE} from './uslm-source.mjs';
+import {applyDecodedXmlEdit} from '../../../packages/contracts/federal-workbench/xml-text-runs.mjs';
 import canonicalize from 'canonicalize';
+import {assertSchemaReceipt} from '../../../packages/contracts/federal-workbench/schema-receipt.mjs';
 export {FEDERAL_SCOPED_TEXT_PARSER};
 
 export const FEDERAL_TEXT_PARSER='federal-plain-text/1';
@@ -21,7 +24,7 @@ const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).for
 
 /** Identity is supplied by the source custodian, not inferred from text or an amendment instruction. */
 export function federalDraftSource(raw){
- let source;try{source=data(own(raw,['documentId','publisher','sourceVersion','sourceUrl','publishedAt','parserVersion','sha256','text','coverage','scopes']));}catch{fault('DRAFT_SOURCE_INVALID');}
+ let source;try{source=data(own(raw,['documentId','publisher','sourceVersion','sourceUrl','publishedAt','parserVersion','sha256','text','coverage','scopes'],['validation']));}catch{fault('DRAFT_SOURCE_INVALID');}
  for(const field of ['documentId','publisher','sourceVersion'])if(!text(source[field],512))fault('DRAFT_SOURCE_INVALID');
  let url;try{url=new URL(source.sourceUrl);}catch{fault('DRAFT_SOURCE_INVALID');}
  if(url.protocol!=='https:'||url.username||url.password||url.hash||url.search||!text(source.sourceUrl,2048))fault('DRAFT_SOURCE_INVALID');
@@ -30,29 +33,31 @@ export function federalDraftSource(raw){
  if(!FEDERAL_PARSERS.includes(source.parserVersion)||!SHA.test(source.sha256)||!text(source.text,DRAFT_LIMITS.sourceBytes)||textSha256(source.text)!==source.sha256)fault('DRAFT_SOURCE_MISMATCH');
  let coverage;try{coverage=own(source.coverage,['complete','limitations']);}catch{fault('DRAFT_SOURCE_INVALID');}
  if(typeof coverage.complete!=='boolean'||!Array.isArray(coverage.limitations)||coverage.limitations.length>32||coverage.limitations.some(v=>!text(v,1000))||!coverage.complete&&!coverage.limitations.length)fault('DRAFT_SOURCE_INVALID');
- const uslm=source.parserVersion===FEDERAL_USLM_XML_PARSER,nested=uslm||source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
+ const uslm=isFederalUslm(source.parserVersion),nested=uslm||source.parserVersion===FEDERAL_SCOPED_TEXT_PARSER;
  if(!Array.isArray(source.scopes)||!source.scopes.length||source.scopes.length>(uslm?DRAFT_LIMITS.uslmScopes:DRAFT_LIMITS.scopes))fault('DRAFT_SOURCE_INVALID');
  const seen=new Set();
  for(const rawScope of source.scopes){
-  let scope;try{scope=own(rawScope,['id','label','start','end','sha256',...(nested?['ancestorPath']:[])]);}catch{fault('DRAFT_SCOPE_INVALID');}
+  let scope;try{scope=own(rawScope,['id','label','start','end','sha256',...(nested?['ancestorPath']:[])],source.parserVersion===FEDERAL_USLM_RUN_PARSER?['textRun']:[]);}catch{fault('DRAFT_SCOPE_INVALID');}
   if(!ID.test(scope.id)||seen.has(scope.id)||!text(scope.label,512)||!Number.isSafeInteger(scope.start)||!Number.isSafeInteger(scope.end)
    ||scope.start<0||scope.end<=scope.start||scope.end>source.text.length||!SHA.test(scope.sha256))fault('DRAFT_SCOPE_INVALID');
   seen.add(scope.id);
  }
  assertFederalTextLayout(source);
+ if(isSchemaUslm(source.parserVersion))assertSchemaReceipt(source.validation,source.sha256,Buffer.byteLength(source.text));
+ else if(Object.hasOwn(source,'validation'))fault('DRAFT_SOURCE_INVALID');
  for(const scope of source.scopes){const slice=source.text.slice(scope.start,scope.end);
   if(Buffer.from(slice).toString('utf8')!==slice||textSha256(slice)!==scope.sha256)fault('DRAFT_SCOPE_MISMATCH');}
  // Declared USLM identity must be exactly what the one derivation owner reads from the bytes; no custodian may
  // declare an element span, identifier or ancestry the markup does not carry.
- if(uslm&&canonicalize(deriveUslmScopes(source.text).scopes)!==canonicalize(source.scopes))fault('DRAFT_USLM_SCOPES_MISMATCH');
+ if(uslm&&canonicalize(deriveUslmScopes(source.text,source.parserVersion).scopes)!==canonicalize(source.scopes))fault('DRAFT_USLM_SCOPES_MISMATCH');
  return freeze(source);
 }
 
 function operation(raw,seen){
  let op;try{
-  const candidate=data(own(raw,['id','kind','expectedTextSha256','dependsOn'],['scopeId','expectedScopeSha256','expectedText','text','position','expectedSourceSha256']));
+  const candidate=data(own(raw,['id','kind','expectedTextSha256','dependsOn'],['scopeId','expectedScopeSha256','expectedText','text','position','expectedSourceSha256','textMode']));
   op=data(candidate.kind==='remove_source_text'?own(candidate,['id','kind','expectedSourceSha256','expectedTextSha256','dependsOn']):
-   own(candidate,['id','kind','scopeId','expectedScopeSha256','expectedText','expectedTextSha256','dependsOn'],['text','position']));
+   own(candidate,['id','kind','scopeId','expectedScopeSha256','expectedText','expectedTextSha256','dependsOn'],['text','position','textMode']));
  }catch{fault('DRAFT_OPERATION_INVALID');}
  const refuse=code=>fault(code,op.id);
  if(op.kind==='remove_source_text'){
@@ -60,6 +65,7 @@ function operation(raw,seen){
   if(!Array.isArray(op.dependsOn)||new Set(op.dependsOn).size!==op.dependsOn.length||op.dependsOn.some(id=>!seen.has(id)))refuse('DRAFT_DEPENDENCY_INVALID');
   return op;
  }
+ if(op.textMode!==undefined&&op.textMode!=='decoded-xml')refuse('DRAFT_OPERATION_INVALID');
  if(!ID.test(op.id)||seen.has(op.id)||!ID.test(op.scopeId)||!['replace','insert','delete'].includes(op.kind)
   ||!SHA.test(op.expectedScopeSha256)||!text(op.expectedText,DRAFT_LIMITS.operationBytes)||!SHA.test(op.expectedTextSha256)
   ||textSha256(op.expectedText)!==op.expectedTextSha256)refuse('DRAFT_OPERATION_INVALID');
@@ -70,8 +76,9 @@ function operation(raw,seen){
  return op;
 }
 
-function apply(scope,op){
+function apply(scope,op,runKind){
  if(textSha256(scope)!==op.expectedScopeSha256)fault('DRAFT_ANCESTOR_CHANGED',op.id);
+ if(op.textMode==='decoded-xml'){try{return applyDecodedXmlEdit(scope,runKind,op);}catch(error){if(typeof error?.code==='string'&&error.code.startsWith('DRAFT_'))fault(error.code,op.id);throw error;}}
  const at=scope.indexOf(op.expectedText);
  if(at<0)fault('DRAFT_TARGET_MISSING',op.id);
  if(scope.indexOf(op.expectedText,at+1)>=0)fault('DRAFT_TARGET_AMBIGUOUS',op.id);
@@ -149,7 +156,9 @@ export function compileFederalDraft(rawSource,rawOperations){
   }
   const current=scoped?.read(op),before=current?current.text:working.get(op.scopeId);if(before===undefined)fault('DRAFT_SCOPE_UNKNOWN',op.id);
   if(!scoped&&last.has(op.scopeId)&&!op.dependsOn.includes(last.get(op.scopeId)))fault('DRAFT_DEPENDENCY_REQUIRED',op.id);
-  const edit=apply(before,op),after=edit.text;if(Buffer.byteLength(after)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT',op.id);
+  const scope=source.scopes.find(value=>value.id===op.scopeId);
+  if(op.textMode==='decoded-xml'&&(source.parserVersion!==FEDERAL_USLM_RUN_PARSER||!scope.textRun))fault('DRAFT_TEXT_RUN_REQUIRED',op.id);
+  const edit=apply(before,op,scope.textRun?.kind),after=edit.text;if(Buffer.byteLength(after)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT',op.id);
   if(scoped){scoped.apply(op,edit,current.closure);if(Buffer.byteLength(scoped.text)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT',op.id);}
   working.set(op.scopeId,after);seen.add(op.id);last.set(op.scopeId,op.id);operations.push(op);
  }
@@ -157,13 +166,15 @@ export function compileFederalDraft(rawSource,rawOperations){
  if(Buffer.byteLength(result.consolidated)>DRAFT_LIMITS.sourceBytes)fault('DRAFT_OUTPUT_LIMIT');
  // Removing the entire source is a proposed repeal, not a text amendment: there is no exact consolidated text to
  // retain, so it is an explicit refusal rather than an empty document or a placeholder that falsifies bytes.
- if(!removed&&(!result.consolidated.length||source.parserVersion===FEDERAL_USLM_XML_PARSER&&working.get(USLM_ROOT_SCOPE)===''))fault('DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED');
+ if(!removed&&(!result.consolidated.length||isFederalUslm(source.parserVersion)&&working.get(USLM_ROOT_SCOPE)===''))fault('DRAFT_WHOLE_SOURCE_REPEAL_UNSUPPORTED');
  if(result.consolidated===source.text)fault('DRAFT_NO_CHANGE');
- if(!removed&&source.parserVersion===FEDERAL_USLM_XML_PARSER)assertUslmResult(result.consolidated,deriveUslmScopes(source.text).root,DRAFT_LIMITS.uslmScopes);
+ if(!removed&&isFederalUslm(source.parserVersion))assertUslmResult(result.consolidated,deriveUslmScopes(source.text,source.parserVersion).root,DRAFT_LIMITS.uslmScopes,source.parserVersion);
+ const structuralProjection=source.parserVersion===FEDERAL_USLM_RUN_PARSER?federalStructuralProjection(source,result,removed):undefined;
  const findings=[{category:'source-integrity',status:'passed',location:source.documentId,severity:'info'},
   ...operations.map(op=>({category:'exact-target',status:'passed',location:op.scopeId??source.documentId,operationId:op.id,severity:'info'})),
   ...['numbering','cross-references','arithmetic','substantive-law'].map(category=>({category,status:'unresolved',location:source.documentId,severity:'review-required'}))];
- const revision={parserVersion:source.parserVersion,source,operations,outputs:result,findings,...(removed?{resultKind:'source-text-removed'}:{}),
+ if(structuralProjection?.status==='unsupported')findings.push({category:'structural-export',status:'unresolved',location:source.documentId,severity:'review-required'});
+ const revision={parserVersion:source.parserVersion,source,operations,outputs:result,findings,...(structuralProjection?{structuralProjection}:{}),...(removed?{resultKind:'source-text-removed'}:{}),
   outputHashes:Object.fromEntries(['operative','consolidated','redline'].map(kind=>[kind,textSha256(result[kind])]))};
  return freeze({...revision,revisionSha256:canonicalSha256(revision),approval:'unapproved'});
 }
