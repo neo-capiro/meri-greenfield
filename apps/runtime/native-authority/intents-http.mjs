@@ -10,6 +10,7 @@
  * `{readAvailability, prepare}`), whose preparers' canonical owners recheck current authority and whose journal owns replay. This
  * module adds transport bounds only: closed bodies, a byte ceiling, a deadline, closed failure codes and the rule that once
  * `prepare` reached the mount, any failure without an owner-closed code is UNKNOWN (a proposal may exist; never retried here).
+ * A dispatched preparation runs to its owner's settlement inside control's deadline even if the runner disconnects.
  * An optional `controlCapabilitySha256` refuses the control credential before `resolveRun` is consulted.
  *
  * Availability keeps the shared control bound (`INTENT_AVAILABILITY_CONTROL_MS`, one margin inside the runner client's) and, when it
@@ -22,7 +23,7 @@
 import {types} from 'node:util';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {INTENT_AVAILABILITY_CONTROL_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {INTENT_AVAILABILITY_CONTROL_MS,INTENT_PREPARE_CONTROL_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {jsonBody,response,ApplicationError} from '../../control/action-application/http.mjs';
 import {matchesCapability} from './task-verifier.mjs';
@@ -35,7 +36,7 @@ export function createRunnerIntentsApplication(configuration){
  const c=own(configuration,['resolveRun'],['enabled','now','limits','controlCapabilitySha256','retention','telemetry']),now=c.now??Date.now,enabled=c.enabled??false;
  const servable=c.retention===undefined?null:storageMethod(c.retention,'assertServable'),withRelease=c.retention===undefined?null:storageMethod(c.retention,'withRelease');
  const emit=c.telemetry===undefined?null:storageMethod(c.telemetry,'emit');
- const limits=c.limits===undefined?{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000}:own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
+ const limits=c.limits===undefined?{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:INTENT_PREPARE_CONTROL_MS}:own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
  if(typeof c.resolveRun!=='function'||types.isProxy(c.resolveRun)||typeof now!=='function'||typeof enabled!=='boolean'||!integer(limits.maxRequestBytes,1,1048576)||!integer(limits.maxResponseBytes,1,2097152)||!integer(limits.maxPrepareMs,1000,60000)||
   c.controlCapabilitySha256!==undefined&&(typeof c.controlCapabilitySha256!=='string'||!/^[a-f0-9]{64}$/u.test(c.controlCapabilitySha256)))throw runnerIntentFault('UNAVAILABLE');
  const resolveRun=c.resolveRun;
@@ -64,7 +65,11 @@ export function createRunnerIntentsApplication(configuration){
   let readAvailability,prepare;try{readAvailability=storageMethod(mount,'readAvailability');prepare=storageMethod(mount,'prepare');}catch{throw runnerIntentFault('UNAVAILABLE');}
   if(route==='availability'){const raw=await life.run(signal=>readAvailability({signal}));life.check();const result=runnerIntentAvailability(raw,v.binding,now());
    if(Buffer.byteLength(JSON.stringify(result),'utf8')>limits.maxResponseBytes)throw runnerIntentFault('UNAVAILABLE');return response(result);}
-  dispatched=true;const raw=await life.run(signal=>prepare({operation:v.operation,arguments:v.arguments,deliveryId:v.deliveryId,signal}));
+  // Once dispatched, the owner keeps control's deadline but not the runner's connection: a runner that stops waiting answers
+  // UNKNOWN, while the owner still settles its journal row, so a draft or proposal it completes is listed on the conversation's
+  // card and a replay of the same delivery is answered from that row instead of being left uncertain.
+  const owner=createOperationLifetime({now,deadlineMs,errorFactory:runnerIntentFault}),preparation=owner.run(signal=>prepare({operation:v.operation,arguments:v.arguments,deliveryId:v.deliveryId,signal}));
+  dispatched=true;preparation.then(()=>owner.close(),()=>owner.close());const raw=await life.run(()=>preparation);
   // The preparation exists from here on. A result that cannot be released intact is UNKNOWN, never a refusal inviting a retry.
   let result;try{result=data(raw);}catch{throw runnerIntentFault('UNKNOWN');}
   if(result===null||typeof result!=='object'||Array.isArray(result)||Buffer.byteLength(JSON.stringify(result),'utf8')>limits.maxResponseBytes)throw runnerIntentFault('UNKNOWN');

@@ -37,7 +37,11 @@ export function createLocalArtifactExecutor({pythonExecutable,nodeExecutable,ppt
       let bytes=await readFile(output),inspection=JSON.parse(run.stdout.toString('utf8'));
       if(inspection.sha256!==sha(bytes)||inspection.bytes!==bytes.length||inspection.format!==generationRequest.format||inspection.nativeOpened!==false||inspection.rendered!==false||inspection.recalculated!==false)throw error('ARTIFACT_INSPECTION_MISMATCH');
       if(request.format==='pdf'){
-        const converted=await officeTransformer.transform({bytes,format:'docx',target:'pdf',deadlineMs,maxBytes,signal});bytes=converted.bytes;
+        // The renderer is a pure conversion: when it does not return a PDF (a refused, failed or timed-out session) nothing was
+        // stored, so the failure is the same definite refusal as an unbound renderer, never an uncertain document effect.
+        let converted;try{converted=await officeTransformer.transform({bytes,format:'docx',target:'pdf',deadlineMs,maxBytes,signal});}
+        catch(cause){throw Object.assign(error('ARTIFACT_RENDERER_UNAVAILABLE'),{cause});}
+        bytes=converted.bytes;
         if(!Buffer.isBuffer(bytes)||bytes.length>maxBytes||converted.receipt.inputSha256!==inspection.sha256||converted.receipt.outputSha256!==sha(bytes)||converted.receipt.nativeQualification!==false)throw error('ARTIFACT_TRANSFORM_MISMATCH');
         inspection={sha256:sha(bytes),bytes:bytes.length,format:'pdf',nativeOpened:false,rendered:false,recalculated:false,members:[],details:{conversionCompleted:true,renderInspection:'pending',sourceDocxSha256:converted.receipt.inputSha256}};
       }

@@ -240,7 +240,8 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  }});
  const execution=createAgentCoreExecutionOwner({store,provider,versions,
   plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),
-  ...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{})});
+  ...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{}),
+  reconcileEnded:value=>reconciler.reconcile(value)});
  const reconciler=createRunReconciler({store,stopExecution:execution.stopExecution,now,maxReconcileMs:Math.min(120000,configuration.limits.shutdownMs)});
  async function stop({binding,executionId,signal}){
   if(executionId!==hash(binding))refuse();

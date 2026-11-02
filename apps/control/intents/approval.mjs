@@ -467,8 +467,8 @@ async function decideWatch(life,principal,entry,r){
   return data({status:r.decision==='rejected'?'browser_rejected':'browser_decision_recorded',
    deliveryId:r.deliveryId,proposalId:proposal.proposalId,decision});
  }
- /** A PENDING row is settled only by the preparation that claimed it, inside that call's own lifetime (the runner allows 30 s, the
-  * worker at most 60 s, the mount's request bound is shorter). One still PENDING long after its claim can never settle (a lost
+ /** A PENDING row is settled only by the preparation that claimed it, inside that call's own lifetime (control allows 52 s, the runner
+  * 54 s, the worker at most 60 s: runner-load-budget.mjs). One still PENDING long after its claim can never settle (a lost
   * settle acknowledgement, or a settle the journal refused): it is listed as unknown, the same item an UNKNOWN row lists, so the
   * conversation's card ends and the composer unlocks, instead of "Preparing" for good (2 Nov: three such rows). It is never
   * listed as stopped: a lost settle acknowledgement can mean the owner's proposal exists, and a replay of that delivery answers

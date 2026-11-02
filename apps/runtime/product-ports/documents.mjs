@@ -39,6 +39,7 @@ import {createSelectedAttachmentFilingExecution} from '../artifacts/selected-fil
 import {createRuntimeAttachmentFilingPreparer} from '../artifacts/filing-preparer.mjs';
 import {createFilingVersionResolver} from '../artifacts/filing-version-resolver.mjs';
 import {intentsComposition} from './intents.mjs';
+import {DOCUMENT_PREPARATION_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {createS3RetentionLedgerSink} from '../../control/retention/s3-ledger.mjs';
 import {createRuntimeRetentionStorage} from '../artifacts/retention-storage.mjs';
 const fault=()=>Object.assign(new Error('PRODUCT_PORTS_CONFIGURATION'),{code:'PRODUCT_PORTS_CONFIGURATION'});
@@ -114,8 +115,10 @@ export function documentsFamily(owners={}){
    const selection=await revision.selectionFor({binding:value.binding,signal:value.signal});
    // PDF is admitted for intents exactly as for the document application: the explicit switch AND an available renderer port.
    const admitPdf=declared.pdfAdmission===true&&o.renderer!==undefined&&admittedConverter(o.renderer)!==null;
+   // A conversation document preparation keeps its own allowance (runner-load-budget.mjs), not control's HTTP request budget: a PDF
+   // waits on a renderer microVM that can take about 30 s to start. The current-authority expiries still clip it.
    const documents=createRuntimeDocumentIntentPreparers({binding:value.binding,selectedClientId,sessions:bound.sessions,optionsOwner:late.owner,nativeCredentials:o.nativeCredentials,now,admitPdf,
-    limits,...(selection?{revision:selection}:{}),...(bound.retention?{retention:bound.retention}:{})});
+    limits:{...limits,maxRequestMs:DOCUMENT_PREPARATION_MS},...(selection?{revision:selection}:{}),...(bound.retention?{retention:bound.retention}:{})});
    if(!filing||selectedClientId===null||typeof value.readCurrent!=='function')return documents;
    return [...documents,createRuntimeAttachmentFilingPreparer({pool,binding:value.binding,scopes:value.scopes,selectedClientId,policyRevision:value.policyRevision,expiresAtMs:value.expiresAtMs,
     readCurrent:value.readCurrent,bound,optionsOwner:late.owner,resolveVersion,now,limits})];

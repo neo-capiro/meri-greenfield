@@ -7,6 +7,11 @@ import {assertNativeReadConfiguration} from '../../packages/contracts/runtime-0.
 export const AGENTCORE_SESSION_HEADER='x-amzn-bedrock-agentcore-runtime-session-id';
 export const AGENTCORE_INVOCATION_BYTES=131072;
 export const agentcoreFault=code=>Object.assign(Error(code),{code});
+/** The one data event an invocation sends when its execution ended without a settled outcome (`agentcore-http.mjs`): the
+ * runner's work returned or failed and the run it reconciled was not terminal, e.g. a turn refused at activity-load before
+ * it could publish anything. Unlike a lost stream, it proves the invocation is over; control reconciles that run. */
+export const EXECUTION_ENDED_UNSETTLED=Object.freeze({error:Object.freeze({code:'EXECUTION_UNKNOWN'})});
+export const endedUnsettled=value=>hash(value)===hash(EXECUTION_ENDED_UNSETTLED);
 export function invocationInput(value){
  const v=data(own(value,['execution','versions','credential'],['sourceEnabled','approvedReads','intents','browser']));
  assertExecutionIdentity(v.execution);validateShape('RuntimeVersions',v.versions);

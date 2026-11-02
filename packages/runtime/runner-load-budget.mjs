@@ -40,6 +40,16 @@ export const INTENT_AVAILABILITY_CONTROL_MS=8000;
 export const INTENT_AVAILABILITY_RUNNER_MS=INTENT_AVAILABILITY_CONTROL_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
 export const INTENT_AVAILABILITY_WORKER_MS=INTENT_AVAILABILITY_RUNNER_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
 
+// Governed-intent preparation: worker `intents/server.mjs` (the SDK tool's 60 s cap) -> runner `intents-client.mjs` -> control
+// `intents-http.mjs` -> the owner. The slowest owner is a document preparation that renders PDF: generation, a renderer session on
+// a new AgentCore microVM (about 30 s cold, 1 s warm) and LibreOffice's first start on a fresh profile, plus the current-authority
+// checks before and after. It keeps DOCUMENT_PREPARATION_MS; each enclosing hop keeps one control margin above the hop it encloses,
+// so the owner settles its own journal first and control still answers the runner. With both hops at 30 s the runner gave up
+// exactly when control did, and a document owner bounded by control's 25 s request budget could not hold a cold renderer at all.
+export const DOCUMENT_PREPARATION_MS=50000;
+export const INTENT_PREPARE_CONTROL_MS=DOCUMENT_PREPARATION_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
+export const INTENT_PREPARE_RUNNER_MS=INTENT_PREPARE_CONTROL_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
+
 // General-read availability: worker `reads/runtime.mjs` -> runner `reads-client.mjs` -> control `reads-http.mjs`/`reads-owner.mjs`.
 // Control's owner authenticates the execution, composes the gateway and takes the snapshot twice (before and after), and each
 // snapshot reads the current Core capability role (`agentcore-candidate.mjs` readCapabilityRole, a live Core round trip) and the

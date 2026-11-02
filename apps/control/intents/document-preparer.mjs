@@ -17,7 +17,7 @@ import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {artifactValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {validateShape as validatePublicShape} from '../../../packages/contracts/validate.mjs';
 import {admitDocumentDescriptor,admitsDocumentFormat} from '../document-application/format-admission.mjs';
-import {intentFault} from './faults.mjs';
+import {intentFault,definiteRefusal} from './faults.mjs';
 import {types} from 'node:util';
 import {assertIntentArtifactDraft} from './artifact-draft-result.mjs';
 import {assertDocumentRevisionSelection} from '../../../packages/contracts/document-revision.mjs';
@@ -53,7 +53,7 @@ export function createDocumentIntentPreparer(configuration){
     baseVersion=admitted.version;preserved=admitted.preserved;
     if(signal?.aborted)throw intentFault('CANCELLED','none');}
    try{result=data(await writes.execute.call(c.writes,{deliveryId,request,baseVersionId:baseVersion?.versionId??null,...(preserved===null?{}:{preserve:preserved})},signal));}
-   catch{throw intentFault('UNKNOWN','unknown');}
+   catch(error){throw definiteRefusal(error)??intentFault('UNKNOWN','unknown');}
    try{result=assertIntentArtifactDraft(result,{binding,request,baseVersion});
     // A port that re-presented nothing has not preserved the retained evidence; the draft exists, so the effect is unknown.
     if(preserved!==null&&artifactValidators.hash(result.version.evidence)!==preserved.evidenceSha256)throw 0;}
