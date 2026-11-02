@@ -5,6 +5,7 @@ import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execu
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {NATIVE_READS_SCHEMA_VERSION as schemaVersion,assertNativeReadConfiguration,assertNativeReadRequest,assertNativeReadResponse,assertNativeReadSnapshot,nativeReadFault,nativeReadFailureCode} from '../../packages/contracts/runtime-0.2/reads.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {READ_AVAILABILITY_CONTROL_MS} from '../../packages/runtime/runner-load-budget.mjs';
 import {assertExecutionIdentity} from '../control/conversations/execution-boundary.mjs';
 import {productFailure} from '../control/product-access/errors.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
@@ -29,7 +30,7 @@ export function createReadsOwner(configuration){
   if(!same(request.binding,binding))deny('ACCESS_DENIED');
   if(Buffer.byteLength(JSON.stringify(request),'utf8')>config.maxRequestBytes)deny('RESOURCE_LIMIT');
   if(operationDeadlineMs!==undefined&&!Number.isSafeInteger(operationDeadlineMs))deny('INVALID_ARGUMENTS');
-  const deadlineMs=Math.min(operationDeadlineMs??Infinity,started+(operation==='execute'?config.maxExecuteMs:3000));
+  const deadlineMs=Math.min(operationDeadlineMs??Infinity,started+(operation==='execute'?config.maxExecuteMs:READ_AVAILABILITY_CONTROL_MS));
   life=createOperationLifetime({now,deadlineMs,signal,errorFactory:nativeReadFault});
   let pinned;
   async function current(){

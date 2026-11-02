@@ -50,10 +50,11 @@ test('public-web failures carry a precise next step between the closed head and 
  for(const [tool,expected] of [['mcp__meri_reads__search_public_web',READ_GUIDANCE.search_public_web.failures],['mcp__meri_reads__scrape_web_page',READ_GUIDANCE.scrape_web_page.failures]]){
   for(const code of READ_FAILURE_CODES){
    const text=failureResult(code,tool).content[0].text;
-   assert.ok(text.startsWith(`${code}: ${tool} `),text);
+   assert.ok(text.startsWith(failureResult(code,'mcp__meri_reads__x').content[0].text.replace(/ No evidence, absence or completeness is established\.$/u,'')),text);
+   assert.doesNotMatch(text,/mcp__|\bUNAVAILABLE\b|\bACCESS_DENIED\b|\bDEADLINE\b/u,`${tool} ${code} names the tool or a code`);
    assert.ok(text.endsWith(' No evidence, absence or completeness is established.'),text);
    if(Object.hasOwn(expected,code))assert.ok(text.includes(` ${expected[code]} No evidence`),`${tool} ${code}: ${text}`);
-   else assert.equal(text,failureResult(code,'mcp__meri_reads__x').content[0].text.replace('mcp__meri_reads__x',tool));
+   else assert.equal(text,failureResult(code,'mcp__meri_reads__x').content[0].text,'a read without its own hint gets the closed text alone');
   }
  }
  assert.match(failureResult('INVALID_ARGUMENTS','mcp__meri_reads__search_public_web').content[0].text,/1-200 characters and limit an integer 1-12/);

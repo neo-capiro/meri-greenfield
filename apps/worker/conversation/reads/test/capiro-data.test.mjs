@@ -111,6 +111,6 @@ for(const version of ['0.2.0','0.3.0','0.4.0','0.5.0'])for(const source of ['pub
   scene.state.page=ok?{...scene.page,version:source==='public'?'0.1.0':'0.2.0'}:
    {version:source==='public'?'0.1.0':'0.2.0',generatedAt:scene.page.generatedAt,ok:false,error:{code:'QUERY_TIMEOUT',message:'Synthetic old refusal'}};
   const f=await fixture(scene.family,'describe_capiro_data',{scene,privateUser:true}),m=await connect(t,f),out=await m.call();
-  assert.equal(out.isError,true);assert.match(out.content[0].text,/^INVALID_RESULT:/);assert.deepEqual(m.runtime.receipts(),[]);
+  assert.equal(out.isError,true);assert.match(out.content[0].text,/^This read returned a result that failed validation and was withheld\./);assert.deepEqual(m.runtime.receipts(),[]);
  }
 });

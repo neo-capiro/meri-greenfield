@@ -40,6 +40,18 @@ export const INTENT_AVAILABILITY_CONTROL_MS=8000;
 export const INTENT_AVAILABILITY_RUNNER_MS=INTENT_AVAILABILITY_CONTROL_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
 export const INTENT_AVAILABILITY_WORKER_MS=INTENT_AVAILABILITY_RUNNER_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
 
+// General-read availability: worker `reads/runtime.mjs` -> runner `reads-client.mjs` -> control `reads-http.mjs`/`reads-owner.mjs`.
+// Control's owner authenticates the execution, composes the gateway and takes the snapshot twice (before and after), and each
+// snapshot reads the current Core capability role (`agentcore-candidate.mjs` readCapabilityRole, a live Core round trip) and the
+// run's capability policy: about six execution authentications and two Core calls. At a slow Core or execution store that chain
+// outran the earlier 3 s bound at every layer, the worker mounted the run with no read available, and every read of that turn
+// answered UNAVAILABLE while the next turn's snapshot succeeded (the 1 November bill-read flap). Each enclosing hop keeps one
+// control margin above the hop it encloses. The worker bound stays inside the setup stage next to the intent offer
+// (10 s + 12 s < SETUP_STAGE_MS), so two unanswered offers still leave the run its own setup allowance.
+export const READ_AVAILABILITY_CONTROL_MS=6000;
+export const READ_AVAILABILITY_RUNNER_MS=READ_AVAILABILITY_CONTROL_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
+export const READ_AVAILABILITY_WORKER_MS=READ_AVAILABILITY_RUNNER_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
+
 // SDK session preparation; a continuation reads its checkpoint snapshot from control here.
 const LOCAL_STAGE_MS=RUNNER_SESSION_RPC_MS.snapshot+RUNNER_LOAD_CONTROL_MARGIN_MS;
 // The activity's bound on runtime preparation: the runner/runtime call, then the local stage. It is the one place where an

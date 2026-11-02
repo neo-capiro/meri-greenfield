@@ -72,6 +72,8 @@ export const LINE_SCHEMAS=Object.freeze({
  // failure was decided before it (`before-owner`, so nothing was prepared) and the mount's bounded detail (a field path or the
  // answering owner's token, never values), so a FAILED or UNKNOWN card is attributable from control's own log stream.
  'meri.intent.prepare':{...COMMON,layer:choice(['control']),code:safeCode,dispatched:choice(['owner','before-owner'],'other'),elapsedMs:number,detail:safeText},
+ // The general-read availability snapshot that failed, in the same shape: the run's reads answer "cannot be read right now" for that turn.
+ 'meri.read.availability':{...COMMON,layer:choice(['worker','runner','control']),code:safeCode,elapsedMs:number},
  'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable','reproven']),code:safeCode},
  'meri.budget.quarantined':{...COMMON,reason:safeCode},
  'meri.process.rollup':{service:choice(SERVICES),atMs:number,windowMs:number,...COUNTERS,ownerExchanges:exchanges,telemetryDropped:number},

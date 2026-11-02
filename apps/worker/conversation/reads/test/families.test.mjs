@@ -96,7 +96,7 @@ test('contacts guidance counts toward the complete model-visible output limit',a
   const decision=await runtime.sdkOptions.hooks.PreToolUse[0].hooks[0]({hook_event_name:'PreToolUse',session_id:'71000000-0000-4000-8000-000000000091',
    tool_name:'mcp__meri_reads__find_contacts',tool_use_id:'bounded-contacts',tool_input:{arguments:f.scene.arguments}},undefined,{});
   const result=await client.callTool({name:'find_contacts',arguments:decision.hookSpecificOutput.updatedInput});
-  assert.equal(result.isError,true);assert.match(result.content[0].text,/^RESOURCE_LIMIT:/);
+  assert.equal(result.isError,true);assert.match(result.content[0].text,/^This read reached a call, size or read limit for this run\./);
   assert.equal(result.content.length,1);assert.deepEqual(runtime.receipts(),[]);
  }finally{await client.close();await runtime.close();}
 });

@@ -2,26 +2,29 @@
 /** Closed result texts for `meri_reads` tools. Every failure is `isError:true` with one fixed text per gateway code
  * (gateway and native source-publication codes), followed by the read's own fixed next-step guidance where
  * `guidance.mjs` owns one; none carries source detail, and no failure is ever rendered as a successful or empty result.
+ * The texts are written for the model to relay: no code word, no SDK tool name and no source identifier, because the
+ * model repeats what it reads to the user (the 1 November "UNAVAILABLE" and tool-name leaks). The model already knows
+ * which call failed from the tool-use id; the closed code is `failureCode(error)`, never parsed back out of the text.
  * Successful SQL, memory and mail pages get one short orientation notice (counts, continuation, what an empty page
  * means, stale mailbox); the canonical result bytes and their hashes are never touched. */
 import {readGuidance,MAIL_COVERAGE_REASONS,MAIL_COVERAGE_UNKNOWN} from './guidance.mjs';
 import {SQL_TOOL_IDS} from './tools.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
-/** @type {Readonly<Record<string,(tool:string)=>string>>} */
+/** @type {Readonly<Record<string,string>>} */
 const TEXTS=Object.freeze({
- UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not enabled, installed or served for this request in this conversation (an unsupported operation or a source-side refusal that is neither a permission refusal nor an outage). ${NOTHING}`,
- SOURCE_UNAVAILABLE:tool=>`SOURCE_UNAVAILABLE: ${tool} is served, but its source did not answer this call (outage, overload, a refusal by the source or an upstream timeout). This is not an empty result. ${NOTHING}`,
- ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now (not permitted, not absent data). ${NOTHING}`,
- DEADLINE:tool=>`DEADLINE: ${tool} did not finish within its time limit. ${NOTHING}`,
- CANCELLED:tool=>`CANCELLED: ${tool} was cancelled before it finished. ${NOTHING}`,
- INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${NOTHING}`,
- BUDGET_UNCERTAIN:tool=>`BUDGET_UNCERTAIN: ${tool} could not be accounted for in this run; do not repeat this call. ${NOTHING}`,
- SOURCE_PUBLICATION_UNKNOWN:tool=>`SOURCE_PUBLICATION_UNKNOWN: ${tool} finished its read but saving the source could not be confirmed; do not repeat this call. ${NOTHING}`,
- SOURCE_PUBLICATION_CONFLICT:tool=>`SOURCE_PUBLICATION_CONFLICT: ${tool} reused a saved delivery identity with a different result; do not repeat this call. ${NOTHING}`,
- INVALID_RESULT:tool=>`INVALID_RESULT: ${tool} returned a result that failed validation and was withheld. ${NOTHING}`,
- RESOURCE_LIMIT:tool=>`RESOURCE_LIMIT: ${tool} reached a call, size or read limit for this run. ${NOTHING}`,
- GATEWAY_CONFIGURATION:tool=>`GATEWAY_CONFIGURATION: ${tool} is not configured for this conversation. ${NOTHING}`,
- INTERNAL_ERROR:tool=>`INTERNAL_ERROR: ${tool} failed. ${NOTHING}`,
+ UNAVAILABLE:`This source cannot be read in this conversation right now: it is not connected, not enabled or not served for this request (not a permission refusal and not an empty result). This may be temporary. Tell the user plainly that it could not be read right now and suggest trying again in a minute, unless a more specific next step follows. ${NOTHING}`,
+ SOURCE_UNAVAILABLE:`This source is served but did not answer this call (an outage, overload, a refusal by the source or an upstream timeout). This is not an empty result: tell the user it is not reachable right now and to try again in a minute. ${NOTHING}`,
+ ACCESS_DENIED:`This read is not permitted for this user, client or conversation now (not permitted, not absent data). ${NOTHING}`,
+ DEADLINE:`This read did not finish within its time limit. ${NOTHING}`,
+ CANCELLED:`This read was cancelled before it finished. ${NOTHING}`,
+ INVALID_ARGUMENTS:`These arguments were refused; supply literal arguments matching the input schema. ${NOTHING}`,
+ BUDGET_UNCERTAIN:`This read could not be accounted for in this run; do not repeat this call. ${NOTHING}`,
+ SOURCE_PUBLICATION_UNKNOWN:`This read finished but saving the source could not be confirmed; do not repeat this call. ${NOTHING}`,
+ SOURCE_PUBLICATION_CONFLICT:`This read reused a saved delivery identity with a different result; do not repeat this call. ${NOTHING}`,
+ INVALID_RESULT:`This read returned a result that failed validation and was withheld. ${NOTHING}`,
+ RESOURCE_LIMIT:`This read reached a call, size or read limit for this run. ${NOTHING}`,
+ GATEWAY_CONFIGURATION:`This read is not configured for this conversation. ${NOTHING}`,
+ INTERNAL_ERROR:`This read failed. ${NOTHING}`,
 });
 export const READ_FAILURE_CODES=Object.freeze(Object.keys(TEXTS));
 /** Refusals whose message is PostgreSQL's own report of the model's statement. SOURCE_UNAVAILABLE and QUERY_TIMEOUT
@@ -45,7 +48,7 @@ function sqlDiagnostics(error,code){
 }
 /** The mail handler returns the canonical page itself, not a `{result}` envelope. */
 const MAIL_TOOLS=new Set(['mail.list_messages','mail.search_messages','mail.read_thread']);
-const RECONNECT='the user can reconnect the mailbox in Capiro\'s mail integration settings';
+const RECONNECT='the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations';
 const notice=(/** @type {string} */text)=>({type:/** @type {const} */('text'),text});
 /** Mailbox connection states other than connected among the returned messages. @param {any[]} messages */
 const staleStatuses=messages=>[...new Set(messages.map(m=>m?.connectionStatus).filter(s=>typeof s==='string'&&s!=='connected'))];
@@ -152,11 +155,11 @@ export function failureCode(error){
  const code=typeof e?.code==='string'?e.code:e?.message;
  return typeof code==='string'&&Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR';
 }
-/** @param {string} code @param {string} tool */
+/** @param {string} code @param {string} tool the SDK tool name, which selects the read's own guidance and never appears in the text */
 export function failureResult(code,tool){
- const closed=(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool),hint=readGuidance(tool)?.failures[code];
- // The read's fixed guidance sits between the closed code text and the evidence sentence, so every failure keeps
- // the same `CODE: tool ...` head and the same honest tail.
+ const closed=Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR,hint=readGuidance(tool)?.failures[code];
+ // The read's fixed guidance sits between the closed text and the evidence sentence, so every failure keeps the same
+ // closed head for its code and the same honest tail.
  const text=hint===undefined?closed:`${closed.slice(0,-NOTHING.length)}${hint} ${NOTHING}`;
  return {isError:true,content:[{type:/** @type {const} */('text'),text}]};
 }

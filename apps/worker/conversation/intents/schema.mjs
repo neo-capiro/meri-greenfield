@@ -8,12 +8,14 @@
  * advertised as the SDK tool input, so the model is told the fields instead of an opaque schema identity.
  *
  * Where an owner admits less than its canonical request schema, that owner lane declares the projection here and it
- * is proved the same way, so a declaration can narrow the owner's contract but never widen it. Three such projections
+ * is proved the same way, so a declaration can narrow the owner's contract but never widen it. Four such projections
  * exist today:
  *
  * - `save_memory`: no `clientId` (the native memory owner refuses any model-supplied value,
  *   `apps/control/memory/command-options.mjs`), the bounds and scope vocabulary its own normalized arguments
  *   declare, and only `content` required because the rest is derived from the trusted run.
+ * - `mail_send`: no `clientId` or `senderConnectionId` and an optional `senderEmail`; the trusted preparer completes them
+ *   from the run's selection and the actor's connected mailbox before the owner validates the canonical request.
  * - the document rows: the trusted document consumer binds the operation it was composed for into the canonical
  *   request and refuses a conflicting one (`apps/control/intents/document-preparer.mjs`), so the advertised branch
  *   constrains `operation` without requiring the model to repeat a trusted selection, and the proof re-establishes
@@ -98,20 +100,22 @@ export function canonicalIntentInputSchema(inputSchema){
  const {doc,sha256}=documentFor(id);if(sha256!==inputSchema.sha256)fail();
  return inline(pointer(doc,fragment),doc,0);
 }
-/** Convert one advertised schema and prove that, with the trusted binding `rebound` re-established, it accepts only
- * what the canonical schema accepts. @param {any} advertised @param {any} canonical @param {string|null} rebound */
-function prove(advertised,canonical,rebound=null){
+/** Convert one advertised schema and prove that, with the trusted fields `rebound` re-established (their canonical
+ * definitions, required), it accepts only what the canonical schema accepts.
+ * @param {any} advertised @param {any} canonical @param {readonly string[]} rebound */
+function prove(advertised,canonical,rebound=[]){
  let converted;
  try{
   converted=z.fromJSONSchema(advertised);
   const subject=z.toJSONSchema(converted,{io:'input'}),required=Array.isArray(subject.required)?[...subject.required]:[];
-  if(rebound!==null&&!required.includes(rebound))required.push(rebound);
-  if(!isNarrowerOrEqual({...subject,required},canonical))fail();
+  const properties={...subject.properties};
+  for(const field of rebound){if(!Object.hasOwn(canonical.properties??{},field))fail();properties[field]??=canonical.properties[field];if(!required.includes(field))required.push(field);}
+  if(!isNarrowerOrEqual({...subject,properties,required},canonical))fail();
  }
  catch{fail();}
  return converted;
 }
-/** @typedef {{advertised:any,canonical:any,rebound:string|null}} Declaration */
+/** @typedef {{advertised:any,canonical:any,rebound:readonly string[]}} Declaration */
 /** The memory owner's model-facing projection of its canonical request.
  *
  * The owner admits a `MemoryProposeRaw` request whose `content` (trimmed) and `key` fit the bounds its own
@@ -130,7 +134,18 @@ function memoryInput(_operation,canonical){
   key:normalized.properties.key,
   scope:{anyOf:[{type:'string',maxLength:raw.properties.scope.anyOf[0].maxLength,pattern:`^(${scopes.join('|')})$`},{type:'null'}]},
   ttlDays:raw.properties.ttlDays},
-  required:[...raw.required],additionalProperties:false},canonical,rebound:null}];
+  required:[...raw.required],additionalProperties:false},canonical,rebound:[]}];
+}
+const MAIL_TRUSTED=Object.freeze(['clientId','senderConnectionId','senderEmail']);
+/** The mail owner's model-facing projection: the trusted preparer sets the client association from the run's selection
+ * and the sender from the actor's connected mailbox (`apps/runtime/native-authority/native-mail-preparer.mjs`), so the
+ * model never supplies an internal identifier; `senderEmail` stays optional to choose among several mailboxes.
+ * @param {any} _operation @param {any} canonical @returns {Declaration[]} */
+function mailInput(_operation,canonical){
+ if(canonical?.type!=='object'||canonical.additionalProperties!==false||!Array.isArray(canonical.required))fail();
+ const {clientId,senderConnectionId,...properties}=canonical.properties??{};
+ if(!clientId||!senderConnectionId||!properties.senderEmail)fail();
+ return [{advertised:{type:'object',properties,required:canonical.required.filter(field=>!MAIL_TRUSTED.includes(field)),additionalProperties:false},canonical,rebound:MAIL_TRUSTED}];
 }
 /** The formats one canonical document branch admits. @param {any} branch */
 function branchFormats(branch){
@@ -156,7 +171,7 @@ function documentInput(operation,canonical){
   if(branch?.type!=='object'||branch.additionalProperties!==false||!properties||!Array.isArray(branch.required))fail();
   for(const format of branchFormats(branch).filter(value=>admitted.includes(value)))
    declarations.push({advertised:{...branch,properties:{...properties,format:{const:format}},required:branch.required.filter(name=>name!=='operation')},
-    canonical:branch,rebound:Object.hasOwn(properties,'operation')?'operation':null});
+    canonical:branch,rebound:Object.hasOwn(properties,'operation')?['operation']:[]});
  }
  // The advertised branches of one selection must stay disjoint, or an accepted body could satisfy two canonical
  // branches at once, which the canonical `oneOf` refuses.
@@ -211,7 +226,7 @@ function watchInput(_operation,canonical){
   for(const group of groups){
    const resolved=resolveConditionals(canonical,{family:[family],operation:group});
    if(canonicalSha256(resolved.properties.targetKind?.enum)!==canonicalSha256(WATCH_TARGET_KINDS[family]))fail();
-   declarations.push({advertised:resolved,canonical:resolved,rebound:null});
+   declarations.push({advertised:resolved,canonical:resolved,rebound:[]});
   }
  }
  if(!declarations.length)fail();
@@ -219,7 +234,7 @@ function watchInput(_operation,canonical){
 }
 /** Owner-lane declarations, by operation: the model-facing branches of that operation's canonical request.
  * @type {Readonly<Record<string,(operation:{id:string,version:string},canonical:any)=>Declaration[]>>} */
-const DECLARED=Object.freeze({save_memory:memoryInput,create_word:documentInput,create_excel:documentInput,create_powerpoint:documentInput,watch_action:watchInput});
+const DECLARED=Object.freeze({save_memory:memoryInput,mail_send:mailInput,create_word:documentInput,create_excel:documentInput,create_powerpoint:documentInput,watch_action:watchInput});
 /** @param {{operation:{id:string,version:string}}} row */
 function operationOf(row){
  const operation=row?.operation;
