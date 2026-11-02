@@ -14,3 +14,11 @@ test('composed owners do not conceal remaining source or placement gaps',()=>{
  assert.equal(result.owners.find(o=>o.name==='sources.currentInstallation').state,'per-run-check-required');
  assert.equal(result.ready,false);assert.deepEqual(result.missingOwners,['browser.hosts','data-access.application','memory.producer','uploads.custody','tasks.commands','schedules.application','schedules.inbox','sources.currentInstallation','schedules.dispatchWorker']);
 });
+test('a declared renderer names its startup qualification, with the closed code when refused',()=>{
+ const owner=renderer=>productReadiness({ports:{configuredOwners:[]},retention:null,sourceEnabled:false,...(renderer===undefined?{}:{renderer})}).owners.find(o=>o.name==='artifacts.renderer');
+ assert.equal(owner(),undefined,'no renderer declared, no owner');
+ assert.deepEqual(owner({state:'composed'}),{name:'artifacts.renderer',state:'composed'});
+ assert.deepEqual(owner({state:'unavailable',reason:'RuntimeClientError'}),{name:'artifacts.renderer',state:'unavailable',reason:'RuntimeClientError'});
+ const refused=productReadiness({ports:{configuredOwners:[]},retention:null,sourceEnabled:false,renderer:{state:'unavailable',reason:'RENDERER_NOT_ADMITTED'}});
+ assert.ok(refused.missingOwners.includes('artifacts.renderer'));
+});

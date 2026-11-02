@@ -8,7 +8,7 @@ import {join,relative,sep} from 'node:path';
 import {realpath,stat,writeFile,mkdtemp,mkdir,rm} from 'node:fs/promises';
 import {runArtifactProcess} from '../process.mjs';
 import {RENDERER_SANDBOX_REQUIREMENTS,admittedConverter} from '../renderer.mjs';
-import {evaluateRendererSandbox,parseLibreOfficeVersion,qualifyLibreOfficeRenderer,RENDERER_PROBE_PATH,RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../renderer-qualification.mjs';
+import {evaluateRendererSandbox,parseLibreOfficeVersion,qualifyLibreOfficeRenderer,RENDERER_PROBE_PATH,RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV,BWRAP_CHILD_ENV} from '../renderer-qualification.mjs';
 
 const ROOT='/srv/meri/render',CWD=ROOT+'/meri-renderer-probe-a1b2c3',ZERO='0'.repeat(16),DIGEST='sha256:'+'a'.repeat(64);
 /** A converter child that satisfies every requirement (separate no-network task, read-only root, no role, cgroup limits). */
@@ -120,6 +120,36 @@ test('version or probe failures leave the renderer unadmitted with a closed fail
   const {base}=await scripted(observe,options),r=await qualifyLibreOfficeRenderer(base);
   assert.equal(r.port.state,'unavailable');assert.equal(r.port.reason,'RENDERER_NOT_ADMITTED');assert.equal(r.admission,null);assert.equal(r.receipt.failure,failure);
  }
+});
+
+test('a failed child keeps its process outcome on the refusal receipt, never its output',async()=>{
+ // The shape a bwrap setup failure has: the runner exits 1 with a short stderr line before the program ever starts.
+ const failed=Object.assign(Error('x'),{code:'ARTIFACT_PROCESS_FAILED',stdout:Buffer.from('out'),stderr:Buffer.from('bwrap: synthetic setup failure'),
+  receipt:Object.freeze({pid:7,exitCode:1,signal:null,settlement:'closed',spawnError:null,stderrBytes:30})});
+ const version=await qualifyLibreOfficeRenderer((await scripted(atCwd(),{version:failed})).base);
+ assert.equal(version.receipt.failure,'RENDERER_VERSION_UNAVAILABLE');
+ assert.deepEqual(version.receipt.processes,[{pid:7,exitCode:1,signal:null,settlement:'closed',spawnError:null,stderrBytes:30,failure:'ARTIFACT_PROCESS_FAILED'}]);
+ assert.equal(JSON.stringify(version.receipt).includes('bwrap:'),false,'stderr text is never kept');
+ const probe=await qualifyLibreOfficeRenderer((await scripted(()=>Object.assign(Error('x'),{code:'ARTIFACT_DEADLINE'}))).base);
+ assert.equal(probe.receipt.failure,'RENDERER_PROBE_FAILED');assert.deepEqual(probe.receipt.processes,[{exitCode:0},{failure:'ARTIFACT_DEADLINE'}]);
+});
+
+test('a bubblewrap child is judged on the bwrap allowlist: PWD is admitted there and nowhere else',async()=>{
+ // bwrap always sets PWD (bubblewrap.c xsetenv). The AgentCore renderer purpose ran every child under bwrap but judged
+ // it on the plain list, so noCredentials could never be attested and every renderer session answered 503.
+ assert.deepEqual([...BWRAP_CHILD_ENV],[...RENDERER_CHILD_ENV,'PWD']);assert.ok(Object.isFrozen(BWRAP_CHILD_ENV));
+ const bwrapped=sandboxed({envNames:[...BWRAP_CHILD_ENV]});
+ falseOnly(bwrapped,['noCredentials']);
+ assert.deepEqual(evaluateRendererSandbox(bwrapped,{tempRoot:ROOT,childEnv:BWRAP_CHILD_ENV}).findings,[]);
+ for(const extra of ['AWS_CONTAINER_CREDENTIALS_RELATIVE_URI','AWS_SESSION_TOKEN','MERI_CONTROL_ORIGIN'])
+  assert.deepEqual(evaluateRendererSandbox(sandboxed({envNames:[...BWRAP_CHILD_ENV,extra]}),{tempRoot:ROOT,childEnv:BWRAP_CHILD_ENV}).findings.map(f=>f.requirement),['noCredentials'],extra);
+ // Only the two fixed lists exist: a caller-built list (even one naming a credential) is judged on the plain list.
+ assert.deepEqual(evaluateRendererSandbox(sandboxed({envNames:[...RENDERER_CHILD_ENV,'AWS_SESSION_TOKEN']}),{tempRoot:ROOT,childEnv:[...RENDERER_CHILD_ENV,'AWS_SESSION_TOKEN']}).findings.map(f=>f.requirement),['noCredentials']);
+ const {base}=await scripted(atCwd({envNames:[...BWRAP_CHILD_ENV]}));
+ assert.deepEqual([...(await qualifyLibreOfficeRenderer(base)).port.missingRequirements],['noCredentials']);
+ const admitted=await qualifyLibreOfficeRenderer({...base,childEnv:BWRAP_CHILD_ENV});
+ assert.equal(admitted.port.state,'available');assert.equal(admitted.admission.sandbox.noCredentials,true);
+ for(const childEnv of [[...BWRAP_CHILD_ENV],['PWD'],'PWD',null])await assert.rejects(qualifyLibreOfficeRenderer({...base,childEnv}),{code:'RENDERER_QUALIFICATION_CONFIGURATION'});
 });
 
 test('only trusted absolute configuration is accepted',async()=>{
