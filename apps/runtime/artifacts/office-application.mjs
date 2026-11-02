@@ -15,10 +15,10 @@ import {assertDocumentRevisionSelection} from '../../../packages/contracts/docum
 import {officeOriginalTitle} from '../../../packages/contracts/office-edit.mjs';
 const refuse=code=>{throw Object.assign(Error(code),{code});};
 import {wopiRequest,wopiResponse,cancelWopiBody,refusalStatus} from '../../artifacts/edit-sessions/wopi-http.mjs';
-export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits,drafts,codec,launch,generation,browserOrigin,originalSource}){
+export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits,retention,drafts,codec,launch,generation,browserOrigin,originalSource}){
  let origin;try{origin=new URL(browserOrigin);}catch{throw Error('OFFICE_CONFIGURATION');}
  if(typeof browserOrigin!=='string'||origin.protocol!=='https:'||origin.origin!==browserOrigin)throw Error('OFFICE_CONFIGURATION');
- const access=createRuntimeOfficeAccess({optionsOwner,sessions,now,limits}),borrow=borrowedRunSession(sessions);
+ const access=createRuntimeOfficeAccess({optionsOwner,sessions,now,limits,retention}),borrow=borrowedRunSession(sessions);
  const attended=createAttendedOffice({drafts,launch,generation,now});
  if(typeof borrow!=='function'||typeof codec?.verify!=='function')throw Error('OFFICE_CONFIGURATION');
  const application={

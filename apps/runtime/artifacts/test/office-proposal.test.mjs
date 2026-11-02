@@ -23,6 +23,8 @@ import {OFFICE_PROPOSAL_KIND} from '../../../../packages/contracts/office-edit.m
 const OP={id:'propose_office_edit',version:'0.2.0'};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const edits={docx:{unit:'p:1',before:'Quarterly report — Ω',after:'Quarterly report — Ω (final)'},xlsx:{unit:'Data!B2',before:'7',after:'9'},pptx:{unit:'slide:1/shape:2',before:'Agenda',after:'Agenda (revised)'}};
+// The production options owner composes artifact options without a retention gate; control supplies its own.
+const withoutRetention=({retention,...options})=>options;
 async function fixture(t,format='docx'){
  const baseBytes=retained[format](),f=await wopiFixture(t,{format,baseBytes}),now=f.options.now;
  const state=Object.assign(f.state,{observations:[],modeDenied:null,selection:null});
@@ -30,12 +32,12 @@ async function fixture(t,format='docx'){
  const optionsOwner={async resolve(call){
   const required={'office-edit':'artifact.revise',inspect:'artifact.inspect',download:'artifact.download'}[call.intent];
   const authorize=async x=>{if(x.action!==required||state.modeDenied===call.intent)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return f.artifactOptions.authorize(x);};
-  return {documentOptions:{sessions:f.sessions,selectedClientId:f.claims.selectedClientId,artifactOptions:{...f.artifactOptions,now,authorize,ids:()=>({artifactId:id(960),versionId:id(961),objectId:id(962)})},now,limits,enabled:true},
+  return {documentOptions:{sessions:f.sessions,selectedClientId:f.claims.selectedClientId,artifactOptions:{...withoutRetention(f.artifactOptions),now,authorize,ids:()=>({artifactId:id(960),versionId:id(961),objectId:id(962)})},now,limits,enabled:true},
    async recheck({phase}){state.observations.push({intent:call.intent,phase});if(state.modeDenied===call.intent)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}};
  }};
  const discoveryBytes=Buffer.from(`<wopi-discovery><net-zone name="external-https"><app><action ext="${format}" name="edit" urlsrc="https://office.example.test/browser/synthetic/cool.html?"/></app></net-zone></wopi-discovery>`);
  const launch=createCollaboraCodeLaunch({editorOrigin:'https://office.example.test',wopiOrigin:'https://wopi.example.test',discoveryBytes,codec:f.codec,now});
- const app=createRuntimeOfficeApplication({optionsOwner,sessions:f.sessions,now,limits,drafts:f.options.drafts,codec:f.codec,launch,generation:f.options.generation,browserOrigin:'https://app.example.test'});
+ const app=createRuntimeOfficeApplication({optionsOwner,sessions:f.sessions,now,limits,retention:f.artifactOptions.retention,drafts:f.options.drafts,codec:f.codec,launch,generation:f.options.generation,browserOrigin:'https://app.example.test'});
  const binding=f.context.binding,scopes=f.context.scopes,selectedClientId=f.claims.selectedClientId;
  const selectionFor=version=>({artifactId:version.artifactId,versionId:version.versionId,objectSha256:version.object.sha256});
  const credential=()=>({credential:f.session.credential,deadlineMs:now()+5000});

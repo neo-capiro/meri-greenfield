@@ -14,6 +14,8 @@ import {createCollaboraCodeLaunch} from '../../../artifacts/edit-sessions/collab
 import {id} from '../../../artifacts/storage/test/sql-fixture.mjs';
 import {OFFICE_SCHEMA,receiveOfficeRequest,receiveOfficeResponse} from '../../../../packages/contracts/dist/office-application.mjs';
 const encode=value=>Buffer.from(JSON.stringify(value));
+// The production options owner composes artifact options without a retention gate; control supplies its own.
+const withoutRetention=({retention,...options})=>options;
 async function fixture(t,format='pptx'){
  const bytes=preservationBytes(format),f=await wopiFixture(t,{format}),now=f.artifactOptions.now;
  t.mock.method(Date,'now',now);
@@ -31,11 +33,11 @@ async function fixture(t,format='pptx'){
  const optionsOwner={async resolve(call){
   observations.push(call.intent);const required={'office-import':'artifact.generate','office-edit':'artifact.revise',inspect:'artifact.inspect',download:'artifact.download'}[call.intent];
   return {documentOptions:{sessions:f.sessions,selectedClientId:f.claims.selectedClientId,now,limits,enabled:true,
-   artifactOptions:{...f.artifactOptions,now,ids:()=>({artifactId:id(960),versionId:id(961),objectId:id(962)}),authorize:async c=>{assert.equal(c.action,required);return f.artifactOptions.authorize(c);}}},recheck:async()=>{}};
+   artifactOptions:{...withoutRetention(f.artifactOptions),now,ids:()=>({artifactId:id(960),versionId:id(961),objectId:id(962)}),authorize:async c=>{assert.equal(c.action,required);return f.artifactOptions.authorize(c);}}},recheck:async()=>{}};
  }};
  const discoveryBytes=Buffer.from(`<wopi-discovery><net-zone name="external-https"><app><action ext="${format}" name="edit" urlsrc="https://office.example.test/browser/test/cool.html?"/></app></net-zone></wopi-discovery>`);
  const launch=createCollaboraCodeLaunch({editorOrigin:'https://office.example.test',wopiOrigin:'https://wopi.example.test',discoveryBytes,codec:f.codec,now});
- const app=createRuntimeOfficeApplication({optionsOwner,sessions:f.sessions,now,limits,drafts:f.options.drafts,codec:f.codec,launch,generation:f.options.generation,browserOrigin:'https://app.example.test',originalSource:source});
+ const app=createRuntimeOfficeApplication({optionsOwner,sessions:f.sessions,now,limits,retention:f.artifactOptions.retention,drafts:f.options.drafts,codec:f.codec,launch,generation:f.options.generation,browserOrigin:'https://app.example.test',originalSource:source});
  const selection={uploadId:record.uploadId,sha256:record.declaration.sha256};
  async function call(route,input){const body={schema:OFFICE_SCHEMA,...input},q=receiveOfficeRequest(route,encode(body));
   const response=await app.handleControl(new Request('https://control.example.test/api/meri/office/'+route,{method:'POST',headers:{authorization:'Bearer '+f.session.credential,'content-type':'application/json'},body:JSON.stringify(body)}));

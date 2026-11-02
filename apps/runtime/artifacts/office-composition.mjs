@@ -130,7 +130,7 @@ export function composeOffice({configuration,office,ports,sessions,retention,now
   discoveryBytes:material.discoveryBytes,codec,now});
  const generation=createSuppressionGeneration({journal:retention.journal,serving:retention.serving});
  const originalSource=ports.uploadApplicationFactory?.createOfficeSource?.({sessions,retention:retention.gate});
- const application=createRuntimeOfficeApplication({optionsOwner,sessions,now,originalSource,
+ const application=createRuntimeOfficeApplication({optionsOwner,sessions,now,originalSource,retention:retention.gate,
   limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},drafts,codec,launch,generation,browserOrigin:office.browserOrigin});
  if(typeof application.handleControl!=='function'||typeof application.handleWopi!=='function')throw fault();
  // The governed same-document bridge: listed to the model only for a run with a selected Office document, applied only
