@@ -94,6 +94,26 @@ test('every governed action prepares once through Core, binds the delivery key, 
  }
 });
 
+test('adding a bill in a Research Portfolio conversation prepares one approvable card and an approval adds it once',async()=>{
+ // M37 end to end at the unit level: a Research Portfolio conversation has no selected client; the model gives only
+ // member_create's own fields, Meri binds the conversation and the delivery key, Core returns a pending proposal, the
+ // tool answers PREPARED PROPOSAL, the inbox lists it awaiting approval, and the signed-in approval applies it once.
+ const f=setup('manage_research_portfolio',{selected:false});
+ const parameters={expectedRevision:3,targetKind:'federal_bill',targetId:'bill-hr-9495',label:'H.R. 9495'};
+ const call={...f.call,arguments:{conversationId:f.binding.conversationId,action:'member_create',parameters,confirmed:true}};
+ const prepared=await f.prepare(call),p=prepared.proposal;
+ assert.equal(prepared.status,'approval_required');assert.equal(p.operation,'manage_research_portfolio');
+ assert.deepEqual(f.state.bodies[0].currentTurn.selectedClientId,null);
+ assert.deepEqual(f.state.bodies[0].proposal.input,{conversationId:f.binding.conversationId,action:'member_create',confirmed:true,
+  parameters:{...parameters,idempotencyKey:'meri-rp-'+hash({binding:f.binding,deliveryId:delivery(1)})}});
+ assert.equal(assertPreparedResult('research-action',call.operation,prepared,f.binding,{scopes:f.scopes,nowMs:NOW}).reference,p.proposalId);
+ assert.match(preparedResult(JSON.stringify(prepared),'approval_required','manage_research_portfolio').content[1].text,/^PREPARED PROPOSAL/u);
+ const pending=await f.list();assert.equal(pending.intents.length,1);assert.equal(pending.intents[0].result.proposalStatus,'proposed');
+ await receiveIntentsResponse('list',200,JSON.stringify(pending),{request:{conversationId:f.binding.conversationId}});
+ assert.equal(f.state.effects,0);
+ const decided=await f.decide(p);assert.equal(decided.proposalStatus,'succeeded');assert.equal(f.state.effects,1);
+ assert.equal((await f.decide(p)).proposalStatus,'succeeded');assert.equal(f.state.effects,1);
+});
 test('pure management reads use current Core data without creating a proposal, journal entry or approval',async()=>{
  const f=setup('manage_research_portfolio'),request={conversationId:f.binding.conversationId,action:'grants_list',parameters:{}},call={...f.call,arguments:request};
  const result=await f.prepare(call);assert.equal(result.status,'read');assert.deepEqual(result.result,[]);
