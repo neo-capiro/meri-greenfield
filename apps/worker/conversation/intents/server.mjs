@@ -21,6 +21,7 @@ import {researchActionValidators,officeEditValidators} from '../../../../package
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {INTENT_SERVER_NAME,INTENT_TOOL_PREFIX,intentToolName} from './catalog.mjs';
 import {defineIntentTool} from './tools.mjs';
+import {conversationBound} from './schema.mjs';
 import {assertPreparedResult} from './prepared.mjs';
 import {intentFailureCode,intentFailureResult,preparedResult} from './results.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
@@ -65,6 +66,10 @@ export function createIntentServer(c){
  /** @type {Map<string,import('./catalog.mjs').IntentRow[]>} */
  const byTool=new Map();for(const r of registered)byTool.set(intentToolName(r.tool),[...(byTool.get(intentToolName(r.tool))??[]),r]);
  const rowFor=(/** @type {string} */name,/** @type {unknown} */id)=>byTool.get(name)?.find(r=>r.operation.id===id);
+ // A request whose canonical schema names its conversation gets this run's: the model is never told the conversation id and
+ // must never choose one (the 2 Nov new-conversation runs failed in the worker on a guessed id before any port call).
+ const bound=new Map(registered.map(r=>[r,conversationBound(r)]));
+ const bind=(/** @type {import('./catalog.mjs').IntentRow} */row,/** @type {unknown} */args)=>bound.get(row)&&args!==null&&typeof args==='object'&&!Array.isArray(args)?{...args,conversationId:binding.conversationId}:args;
  /** @type {import('@anthropic-ai/claude-agent-sdk').HookCallback} */
  const hook=async(raw,toolUseID,options)=>{try{
   if(closed||options?.signal?.aborted)throw fault('CANCELLED');
@@ -73,9 +78,9 @@ export function createIntentServer(c){
    typeof input.session_id!=='string'||!SESSION.test(input.session_id)||session!==null&&session!==input.session_id||seenToolUses.has(input.tool_use_id))throw fault('INTENT_HOOK_REFUSED');
   if(admitted>=maxCalls)throw fault('RESOURCE_LIMIT');
   admitted++;session??=input.session_id;seenToolUses.add(input.tool_use_id);
-  const token=randomUUID(),deliveryId=intentDeliveryId(binding,session,input.tool_use_id);
-  correlations.set(token,{operation:row.operation,argumentsSha256:canonicalSha256(value.arguments),deliveryId});
-  return {hookSpecificOutput:{hookEventName:'PreToolUse',updatedInput:{operation:value.operation,arguments:value.arguments,_meriInvocation:token}}};
+  const token=randomUUID(),deliveryId=intentDeliveryId(binding,session,input.tool_use_id),args=bind(row,value.arguments);
+  correlations.set(token,{operation:row.operation,argumentsSha256:canonicalSha256(args),deliveryId});
+  return {hookSpecificOutput:{hookEventName:'PreToolUse',updatedInput:{operation:value.operation,arguments:args,_meriInvocation:token}}};
  }catch(error){return deny(intentFailureCode(error)==='RESOURCE_LIMIT'?'RESOURCE_LIMIT: the write-request limit for this run is reached. Nothing has been changed.':'Write-request correlation unavailable');}};
  /** @param {string} name */
  const handler=name=>async(/** @type {any} */raw,/** @type {any} */extra)=>{
@@ -86,7 +91,9 @@ export function createIntentServer(c){
    correlations.delete(token);if(closed)throw fault('UNAVAILABLE');
    life=createOperationLifetime({deadlineMs:Math.min(c.now()+c.timeoutMs,c.deadlineMs),now:c.now,signal:extra?.signal,errorFactory:fault});
    if(!await life.run(signal=>c.stillAvailable(row.operation,signal)))throw fault('UNAVAILABLE');
-   started=!(row.owner==='research-action'&&researchActionValidators.isManagementRead(row.operation.id,args,{binding})||row.owner==='office'&&officeEditValidators.isRead(args));
+   // Only a request the canonical validators admit as a read skips the journal. A request they refuse is still sent to the port,
+   // which journals and explains the INVALID_ARGUMENTS refusal; it is never an INTERNAL_ERROR decided here without a row.
+   try{started=!(row.owner==='research-action'&&researchActionValidators.isManagementRead(row.operation.id,args,{binding})||row.owner==='office'&&officeEditValidators.isRead(args));}catch{started=true;}
    const result=await life.run(signal=>c.prepare({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));life.check();
    const prepared=assertPreparedResult(row.owner,row.operation,result,binding,{scopes:c.scopes,nowMs:c.now()}),json=JSON.stringify(prepared.value);
    // A read answers the exact arguments it was asked with: the office read is the one closed `{action:'read'}`.

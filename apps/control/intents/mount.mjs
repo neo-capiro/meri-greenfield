@@ -71,8 +71,12 @@ export function createIntentMount(configuration){
    if(typeof v.deliveryId!=='string'||!DELIVERY.test(v.deliveryId)||v.arguments===null||typeof v.arguments!=='object'||Array.isArray(v.arguments))throw intentFault('INVALID_ARGUMENTS');
    const record=data({operation:preparer.operation,argumentsSha256:canonicalSha256(v.arguments)}),life=lifetime(signal),key={binding,deliveryId:v.deliveryId,record};
    try{
-    // Pure management reads use fresh result-release authority and never create an approval/journal row.
-    let managementRead=false;try{managementRead=preparer.owner==='research-action'&&researchActionValidators.isManagementRead(v.operation.id,v.arguments,{binding})||preparer.owner==='office'&&officeEditValidators.isRead(v.arguments);}catch{throw intentFault('INVALID_ARGUMENTS');}
+    // Pure management reads use fresh result-release authority and never create an approval/journal row. A request the canonical
+    // validators refuse outright is journaled FAILED INVALID_ARGUMENTS with the schema's field-path detail below, after the
+    // claim, so the conversation shows a card for it and a repeat replays the same explained refusal without an owner call.
+    let managementRead=false,refusedArguments;
+    try{managementRead=preparer.owner==='research-action'&&researchActionValidators.isManagementRead(v.operation.id,v.arguments,{binding})||preparer.owner==='office'&&officeEditValidators.isRead(v.arguments);}
+    catch{refusedArguments=explain(preparer.operation,v.arguments)??'not a canonical request for this conversation: derived keys (idempotencyKey, operationKey) and identity fields are never supplied';}
     if(managementRead){
      if(typeof preparer.read!=='function')throw intentFault('UNAVAILABLE');
      const selected={operation:preparer.operation,deliveryId:v.deliveryId,argumentsSha256:record.argumentsSha256,life},original=await release.capture(selected);
@@ -84,6 +88,10 @@ export function createIntentMount(configuration){
     const begun=await life.run(s=>journal.begin({...key,signal:s}));
     const selected={operation:preparer.operation,deliveryId:v.deliveryId,argumentsSha256:record.argumentsSha256,life};
     if(begun.replayed)return await release.release({...selected,owner:preparer.owner,result:begun.result,original:begun.release});
+    if(refusedArguments!==undefined){
+     try{await life.run(s=>journal.settle({...key,state:'FAILED',outcome:{code:'INVALID_ARGUMENTS',detail:refusedArguments},signal:s}));}catch{}
+     throw intentFault('INVALID_ARGUMENTS',undefined,refusedArguments);
+    }
     let result,original;
     try{original=await release.capture(selected);}catch(error){
      const code=closed(error?.code);try{await life.run(s=>journal.settle({...key,state:'FAILED',outcome:{code},signal:s}));}catch{}throw error;

@@ -240,6 +240,20 @@ export function intentRowArguments(row){
  try{return {operation,mode:'canonical',arguments:prove(canonical,canonical)};}
  catch{return {operation,mode:'record',arguments:record()};}
 }
+/** Whether a row's canonical request names the conversation it belongs to (`conversationId` required anywhere in its
+ * schema: every Research Portfolio action, sharing, the business-development brief, attachment filing). That value is
+ * the trusted run's own identity, never something the model knows or chooses: the server binds it before the port.
+ * @param {{operation:{id:string,version:string}}} row */
+export function conversationBound(row){
+ const canonical=canonicalIntentInputSchema(intentDescriptor(operationOf(row)).inputSchema);
+ const requires=(/** @type {unknown} */node)=>{
+  if(Array.isArray(node))return node.some(requires);
+  if(node===null||typeof node!=='object')return false;
+  const o=/** @type {Record<string,unknown>} */(node);
+  return Array.isArray(o.required)&&o.required.includes('conversationId')||Object.values(o).some(requires);
+ };
+ return requires(canonical);
+}
 /** The `arguments` schema of one intent tool over its rows: its rows' advertised schemas, or the open record
  * while any of them still advertises none.
  * @param {readonly {operation:{id:string,version:string}}[]} rows */

@@ -3,7 +3,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {CommandError} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {intentFixture,mountIntents,SESSION} from './fixture.mjs';
+import {intentFixture,mountIntents,SESSION,NOW} from './fixture.mjs';
+import {mount} from '../../../../control/intents/test/fixture.mjs';
+import {createResearchActionPreparers} from '../../../../control/intents/research-action-preparer.mjs';
+import {id} from '../../../../control/conversations/test/store-fixture.mjs';
 import {intentDeliveryId,MAX_INTENT_CALLS} from '../server.mjs';
 import {DEFERRED_ORIGINALS} from '../../reads/availability.mjs';
 import {UNAVAILABLE_INTENT_PORT} from '../../capabilities/mounts.mjs';
@@ -63,6 +66,33 @@ test('a timeout after the port call started is UNKNOWN, not "nothing prepared"',
  try{const pending=m.call('propose_task',CREATE);setTimeout(()=>{f.f.state.now+=2000;},20);
   const r=await pending;failed(r,'UNKNOWN');release();
  }finally{release();await m.close();}
+});
+
+test('a Research Portfolio request never needs the conversation id: the run binds it, and a refused request is journaled, never an INTERNAL_ERROR without a row',async()=>{
+ // The 2 Nov new-conversation runs: the model guessed `conversationId` for manage_research_portfolio; the worker's own
+ // management-read check threw on the mismatch before any port call, answered INTERNAL_ERROR ("isn't connecting") and left
+ // no journal row, so the conversation showed no card at all.
+ const f=intentFixture(),selectedClientId=f.scopes[0].kind==='client'?f.scopes[0].resourceId:null,sent=[];
+ const client={async prepare({operation,request,operationKey}){sent.push({operation,request,operationKey});return {proposalId:id(10),request,preview:{label:'Create a Research Portfolio'},createdAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+60000).toISOString()};},async readManagement(){throw Error('unexpected read');}};
+ const preparers=[f.preparer(),...createResearchActionPreparers({binding:f.binding,scopes:f.scopes,selectedClientId,client,now:f.now,deadlineMs:NOW+60000,policyRevision:f.scopes[0].policyRevision,currentRights:async()=>({scopes:f.scopes,expiresAtMs:NOW+60000})})];
+ const journal=mount({binding:f.binding,preparers,now:f.now}),m=await mountIntents(f,{port:journal.mount});
+ try{
+  const create={action:'portfolio_create',parameters:{name:'FY2027 DoD Appropriations tracking'},confirmed:true};
+  // Omitted: bound. Wrong: replaced. The owner receives this run's conversation both times and prepares once per delivery.
+  const omitted=await m.call('propose_research_portfolio_management',{operation:'manage_research_portfolio',arguments:create},{toolUseId:'toolu_rp_omitted'});
+  assert.equal(omitted.isError,undefined,text(omitted));assert.equal(JSON.parse(text(omitted)).proposal.request.conversationId,f.binding.conversationId);
+  const wrong=await m.call('propose_research_portfolio_management',{operation:'manage_research_portfolio',arguments:{...create,conversationId:'22222222-2222-4222-8222-222222222222'}},{toolUseId:'toolu_rp_wrong'});
+  assert.equal(wrong.isError,undefined,text(wrong));assert.equal(JSON.parse(text(wrong)).proposal.request.conversationId,f.binding.conversationId);
+  assert.deepEqual(sent.map(s=>s.request.conversationId),[f.binding.conversationId,f.binding.conversationId]);
+  // A request the advertised schema accepts but the canonical validator refuses (a model-supplied derived key) is still sent to
+  // the port: the mount journals the refusal with its reason, the model reads INVALID_ARGUMENTS, and the conversation gets a card.
+  const refused=await m.call('propose_research_portfolio_management',{operation:'manage_research_portfolio',arguments:{...create,parameters:{name:'x',idempotencyKey:'meri-rp-'+'0'.repeat(64)}}},{toolUseId:'toolu_rp_refused'});
+  assert.equal(refused.isError,true);assert.equal(text(refused),'INVALID_ARGUMENTS: mcp__meri_intents__propose_research_portfolio_management refused these arguments (not a canonical request for this conversation: derived keys (idempotencyKey, operationKey) and identity fields are never supplied); correct the named fields and supply literal arguments matching its input schema. Nothing has been changed.');
+  const rows=[...journal.store.rows.values()].map(r=>[r.state,r.outcome?.code??null]);
+  assert.deepEqual(rows,[['PREPARED',null],['PREPARED',null],['FAILED','INVALID_ARGUMENTS']]);
+  assert.equal(sent.length,2,'the refused request never reached Core');
+  assert.deepEqual(m.runtime.receipts().map(r=>r.outcome),['prepared','prepared']);
+ }finally{await m.close();}
 });
 
 test('a REFUSED answer tells the model who refused and with what; without a detail the plain closed text stands',async()=>{

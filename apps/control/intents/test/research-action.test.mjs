@@ -111,10 +111,17 @@ test('management read rejects unknown fields, revoked rights and foreign convers
 });
 test('unknown actions and writes without confirmation never take the management read path; persisted rule preview remains governed',async()=>{
  const f=setup('manage_research_portfolio');
- for(const action of ['unknown_action','portfolio_archive','rule_preview'])await assert.rejects(f.prepare({...f.call,arguments:{conversationId:f.binding.conversationId,action,parameters:{}}}),{code:'INVALID_ARGUMENTS'});
- assert.equal(f.state.paths.length,0);assert.equal(f.store.rows.size,0);
+ // Each refused request is its own delivery: it is journaled FAILED with the schema's detail (a card, a replayable refusal) and never reaches Core.
+ let n=2;
+ for(const action of ['unknown_action','portfolio_archive','rule_preview']){
+  const refusal=await f.prepare({...f.call,deliveryId:delivery(n++),arguments:{conversationId:f.binding.conversationId,action,parameters:{}}}).catch(error=>error);
+  assert.equal(refusal.code,'INVALID_ARGUMENTS',action);assert.match(refusal.detail,/action|confirmed/u,action);
+ }
+ assert.equal(f.state.paths.length,0);assert.deepEqual([...f.store.rows.values()].map(r=>[r.state,r.outcome.code]),Array(3).fill(['FAILED','INVALID_ARGUMENTS']));
+ const replayed=await f.prepare({...f.call,deliveryId:delivery(2),arguments:{conversationId:f.binding.conversationId,action:'unknown_action',parameters:{}}}).catch(error=>error);
+ assert.equal(replayed.code,'INVALID_ARGUMENTS');assert.equal(f.store.rows.size,3,'a repeat replays the journaled refusal without a new row');
  const prepared=await f.prepare({...f.call,arguments:{conversationId:f.binding.conversationId,action:'rule_preview',parameters:{},confirmed:true}});
- assert.equal(prepared.status,'approval_required');assert.equal(f.state.prepares,1);assert.equal(f.state.effects,0);assert.equal(f.store.rows.size,1);
+ assert.equal(prepared.status,'approval_required');assert.equal(f.state.prepares,1);assert.equal(f.state.effects,0);assert.equal(f.store.rows.size,4);
 });
 test('a definite 4xx answer to the proposal POST settles FAILED with who answered, never UNKNOWN; 409 and 5xx stay UNKNOWN',async()=>{
  // The 2 Nov preview: the listener in front of Core answered POST /api/clio/action-proposals with its fixed 404 and the

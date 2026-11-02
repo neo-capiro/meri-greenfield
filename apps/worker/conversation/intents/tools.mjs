@@ -18,7 +18,7 @@ function description(rows){
   lines.push(`operation "${r.operation.id}": ${d.displayName}. ${d.whenToUse}`);
   for(const example of d.negativeExamples??[])lines.push(`  Do not: ${example}`);
   lines.push(`  arguments follow canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}; the owner validates them.`);}
- lines.push('Supply literal arguments only; identity, tenant, approval, permissions and client selection come from the trusted run, never from arguments.');
+ lines.push('Supply literal arguments only; identity, tenant, approval, permissions and client selection come from the trusted run, never from arguments. Where a schema names conversationId, the trusted run binds this conversation\'s id; you may omit it, and any value you supply is replaced.');
  // Catalog bytes stay frozen; the model-facing text is projected into the user's vocabulary (`user-vocabulary.mjs`).
  const text=userVocabulary(lines.join('\n'));return text.length>MAX_DESCRIPTION?text.slice(0,MAX_DESCRIPTION):text;
 }
