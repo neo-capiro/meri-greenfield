@@ -6,11 +6,11 @@ import {receiveConversationRequest} from '../../../../packages/contracts/dist/co
 import {conversationInitialInputPath,initialInputErrorStatuses,initialInputErrorOutcomes} from '../../../../packages/contracts/conversation-initial-input/protocol.mjs';
 import {assertInitialInputShape} from '../../../../packages/contracts/conversation-initial-input/shape.mjs';
 import {fail} from '../boundary.mjs';
-import {SKILL_SELECTION_REFUSALS} from '../service.mjs';
+import {inputRefusalCode,reportInputUnavailable} from '../input-refusals.mjs';
 import {skillRefusalBody} from '../skills/refusals.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 const rejected=(code,detail={},status=initialInputErrorStatuses[code].at(-1))=>response({error:{code,outcome:initialInputErrorOutcomes[code],...detail}},status);
-export function createConversationInitialInputApplication({service,now=Date.now,maxRequestBytes=131072,maxResponseBytes=131072,maxRequestMs=3000}){
+export function createConversationInitialInputApplication({service,now=Date.now,maxRequestBytes=131072,maxResponseBytes=131072,maxRequestMs=3000,writeDiagnostic}){
  if(typeof service?.allocateInput!=='function'||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072||!Number.isSafeInteger(maxResponseBytes)||maxResponseBytes<1||maxResponseBytes>131072||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('HTTP_CONFIGURATION');
  return Object.freeze({async handle(request){let life;try{
   if(!request||types.isProxy(request))fail('INVALID_REQUEST');let info;
@@ -28,5 +28,5 @@ export function createConversationInitialInputApplication({service,now=Date.now,
   const saved=await life.run(signal=>service.allocateInput({credential:auth.slice(7),input,signal}));
   assertInitialInputShape('ConversationInitialInputAllocatedResponse',saved);const encoded=JSON.stringify(saved);if(Buffer.byteLength(encoded)>maxResponseBytes)fail('INITIAL_INPUT_UNAVAILABLE');life.check();
   return new Response(encoded,{status:200,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'}});
- }catch(error){const owned=productFailure(error),observed=owned?.code??error?.code??error?.message,code=['INVALID_JSON','INVALID_UTF8','INVALID_BODY','INVALID_CONTENT_LENGTH',...SKILL_SELECTION_REFUSALS].includes(observed)?'INVALID_REQUEST':Object.hasOwn(initialInputErrorStatuses,observed)?observed:'INITIAL_INPUT_UNAVAILABLE';const {code:refused,...detail}=skillRefusalBody(error)??{};return rejected(refused??code,detail);}finally{life?.close();}}});
+ }catch(error){const owned=productFailure(error),observed=owned?.code??error?.code??error?.message,refusal=inputRefusalCode(observed),code=Object.hasOwn(initialInputErrorStatuses,refusal)?refusal:'INITIAL_INPUT_UNAVAILABLE';if(code==='INITIAL_INPUT_UNAVAILABLE'){const cause=error?.cause;reportInputUnavailable(conversationInitialInputPath,code===refusal&&cause?productFailure(cause)?.code??cause.code??cause.message:observed,writeDiagnostic);}const {code:refused,...detail}=skillRefusalBody(error)??{};return rejected(refused??code,detail);}finally{life?.close();}}});
 }

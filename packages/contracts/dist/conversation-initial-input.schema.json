@@ -162,7 +162,8 @@
                 "REQUEST_TOO_LARGE",
                 "UNSUPPORTED_MEDIA_TYPE",
                 "MODEL_SELECTION_UNAVAILABLE",
-                "MODEL_SETTINGS_UNAVAILABLE"
+                "MODEL_SETTINGS_UNAVAILABLE",
+                "TENANT_MONTHLY_CAP_REACHED"
               ]
             },
             "outcome": {
