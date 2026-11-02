@@ -235,3 +235,23 @@ test('a schedule request needs only cadence, day, time and time zone: the run co
   assert.equal(sent.length,1);assert.equal(journal.store.rows.size,1);
  }finally{await m.close();}
 });
+
+test('a prepared draft\'s notice names the Office Workspace only when the run offers an Office owner',async()=>{
+ // `officeEditing` is the run's offer (an `office` row available), not the draft's format: a run without Office editing must not
+ // tell the model the document opens in the Workspace.
+ const f=intentFixture();
+ const draft={status:'draft',version:{versionId:'v-1',generationStatus:'draft',binding:f.binding,scopes:f.scopes}};
+ const notices=[];
+ for(const offerOffice of [false,true]){
+  const port={readAvailability:async v=>{const s=await f.port.readAvailability(v);return {...s,operations:[{id:'create_word',version:'0.2.0'},...(offerOffice?[{id:'propose_office_edit',version:'0.2.0'}]:[])]};},prepare:async()=>structuredClone(draft)};
+  const m=await mountIntents(f,{port});
+  try{
+   const tools=(await m.client.listTools()).tools.map(t=>t.name);assert.equal(tools.includes('propose_office_edit'),offerOffice);
+   const response=await m.call('request_document',{operation:'create_word',arguments:{operation:'create_word',format:'docx',title:'Note',content:{blocks:[{kind:'paragraph',style:'Normal',runs:[{text:'Hello'}]}]}}});
+   assert.equal(response.isError,undefined,JSON.stringify(response));assert.equal(JSON.parse(response.content[0].text).status,'draft');notices.push(response.content[1].text);
+  }finally{await m.close();}
+ }
+ assert.match(notices[0],/^PREPARED DRAFT: /u);assert.doesNotMatch(notices[0],/Workspace/u);
+ assert.match(notices[1],/\(Download, Details; Office documents open in the Workspace\)/u);
+ assert.equal(notices[1].replace('; Office documents open in the Workspace',''),notices[0],'the Office clause is the only difference');
+});

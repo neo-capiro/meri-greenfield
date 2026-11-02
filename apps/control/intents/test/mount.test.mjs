@@ -136,6 +136,34 @@ test('a document draft is published to the conversation on preparation and on ea
  assert.throws(()=>createIntentMount({binding:c.binding,preparers:[preparer],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000},publishDraft:'yes'}),code('INTENT_CONFIGURATION'));
 });
 
+test('a document draft is published only after the release check admits it: a revoked or expired grant publishes nothing',async()=>{
+ // Core's live revocation and the original-expiry check run inside the release; a card published before them would show a draft
+ // the conversation may no longer see. The order is release, then publication, on the first preparation and on every replay.
+ const c=commandComposition(),scopes=[{tenantId:c.binding.tenantId,kind:'private-user',resourceId:c.binding.actorId,policyRevision:'r1'}];
+ const version={artifactId:'7'.repeat(8)+'-7777-4777-8777-'+'7'.repeat(12),versionId:'8'.repeat(8)+'-8888-4888-8888-'+'8'.repeat(12),binding:c.binding,scopes};
+ const events=[];let now=NOW,revoked=false;
+ const preparer={binding:c.binding,operation:{id:'create_word',version:'0.2.0'},owner:'document',async prepare(){events.push('prepare');return {status:'draft',version};}};
+ const authority={async check({selection,selectionSha256}){
+  const releasing=selection.original!==null;if(releasing)events.push('release');
+  return {authorized:!(releasing&&revoked),selectionSha256,binding:selection.binding,scopes,checkedAtMs:now,expiresAtMs:now+60000};}};
+ const store=createMemoryJournalStore();
+ const m=createIntentMount({binding:c.binding,preparers:[preparer],journalStore:store.port,now:()=>now,limits:{maxRequestMs:5000},enabled:true,resultRelease:authority,
+  publishDraft:async({version:v})=>{events.push('publish');assert.deepEqual(v,version);}});
+ const word=n=>m.prepare({operation:{id:'create_word',version:'0.2.0'},arguments:{operation:'create_word',format:'docx',title:'Note',content:{blocks:[]}},deliveryId:delivery(n)});
+ // Revoked between capture and release: the draft is prepared (durable custody) but nothing is published.
+ revoked=true;await assert.rejects(word(6),code('ACCESS_DENIED'));
+ assert.deepEqual(events,['prepare','release'],'the release refused before any publication');
+ assert.deepEqual([...store.rows.values()].map(r=>r.state),['PREPARED']);
+ // The grant restored: the model's retry of that delivery is answered from the journal, released, then published.
+ revoked=false;events.length=0;assert.equal((await word(6)).status,'draft');assert.deepEqual(events,['release','publish']);
+ // A fresh delivery: release first, then publication.
+ events.length=0;assert.equal((await word(7)).status,'draft');assert.deepEqual(events,['prepare','release','publish']);
+ // The original grant has expired: the replay is refused before Core is even asked, and nothing is published again.
+ events.length=0;now=NOW+60000;await assert.rejects(word(7),code('ACCESS_DENIED'));assert.deepEqual(events,[],'expired: no release receipt, no publication');
+ // Revoked on replay: the live check refuses and nothing is published.
+ now=NOW;revoked=true;await assert.rejects(word(7),code('ACCESS_DENIED'));assert.deepEqual(events,['release']);
+});
+
 test('a journal that refuses the explained row still settles the code: a refused delivery never stays PENDING',async()=>{
  // 2 Nov: the 0002 outcome CHECK admitted a FAILED outcome of exactly {code}; every refusal settled with a detail rolled back and
  // the three schedule deliveries stayed PENDING ("Preparing" for good). Until intents/0006 is applied, the code alone is journaled.

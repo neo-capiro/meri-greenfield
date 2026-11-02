@@ -96,11 +96,13 @@ export function createIntentMount(configuration){
     }
     const begun=await life.run(s=>journal.begin({...key,signal:s}));
     const selected={operation:preparer.operation,deliveryId:v.deliveryId,argumentsSha256:record.argumentsSha256,life};
-    // The draft is durable; its conversation event is a projection of it, so a lost publication is not a lost draft and the
-    // replay of the same delivery publishes again (idempotently) rather than leaving the transcript without its card.
+    // The draft is durable; its conversation event is a projection of it, published only after the release check (Core's live
+    // revocation and the original expiry) admits the result, so a refused release never shows a card. A lost publication is not a
+    // lost draft: the replay of the same delivery releases and publishes again (idempotently) rather than leaving the transcript
+    // without its card.
     const publish=async result=>{if(!c.publishDraft||preparer.owner!=='document'||result?.status!=='draft')return;
      try{await life.run(s=>c.publishDraft({version:result.version,signal:s}));}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}};
-    if(begun.replayed){await publish(begun.result);return await release.release({...selected,owner:preparer.owner,result:begun.result,original:begun.release});}
+    if(begun.replayed){const released=await release.release({...selected,owner:preparer.owner,result:begun.result,original:begun.release});await publish(begun.result);return released;}
     // A refusal is journaled with its explanation when the journal keeps one (intents/0006); a journal that refuses the explained row
     // (the 0002 CHECK admitted only {code}: on 2 Nov every explained refusal rolled back and the deliveries stayed PENDING, cards
     // "Preparing" for good) still settles the code alone, so a refused delivery never stays PENDING.
@@ -129,8 +131,9 @@ export function createIntentMount(configuration){
     // A lost settlement acknowledgement leaves the delivery PENDING: the result is withheld as UNKNOWN, never retried.
     // Custody is durable, but release still requires fresh authority and the original expiry. A refused release never redispatches.
     try{await life.run(s=>journal.settle({...key,state:'PREPARED',outcome:{result,release:original},signal:s}));}catch{throw intentFault('UNKNOWN');}
+    const released=await release.release({...selected,owner:preparer.owner,result,original});
     await publish(result);
-    return await release.release({...selected,owner:preparer.owner,result,original});
+    return released;
    // The journal keeps a detail only on FAILED rows; the thrown fault keeps it for every code so the control log line can name
    // the owner's own reason behind an UNKNOWN too (the answer that never came is not a secret, only unconfirmed).
    }catch(error){throw intentFault(closed(error?.code),undefined,intentFaultDetail(error),intentFaultReason(error));}finally{life.close();}
