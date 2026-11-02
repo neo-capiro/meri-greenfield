@@ -5,7 +5,7 @@ import {userVocabulary} from '../../user-vocabulary.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {generalReadFixture,mountReads,MAIL_OPERATIONS,SESSION,NOW} from './fixture.mjs';
 import {canonicalInputSchema,isNarrowerOrEqual} from '../schema.mjs';
-import {failureResult} from '../results.mjs';
+import {failureResult,mailCandidateView} from '../results.mjs';
 import {READ_AVAILABILITY_WORKER_MS} from '../../../../../packages/runtime/runner-load-budget.mjs';
 const NAMES=['mail_list_messages','mail_search_messages','mail_read_thread'];
 const text=r=>r.content[0].text;
@@ -25,16 +25,19 @@ test('lists exactly the available mail reads, derived from descriptors, with sch
  }finally{await m.close();}
 });
 
-test('an authorized read returns the canonical page and one receipt bound to the SDK delivery',async()=>{
+test('an authorized read returns the page and one receipt bound to the SDK delivery and the canonical page',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
- try{const r=await m.call('mail_search_messages',f.search,{toolUseId:'toolu_receipt'});assert.equal(r.isError,undefined);assert.equal(r.content.length,2,'the canonical page and one orientation notice');
-  assert.match(r.content[1].text,/^Notice: 1 stored message candidate\(s\) of 2 matching; more exist, continue with offset 1\./);
-  const page=JSON.parse(text(r));assert.deepEqual(page.operation,MAIL_OPERATIONS[1]);assert.deepEqual(page.binding,f.binding);
+ try{const r=await m.call('mail_search_messages',f.search,{toolUseId:'toolu_receipt'});assert.equal(r.isError,undefined);assert.equal(r.content.length,2,'the page and one orientation notice');
+  assert.match(r.content[1].text,/^Notice: 1 stored message candidate\(s\) in 1 thread\(s\) of 2 matching; more exist, continue with offset 1 when the question needs them/);
+  // The model reads a candidate page as compact rows (results.mjs mailCandidateView); the receipt binds the canonical page.
+  assert.equal(JSON.parse(text(r)).binding,undefined);
+  assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,1);assert.equal(f.records.size,1);
+  const page=JSON.parse((await (await f.execute(f.search)).json()).resultJson);assert.deepEqual(page.operation,MAIL_OPERATIONS[1]);assert.deepEqual(page.binding,f.binding);
+  assert.equal(text(r),JSON.stringify(mailCandidateView(page)));
   const [receipt,...rest]=m.runtime.receipts();assert.equal(rest.length,0);
   assert.equal(receipt.deliveryId,'sdk:'+canonicalSha256({binding:f.binding,sessionId:SESSION,toolUseId:'toolu_receipt'}));
   assert.equal(receipt.argumentsSha256,canonicalSha256(f.search));assert.equal(receipt.resultSha256,canonicalSha256(page));assert.equal(receipt.decisionId,null);assert.equal(receipt.policyRevision,f.policy);
   assert.equal(receipt.executionCatalogSha256,(await f.mount().readAvailability()).installation.executionCatalogSha256);
-  assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,1);assert.equal(f.records.size,1);
  }finally{await m.close();}
 });
 

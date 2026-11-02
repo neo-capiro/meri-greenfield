@@ -2,7 +2,7 @@
  * unknown (nothing continues them) versus cut bodies (nextBodyOffsets continue them), and the mailbox state per message. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readNotices} from '../results.mjs';
+import {readNotices,mailCandidateView,modelResultText} from '../results.mjs';
 import {createMailFixture} from '../../../../gateway/sources/mail/test/fixtures.mjs';
 const thread={id:'mail.read_thread'};
 const notice=page=>readNotices(thread,JSON.stringify(page),page)[0]?.text;
@@ -63,4 +63,25 @@ test('a per-mailbox coverage reason from the source renders as a sentence, never
  const thread={id:'mail.read_thread'},threadPage={...base,coverage:{...base.coverage,limitations:['Mailbox a@example.invalid has incomplete mail coverage: mail_folders_not_synced.']}};
  assert.match(readNotices(thread,JSON.stringify(threadPage),threadPage)[0].text,/ Mail coverage: Mail folders have not finished syncing yet; try again later\./);
  assert.equal(text(page.coverage.limitations).includes('Mail coverage:'),false,'a limitation without a reason adds nothing');
+});
+
+test('the model reads a mail candidate page as compact rows: a full 50-message page stays far inside the SDK result limit',()=>{
+ const list=createMailFixture('mail.list_messages');list.state.total=60;
+ const people=n=>Array.from({length:n},(_,i)=>({name:`Recipient ${i}`,email:`recipient${i}@example.invalid`}));
+ const page=list.page(list.input({...list.args,limit:50}));
+ page.messages=page.messages.map((m,i)=>({...m,from:{name:'Holland & Knight LLP',email:'updates@example.invalid'},to:people(8),toTruncated:true,cc:people(3),
+  subjectText:`Appropriations report language edits ${i}`,preview:{...m.preview,text:'x'.repeat(255)}}));
+ const canonical=JSON.stringify(page),viewText=modelResultText({id:'mail.list_messages'},canonical,page),view=JSON.parse(viewText);
+ // 2 November: the canonical 50-message page was about 82,000 characters, past the SDK's tool-result limit.
+ assert.ok(viewText.length<40000,`${viewText.length} characters`);assert.ok(viewText.length<canonical.length/2,`${viewText.length} of ${canonical.length}`);
+ assert.deepEqual(Object.keys(view),['kind','window','totalMatches','hasMore','nextOffset','threads','messages']);
+ assert.deepEqual([view.totalMatches,view.hasMore,view.nextOffset,view.threads,view.messages.length],[60,true,50,1,50]);
+ assert.deepEqual(view.messages[0],{threadId:page.messages[0].threadId,messageId:page.messages[0].messageId,receivedAt:page.messages[0].receivedAt,from:'Holland & Knight LLP <updates@example.invalid>',
+  to:['Recipient 0','Recipient 1','Recipient 2','and others'],ccCount:'3',subject:'Appropriations report language edits 0',preview:'x'.repeat(255),connectionStatus:'disabled'});
+ assert.doesNotMatch(viewText,/scopes|readHandle|mailboxId|citationId|tenant|internetMessageId|policyRevision/);
+ assert.equal(mailCandidateView({...page,messages:[{...page.messages[0],preview:{text:'y'.repeat(900)}}]}).messages[0].preview,'y'.repeat(400)+'...');
+ // A thread page and every other read reach the model as their canonical bytes.
+ const thread=createMailFixture('mail.read_thread').page();
+ assert.equal(modelResultText({id:'mail.read_thread'},JSON.stringify(thread),thread),JSON.stringify(thread));
+ assert.equal(modelResultText({id:'search_memory'},'{"kind":"mail-candidate-source-page"}',{kind:'mail-candidate-source-page'}),'{"kind":"mail-candidate-source-page"}');
 });

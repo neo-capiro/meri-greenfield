@@ -33,7 +33,8 @@ test('the semantic routing sentence appears only with a mounted semantic read an
  for(const tool of semantic)assert.match(readPromptSentence(true,[tool]),/Bills, grants and contract opportunities by meaning:/);
  const all=readPromptSentence(true,[...sql,...semantic,prefix+'search_memory']);
  assert.ok(all.indexOf('Structured questions')<all.indexOf('by meaning:')&&all.indexOf('by meaning:')<all.indexOf('Saved knowledge'),'SQL, then semantic, then memory');
- assert.ok(all.length<3900,`${all.length} characters`);
+ // The grounding, user-terms and forecast-routing sentences (2 November acceptance) add about 900 characters.
+ assert.ok(all.length<5000,`${all.length} characters`);
 });
 
 test('each semantic sample question carries a cue the sentence routes to the semantic reads, and none of the SQL cues',()=>{

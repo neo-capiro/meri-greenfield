@@ -44,7 +44,7 @@ const PAGE_FAILURES=Object.freeze({
 });
 /** The three mail reads share one source, one candidate shape and the same mailbox and subject failures. */
 const MAIL_SOURCE='Stored mail of the user\'s connected mailbox (Microsoft 365 or Google Workspace) as last synchronized into Capiro: never the live inbox and never a send. subject is {kind:"personal"} in General (the user\'s own mailbox view) or {kind:"client", entityId:<the selected client\'s UUID>} in a selected-client conversation (mail associated with that client).';
-const MAIL_CANDIDATES='Result: messages[] newest first with subjectText, from {name, email}, to and cc (up to 8 each; toTruncated/ccTruncated), sentAt, receivedAt, preview.text (an incomplete excerpt, never the full body), threadId, messageId, clientId, connectionStatus and readHandle; totalMatches, hasMore and nextOffset (pass it as offset to continue); threadGroups groups a list page by thread; coverage.limitations names each mailbox whose stored mail is incomplete and why (the notice translates the reason). Read a thread\'s body with mail_read_thread using its threadId. connectionStatus is the mailbox connection state (connected, needs_configuration, error or disabled); anything but connected means the mailbox stopped synchronizing: say the mail may be stale and that the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations.';
+const MAIL_CANDIDATES='Result: one compact row per message, newest first: threadId, messageId, receivedAt or sentAt, from, to (up to 3 names), ccCount, subject and preview (an incomplete excerpt, never the full body), plus clientId and connectionStatus when present; window, totalMatches, threads (distinct threads on the page), hasMore and nextOffset (pass it as offset to continue). The notice that follows states counts, continuation, incomplete coverage and a stale mailbox. Summarize from the rows; read a thread\'s body with mail_read_thread using its threadId only to quote it or when one message\'s full content changes the answer. A connectionStatus other than connected (needs_configuration, error or disabled) means the mailbox stopped synchronizing: say the mail may be stale and that the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations.';
 const MAIL_STORED='Candidates are previews of stored mail up to the mailbox\'s last synchronization; an empty or exhausted page is absence within that folder, window and filter only, never proof that no email or commitment exists.';
 /** Core's mail coverage reasons (capiro-backend apps/api/src/engagement/mail-sync-coverage.ts), which reach the page as
  * "Mailbox <address> has incomplete mail coverage: <reason>." in coverage.limitations, rendered as sentences the user can act on. */
@@ -105,6 +105,9 @@ export const READ_GUIDANCE=Object.freeze({
   ]),
   failures:PAGE_FAILURES,
  }),
+ search_procurement_forecasts:Object.freeze({usage:Object.freeze([
+  'Procurement forecasts: the contract buys agencies say they plan (requirement, office, estimated solicitation or award date and value). Not regulatory forecasts: the Unified Agenda\'s proposed and final rules and their expected months are the government_forecasts data set, read with describe_capiro_data and query_capiro_data. An empty result is absence in this source only; when the user asked about government forecasts generally, check the Unified Agenda before answering.',
+ ]),limitations:Object.freeze([]),failures:Object.freeze({})}),
  meeting_read_client_meetings:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart.',
  })}),
@@ -136,7 +139,8 @@ export const READ_GUIDANCE=Object.freeze({
  mail_list_messages:Object.freeze({
   usage:Object.freeze([
    MAIL_SOURCE,
-   'Arguments: subject (as above), folder (all, inbox or sent; default all), withinDays (1-3650; null, the default, for no window), limit (1-50 candidates per page, default 15), offset (nextOffset of the previous page) and asOf (ISO timestamp anchoring the page). Returns the newest stored candidates first; use mail_search_messages to filter by sender, participant or words.',
+   'Arguments: subject (as above), folder (all, inbox or sent; default all), withinDays (1-3650; null, the default, for no window), limit (1-50 candidates per page, default 15), offset (nextOffset of the previous page) and asOf (ISO timestamp anchoring the page; the window is the withinDays days ending at asOf). Returns the newest stored candidates first; use mail_search_messages to filter by sender, participant or words.',
+   'To summarize a day or a short period, list it with limit 50 (for one past day: asOf at that day\'s end and withinDays 1), continue with nextOffset while hasMore, and summarize from the rows grouped by thread and sender; open at most a few threads, only for what the previews cannot answer.',
    MAIL_CANDIDATES,
   ]),
   limitations:Object.freeze([MAIL_STORED]),
