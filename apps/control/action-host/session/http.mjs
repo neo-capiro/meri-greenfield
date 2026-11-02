@@ -2,6 +2,7 @@
 import {types} from 'node:util';
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
+import {markAuthorityUnavailable,isAuthorityUnavailable} from '../../../../packages/runtime/authority-availability.mjs';
 import {jsonBody,response as canonicalResponse,errorResponse as canonicalErrorResponse} from '../../action-application/http.mjs';
 import {assertActionSessionReceipt} from './owner.mjs';
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
@@ -21,11 +22,15 @@ export function createActionSessionApplication(options){
    if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding')))return fail(400,'SESSION_REQUEST_INVALID');
    const auth=header('authorization');if(typeof auth!=='string'||!/^Bearer [\x21-\x2b\x2d-\x7e]{1,8192}$/u.test(auth))return fail(401,'SESSION_REFUSED');
    const length=header('content-length');if(length!==null&&(!/^\d+$/u.test(length)||!Number.isSafeInteger(Number(length))||Number(length)>maxRequestBytes))return fail(413,'SESSION_REQUEST_TOO_LARGE');
-   const deadlineMs=now()+maxRequestMs;life=createOperationLifetime({deadlineMs,now,signal:info.signal,errorFactory:()=>new Error('SESSION_REFUSED')});
-   let hints;try{hints=await jsonBody({...info,length:length===null?null:Number(length)},maxRequestBytes,life,()=>life.check());}catch(error){const status=canonicalErrorResponse(error,{}).status;if(status===413)return fail(413,'SESSION_REQUEST_TOO_LARGE');if(status===400)return fail(400,'SESSION_REQUEST_INVALID');throw error;}
+   // Running out of this route's own budget without a caller cancellation means the authority owner did not answer, as the
+   // owner's own lifetime already decides (owner.mjs); it is never a refusal of the credential or the membership.
+   const deadlineMs=now()+maxRequestMs;life=createOperationLifetime({deadlineMs,now,signal:info.signal,errorFactory:code=>code==='DEADLINE'&&!info.signal.aborted?markAuthorityUnavailable(new Error('SESSION_AUTHORITY_UNAVAILABLE')):new Error('SESSION_REFUSED')});
+   let hints;try{hints=await jsonBody({...info,length:length===null?null:Number(length)},maxRequestBytes,life,()=>life.check());}catch(error){const status=canonicalErrorResponse(error,{}).status;if(status===413)return fail(413,'SESSION_REQUEST_TOO_LARGE');if(status===400)return fail(400,'SESSION_REQUEST_INVALID');return fail(401,'SESSION_REFUSED');}
    try{own(hints,[],['conversationId','runId','clientId','scopeKind']);}catch{return fail(400,'SESSION_REQUEST_INVALID');}
    const issued=await life.run(signal=>issue({identityCredential:auth.slice(7),hints,signal,deadlineMs}));life.check();const admitted=assertActionSessionReceipt(issued,now(),{research:hints.scopeKind==='research_portfolio'});life.check();if(info.signal.aborted)throw Error('SESSION_REFUSED');return response(200,admitted);
-  }catch{return fail(401,'SESSION_REFUSED');}finally{life?.close();}
+  // Core (identity, membership or current context) did not answer: 503, so the client keeps its conversation and asks again.
+  // Every refusal, mismatch, expiry, cancellation, capacity and malformed receipt stays 401, content-free, as before.
+  }catch(error){return isAuthorityUnavailable(error)?fail(503,'SESSION_AUTHORITY_UNAVAILABLE'):fail(401,'SESSION_REFUSED');}finally{life?.close();}
  }});
 }
 export {path as actionSessionPath};

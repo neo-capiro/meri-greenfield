@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createTurnLineEmitter,LINE_SCHEMAS,timeoutClass} from '../turn-lines.mjs';
+import {createTurnLineEmitter,LINE_SCHEMAS,timeoutClass,safeText,safeToken} from '../turn-lines.mjs';
 const runId='11111111-1111-4111-8111-111111111111',attemptId='22222222-2222-4222-8222-222222222222';
 const poisons=['tenant-secret','actor-secret','bearer-secret','grant-secret','arn:aws:ecs:us-east-1:123:task/secret',
  '192.0.2.99','https://example.invalid/path?id=secret','private error message','SELECT secret FROM secrets'];
@@ -30,6 +30,20 @@ test('ids, codes and nested scalar fields reject arbitrary content',()=>{
  const output=[],emitter=createTurnLineEmitter({service:'runner',write:line=>output.push(line)});
  emitter.emit('meri.turn.failure',{runId:'tenant-secret',attemptId:'not-uuid',code:'PRIVATE_SECRET',class:'a\nline',stage:'unexpected',msgHash:'not a hash',cause:'bearer-secret'});
  const line=JSON.parse(output[0]);assert.equal(line.runId,'invalid');assert.equal(line.attemptId,'invalid');assert.equal(line.code,'other');assert.equal(line.class,'other');assert.equal(line.stage,'other');assert.equal(line.msgHash,'none');
+});
+
+test('an intent preparation line keeps plain detail words and an owner constant, never an identifier, host or free text',()=>{
+ for(const [value,expected] of [['the proposal request was answered before any proposal was created (HTTP 404)','the proposal request was answered before any proposal was created (HTTP 404)'],["data must have required property 'title'","data must have required property 'title'"],
+  ['core.internal.example','none'],['answered by core.internal.example before any proposal','none'],['11111111-1111-4111-8111-111111111111','none'],['run 11111111-1111-4111-8111-111111111111 refused','none'],
+  ['0123456789abcdef0123456789abcdef','none'],['x\n','none'],['https://core.invalid/api','none'],['x'.repeat(161),'none'],['',''+'none'],[7,'none']])
+  assert.equal(safeText(value),expected,String(value));
+ for(const [value,expected] of [['SESSION_UNAVAILABLE','SESSION_UNAVAILABLE'],['ECONNREFUSED','ECONNREFUSED'],['HTTP_404','HTTP_404'],['PREVIEW_ROUTE_NOT_FOUND','PREVIEW_ROUTE_NOT_FOUND'],['session-unavailable','none'],['core.internal.example','none'],['11111111-1111-4111-8111-111111111111','none'],['A','none'],['X'.repeat(64),'none'],[null,'none']])
+  assert.equal(safeToken(value),expected,String(value));
+ const output=[],emitter=createTurnLineEmitter({service:'control',write:line=>output.push(JSON.parse(line))});
+ emitter.emit('meri.intent.prepare',{runId:'11111111-1111-4111-8111-111111111111',attemptId:'22222222-2222-4222-8222-222222222222',layer:'control',code:'REFUSED',dispatched:'owner',elapsedMs:12,detail:'answered by core.internal.example','reason':'core.internal.example'});
+ assert.equal(output[0].detail,'none');assert.equal(output[0].reason,'none');assert.equal(output[0].code,'REFUSED');assert.equal(output[0].dispatched,'owner');
+ emitter.emit('meri.intent.prepare',{runId:'11111111-1111-4111-8111-111111111111',attemptId:'22222222-2222-4222-8222-222222222222',layer:'control',code:'UNAVAILABLE',dispatched:'before-owner',elapsedMs:3,detail:'the proposal request was not sent',reason:'SESSION_UNAVAILABLE'});
+ assert.equal(output[1].detail,'the proposal request was not sent');assert.equal(output[1].reason,'SESSION_UNAVAILABLE');
 });
 
 test('metric names and dimensions have aggregate and component series without identity dimensions',()=>{

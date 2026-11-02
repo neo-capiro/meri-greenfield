@@ -13,9 +13,9 @@ test('owned PG16: real durable run SQL, keyset reload, scope filtering and read-
  try{
   await admin.query(`CREATE DATABASE ${database}`);made=true;await admin.query(`COMMENT ON DATABASE ${database} IS '${marker}'`);
   db=new Client({...connection,database});await db.connect();const facts=(await db.query("SELECT version(),current_setting('server_version_num')::integer AS number,current_setting('fsync') AS fsync")).rows[0];assert(facts.number>=160000&&facts.number<170000);assert.equal(facts.fsync,'on');t.diagnostic(`${facts.version}; Node${process.version}; pg${require('pg/package.json').version}; newly created owned database`);
-  // Actual immutable DDL dependencies for 0021. Historical budget tables are migration input only, never a reservation owner.
+  // Actual immutable DDL dependencies for 0021 plus its 0032 forward delta. Historical budget tables are migration input only, never a reservation owner.
   await db.query('CREATE SCHEMA meri_product_budget');
-  for(const path of ['../../../../gateway/budget/migrations/0002_tenant_budgets.sql','../../../settings/migrations/0001_settings.sql','../../migrations/0001_conversations.sql','../../migrations/0021_sdk_run_usage.sql'])await db.query(await readFile(new URL(path,import.meta.url),'utf8'));
+  for(const path of ['../../../../gateway/budget/migrations/0002_tenant_budgets.sql','../../../settings/migrations/0001_settings.sql','../../migrations/0001_conversations.sql','../../migrations/0021_sdk_run_usage.sql','../../migrations/0032_sdk_run_turns_ceiling.sql'])await db.query(await readFile(new URL(path,import.meta.url),'utf8'));
   await db.query('GRANT USAGE ON SCHEMA meri_conversations TO meri_control_runtime');await db.query('GRANT SELECT ON ALL TABLES IN SCHEMA meri_conversations TO meri_control_runtime');
   async function seed(raw){const a=raw.conversation_row,r=raw.run_row,e=raw.status_row;
    await db.query('INSERT INTO meri_conversations.conversations VALUES($1,$2,$3,$4,$5)',[a.tenant_id,a.conversation_id,a.owner_actor_id,a.projection,a.projection_sha256]);
@@ -25,6 +25,9 @@ test('owned PG16: real durable run SQL, keyset reload, scope filtering and read-
   await seed(row(1,{state:'failed',usage:'unavailable'}));await seed(row(2,{state:'cancelled',general:true,usage:'absent'}));await seed(row(3,{state:'running',usage:'zero'}));
   const tx=async(key,check,read)=>{await db.query('BEGIN READ ONLY');try{await db.query('SET LOCAL ROLE meri_control_runtime');const value=await read(db);await db.query('COMMIT');return value;}catch(error){await db.query('ROLLBACK');throw error;}};
   const store=createRunIndexStore({tx}),read=(q=request,p=principal)=>store.list({principal:p,request:q},()=>{});
+  await t.test('0032 replaces the 0021 column CHECK by its PostgreSQL-assigned name with the shared 1000-turn ceiling',async()=>{
+   const rows=(await db.query("SELECT pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE conname='tenant_settings_sdk_max_turns_check'")).rows;assert.equal(rows.length,1);assert.match(rows[0].definition,/<= 1000\)/u);
+  });
   await t.test('all durable rows page without duplicates across a newly reconstructed reader',async()=>{
    const first=await read();assert.deepEqual(first.entries.map(v=>v.summary.runId),[id(203),id(202)]);assert(first.nextCursor);
    await seed(row(4,{at:'2026-10-27T13:00:00.000Z'}));

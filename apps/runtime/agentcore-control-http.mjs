@@ -47,6 +47,8 @@ const routes=new Map([
  ['/v1/runner/execution',{method:'admitted',fields:['execution','versions']}],
  ['/v1/runner/execution/settle',{method:'settle',fields:['execution','state']}],
 ]);
+/** Every private path this control application answers, for the listener's route allowlist. */
+export const CONTROL_HTTP_PATHS=Object.freeze([...routes.keys()]);
 const fault=code=>Object.assign(Error(code),{code});
 const matches=(actual,expected)=>{const a=Buffer.from(actual),b=Buffer.from(expected);return a.length===b.length&&timingSafeEqual(a,b);};
 

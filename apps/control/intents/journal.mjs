@@ -11,6 +11,7 @@
  * A lost acknowledgement from either call leaves the delivery PENDING or unknown; nothing here retries or deletes. */
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
+import {intentFault} from './faults.mjs';
 const fault=(code,extra={})=>Object.assign(Error(code),{code,...extra});
 const STATES=new Set(['PENDING','PREPARED','FAILED','UNKNOWN']);
 export function createIntentJournal(store){
@@ -22,7 +23,8 @@ export function createIntentJournal(store){
   if(!STATES.has(entry.state))throw fault('UNKNOWN');
   if(canonicalSha256(entry.record)!==canonicalSha256(record))throw fault('CONFLICT');
   if(entry.state==='PREPARED'&&entry.outcome!==null&&typeof entry.outcome==='object'&&Object.hasOwn(entry.outcome,'result'))return {replayed:true,result:entry.outcome.result,release:entry.outcome.release??null};
-  if(entry.state==='FAILED'&&typeof entry.outcome?.code==='string')throw fault(entry.outcome.code,{replayed:true,...(typeof entry.outcome.detail==='string'?{detail:entry.outcome.detail}:{})});
+  // A replayed refusal is the same explained fault the owner gave: its journaled detail travels, nothing else does.
+  if(entry.state==='FAILED'&&typeof entry.outcome?.code==='string')throw Object.assign(intentFault(entry.outcome.code,undefined,typeof entry.outcome.detail==='string'?entry.outcome.detail:undefined),{replayed:true});
   throw fault('UNKNOWN',{replayed:true});
  }
  return Object.freeze({

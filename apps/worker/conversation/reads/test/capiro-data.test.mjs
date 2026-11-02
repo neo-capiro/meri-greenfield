@@ -99,8 +99,8 @@ test('a Core 362 describe page reaches the model with one orientation line while
  const f=await fixture('capiro-data','describe_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
  assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
  const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.page);
- assert.match(out.content[1].text,/^Notice: 1 public table\(s\) described: program_elements\. Spell table and column names exactly as listed/);
- assert.match(out.content[1].text,/rowLimit default 200, max 1000\.$/);
+ assert.match(out.content[1].text,/^Notice: 1 public data set\(s\) described: program_elements\. Spell data set and column names exactly as listed/);
+ assert.match(out.content[1].text,/rowLimit default 200, max 1000\. These names are for writing queries, never for the user: when no described data set holds the subject asked about, tell the user in plain words that this data is not available for structured queries yet and offer what is \(for example a search by topic\)\.$/);
  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
 });
 
