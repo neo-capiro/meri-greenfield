@@ -65,6 +65,22 @@ test('a timeout after the port call started is UNKNOWN, not "nothing prepared"',
  }finally{release();await m.close();}
 });
 
+test('an INVALID_ARGUMENTS refusal shows the port\'s field-path detail so the model can correct the call; anything else is dropped',async()=>{
+ const f=intentFixture();let detail="data must have required property 'title'";
+ const port={readAvailability:v=>f.port.readAvailability(v),prepare:async()=>{throw Object.assign(Error('INVALID_ARGUMENTS'),{code:'INVALID_ARGUMENTS',layer:'control',...(detail===undefined?{}:{detail})});}};
+ const m=await mountIntents(f,{port});
+ try{
+  const r=await m.call('propose_task',CREATE,{toolUseId:'toolu_detail'});failed(r,'INVALID_ARGUMENTS');
+  assert.equal(text(r),"INVALID_ARGUMENTS: mcp__meri_intents__propose_task refused these arguments (data must have required property 'title'); correct the named fields and supply literal arguments matching its input schema. Nothing has been changed.");
+  let n=0;
+  for(const odd of [undefined,'','x\n',' y'.repeat(201),7,{path:'/title'}]){
+   detail=odd;const o=await m.call('propose_task',CREATE,{toolUseId:'toolu_odd'+n++});failed(o,'INVALID_ARGUMENTS');
+   assert.equal(text(o),'INVALID_ARGUMENTS: mcp__meri_intents__propose_task refused these arguments; correct the named fields and supply literal arguments matching its input schema. Nothing has been changed.',JSON.stringify(odd));
+  }
+  assert.deepEqual(m.runtime.receipts(),[]);
+ }finally{await m.close();}
+});
+
 test('cross-tenant: a foreign availability snapshot mounts nothing; a foreign-tenant/actor/conversation or applied result is withheld',async()=>{
  const f=intentFixture();
  assert.equal(await mountIntents(f,{port:withPort(f,s=>({...s,binding:{...s.binding,tenantId:'other'}}))}),null);

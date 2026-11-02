@@ -8,7 +8,7 @@ const TEXTS=Object.freeze({
  UNAVAILABLE:(tool,reason='is not available in this conversation')=>`UNAVAILABLE: ${tool} ${reason}. ${UNCHANGED}`,
  ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now. ${UNCHANGED}`,
  REFUSED:tool=>`REFUSED: ${tool} was refused by its owner (arguments, permissions or current state). ${UNCHANGED}`,
- INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${UNCHANGED}`,
+ INVALID_ARGUMENTS:(tool,detail)=>`INVALID_ARGUMENTS: ${tool} refused these arguments${detail===undefined?'':` (${detail})`}; correct the named fields and supply literal arguments matching its input schema. ${UNCHANGED}`,
  DEADLINE:tool=>`DEADLINE: ${tool} did not finish preparing within its time limit and nothing was prepared. ${UNCHANGED}`,
  CANCELLED:tool=>`CANCELLED: ${tool} was cancelled before anything was prepared. ${UNCHANGED}`,
  CONFLICT:tool=>`CONFLICT: ${tool} was already requested with different content in this call. ${UNCHANGED}`,
@@ -24,13 +24,15 @@ export function intentFailureCode(error){
  const code=typeof e?.code==='string'?e.code:e?.message;
  return typeof code==='string'&&Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR';
 }
-/** `reason` (UNAVAILABLE only): a closed phrase replacing the default one, e.g. that the run's offer could not be checked.
+/** `reason`: for UNAVAILABLE a closed phrase replacing the default one (e.g. that the run's offer could not be checked); for
+ * INVALID_ARGUMENTS the owner's bounded field-path detail (never values) naming what to correct. Ignored for every other code.
  * @param {string} code @param {string} tool @param {string} [reason] */
 export function intentFailureResult(code,tool,reason){
- const unavailableFor=code==='UNAVAILABLE'&&typeof reason==='string'?reason:undefined;
+ const known=Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR';
+ const explained=(known==='UNAVAILABLE'||known==='INVALID_ARGUMENTS')&&typeof reason==='string'?reason:undefined;
  // A memory failure after the port was reached stays uncertain; an unchecked offer never reached it, so the plain reason applies.
- if(tool.endsWith('propose_memory')&&unavailableFor===undefined)return {isError:true,content:[{type:/** @type {const} */('text'),text:`${Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR'}: the memory proposal result was not released; do not repeat the request. Check the original conversation request. This is not confirmation of submission or active memory.`}]};
- return {isError:true,content:[{type:/** @type {const} */('text'),text:(Object.hasOwn(TEXTS,code)?TEXTS[code]:TEXTS.INTERNAL_ERROR)(tool,unavailableFor)}]};
+ if(tool.endsWith('propose_memory')&&!(known==='UNAVAILABLE'&&explained!==undefined))return {isError:true,content:[{type:/** @type {const} */('text'),text:`${known}: the memory proposal result was not released; do not repeat the request. Check the original conversation request. This is not confirmation of submission or active memory.`}]};
+ return {isError:true,content:[{type:/** @type {const} */('text'),text:TEXTS[known](tool,explained)}]};
 }
 /** The prepared result exactly as the owner returned it, then one fixed instruction block.
  * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status @param {string} [operation] */

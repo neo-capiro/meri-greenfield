@@ -41,6 +41,10 @@ const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/*
 const UNCHECKED_REASON='could not check whether this request can be prepared right now: preparing a request for the user\'s approval did not get an answer in time, so nothing was prepared. This is temporary, not a disabled capability; ask the user to try again in a new message';
 /** A `stillAvailable` refusal marked `unchecked` (a transient mid-run loss) takes the same reason. */
 const uncheckedRefusal=(/** @type {unknown} */error)=>error!==null&&typeof error==='object'&&Object.getOwnPropertyDescriptor(error,'unchecked')?.value===true;
+/** The port's bounded field-path detail on an INVALID_ARGUMENTS refusal (one printable line, never values): shown to the model
+ * so it corrects the named fields instead of guessing. Anything else is dropped. */
+const DETAIL=/^[^\p{C}]{1,400}$/u;
+const invalidArgumentsDetail=(/** @type {unknown} */error)=>{const d=error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined;return typeof d==='string'&&DETAIL.test(d)?d:undefined;};
 /**
  * `mounted` (G3 profile mount): the rows to register, a superset of `available` (which may then be empty); a mounted row outside
  * `available` answers UNAVAILABLE through `stillAvailable`. Without it exactly the available rows are registered, as before.
@@ -94,7 +98,7 @@ export function createIntentServer(c){
    // Once the port call started, a timeout or cancellation cannot show that nothing was prepared.
    if(started&&(code==='DEADLINE'||code==='CANCELLED'))code='UNKNOWN';
    if(code==='UNKNOWN'&&entry)receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:entry.operation,argumentsSha256:entry.argumentsSha256,outcome:'unknown',status:null,reference:null,resultSha256:null}));
-   return intentFailureResult(code,name,code==='UNAVAILABLE'&&(unchecked||uncheckedRefusal(error))?UNCHECKED_REASON:undefined);
+   return intentFailureResult(code,name,code==='UNAVAILABLE'&&(unchecked||uncheckedRefusal(error))?UNCHECKED_REASON:code==='INVALID_ARGUMENTS'?invalidArgumentsDetail(error):undefined);
   }finally{life?.close();}
  };
  const tools=[...byTool].map(([name,rows])=>defineIntentTool(rows[0].tool,rows,handler(name)));

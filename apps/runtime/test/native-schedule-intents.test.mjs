@@ -13,6 +13,7 @@ import {receiveIntentsResponse} from '../../../packages/contracts/dist/intents-a
 import {ROUTINE_PATHS} from '../../control/schedules/application-http.mjs';
 import {createRoutineIntentPreparers} from '../routines-intents.mjs';
 import {CURRENT_SCHEDULE_OPERATION_VERSION,LEGACY_SCHEDULE_OPERATION_VERSION} from '../../../packages/contracts/schedule-operation-family.mjs';
+import {intentRow} from '../../worker/conversation/intents/catalog.mjs';
 const versions={imageDigest:'sha256:'+'a'.repeat(64),sdk:'0.3.295',cli:'2.1.295',contracts:'0.1.0',skillsDigest:'b'.repeat(64),checkpointFormat:'0.1.0'};
 async function fixture(t){
  const f=await applicationFixture();t.after(()=>f.close());
@@ -36,6 +37,10 @@ async function fixture(t){
 test('SDK offers all three schedules through the real family and one journal; explicit approval reaches Temporal once',async t=>{
  const f=await fixture(t),available=await (await f.port()).readAvailability();
  assert.deepEqual(available.operations.map(o=>o.id),['schedule_task','update_scheduled_task','cancel_scheduled_task']);
+ // The worker lists a schedule tool only when the offer names exactly the id@version its catalog advertises: the composed
+ // pin must be an advertised row, or every schedule tool answers UNAVAILABLE in every scope (the 2 Nov "scheduling
+ // function is not available in this conversation" answer, when the catalog advertised the 0.3 successor instead).
+ for(const operation of available.operations)assert.ok(intentRow(operation),`${operation.id}@${operation.version} is an advertised worker row`);
  const prepared=await f.prepare();assert.equal(f.preparations.state.rows.size,1);assert.equal(f.temporal.calls.create,0);assert.deepEqual(prepared.request,routineRequest());
  assertPreparedResult('schedule',{id:'schedule_task',version:'0.2.0'},prepared,binding,{scopes:f.scopes(),nowMs:f.now()});
  const {read,list}=createPostgresIntentJournalStore({pool:f.pool});

@@ -23,6 +23,11 @@ export const RUNNER_INTENT_PATHS=Object.freeze({availability:'/v1/runner/intents
 export const runnerIntentFault=code=>Object.assign(new Error(code),{code:Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:'UNAVAILABLE'});
 /** The closed code an error carries as an own data property, or null. Never runs accessors or proxy traps. */
 export const runnerIntentCode=error=>{const code=error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;return typeof code==='string'&&Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:null;};
+/** The bounded explanation an INVALID_ARGUMENTS answer may carry beside its code: the canonical schema's field paths and
+ * keywords (never values), one line of printable text. Anything else is dropped, never widened into a second channel. */
+const DETAIL=/^[^\p{C}]{1,400}$/u;
+export const runnerIntentDetail=value=>typeof value==='string'&&DETAIL.test(value)?value:undefined;
+const errorDetail=error=>runnerIntentDetail(error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined);
 // An availability snapshot can name at most every intent the worker catalog mounts: the client-scoped composition
 // mounts all of them (General omits the attachment filing intent), so the bound is the catalog itself, not a literal.
 const OPERATION=/^[a-z][a-z_]{0,62}$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,MAX_OPERATIONS=INTENT_ROWS.length;
@@ -59,7 +64,7 @@ export function runnerIntentAvailability(raw,binding,at){
 const get=Object.fromEntries(['status','headers','body','redirected','url'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 /** A control-reported failure, kept apart from local transport failures. */
-class ControlAnswer extends Error{constructor(code){super(code);this.code=code;}}
+class ControlAnswer extends Error{constructor(code,detail){super(code);this.code=code;if(detail!==undefined)this.detail=detail;}}
 export function createRunnerIntentsClient(configuration){
  const c=own(configuration,['origin','credential','binding','fetchImpl'],['enabled','now','limits']),now=c.now??Date.now,enabled=c.enabled??false;let binding,origin;
  const limits=c.limits===undefined?{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000}:own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
@@ -84,13 +89,14 @@ export function createRunnerIntentsClient(configuration){
    while(true){const part=await life.run(()=>reader.read());if(part.done)break;if(!(part.value instanceof Uint8Array))throw 0;bytes+=part.value.byteLength;if(bytes>limits.maxResponseBytes)throw 0;chunks.push(part.value);}
    if(length!==null&&bytes!==Number(length))throw 0;
    const raw=data(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks))));
-   if(get.status.call(response)!==200){own(raw,['error']);own(raw.error,['code']);const code=raw.error.code;
-    if(typeof code!=='string'||!Object.hasOwn(RUNNER_INTENT_FAILURES,code)||RUNNER_INTENT_FAILURES[code]!==get.status.call(response))throw 0;throw new ControlAnswer(code);}
+   if(get.status.call(response)!==200){own(raw,['error']);const answer=own(raw.error,['code'],['detail']),code=answer.code;
+    if(typeof code!=='string'||!Object.hasOwn(RUNNER_INTENT_FAILURES,code)||RUNNER_INTENT_FAILURES[code]!==get.status.call(response))throw 0;
+    throw new ControlAnswer(code,code==='INVALID_ARGUMENTS'?runnerIntentDetail(answer.detail):undefined);}
    life.check();return raw;
   }catch(error){
    // `layer` names where the closed failure was decided (control's answer or this client's own bound/transport); the worker's
    // availability diagnostic prints it, so a DEADLINE is attributable to the hop that reached its bound.
-   if(error instanceof ControlAnswer)throw Object.assign(runnerIntentFault(error.code),{layer:'control'});
+   if(error instanceof ControlAnswer){const detail=errorDetail(error);throw Object.assign(runnerIntentFault(error.code),{layer:'control',...(detail===undefined?{}:{detail})});}
    // Nothing reached control's mount, or control's answer was lost or malformed after a prepare was sent.
    const code=runnerIntentCode(error);
    throw Object.assign(runnerIntentFault(route==='prepare'&&dispatched?'UNKNOWN':code==='DEADLINE'||code==='CANCELLED'?code:'UNAVAILABLE'),{layer:'runner'});
