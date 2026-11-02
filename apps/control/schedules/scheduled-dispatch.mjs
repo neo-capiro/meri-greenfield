@@ -9,7 +9,7 @@
  * Before its first effect an occurrence opens a durable barrier row in the schedule owner that names its exact conversation run
  * and native workflow. The row stays OPEN through UNKNOWN, so it outlives the dispatch workflow's run timeout: no later occurrence
  * of the schedule is admitted while it is open. Only evidence settles it: the run's start observed (DISPATCHED) or a fenced
- * refusal of this occurrence (REFUSED). A later firing may settle a blocking predecessor only by observing the predecessor's own
+ * refusal of this occurrence (REFUSED), including control's definite refusal to admit it. A later firing may settle a blocking predecessor only by observing the predecessor's own
  * started run through that row; absence or an admitted-but-unstarted run keeps the barrier.
  * With the runtime's canonical jobOwner, ACTIVE also retains OPEN through running/paused/approval-waiting work. DISPATCHED then
  * requires actual same-work terminal state and proven retirement; started workflows alone never settle the job-mode barrier.
@@ -30,6 +30,8 @@ function optionsData(value,allowed,required=allowed) {
 }
 const scopeKey=s=>canonicalSha256({tenantId:s.tenantId,kind:s.kind,resourceId:s.resourceId});
 const resourceSet=scopes=>canonicalSha256(scopes.map(scopeKey).sort());
+/** Control's definite pre-admission refusals (routines-occurrence-owner.mjs): no run, binding or input exists for the occurrence. */
+const NOT_ADMITTED=Object.freeze(['ROUTINES_OCCURRENCE_NOT_ADMISSIBLE','ROUTINES_OCCURRENCE_FOREIGN']);
 const exposed=code=>typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,63}$/u.test(code)?code:'SCHEDULE_DISPATCH_UNKNOWN';
 
 export function createScheduledDispatch(options) {
@@ -197,7 +199,12 @@ export function createScheduledDispatch(options) {
    }
    const blocked=await barrier(c);
    if(blocked)return result('REFUSED',c.id,blocked,admitted);
-   if(!admitted){admitted=null;const input=admission(c,receipt.scopes,prompt);if(admit)await nativeAdmission(c,input);else await c.life.run(()=>accept(input,c.life.check));admitted=true;}
+   if(!admitted){admitted=null;const input=admission(c,receipt.scopes,prompt);
+    if(admit){try{await nativeAdmission(c,input);}catch(error){
+     // Control refused this occurrence before any admission effect: settle its barrier so later firings are not held behind it,
+     // unless another attempt (another control during a roll) has meanwhile admitted its run.
+     if(NOT_ADMITTED.includes(scheduleErrorCode(error))&&await existing(c)===null)return await settled(c,'REFUSED',false,scheduleErrorCode(error));throw error;}}
+    else await c.life.run(()=>accept(input,c.life.check));admitted=true;}
    // A committed request is evidence of admission, not of a successfully released native proof. UNKNOWN recovery and legacy
    // queued rows must pass the required runtime facet again, with the saved request/time unchanged, before any workflow start.
    else if(admit)await nativeAdmission(c,admission(c,saved.run.scopes,saved.request.prompt,saved));

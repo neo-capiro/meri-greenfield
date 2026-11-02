@@ -258,14 +258,17 @@ export function createAttendedRoutinesOwnerComposition({configuration,workflow,r
  });
 }
 
-/** The persisted task identity stays operator-configured. Its manifest pin is the actual
- * compiled native SDK profile; a changed deployment/tool/model profile requires approval again. */
+/** The persisted task identity stays operator-configured (taskId/version is the explicit re-approval knob). Its manifest pin is
+ * the effective native SDK profile: runtime, qualifier, policy, run window, output limit, approved reads, source, models,
+ * capabilities, intents and the SDK/CLI/contracts/skills versions; a change there requires approval again. The image digest and
+ * the AgentCore runtime version change on every deploy without changing that profile, so they are not part of it: otherwise
+ * every deploy refused every approved schedule's next firing. */
 export function compileNativeRoutinesTask(configuration){
  try{
-  const configured=data(own(configuration.routines.task,['taskId','version'])),agentcore=compileAgentCoreConfiguration(configuration.agentcore);
-  validateShape('RuntimeVersions',configuration.versions);
+  const configured=data(own(configuration.routines.task,['taskId','version'])),{runtimeVersion,...agentcore}=compileAgentCoreConfiguration(configuration.agentcore);
+  validateShape('RuntimeVersions',configuration.versions);const {imageDigest,...versions}=configuration.versions;
   if(!uuid.test(configured.taskId)||!Number.isSafeInteger(configured.version)||configured.version<1||typeof configuration.sourceEnabled!=='boolean')throw Error();
-  const profile=data({versions:configuration.versions,agentcore,sourceEnabled:configuration.sourceEnabled,models:configuration.models??null,
+  const profile=data({versions,agentcore,sourceEnabled:configuration.sourceEnabled,models:configuration.models??null,
    capabilities:configuration.capabilityPlatform??null,intents:configuration.intents?.enabled===true});
   return data({...configured,manifestSha256:hash(profile)});
  }catch{throw fault();}
