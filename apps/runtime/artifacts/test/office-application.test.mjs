@@ -186,7 +186,7 @@ test('receiver rejects leaked private bytes/tokens, substituted selectors, unbra
  }
  await assert.rejects(receiveOfficeResponse('read',200,read.body,{...read.selected}));
  const wrong=structuredClone(launch.received);wrong.editor.epoch++;await assert.rejects(receiveOfficeResponse('launch',200,encode(wrong),launch.selected));
- for(const change of [r=>{r.launch.actionUrl='https://attacker.example.test/browser/x/cool.html';},r=>{r.launch.fields.access_token_ttl='0';},r=>{r.launch.expiresAtMs=Date.parse(r.editor.expiresAt)+1;}]){
+ for(const change of [r=>{r.launch.actionUrl='https://attacker.example.test/browser/x/cool.html';},r=>{r.launch.fields.access_token_ttl=String(r.launch.expiresAtMs);},r=>{r.launch.expiresAtMs=Date.parse(r.editor.expiresAt)+1;}]){
   const r=structuredClone(launch.received);change(r);await assert.rejects(receiveOfficeResponse('launch',200,encode(r),launch.selected));
  }
 });
@@ -235,6 +235,12 @@ test('trusted CODE postmessage origin requires an exact HTTPS origin',async t=>{
  const f=await fixture(t);
  for(const browserOrigin of [undefined,'*','http://app.example.test','https://app.example.test/path','https://user:password@app.example.test'])
   assert.throws(()=>createRuntimeOfficeApplication({...f.config,browserOrigin}));
+});
+test('Core is observed at admission and the attended effect and release boundaries, not around every storage authorization',async t=>{
+ const f=await fixture(t),phases=()=>f.state.observations.splice(0).map(o=>o.phase);
+ await f.execute('open');assert.deepEqual(phases(),['admission','effect','release','release']);
+ const started=await f.start();assert.deepEqual(phases(),['admission','effect','release','release']);
+ assert.equal((await f.wopi(started.launch,'checkFileInfo')).status,200);assert.deepEqual(phases(),['admission','release','release']);
 });
 test('control supplies the retention gate the options owner leaves out: required at composition and consulted on open',async t=>{
  const f=await fixture(t);

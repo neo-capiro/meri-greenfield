@@ -177,7 +177,15 @@ finds this month's recorded spend at or above the tenant's `monthly_cap_micro_us
 `CONVERSATION_UNAVAILABLE`, so the UI can say the limit was reached rather than that Capiro is unreachable. Nothing is queued or
 dispatched. Validation grants no authority: tenant settings and control-plane admission decide every value.
 
-## Expired original input refusal — package 0.1.52
+## Office launch TTL sentinel — package 0.1.52
+
+`office-application` launch and renew forms now carry `access_token_ttl: "0"`, the WOPI sentinel for no client expiry, instead
+of the token's expiry. The token never outlives the current native session (about a minute), and CODE warns whenever fewer than
+15 minutes remain, so a real TTL showed its "session will end" warning on every load and renewal. `expiresAtMs` is unchanged: it
+is the token's real expiry, enforced by the host frame and the WOPI handler, and the host renews before it. The receiver refuses
+any other TTL value.
+
+## Expired original input refusal — package 0.1.53
 
 `conversation-application` 0.1.18, `conversation-input` 0.1.10 and `conversation-initial-input` 0.1.13 are additive. A request whose
 conversation's original (first) input allocation has expired now answers its own public `409` `INITIAL_INPUT_EXPIRED` on admit and

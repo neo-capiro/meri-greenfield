@@ -18,7 +18,7 @@ test('CODE launch uses discovered same-origin action with token and absolute exp
   assert.equal(form.method,'POST');assert.equal(form.edition,'collabora-code');assert.equal(url.origin,editorOrigin);
   assert.deepEqual([...url.searchParams.keys()],['WOPISrc']);
   assert.equal(url.searchParams.get('WOPISrc'),`${wopiOrigin}/api/meri/office/wopi/files/es-2`);
-  assert.equal(form.fields.access_token_ttl,String(c.expiresAtMs));
+  assert.equal(form.fields.access_token_ttl,'0');assert.equal(form.expiresAtMs,c.expiresAtMs);
   assert.deepEqual(codec.verify(form.fields.access_token,{fileId:'es-2'}),c);
   assert.ok(!form.actionUrl.includes(form.fields.access_token));
  }

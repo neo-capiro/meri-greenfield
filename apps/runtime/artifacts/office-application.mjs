@@ -82,6 +82,8 @@ export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits
  }
  const proposalRun=(method,{credential,proposal,deadlineMs,signal})=>access.run({credential,deadlineMs,signal,intent:'revise',versionId:proposal.document.versionId},async current=>{
   const publisher=createOfficeProposalPublisher({artifacts:current.artifacts,publisherFor:current.publisherFor,validators:current.validators,generation,now});
+  // Apply and Reject write: observe Core at the effect boundary first, as the attended Publish does.
+  if(method!=='read')await current.fresh('effect');
   const result=await publisher[method](proposal,{context:current.context,selectedClientId:current.selectedClientId,signal:current.life.signal});
   if(result.publication!==null){
    const publication=await current.artifacts.inspect(result.publication.version.versionId,current.context,{signal:current.life.signal});

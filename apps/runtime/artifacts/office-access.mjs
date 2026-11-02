@@ -38,20 +38,17 @@ export function createRuntimeOfficeAccess(value){
    if(hash(context.binding)!==hash(initial.state.binding)||hash(context.scopes)!==hash(initial.state.scopes)||config.selectedClientId!==initial.state.selectedClientId)fail('ACCESS_DENIED');
    life.limitDeadline(context.deadlineMs);
    const current=requestCurrent(config,{credential:q.credential},life,life.deadline()),recheck=method(resolved,'recheck');
-   const fresh=async phase=>{
-    await life.run(signal=>recheck({phase,intent,requestSha256,resource:null,deadlineMs:life.deadline(),signal}));
-    await current.fresh();current.check();
-   };
-   await fresh('admission');
-   // Each actual source read/publication authorization refreshes Core, including
-   // the artifact owner's last authorization after an awaited byte operation.
-   const authorize=async call=>{await fresh('effect');return current.authorize(call);};
-   const result={config,context,fresh,authorize,service:createArtifactService({...config.options,authorize})};owners.set(key,result);return result;
+   const observe=phase=>life.run(signal=>recheck({phase,intent,requestSha256,resource:null,deadlineMs:life.deadline(),signal}));
+   await observe('admission');await current.fresh();current.check();
+   // As in the document application: the artifact owner checks the current session on each authorization, and Core
+   // is observed at admission and at the attended effect and release boundaries, never around every storage step.
+   const authorize=current.authorize;
+   const result={config,context,observe,authorize,service:createArtifactService({...config.options,authorize})};owners.set(key,result);return result;
   }
   try{
    await native();const primary=await owner(q.intent);
    const context={...primary.context,deadlineMs:life.deadline()},selectedClientId=initial.state.selectedClientId;
-   const fresh=async(phase='release')=>{for(const o of owners.values())await o.fresh(phase);return native();};
+   const fresh=async(phase='release')=>{for(const o of owners.values())await o.observe(phase);return native();};
    const artifacts=Object.freeze({
     async editorSource(id,ctx,options){const o=await owner(options.write?'revise':'download',id);return o.service.editorSource(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
     async revisionSource(id,ctx,options){const o=await owner('inspect',id);return o.service.revisionSource(id,{...ctx,maxBytes:Math.min(ctx.maxBytes,o.context.maxBytes)},options);},
