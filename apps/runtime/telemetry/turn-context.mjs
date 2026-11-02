@@ -24,7 +24,7 @@ function merge(target,source){
 export function createTurnTelemetry({service,environment='Preview',write,now=Date.now,maxTrackedRuns=10000,rollupMs=60000}={}){
  const emitter=createTurnLineEmitter({service,environment,write,now}),runs=new Map(),requests=new Map();
  const limit=Number.isSafeInteger(maxTrackedRuns)&&maxTrackedRuns>0?Math.min(maxTrackedRuns,10000):10000;
- let background=empty(),timer,closed=false,lastRollup=clock();
+ let background=empty(),timer,closed=false,lastRollup=clock();const rollupHooks=new Set();
  function clock(){try{return numeric(now());}catch{emitter.drop();return Date.now();}}
  const safe=fn=>{try{return fn();}catch{emitter.drop();return undefined;}};
  const active=()=>ambient.getStore()?.telemetry===api?ambient.getStore():undefined;
@@ -100,6 +100,7 @@ export function createTurnTelemetry({service,environment='Preview',write,now=Dat
   const emitted=emitter.emit('meri.process.rollup',{...counts,windowMs:Math.max(0,at-lastRollup),atMs:at,telemetryDropped:dropped});
   if(!emitted&&dropped>0)emitter.drop(dropped);
   emitStatus(counts,undefined,'background');lastRollup=at;
+  for(const hook of rollupHooks)safe(hook);
  });}
  const api=Object.freeze({
   service,now:clock,
@@ -124,6 +125,8 @@ export function createTurnTelemetry({service,environment='Preview',write,now=Dat
   health:(component,transition,code)=>emitter.emit('meri.health',{component,transition,code}),
   budgetQuarantined:(binding,reason)=>emitter.emit('meri.budget.quarantined',{...bindingOf(binding??active()?.record?.binding),reason}),
   rollup,
+  /** Runs `hook` on every rollup (the 60 s interval and close) so a companion counter flushes on the same cadence. */
+  onRollup(hook){if(typeof hook!=='function')throw Error('TELEMETRY_CONFIGURATION');rollupHooks.add(hook);return ()=>{rollupHooks.delete(hook);};},
   start(){if(!timer&&!closed){timer=setInterval(rollup,Number.isSafeInteger(rollupMs)&&rollupMs>0?rollupMs:60000);timer.unref?.();}return api;},
   close(){if(closed)return;closed=true;if(timer)clearInterval(timer);timer=undefined;rollup();},
   get telemetryDropped(){return emitter.dropped;},

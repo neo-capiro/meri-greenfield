@@ -102,7 +102,25 @@ contract. The zero-timeout alarm sums control and runner signals; that sum is a
 **signal count, not a unique failed-turn count**. Join failure and summary records
 by `runId` to inspect the original runner cause.
 
-Checks: `node --test apps/runtime/telemetry/test/{turn-lines,turn-context,counting}.test.mjs`.
+## Route status counters
+
+`route-counters.mjs` wraps control's public and private listener applications
+(`control.mjs`) and counts every response by route pattern and status class. One
+**`meri.http.routes`** line per route, listener and window (60 s) carries
+`listener` (a log field only, never a dimension), `route`, `statuses` (`2xx`,
+`3xx`, `401`, `403`, `404`, `409`, `4xx`, `503`, `5xx`) and `windowMs`; its metrics
+are `HttpResponses`, `HttpClientErrors` and `HttpServerErrors` with `Service` and
+`Service,Route` dimensions. The route values are a closed allowlist,
+`CONTROL_ROUTE_PATTERNS` in `control-route-boundary.mjs` (one list per listener,
+built from the same route tables the listeners dispatch on, `:id` standing for one
+identifier segment); a path that matches none of them is counted as `other`
+before anything else happens, so ULIDs, nanoids, slugs, dotted names, opaque
+tokens or scanner paths can never become a `Route` value. Nothing is written per
+request. The counters flush on the turn telemetry's existing 60 s rollup
+(`onRollup`), on the first response after a window has ended, and at control's
+close. A thrown handler counts as `5xx`.
+
+Checks: `node --test apps/runtime/telemetry/test/{turn-lines,turn-context,counting,route-counters}.test.mjs`.
 
 ## AgentCore setup, settlement and process startup
 

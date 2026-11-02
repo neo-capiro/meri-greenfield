@@ -8,11 +8,14 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {READ_AVAILABILITY_CONTROL_MS} from '../../packages/runtime/runner-load-budget.mjs';
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const status={CONFIGURATION:503,INVALID_ARGUMENTS:400,ACCESS_DENIED:403,UNAVAILABLE:503,SOURCE_UNAVAILABLE:503,DEADLINE:408,CANCELLED:408,INVALID_RESULT:502,RESOURCE_LIMIT:413,BUDGET_UNCERTAIN:409,SOURCE_PUBLICATION_UNKNOWN:503,SOURCE_PUBLICATION_CONFLICT:409};
+/** The two runner read operations this application answers under `/v1/runner/reads/`. */
+export const NATIVE_READ_OPERATIONS=Object.freeze(['availability','execute']);
+const READ_ROUTE=new RegExp(`^\\/v1\\/runner\\/reads\\/(${NATIVE_READ_OPERATIONS.join('|')})$`,'u');
 export function createReadsApplication(configuration){
  const c=own(configuration,['owner'],['approvedReads','now']),config=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads),handle=storageMethod(c.owner,'handle'),now=c.now??Date.now;if(typeof now!=='function')throw nativeReadFault('CONFIGURATION');
  return Object.freeze({async handle(request){let info,life,publicationStarted=false;try{
   if(!request||types.isProxy(request)||!(request instanceof Request))throw nativeReadFault('INVALID_ARGUMENTS');info=Object.fromEntries(Object.entries(get).map(([k,g])=>[k,g.call(request)]));
-  const url=new URL(info.url),route=/^\/v1\/runner\/reads\/(availability|execute)$/u.exec(url.pathname);
+  const url=new URL(info.url),route=READ_ROUTE.exec(url.pathname);
   if(!route||url.search||url.hash)return response({error:{code:'NOT_FOUND'}},404);if(info.method!=='POST')return response({error:{code:'METHOD_NOT_ALLOWED'}},405);
   if(!config?.enabled)throw nativeReadFault('UNAVAILABLE');const header=k=>Headers.prototype.get.call(info.headers,k),credential=header('authorization');
   if(!/^Bearer [\x21-\x2b\x2d-\x7e]{1,8192}$/u.test(credential??''))return response({error:{code:'ACCESS_DENIED'}},401);
