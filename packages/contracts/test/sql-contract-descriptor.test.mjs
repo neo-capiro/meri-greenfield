@@ -23,7 +23,8 @@ for(const version of ['0.2.0','0.3.0','0.4.0','0.5.0'])for(const privateSource o
 });
 test('shared Core/Meri digest vector is stable without generatedAt and binds arrays in order',()=>{
  const page=withSqlContract(capiroDataPage('describe_capiro_data'));
- assert.equal(page.contract.revisionSha256,'9e9d961098d6dbecf431e9efa4a649325bc9ffa650c68c41cae379486d88357c');
+ // Same value as capiro-backend sql-contract-descriptor.spec.ts publicDigest; both move when the gate's grammar changes.
+ assert.equal(page.contract.revisionSha256,'8635c272273b7dfd4bc2bcbf1e8db08f4aff49da3a751161c5236f205bacf3b1');
  page.generatedAt='2026-11-01T01:00:00.000Z';assert.equal(withSqlContract(page).contract.revisionSha256,page.contract.revisionSha256);
  page.relations[0].fields.reverse();assert.notEqual(withSqlContract(page).contract.revisionSha256,page.contract.revisionSha256);
 });

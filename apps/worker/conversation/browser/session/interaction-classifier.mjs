@@ -13,10 +13,12 @@
 import {CREDENTIAL_AUTOCOMPLETE} from './confidentiality.mjs';
 export const INTERACTION_CLASSES=Object.freeze(['routine','submission','credential']);
 const REF=/^[a-z][a-z0-9]{0,31}$/u;
-/** Keys that activate or submit: Enter in any chord (Control+Enter, Meta+Enter, Shift+Enter, NumpadEnter) and Space,
- * which activates a focused submit control; focus cannot be inspected ahead of the press, so Space asks. */
-const SUBMIT_KEY=/(^|\+)(numpad)?enter$|^(shift\+)?(space| )$/u;
-const SUBMISSION_TOOLS=Object.freeze({browser_press_key:input=>SUBMIT_KEY.test(String(input?.key??'').toLowerCase()),browser_handle_dialog:input=>input?.accept===true});
+/** Keys that activate or submit: Enter in any chord (Control+Enter, Meta+Enter, Shift+Enter, NumpadEnter), Playwright's
+ * Enter aliases "\n" and "\r", and Space, which activates a focused submit control. */
+const SUBMIT_KEY=/(^|\+)((numpad)?enter|\n|\r)$|^(shift\+)?(space| )$/u;
+/** Typed text containing a line break presses Enter on the way (pressSequentially("abc\n") submits). */
+const LINE_BREAK=/[\r\n]/u;
+const SUBMISSION_TOOLS=Object.freeze({browser_handle_dialog:input=>input?.accept===true});
 /** Runs in the page's utility world over the elements a ref resolves to; returns plain facts, never page text. */
 function inspectTargets(nodes,selectors){
  return nodes.map(node=>{
@@ -24,8 +26,15 @@ function inspectTargets(nodes,selectors){
   const owner=node.form;
   const form=owner&&typeof owner==='object'?owner:typeof node.closest==='function'?node.closest('form'):null;
   const tag=node.tagName.toLowerCase(),type=(node.getAttribute('type')||'').toLowerCase();
-  const credential=(el)=>{const t=(el.getAttribute('type')||'').toLowerCase(),a=(el.getAttribute('autocomplete')||'').toLowerCase().split(/\s+/u);
-   return t==='password'||a.some(x=>CREDENTIAL_AUTOCOMPLETE.includes(x))||selectors.some(s=>el.matches(s));};
+  const attr=(el,name)=>(el.getAttribute(name)||'').toLowerCase();
+  // One-time codes are often unlabelled: an OTP-like name/id, or a short numeric field whose name, id, label or
+  // placeholder says "code", counts as a credential even without autocomplete="one-time-code".
+  const oneTimeCode=el=>{const words=`${attr(el,'name')} ${attr(el,'id')} ${attr(el,'aria-label')} ${attr(el,'placeholder')}`;
+   if(/\b(otp|totp|2fa|mfa|passcode)\b|one[-_ ]?time|verification[-_ ]?code|security[-_ ]?code|auth(entication)?[-_ ]?code/u.test(words))return true;
+   const max=Number(attr(el,'maxlength'));
+   return attr(el,'inputmode')==='numeric'&&Number.isSafeInteger(max)&&max>0&&max<=8&&/code/u.test(words);};
+  const credential=(el)=>{const t=attr(el,'type'),a=attr(el,'autocomplete').split(/\s+/u);
+   return t==='password'||a.some(x=>CREDENTIAL_AUTOCOMPLETE.includes(x))||oneTimeCode(el)||selectors.some(s=>el.matches(s));};
   const submitControl=tag==='button'&&type!=='button'&&type!=='reset'&&form!==null||tag==='input'&&(type==='submit'||type==='image');
   return {tag,type,credential:credential(node),inForm:form!==null,submitControl,
    formHasCredential:form!==null&&Array.from(form.querySelectorAll('input,textarea,[autocomplete]')).some(credential)};
@@ -36,6 +45,18 @@ export async function classifyInteraction({tool,input,pages,sensitiveSelectors=[
  signal?.throwIfAborted();
  if(Object.hasOwn(SUBMISSION_TOOLS,tool))return SUBMISSION_TOOLS[tool](input)?'submission':'routine';
  if(tool==='browser_hover'||tool==='browser_select_option')return 'routine';
+ if(tool==='browser_press_key'){
+  // A key goes to whatever is focused: pressing keys one by one into a credential field is refused like typing into it.
+  let focused=[];
+  for(const page of Array.isArray(pages)?pages:[]){
+   for(const frame of page.frames()){
+    let nodes;try{nodes=await frame.locator(':focus').evaluateAll(inspectTargets,sensitiveSelectors,{world:'utility'});}catch{return 'submission';}
+    signal?.throwIfAborted();if(Array.isArray(nodes))focused.push(...nodes);
+   }
+  }
+  if(focused.some(f=>f.credential))return 'credential';
+  return SUBMIT_KEY.test(String(input?.key??'').toLowerCase())?'submission':'routine';
+ }
  const refs=tool==='browser_fill_form'?(Array.isArray(input?.fields)?input.fields.map(f=>f?.ref):[]):[input?.ref];
  if(!refs.length||refs.some(ref=>typeof ref!=='string'||!REF.test(ref)))return 'submission';
  const facts=[];
@@ -52,6 +73,8 @@ export async function classifyInteraction({tool,input,pages,sensitiveSelectors=[
  }
  if(tool==='browser_type'||tool==='browser_fill_form'){
   if(facts.some(f=>f.credential))return 'credential';
+  const typed=tool==='browser_type'?[input?.text]:(Array.isArray(input?.fields)?input.fields.map(f=>f?.value):[]);
+  if(typed.some(value=>typeof value==='string'&&LINE_BREAK.test(value)))return 'submission';
   return tool==='browser_type'&&input?.submit===true?'submission':'routine';
  }
  if(tool==='browser_click')return facts[0].submitControl?'submission':'routine';

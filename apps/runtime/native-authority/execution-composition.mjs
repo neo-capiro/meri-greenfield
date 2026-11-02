@@ -35,14 +35,15 @@ import {createResearchSharingCoreClient} from './research-sharing-client.mjs';
 import {createRoutinesServiceSecret} from './routines-core-client.mjs';
 import {routinesReservedSecretFiles} from './routines-configuration.mjs';
 import {createReservedCredentialDigests} from './approval-forwarder.mjs';
+import {createDraftPublication} from './draft-publication.mjs';
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn);
 const same=(a,b)=>hash(a)===hash(b);
 const configurationFault=()=>intentFault('INTENT_CONFIGURATION');
 /** Native preparation uses the active AgentCore execution and the same fresh Core transition authority as
  * conversation continuation. It does not issue command grants or install the retired prepared-run allocation. */
-export function createAgentCoreIntentResolver({context,execution,transitionAuthority,nativeCredentials,fetchImpl}){
+export function createAgentCoreIntentResolver({context,execution,transitionAuthority,nativeCredentials,fetchImpl,store}){
  const {configuration,pool,now}=context;
- if(!ordinary(execution?.authenticate)||!ordinary(transitionAuthority?.readCurrent))throw configurationFault();
+ if(!ordinary(execution?.authenticate)||!ordinary(transitionAuthority?.readCurrent)||store!==undefined&&!ordinary(store?.append))throw configurationFault();
  const resolveClient=nativeCredentials&&configuration.intents?.core?createNativeTaskClientResolver({origin:configuration.intents.core.origin,nativeCredentials,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{})}):null;
  const resolveMailSender=nativeCredentials&&configuration.intents?.core?createNativeMailSenderResolver({origin:configuration.intents.core.origin,nativeCredentials,now,maxRequestMs:configuration.limits.requestMs,...(fetchImpl?{fetchImpl}:{})}):null;
  return async function resolveRun({binding,credential,signal,deadlineMs}){
@@ -122,8 +123,10 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
    ...(configuration.memory?.enabled?memoryIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),
     async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};}}):[])];
   if(!preparers.length)throw intentFault('UNAVAILABLE');
+  // The conversation store (when composed) receives each new document draft as the run's own `artifact.available` event.
+  const publishDraft=store?createDraftPublication({store,binding,current:fresh}):undefined;
   return createIntentMount({binding,preparers,journalStore:createPostgresIntentJournalStore({pool}),now,
-   limits:{maxRequestMs:configuration.limits.requestMs},enabled:true,
+   limits:{maxRequestMs:configuration.limits.requestMs},enabled:true,...(publishDraft?{publishDraft}:{}),
    resultRelease:createIntentResultReleaseAuthority({binding,now,currentRights,async currentRun(_binding,{signal}){
     const current=await fresh(signal);return JSON.stringify({binding,policyRevision:current.policyRevision,deadlineMs:current.execution.expiresAtMs,checkedAtMs:now()});
    }})});

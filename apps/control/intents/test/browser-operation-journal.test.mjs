@@ -112,7 +112,7 @@ test('the journal admits the internal operation, keeps sdk rows public and separ
 });
 
 test('the migration is appended exactly once at ordinal 77 and only widens the delivery identity',()=>{
- assert.equal(PLAN.length,79);
+ assert.equal(PLAN.length,85);
  const entry=PLAN[76];
  assert.equal(entry.ordinal,77);
  assert.equal(entry.path,'apps/control/intents/migrations/0003_browser_operation_preparations.sql');

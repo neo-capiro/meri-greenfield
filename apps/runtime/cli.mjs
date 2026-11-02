@@ -4,6 +4,7 @@ import {loadConfiguration} from './config.mjs';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
 import {countingFetch} from './telemetry/counting.mjs';
 import {verifyControlCaBundle,productControlTrustsCompositeCa} from './control-ca-bundle.mjs';
+import {readMaterialReceipt} from './material-receipt.mjs';
 /** Private control trust is delivered before Node starts, separately from Temporal's native mTLS. */
 export function productWorkerTrustsPinnedServerCa(c,environment=process.env){const file=c.native?.serverCaFile;return typeof file==='string'&&/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)&&environment.NODE_EXTRA_CA_CERTS===file;}
 export async function main(argv=process.argv.slice(2)){
@@ -36,6 +37,8 @@ export async function main(argv=process.argv.slice(2)){
   if(role==='schedule-worker'&&c.routines?.enabled===true){const {composeRoutinesWorkerRuntimePorts}=await import('./schedule-service-owners.mjs');productPorts={runtimePortsFactory:composeRoutinesWorkerRuntimePorts};}
   if(role==='control'){
    controlTurnTelemetry=createTurnTelemetry({service:'control',environment:c.telemetry?.environment});
+   // The init container's material receipt names the serving source for /health/live; none means liveness stays unnamed.
+   const receipt=await readMaterialReceipt();
    const {createMemoryFamilyWith}=await import('./product-ports/memory.mjs');
    const memoryFamily=createMemoryFamilyWith(relay?{nativeCredentials:relay.port}:{});
    // Documents (D31): the Core artifact authority composes only with every input present; otherwise the store-only family stays
@@ -45,7 +48,7 @@ export async function main(argv=process.argv.slice(2)){
    const coreFetch=countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.agentcore.identity.origin});
    const documents=await composeDocumentsFamily({configuration:c,fetchImpl:coreFetch,nativeCredentials:relay.port});
    if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
-   productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),...(relay?{readCredentialRelay:relay}:{})};
+   productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),...(relay?{readCredentialRelay:relay}:{}),...(receipt?{sourceCommit:receipt.sourceCommit}:{})};
   }
   // Read transport is constructed with the actual execution owner by the candidate, after control startup.
   if(role==='control'&&c.reads?.enabled===true){

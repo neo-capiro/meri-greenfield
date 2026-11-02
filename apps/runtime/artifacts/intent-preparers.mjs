@@ -15,6 +15,7 @@ import {referencedAssetIds} from '../../control/intents/document-revision.mjs';
 import {createAnalysisIntentPreparer,ANALYSIS_INTENT_OPERATIONS} from '../../control/intents/analysis-preparer.mjs';
 import {intentFault} from '../../control/intents/faults.mjs';
 import {documentLimits} from '../../control/document-application/current.mjs';
+import {admitDocumentDescriptor} from '../../control/document-application/format-admission.mjs';
 import {createRuntimeArtifactApplication} from './application.mjs';
 import {createRuntimeDocumentRevisionSource} from './revision-source.mjs';
 import {assertDocumentRevisionSelection} from '../../../packages/contracts/document-revision.mjs';
@@ -33,7 +34,8 @@ function method(owner,name){
 export function createRuntimeDocumentIntentPreparers(configuration){
  let c,binding,limits,revision;
  try{
-  c=own(configuration,['binding','selectedClientId','now','limits'],['sessions','optionsOwner','nativeCredentials','retention','borrowSession','revision']);
+  c=own(configuration,['binding','selectedClientId','now','limits'],['sessions','optionsOwner','nativeCredentials','retention','borrowSession','revision','admitPdf']);
+  if(c.admitPdf!==undefined&&typeof c.admitPdf!=='boolean')throw 0;
   if(c.revision!==undefined)revision=assertDocumentRevisionSelection(c.revision);
   binding=data(c.binding);validateShape('RunBinding',binding);limits=documentLimits(c.limits);
   if(!(c.selectedClientId===null||UUID.test(c.selectedClientId??''))||typeof c.now!=='function'||types.isProxy(c.now))throw 0;
@@ -49,8 +51,10 @@ export function createRuntimeDocumentIntentPreparers(configuration){
  const preparers=[...DOCUMENT_INTENT_OPERATIONS,...(revision?[]:ANALYSIS_INTENT_OPERATIONS)].map(id=>{
   const entry=catalog.operations.find(row=>row.operation.id===id);
   const descriptor={operation:entry.operation,requiredGrants:entry.requiredGrants,sourceRequirements:entry.sourceRequirements};
-  const analysis=ANALYSIS_INTENT_OPERATIONS.includes(id);
-  return Object.freeze({operation:data(entry.operation),owner:analysis?'artifact':'document',binding,...(analysis?{formats:Object.freeze(['zip'])}:{}),
+  const analysis=ANALYSIS_INTENT_OPERATIONS.includes(id),pdf=c.admitPdf===true&&id==='create_word';
+  // The declared formats are the document application's own admission for this composition (PDF only with the renderer).
+  const formats=Object.freeze(analysis?['zip']:[...admitDocumentDescriptor(descriptor,{pdf}).formats]);
+  return Object.freeze({operation:data(entry.operation),owner:analysis?'artifact':'document',binding,formats,
    async prepare(call){
     let life,session,started=false,deadlineMs;
     try{
@@ -109,7 +113,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
        const text=await life.run(()=>response.text());if(Buffer.byteLength(text)>limits.maxResponseBytes)throw intentFault('UNKNOWN','unknown');
        return JSON.parse(text);
      }};
-     const canonical=analysis?createAnalysisIntentPreparer({descriptor,binding,artifact:{writes}}):createDocumentIntentPreparer({descriptor,binding,writes:{...writes,...(revision?{preservation}:{})},...(revision?{revision:{selection:revision,read:readRevision}}:{})});
+     const canonical=analysis?createAnalysisIntentPreparer({descriptor,binding,artifact:{writes}}):createDocumentIntentPreparer({descriptor,binding,pdf,writes:{...writes,...(revision?{preservation}:{})},...(revision?{revision:{selection:revision,read:readRevision}}:{})});
      const result=await canonical.prepare({...input,signal:life.signal});
      await current();life.check();return result;
     }catch(error){

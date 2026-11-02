@@ -168,3 +168,11 @@ the former literal 100, so a tenant that raises its per-run turns above 100 stil
 run's wall-clock ceiling (`MAX_RUN_WALL_CLOCK_MS`, four hours) and the derived Temporal activity timeout; both are source-only (not
 packaged) and consumed by the control plane, the runtime and the worker. The `/1` document keeps its published bytes. Validation grants
 no authority: tenant settings, run admission and the database CHECK decide every value.
+
+## Monthly cap refusal — package 0.1.51
+
+`conversation-application` 0.1.17, `conversation-input` 0.1.9 and `conversation-initial-input` 0.1.12 are additive. Run admission that
+finds this month's recorded spend at or above the tenant's `monthly_cap_micro_usd` now answers its own public `429`
+`TENANT_MONTHLY_CAP_REACHED` on submit and admit (and on allocate, with outcome `NOT_DISPATCHED`) instead of collapsing to `502`
+`CONVERSATION_UNAVAILABLE`, so the UI can say the limit was reached rather than that Capiro is unreachable. Nothing is queued or
+dispatched. Validation grants no authority: tenant settings and control-plane admission decide every value.

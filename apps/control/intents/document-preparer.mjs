@@ -2,7 +2,9 @@
  * `createPostgresArtifactService(...).execute` the document application uses, bound by the trusted composition to its
  * current authority and artifact capability. The operation is the trusted one this preparer was composed for, bound
  * into the request it validates; only the formats the document application admits are accepted
- * (`format-admission.mjs`); filing or sharing the draft is a separate governed request.
+ * (`format-admission.mjs`): PDF for `create_word` only when the trusted composition says the document application admits
+ * it (`pdf`, set from the explicit PDF admission switch and an available qualified renderer). The preparer declares the
+ * admitted `formats`, so the run's offer advertises exactly them. Filing or sharing the draft is a separate governed request.
  *
  * Revision: the immutable parent's retained evidence and asset references are preserved only through the trusted
  * owner composed here. A composition that cannot re-present them (`writes.preservation`) cannot serve a
@@ -23,14 +25,14 @@ import {admitDocumentRevisionSource} from './document-revision.mjs';
 export const DOCUMENT_INTENT_OPERATIONS=Object.freeze(['create_word','create_excel','create_powerpoint']);
 /** @param {{descriptor:object,writes:{execute:Function},binding:object}} configuration descriptor is the exact catalog projection the document application admits */
 export function createDocumentIntentPreparer(configuration){
- const c=own(configuration,['descriptor','writes','binding'],['revision']),binding=data(c.binding);
- let admission,writes,revision=null;try{admission=admitDocumentDescriptor(c.descriptor);writes=own(c.writes,['execute'],['preservation']);validatePublicShape('RunBinding',binding);
+ const c=own(configuration,['descriptor','writes','binding'],['revision','pdf']),binding=data(c.binding);
+ let admission,writes,revision=null;try{if(c.pdf!==undefined&&typeof c.pdf!=='boolean')throw 0;admission=admitDocumentDescriptor(c.descriptor,{pdf:c.pdf===true});writes=own(c.writes,['execute'],['preservation']);validatePublicShape('RunBinding',binding);
   if(writes.preservation!==undefined&&(typeof writes.preservation!=='function'||types.isProxy(writes.preservation)))throw 0;
   if(c.revision!==undefined){const r=own(c.revision,['selection','read']);if(typeof r.read!=='function'||types.isProxy(r.read))throw 0;revision={selection:assertDocumentRevisionSelection(r.selection),read:r.read};}}
  catch{throw intentFault('INTENT_CONFIGURATION');}
  if(typeof writes.execute!=='function'||types.isProxy(writes.execute)||!DOCUMENT_INTENT_OPERATIONS.includes(admission.descriptor.operation.id))throw intentFault('INTENT_CONFIGURATION');
  const operation=admission.descriptor.operation;
- return Object.freeze({operation:Object.freeze({...operation}),owner:'document',binding,
+ return Object.freeze({operation:Object.freeze({...operation}),owner:'document',binding,formats:Object.freeze([...admission.formats]),
   async prepare(value){
    let request,call;
    try{call=own(value,['arguments','deliveryId'],['signal']);nativeSignal(call.signal);

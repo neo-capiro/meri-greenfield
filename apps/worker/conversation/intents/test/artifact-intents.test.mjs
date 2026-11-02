@@ -17,7 +17,7 @@ const python=process.env.MERI_DOCUMENT_PYTHON??'/opt/codex/runtimes/codex-primar
 const pptxModulePath=process.env.MERI_PPTXGENJS??'/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/pptxgenjs';
 // Ordinary governed-intent eligibility, with neither a selected skill nor its plugin.
 const policy={governedIntents:true,skillPlugin:false};
-const DRAFT_NOTICE='PREPARED DRAFT: an immutable draft version was created for the user to review. Nothing else has been changed; filing or sharing it is a separate request.';
+const DRAFT_NOTICE='PREPARED DRAFT: an immutable draft version was created. The user sees it as a file card under "Files in this conversation" below your answer (Download, Details), and under Files > My files, or the selected client\'s files in a client conversation. Do not say it is shown above or that it was filed. Nothing else has been changed; filing it into a client\'s documents is a separate request that is offered only in a client conversation.';
 const PENDING_NOTICE='ANALYSIS OUTPUTS PENDING: the admitted analysis owner returned durable output references. Inspection and publication remain pending; do not say these outputs are published or filed.';
 const pptx={operation:'create_powerpoint',format:'pptx',title:'SDK strategy draft',content:{slides:[{title:'Evidence',bullets:['Review the selected client evidence']} ]}};
 const zip={operation:'run_analysis',format:'zip',title:'SDK analysis draft',content:{tables:[{name:'data',columns:['amount'],rows:[[2],[5]]}],source:'data',steps:[{kind:'derive',name:'projected',left:'amount',operator:'multiply',right:3}]}};

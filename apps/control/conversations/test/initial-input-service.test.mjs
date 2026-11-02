@@ -135,3 +135,23 @@ test('MP historical accepted request replays without rewriting its request hash 
  const saved=await f.admit();assert.equal(hash(saved.request),before);assert.equal(Object.hasOwn(saved.request,'modelSelection'),false);assert.deepEqual(await f.store.readModelSelection(binding,()=>{}),MODEL_CATALOG.defaultSelection);
  await assert.rejects(f.admit({...intent,modelSelection:CLAUDE_SELECTION}),/REQUEST_REPLAY_REFUSED/);
 });
+test('a capped first turn is refused 429 NOT_DISPATCHED before any allocation is claimed; once the cap allows it a fresh request sends',async()=>{
+ const f=fixture(),lines=[],app=createConversationInitialInputApplication({service:f.service,now:f.now,writeDiagnostic:line=>lines.push(line)});
+ f.state.modelPolicy={monthly_cap_micro_usd:'100',sdk_max_turns:20,sdk_max_budget_micro_usd:'50'};f.state.spent='100';
+ await assert.rejects(f.allocate(),/TENANT_MONTHLY_CAP_REACHED/);
+ const out=await app.handle(request());assert.equal(out.status,429);assert.deepEqual(await out.json(),{error:{code:'TENANT_MONTHLY_CAP_REACHED',outcome:'NOT_DISPATCHED'}});
+ assert.equal(f.allocations.size,0);assert.equal(await f.store.initialInputs.read(binding,()=>{}),null);assert.equal(f.state.runs.size,0);assert.deepEqual(lines,[]);
+ // An administrator raises the cap: the same conversation's first send succeeds under a new request identity, with no conflict.
+ f.state.modelPolicy={monthly_cap_micro_usd:'1000',sdk_max_turns:20,sdk_max_budget_micro_usd:'50'};const fresh={...intent,requestId:id(62)};
+ assert.equal((await f.allocate(fresh)).created,true);assert.equal((await f.admit(fresh)).replayed,false);await f.submit(fresh);assert.equal(queued(f).length,1);assert.equal(f.state.starts.length,1);
+});
+test('a cap reached between allocate and admit is still refused at acceptance, with nothing queued',async()=>{
+ const f=fixture();f.state.modelPolicy={monthly_cap_micro_usd:'100',sdk_max_turns:20,sdk_max_budget_micro_usd:'50'};f.state.spent='99';
+ await f.allocate();f.state.spent='100';await assert.rejects(f.admit(),/TENANT_MONTHLY_CAP_REACHED/);assert.equal(f.state.runs.size,0);assert.equal(queued(f).length,0);assert.equal(f.state.starts.length,0);
+});
+test('HTTP unknown outcome after the claim writes one code-only line naming the cause',async()=>{
+ let revoke=true;const f=fixture({wrapStore:(s,state)=>({...s,initialInputs:{...s.initialInputs,async claim(...args){const out=await s.initialInputs.claim(...args);if(revoke)state.revoked=true;return out;}}})}),lines=[];
+ const out=await createConversationInitialInputApplication({service:f.service,now:f.now,writeDiagnostic:line=>lines.push(line)}).handle(request());
+ assert.equal(out.status,503);assert.deepEqual(await out.json(),{error:{code:'INITIAL_INPUT_UNAVAILABLE',outcome:'UNKNOWN'}});
+ assert.deepEqual(lines.map(line=>JSON.parse(line)),[{event:'MERI_INPUT_CONTROL',route:'/api/conversations/input/allocate',outcome:'unavailable',code:'SESSION_REFUSED'}]);
+});

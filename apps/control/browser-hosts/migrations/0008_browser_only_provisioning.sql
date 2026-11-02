@@ -15,6 +15,9 @@ BEGIN
  IF NOT EXISTS(SELECT FROM pg_proc WHERE oid=to_regprocedure('meri_host_control.guard_native_observer()') AND encode(sha256(convert_to(prosrc,'UTF8')),'hex')='24b998630c9116f54bc7efaf236fc45fae7a0b6a67c2d8094f3bc15361ba5883' AND prosecdef=true AND proconfig IS NOT DISTINCT FROM ARRAY['search_path=pg_catalog']::text[]) THEN RAISE EXCEPTION 'BROWSER_ONLY_FUNCTION_PREDECESSOR: %','meri_host_control.guard_native_observer()'; END IF;
  IF (SELECT count(*) FROM pg_constraint WHERE conrelid='meri_host_control.host_allocations'::regclass AND convalidated AND conname IN ('native_physical_phase','native_declaration_shape','host_allocation_certificate_window','host_teardown_receipt','host_allocation_placement'))<>5 THEN RAISE EXCEPTION 'BROWSER_ONLY_CONSTRAINT_PREDECESSOR'; END IF;
  IF NOT EXISTS(SELECT FROM pg_constraint WHERE conrelid='meri_host_control.host_allocations'::regclass AND conname='host_allocation_placement' AND pg_get_constraintdef(oid) LIKE '%browser-only%') THEN RAISE EXCEPTION 'BROWSER_ONLY_PLACEMENT_PREDECESSOR'; END IF;
+ -- Browser-only rows could only be legacy direct active inserts before this delta; none is expected. Refuse by name
+ -- rather than surfacing as a generic constraint violation when the widened declaration shape is re-added.
+ IF EXISTS(SELECT FROM meri_host_control.host_allocations WHERE allocation_json->>'hostMode'='browser-only') THEN RAISE EXCEPTION 'BROWSER_ONLY_ROWS_PRESENT'; END IF;
 END $predecessor$;
 
 -- 1. Pre-effect states (reserved, dispatching, unknown, refused) for both provisioned purposes.

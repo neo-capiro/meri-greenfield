@@ -118,12 +118,15 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
   if(!original&&i.modelSelection===undefined&&typeof store.readDefaultModelSelection!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');
   const selected=original?original.modelSelection:available(i.modelSelection??await life.run(()=>store.readDefaultModelSelection(context.binding,life.check)));
   available(selected??HISTORICAL_MODEL_SELECTION);const request=prepareInput(i,new Date(allocatedAtMs).toISOString(),selected);
+  // A new original input is claimed only under the tenant's run admission cap; otherwise nothing is stored and the person may send
+  // a changed first message once the cap allows it. An existing allocation is replayed unchanged; its acceptance rechecks the cap.
+  if(!original){if(typeof store.assertModelAdmission!=='function')fail('MODEL_SETTINGS_UNAVAILABLE');await life.run(()=>store.assertModelAdmission(context.binding,life.check));}
   await admitPrepared(request,context,life,fresh,credential);await fresh();
   let facts=await prepareOriginalInputFacts({...context,versions,input:i,request,allocatedAtMs,expiresAtMs:original?.expiresAtMs??authorityExpiry()});life.check();await fresh();
   if(!original)facts=assertOriginalInputFacts({...facts,expiresAtMs:Math.min(facts.expiresAtMs,authorityExpiry())});
   const result=bounded(await life.run(()=>ports.claim(facts,life.check)));acknowledged=true;own(result,['allocation','state','created']);const out=originalInputReceipt(result.allocation,result.state,result.created);
   if(!sameOriginalInputIdentity(out.allocation,facts)||saved&&out.created)fail('INITIAL_INPUT_CORRUPT');assertOriginalInputActive(out.allocation,now());life.limitDeadline(out.allocation.expiresAtMs);return out;
- });}catch(error){if(acknowledged)throw new ProductError('INITIAL_INPUT_UNAVAILABLE','UNKNOWN');throw error;}}
+ });}catch(error){if(acknowledged)throw Object.assign(new ProductError('INITIAL_INPUT_UNAVAILABLE','UNKNOWN'),{cause:error});throw error;}}
  // Admission and submit share the existing immutable acceptance transaction. Only submit may dispatch.
  async function acceptInput({credential,input,signal},dispatch){const i=inputIntent(input);
   return operation(credential,signal,async(context,life,fresh)=>{const b=context.binding;

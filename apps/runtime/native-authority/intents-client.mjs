@@ -8,6 +8,7 @@
  * repeats an UNKNOWN delivery, and the control journal replays the same delivery without a second preparation).
  *
  * Construction is inert: no request, timer or credential read. `enabled` defaults to false (every call UNAVAILABLE). */
+import {isDeclaredFormats} from '../../../packages/runtime/intent-formats.mjs';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -57,7 +58,7 @@ export function runnerIntentAvailability(raw,binding,at){
  try{
   const s=data(own(raw,['binding','operations','checkedAtMs','expiresAtMs']));
   if(hash(s.binding)!==hash(binding)||!Array.isArray(s.operations)||s.operations.length>MAX_OPERATIONS||!Number.isSafeInteger(s.checkedAtMs)||!Number.isSafeInteger(s.expiresAtMs)||s.checkedAtMs>at||s.expiresAtMs<=at)throw 0;
-  for(const o of s.operations){own(o,['id','version']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible(o))throw 0;}
+  for(const o of s.operations){own(o,['id','version'],['formats']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible({id:o.id,version:o.version})||o.formats!==undefined&&!isDeclaredFormats(o.formats))throw 0;}
   return s;
  }catch{throw runnerIntentFault('UNAVAILABLE');}
 }
