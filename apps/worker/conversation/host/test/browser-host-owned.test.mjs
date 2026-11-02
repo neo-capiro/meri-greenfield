@@ -42,7 +42,8 @@ const request=(bound=binding)=>({binding:bound,requestId:'a'.repeat(64),tool:'br
 test('real SDK MCP reaches host-owned session filtering without a native shim or second SDK',async t=>{
  const f=fixture();const run=await f.host.open({binding,policy:f.policy,deadlineMs:f.allocation.leaseDeadlineMs,manifest:null,submissions});
  assert.deepEqual(run.mcpServers,{});
- const sdk=createBrowserSdkServer({binding,policy:f.policy,deadlineMs:f.allocation.leaseDeadlineMs,approvalDeadlineMs:120000,
+ const metadata={policy:f.policy,approvalDeadlineMs:120000};
+ const sdk=createBrowserSdkServer({binding,prepared:()=>metadata,ensure:async()=>metadata,deadlineMs:f.allocation.leaseDeadlineMs,
   tools:async input=>(await f.host.readModelTools(input)).tools,call:f.host.callModelTool});
  const client=new Client({name:'scripted-agentcore',version:'1'}),[a,b]=InMemoryTransport.createLinkedPair();
  await sdk.server.instance.connect(b);await client.connect(a);

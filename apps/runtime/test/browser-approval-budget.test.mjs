@@ -19,7 +19,7 @@ function fixture({approvalMs=180000,advanceMs=121000,expiresAtMs=601000,cancel}=
  const host=createBrowserOperationHost({binding,now,sessions:{readModelTools(){assert.fail('not a tools operation');},callModelTool(){assert.fail('not a tool call');}},
   readRun:async()=>({binding,cwd:'/workspace/'+binding.conversationId,deadlineMs:expiresAtMs,port:{modelTransport:'host-owned',policy:async()=>policy,approvalDeadlineMs:approvalMs}})});
  const hosts={async executeBrowserOperation(operation,request,context){calls.push({operation,deadlineMs:context.deadlineMs});return (await host.executeBrowserOperation(operation,request,context)).result;}};
- const browserOperations=createBrowserOperations({hosts,now,readCapabilityRole:async()=>({actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000}),readBrowserPolicy:async()=>policy});
+ const browserOperations=createBrowserOperations({ensureHost:async()=>{},hostReached:async()=>true,hosts,now,readCapabilityRole:async()=>({actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000}),readBrowserPolicy:async()=>policy});
  const app=createWorkerRunApplication({browserOperations,now,configuration:{limits:{requestMs:3000,requestBytes:1048576}},createService(){assert.fail('not an ordinary run operation');},
   execution:{async authenticate(){if(at>=expiresAtMs)throw Error('expired');return {execution,scopes,selectedClientId:scopes[0].resourceId,policyRevision:scopes[0].policyRevision};}}});
  const native=createNativeCapabilityClient({now,credential:'synthetic-execution',configuration:{origin:'https://control.synthetic.invalid',maxResponseBytes:1048576},fetch:async(url,init)=>app.handle(new Request(url.replace('/v1/runner/','/internal/conversations/'),init))});

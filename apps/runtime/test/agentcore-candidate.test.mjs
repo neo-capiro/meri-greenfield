@@ -66,23 +66,27 @@ function fixture(options={}){
  const provider={async invoke(input){invocations++;invocation=input;invoked.resolve(input);return pending.promise;},async stop(input){stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,signal:undefined,stopped:true};}};
  // Keep the exact transport receipt closed (AbortSignal is request-only).
  provider.stop=async({signal,...input})=>{signal?.throwIfAborted();stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,stopped:true};};
- const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,turnTelemetry:options.turnTelemetry,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{})});
+ const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,turnTelemetry:options.turnTelemetry,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{}),...(options.browserNeed?{browserNeed:options.browserNeed}:{})});
  return {candidate,configuration,run,store,pending,counts:()=>({invocations,coreCalls,stops,claimCalls,relayCalls}),schema:()=>({queries:schemaQueries,relations:schemaRelations}),coreInput:()=>coreInput,invocation:()=>invocation,record:()=>record,
   async kickoff(){return candidate.native.call('execution/kickoff',{binding:b,executionKey:hash(b)});},
   async waitForInvocation(){let timer;try{return await Promise.race([invoked.promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Provider invocation did not arrive')),1000);})]);}finally{clearTimeout(timer);}},
   async finish(state='completed'){run.state=state;const v=invocation;pending.resolve(await candidate.execution.settle({credential:v.credential,execution:v.execution,state}));await candidate.close();}};
 }
 
-test('admission settings carry the configured browser activation verdict to the runner; absent or held is false',async t=>{
+test('the runner mounts the browser only with an open activation and a run browser need; absent or held is false',async t=>{
  const held=fixture();await held.kickoff();await held.waitForInvocation();t.after(()=>held.finish());
  assert.deepEqual(held.invocation().browser,{enabled:false});
  const explicit=fixture({browserActivation:{state:'held'}});await explicit.kickoff();await explicit.waitForInvocation();t.after(()=>explicit.finish());
  assert.deepEqual(explicit.invocation().browser,{enabled:false});
  const unverified=fixture({browserActivation:{state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}});
  await assert.rejects(unverified.kickoff(),{code:'BROWSER_ACTIVATION_CONFIGURATION'});await unverified.candidate.close();
- const open=fixture({browserActivation:{state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}}});
- await open.kickoff();await open.waitForInvocation();t.after(()=>open.finish());
- assert.deepEqual(open.invocation().browser,{enabled:true});
+ const activation={state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}};
+ // Open: the run's need decides. Deferred (enabled, first use provisions the host) mounts; none (policy off) does not.
+ for(const [kind,enabled] of [['deferred',true],['none',false]]){
+  const open=fixture({browserActivation:structuredClone(activation),browserNeed:async()=>({kind})});
+  await open.kickoff();await open.waitForInvocation();t.after(()=>open.finish());
+  assert.deepEqual(open.invocation().browser,{enabled},kind);
+ }
 });
 test('the private expiry sweep reaches only the bound control retention owner',async()=>{
  const f=fixture();let calls=0;

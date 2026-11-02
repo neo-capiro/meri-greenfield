@@ -2,12 +2,14 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
-import {createBrowserSdkServer} from '../sdk-server.mjs';
+import {createBrowserSdkServer,FIRST_BROWSER_TOOL} from '../sdk-server.mjs';
 import {browserRefusalResult} from '../refusals.mjs';
+import {validateBrowserPolicy} from '../policy.mjs';
 import {binding} from '../../../../control/conversations/test/store-fixture.mjs';
 const descriptor={name:'browser_snapshot',description:'Pinned upstream snapshot',inputSchema:{type:'object',properties:{filename:{type:'string',description:'Exact upstream parameter'}},additionalProperties:false}};
+const METADATA=Object.freeze({policy:validateBrowserPolicy({enabled:true,tools:['browser_snapshot']}),approvalDeadlineMs:120000});
 async function fixture(t,over={}){
- const calls=[],owner=createBrowserSdkServer({binding,policy:{enabled:true,tools:['browser_snapshot']},deadlineMs:Date.now()+30000,approvalDeadlineMs:120000,
+ const calls=[],owner=createBrowserSdkServer({binding,prepared:()=>METADATA,ensure:async()=>METADATA,deadlineMs:Date.now()+30000,
   tools:async()=>[descriptor],call:async input=>{calls.push(input);return {content:[{type:'text',text:'Filtered host snapshot'}]};},...over});
  const client=new Client({name:'synthetic-sdk-client',version:'1.0.0'}),[clientTransport,serverTransport]=InMemoryTransport.createLinkedPair();
  await owner.server.instance.connect(serverTransport);await client.connect(clientTransport);
@@ -45,4 +47,16 @@ test('the SDK tool use named in the call metadata reaches the host with the call
  await f.client.callTool({name:'browser_snapshot',arguments:{},_meta:{'claudecode/toolUseId':'toolu_01XYZ'}});
  await f.client.callTool({name:'browser_snapshot',arguments:{},_meta:{'claudecode/toolUseId':'not a tool use'}});
  assert.equal(f.calls[0].toolUseId,'toolu_01XYZ');assert.equal(Object.hasOwn(f.calls[1],'toolUseId'),false);
+});
+
+test('before the browser exists only browser_navigate is listed; the first call prepares it and the SDK re-lists the host tools',async t=>{
+ let metadata=null,prepared=0;const changed=[];
+ const f=await fixture(t,{prepared:()=>metadata,ensure:async()=>{prepared++;metadata=METADATA;await f.owner.toolsChanged();return metadata;}});
+ f.client.setNotificationHandler((await import('@modelcontextprotocol/sdk/types.js')).ToolListChangedNotificationSchema,()=>{changed.push('tools');});
+ assert.deepEqual((await f.client.listTools()).tools,[structuredClone(FIRST_BROWSER_TOOL)],'no host contact before first use');
+ assert.equal(prepared,0);
+ assert.deepEqual(await f.client.callTool({name:'browser_snapshot',arguments:{}}),{content:[{type:'text',text:'Filtered host snapshot'}]});
+ assert.equal(prepared,1);await new Promise(resolve=>setImmediate(resolve));assert.deepEqual(changed,['tools']);
+ assert.deepEqual((await f.client.listTools()).tools,[descriptor]);
+ assert.equal(f.owner.server.timeout,130000+900000,'the SDK ceiling covers a page effect plus the longest approval window');
 });

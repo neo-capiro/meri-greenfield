@@ -38,7 +38,7 @@ import {continuationSessionId} from './reads/runtime.mjs';
 import {readRunBudgets} from './reads/budget.mjs';
 import {createProfileMounts} from './capabilities/mounts.mjs';
 import {prepareBrowserRun} from './browser/runtime.mjs';
-import {BROWSER_NATIVE_LIMITS} from '../../../packages/contracts/runtime-0.2/browser-tools.mjs';
+import {browserOperationCeilingMs} from '../../../packages/contracts/runtime-0.2/browser-tools.mjs';
 import {attemptCleanup,cleanupConversation,CLEANUP_ATTEMPT_MS} from './cleanup.mjs';
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
 const fault=code=>Object.assign(new Error(code),{code});
@@ -149,7 +149,9 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     // The lifetime may reject before the preparation promise settles. Keep ownership of a late run handle so it can
     // still be cleaned up; until then the outcome is unknown and the disposable host must be quarantined.
     let settled=false,abandoned=false,prepared;
-    const prepare=async signal=>{try{prepared=await prepareBrowserRun({port:browser,binding,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,now,signal,browserHandoff:saved.browserHandoff,siteWorkflow:saved.request.siteWorkflow,siteWorkflows});
+    // The browser host starts on the run's first browser use; the conversation shows that plainly while it boots.
+    const starting=()=>{if(!controls?.isHeld())void publish('message.delta',{messageId:newId(),text:'Starting a browser…'}).catch(()=>{});};
+    const prepare=async signal=>{try{prepared=await prepareBrowserRun({port:browser,binding,cwd:runtime.cwd,deadlineMs:runtime.deadlineMs,now,signal,browserHandoff:saved.browserHandoff,siteWorkflow:saved.request.siteWorkflow,siteWorkflows,starting});
      if(abandoned)await prepared.settle({outcome:'cancelled'});return prepared;}
      catch(error){browserPreparationCleanupUnknown ||= error?.code==='BROWSER_CLEANUP_UNKNOWN';throw error;}
      finally{settled=true;}};
@@ -159,7 +161,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     let browserLife;
     try{
      if(remote){setupLife?.check();setupLife?.close();setupLife=undefined;
-      browserLife=createOperationLifetime({deadlineMs:Math.min(now()+BROWSER_NATIVE_LIMITS.executionMs,setupBudget?.expiresAtMs??Infinity,life.deadline()),now,signal:life.signal,errorFactory:fault});
+      browserLife=createOperationLifetime({deadlineMs:Math.min(now()+browserOperationCeilingMs('browser-prepare'),setupBudget?.expiresAtMs??Infinity,life.deadline()),now,signal:life.signal,errorFactory:fault});
       browserRun=await browserLife.run(prepare);
       if(remaining!==null)setupLife=createOperationLifetime({deadlineMs:Math.min(now()+remaining,setupBudget.expiresAtMs),now,signal:life.signal,errorFactory:fault});
      }else browserRun=await setupRun(prepare);

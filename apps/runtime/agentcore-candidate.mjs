@@ -54,7 +54,7 @@ const check=signal=>()=>signal?.throwIfAborted();
 const absent=code=>Response.json({error:{code}},{status:503,headers:{'cache-control':'no-store'}});
 
 /** Dependencies are borrowed. Only startAgentCoreCandidate creates and closes the provider client. */
-export function assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,nativeNeed,nativeReady,browserNeed,browserReady,nativeHostAuthority,nativeHostTeardown,
+export function assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,nativeNeed,nativeReady,browserNeed,nativeHostAuthority,nativeHostTeardown,
  store,initialBindings=createInitialRunBindingJournal({pool}),
  fetchImpl=globalThis.fetch,now=Date.now,createReadsRuntime,turnTelemetry,getCoreServiceSecret,readSecret=readRuntimeSecret}){
  const config=compileAgentCoreConfiguration(configuration.agentcore),versions=configuration.versions;
@@ -241,7 +241,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  }});
  const execution=createAgentCoreExecutionOwner({store,provider,versions,
   plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),
-  ...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{}),
+  ...(browserNeed?{browserNeed}:{}),...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{}),
   reconcileEnded:value=>reconciler.reconcile(value)});
  const reconciler=createRunReconciler({store,stopExecution:execution.stopExecution,now,maxReconcileMs:Math.min(120000,configuration.limits.shutdownMs)});
  const unprogressed=createUnprogressedRunSettlement({list:input=>listUnprogressedRuns(pool,input),reconciler,now});
@@ -341,12 +341,12 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   async close(){closed=true;await unprogressed.close();await execution.close();}});
 }
 
-export async function startAgentCoreCandidate({configuration,pool,signal,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,nativeNeed,nativeReady,browserNeed,browserReady,nativeHostAuthority,nativeHostTeardown}){
+export async function startAgentCoreCandidate({configuration,pool,signal,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,nativeNeed,nativeReady,browserNeed,nativeHostAuthority,nativeHostTeardown}){
  const config=compileAgentCoreConfiguration(configuration.agentcore);signal?.throwIfAborted();
  const {createAgentCoreClient}=await import('./agentcore-client.mjs');
  const provider=createAgentCoreClient({region:'us-east-1',agentRuntimeArn:config.runtimeArn,qualifier:config.qualifier});
  try{
-  const candidate=assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),...(nativeHostAuthority?{nativeHostAuthority}:{}),...(nativeHostTeardown?{nativeHostTeardown}:{})});
+  const candidate=assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),...(browserNeed?{browserNeed}:{}),...(nativeHostAuthority?{nativeHostAuthority}:{}),...(nativeHostTeardown?{nativeHostTeardown}:{})});
   return Object.freeze({...candidate,async close(){try{await candidate.close();}finally{provider.close();}}});
  }catch(error){provider.close();throw error;}
 }

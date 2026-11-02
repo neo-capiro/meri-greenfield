@@ -45,12 +45,14 @@ test('a browser cleanup that cannot be verified surfaces as SDK_CLEANUP_UNKNOWN 
 test('activity configuration refuses a browser port without a policy source',()=>{
  assert.throws(()=>createConversationActivity({runOwner:{load(){},append(){}},prepareRuntime(){},browser:{}}),/BROWSER_ACTIVITY_CONFIGURATION/);
 });
-test('remote browser preparation has a separate allowance and still closes after the ordinary setup stage',async()=>{
+test('a remote browser mounts without contacting its host; a run that never browses neither prepares nor settles a host',async()=>{
  const f=await applicationFixture({initialInput:true});await f.service.allocateInput({credential:f.credential,input:f.input});await f.service.submit({credential:f.credential,input:f.input});
- let at=Date.now(),queries=0,settlements=0,n=600;const until=at+300000;
- const browser={transport:'native-control',async prepare(){at+=40000;return {binding,policy:{enabled:false},activation:'not-applicable',approvalDeadlineMs:120000};},async settle({outcome}){settlements++;return {schema:'meri-browser-cleanup/1',binding,outcome,activation:'not-applicable',egress:'not-applicable',process:'not-applicable',profile:'done'};}};
+ let at=Date.now(),queries=0,settlements=0,prepares=0,n=600;const until=at+300000;
+ const unused=async()=>{throw Error('the host is not contacted');};
+ const browser={transport:'native-control',async prepare(){prepares++;throw Error('not prepared before first use');},tools:unused,call:unused,hook:unused,approve:unused,
+  async settle(){settlements++;throw Error('no host to settle');}};
  const execute=createConversationActivity({runOwner:f.runOwner,browser,now:()=>at,newId:()=>id(n++),setupBudget:{maxMs:23000,expiresAtMs:until-23000},
   prepareRuntime:async()=>({binding,versions,cwd:'/workspace/'+binding.conversationId,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:until,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024}),
-  query:()=>{queries++;return {async *[Symbol.asyncIterator](){yield* frames;},close(){}};}});
- try{assert.deepEqual(await execute({binding}),{state:'completed'});assert.equal(queries,1);assert.equal(settlements,1);}finally{f.close();}
+  query:({options})=>{queries++;assert.equal(options.mcpServers.meri_browser.type,'sdk','the browser tools are mounted');return {async *[Symbol.asyncIterator](){yield* frames;},close(){}};}});
+ try{assert.deepEqual(await execute({binding}),{state:'completed'});assert.equal(queries,1);assert.equal(prepares,0);assert.equal(settlements,0);}finally{f.close();}
 });

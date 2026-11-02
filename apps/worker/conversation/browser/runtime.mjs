@@ -37,10 +37,11 @@ export async function grantBrowserEgress({fragment,egress,binding,deadlineMs,lif
   throw error;
  }
 }
-export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,browserHandoff,siteWorkflow,siteWorkflows}){
+/** `starting()` (remote runs only) is told once when the run's browser host starts on its first browser use. */
+export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,browserHandoff,siteWorkflow,siteWorkflows,starting}){
  if(port?.transport==='native-control'){
   const {prepareRemoteBrowserRun}=await import('./remote-runtime.mjs');
-  return prepareRemoteBrowserRun({port,binding,deadlineMs,now,signal,browserHandoff});
+  return prepareRemoteBrowserRun({port,binding,deadlineMs,now,signal,browserHandoff,starting});
  }
  if(typeof port?.policy!=='function'||typeof now!=='function')throw fault('BROWSER_CONFIGURATION');
  let policy=await port.policy({binding:structuredClone(binding),signal}),workflow,session;

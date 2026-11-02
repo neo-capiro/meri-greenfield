@@ -10,10 +10,10 @@ const same=(a,b)=>hash(a)===hash(b);
 const refuse=code=>{throw Object.assign(Error(code),{code});};
 const checkSignal=signal=>()=>signal?.throwIfAborted();
 
-export function createAgentCoreExecutionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,beforeInvocation,nativeNeed,nativeReady,browserNeed,browserReady,
+export function createAgentCoreExecutionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,beforeInvocation,nativeNeed,nativeReady,browserNeed,
  now=Date.now,newId=randomUUID,reconcileEnded}){
  validateShape('RuntimeVersions',versions);
- if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function'||reconcileEnded!==undefined&&typeof reconcileEnded!=='function'||beforeInvocation!==undefined&&typeof beforeInvocation!=='function'||browserNeed!==undefined&&typeof browserNeed!=='function'||browserReady!==undefined&&typeof browserReady!=='function'||nativeNeed!==undefined&&typeof nativeNeed!=='function'||nativeReady!==undefined&&typeof nativeReady!=='function')refuse('EXECUTION_CONFIGURATION');
+ if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function'||reconcileEnded!==undefined&&typeof reconcileEnded!=='function'||beforeInvocation!==undefined&&typeof beforeInvocation!=='function'||browserNeed!==undefined&&typeof browserNeed!=='function'||nativeNeed!==undefined&&typeof nativeNeed!=='function'||nativeReady!==undefined&&typeof nativeReady!=='function')refuse('EXECUTION_CONFIGURATION');
  const journal=store.executions,pending=new Map(),observation=new AbortController();let closed=false;
  const credentialFor=execution=>'meri_execution_'+createHmac('sha256',credentialSecret)
   .update('meri-agentcore-execution-v1\0').update(hash(assertExecutionIdentity(execution))).digest('base64url');
@@ -43,11 +43,14 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
     const admitted=await existing(execution.binding,observation.signal);
     if(admitted.record?.phase!=='launching'||!['queued','starting','running'].includes(admitted.run.state)||execution.expiresAtMs<=now())refuse('EXECUTION_ADMISSION_REFUSED');
    }
-   // Both provisioned host purposes must be ready before the model turn; each read is repeated after the final admission check.
+   // The native host must be ready before the model turn; its read is repeated after the final admission check. The browser
+   // host is provisioned on the run's first browser use, so the turn never waits for it: the run's browser need only decides
+   // whether the runner mounts the browser at all (a tenant or role with the browser off gets no browser tools).
    const hostInput={binding:execution.binding,executionId:execution.executionId,signal:observation.signal,deadlineMs:execution.expiresAtMs};
-   let native=null,browser=null;
+   let native=null;
    if(nativeReady)native=await nativeReady(hostInput);
-   if(browserReady)browser=await browserReady(hostInput);
+   const browserEnabled=settings.browser?.enabled===true&&browserNeed!==undefined&&
+    (await browserNeed(hostInput)).kind!=='none';
    observation.signal.throwIfAborted();
    const checkFinal=finalRun=>
     finalRun.record?.executionId!==execution.executionId||finalRun.record?.phase!=='launching'||
@@ -56,14 +59,14 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
     finalRun.record.expiresAtMs<=now()||execution.expiresAtMs<=now();
    if(checkFinal(await existing(execution.binding,observation.signal)))refuse('EXECUTION_ADMISSION_REFUSED');
    if(nativeReady)native=await nativeReady(hostInput);
-   if(browserReady)browser=await browserReady(hostInput);
    observation.signal.throwIfAborted();
    if(checkFinal(await existing(execution.binding,observation.signal)))refuse('EXECUTION_ADMISSION_REFUSED');
-   for(const host of [native,browser])if(host!==null&&(!['ready','none'].includes(host?.status)||
-    host.status==='ready'&&(!Number.isSafeInteger(host.currentUntilMs)||host.currentUntilMs<=now()||
-     !Number.isSafeInteger(host.leaseDeadlineMs)||host.leaseDeadlineMs<=now())))refuse('EXECUTION_ADMISSION_REFUSED');
+   if(native!==null&&(!['ready','none'].includes(native?.status)||
+    native.status==='ready'&&(!Number.isSafeInteger(native.currentUntilMs)||native.currentUntilMs<=now()||
+     !Number.isSafeInteger(native.leaseDeadlineMs)||native.leaseDeadlineMs<=now())))refuse('EXECUTION_ADMISSION_REFUSED');
    observation.signal.throwIfAborted();
-   const result=await provider.invoke({execution,versions,credential:credentialFor(execution),...settings,signal:observation.signal});
+   const result=await provider.invoke({execution,versions,credential:credentialFor(execution),...settings,
+    ...(settings.browser===undefined?{}:{browser:{...settings.browser,enabled:browserEnabled}}),signal:observation.signal});
    own(result,['execution','state','settled']);
    if(!same(result.execution,execution)||!isExecutionOutcome(result.state)||result.settled!==true)refuse('EXECUTION_RESPONSE_REFUSED');
    const saved=await existing(execution.binding);
@@ -107,15 +110,17 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
    !Number.isSafeInteger(need.uploadCount)||need.uploadCount<1)refuse('EXECUTION_NATIVE_PREREQUISITE_REFUSED');
   return {kind:'native-processing',hostMode:'native-processing',policySha256:need.policySha256,uploadCount:need.uploadCount};
  }
- /** The run's browser-only host need: control's open activation record, read through the same durable claim as the native one. */
+ /** The run's browser-only host need: control's open activation record and policy, read through the same durable claim as
+  * the native one; `deferred` until the run's first browser use, then `browser-only`. */
  async function browserPrerequisite({binding,executionId,signal}){
   validateShape('RunBinding',binding);
   const saved=await existing(binding,signal),record=saved.record;
   if(!record||record.executionId!==executionId)refuse('EXECUTION_NOT_FOUND');
   if(browserNeed===undefined)return {kind:'none'};
   const need=own(await browserNeed({binding,executionId,signal,deadlineMs:record.expiresAtMs}),['kind'],['hostMode']);
-  if(!['none','browser-only'].includes(need.kind))refuse('EXECUTION_BROWSER_PREREQUISITE_REFUSED');
-  if(need.kind==='none')return {kind:'none'};
+  if(!['none','deferred','browser-only'].includes(need.kind))refuse('EXECUTION_BROWSER_PREREQUISITE_REFUSED');
+  // `deferred`: enabled but not used yet; the broker asks again until the run's first browser use (or its end).
+  if(need.kind!=='browser-only')return {kind:need.kind};
   if(need.hostMode!=='browser-only')refuse('EXECUTION_BROWSER_PREREQUISITE_REFUSED');
   return {kind:'browser-only',hostMode:'browser-only'};
  }

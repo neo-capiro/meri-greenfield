@@ -68,11 +68,15 @@ export function createBrokerActivity({native,provisioner,browserProvisioner,host
      }
     }finally{clearInterval(heartbeatTimer);heartbeatTimer=undefined;}
    }
-   // The browser-only host is the second provisioned purpose of the same run: control says whether its activation is open.
-   const browserNeed=own(await native.call('execution/browser/prerequisite',{binding:input.binding,executionId:started.executionId},{signal}),['kind'],['hostMode']);
-   if(!['none','browser-only'].includes(browserNeed.kind))throw fault('BROKER_BROWSER_PREREQUISITE_REFUSED');
-   if(browserNeed.kind==='browser-only'){
-    if(browserProvisioner===undefined)throw fault('BROKER_BROWSER_PROVISION_UNAVAILABLE');
+   // The browser-only host is the second provisioned purpose of the same run, provisioned on the run's first browser use:
+   // control answers `none` (no browser for this run), `deferred` (enabled, not used yet: asked again on every status
+   // poll) or `browser-only` (used: provision now). A browser provisioning failure leaves the run going without a browser
+   // (its preparation times out at control and the model is told); the original host is still torn down at the end.
+   const browserNeed=async()=>{const need=own(await native.call('execution/browser/prerequisite',{binding:input.binding,executionId:started.executionId},{signal}),['kind'],['hostMode']);
+    if(!['none','deferred','browser-only'].includes(need.kind))throw fault('BROKER_BROWSER_PREREQUISITE_REFUSED');
+    if(need.kind==='browser-only'&&browserProvisioner===undefined)throw fault('BROKER_BROWSER_PROVISION_UNAVAILABLE');
+    return need.kind;};
+   const provisionBrowser=async()=>{
     heartbeatTimer=setInterval(heartbeat,Math.max(10,Math.min(pollMs,1000)));heartbeatTimer.unref?.();
     try{
      const generation=input.binding.writerFence;
@@ -84,11 +88,16 @@ export function createBrokerActivity({native,provisioner,browserProvisioner,host
        throw fault('BROKER_BROWSER_PROVISION_REFUSED');
       browserHost=Object.freeze({hostId:provisioned.hostId,generation:provisioned.generation});
      }
-    }finally{clearInterval(heartbeatTimer);heartbeatTimer=undefined;}
-   }
+    }catch{signal.throwIfAborted();}
+    finally{clearInterval(heartbeatTimer);heartbeatTimer=undefined;}
+   };
+   let browser=await browserNeed();
+   if(browser==='browser-only'){await provisionBrowser();browser='none';}
    const currentLease=()=>{signal.throwIfAborted();if(now()>=started.expiresAtMs)throw fault('BROKER_LEASE_EXPIRED');};
    const observe=(value,preparing=false)=>{const current=data(value);own(current,['binding','executionId','state'],preparing?['expiresAtMs']:[]);if(canonicalSha256(current.binding)!==executionKey||current.executionId!==started.executionId||!['executing','completed','failed','cancelled','paused','waiting-for-approval',...(preparing?['preparing']:[])].includes(current.state)||preparing&&current.expiresAtMs!==started.expiresAtMs)throw fault('BROKER_RECEIPT_REFUSED');heartbeat();currentLease();return current;};
-   for(;;){currentLease();const current=observe(await native.call('execution/kickoff/status',{binding:input.binding,executionId:started.executionId},{signal}),true);if(!['preparing','executing'].includes(current.state)){
+   for(;;){currentLease();const current=observe(await native.call('execution/kickoff/status',{binding:input.binding,executionId:started.executionId},{signal}),true);
+    if(browser==='deferred'&&['preparing','executing'].includes(current.state)){browser=await browserNeed();if(browser==='browser-only'){await provisionBrowser();browser='none';}}
+    if(!['preparing','executing'].includes(current.state)){
     // A completed run retains the warm settled SDK runtime. A failed/cancelled/stopped original run tears down its
     // original native host separately from that retained SDK state.
     // Native host cleanup is separate from retaining the warm completed SDK runtime; it runs on every terminal path.
