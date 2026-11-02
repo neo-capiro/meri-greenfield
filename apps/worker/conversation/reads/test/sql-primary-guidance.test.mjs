@@ -19,7 +19,17 @@ test('SQL routing is admitted only with both actual query tools, and only as rou
  assert.match(prompt,/query-bounded rows, not source completeness; generatedAt is query time/);
  // The retired contract envelope and the per-tool argument and result detail stay out of the prompt.
  assert.doesNotMatch(prompt,/contract grammar|rowLimitReached|byteTruncated|keyset|legacy global query tools|Use read_saved_record/);
- assert.ok(prompt.length<2200,`${prompt.length} characters`);
+ assert.ok(prompt.length<2600,`${prompt.length} characters`);
+});
+
+const DATE_BASIS='When a question asks for the most recent, latest, newest or oldest records without naming a date, rank by the latest action or activity date when the data has one and otherwise by the introduction or creation date, say in one clause which date the ranking used, and when two plausible dates would change the answer say so in one sentence.';
+test('ranked "most recent" questions name the date they ranked by, with the SQL routing they govern',()=>{
+ for(const tools of [[],[describe],[query],[memory],[...mail]])assert.ok(!readPromptSentence(true,tools).includes(DATE_BASIS),'only with both query tools');
+ const prompt=readPromptSentence(true,[describe,query]);
+ assert.equal(prompt.split(DATE_BASIS).length-1,1,'once');
+ assert.ok(prompt.indexOf('Structured questions about Capiro data')<prompt.indexOf(DATE_BASIS),'after the SQL routing');
+ assert.ok(prompt.indexOf(DATE_BASIS)<readPromptSentence(true,[describe,query,memory]).indexOf('Saved knowledge'),'before memory routing');
+ assert.equal(DATE_BASIS.split(/\.\s/).length,1,'one sentence');
 });
 
 const REFUSED_OR_EMPTY='A refused or empty read is reported as exactly that: never answer about the user\'s records from your own knowledge in its place, and never say that data does not exist unless the query that would show it ran and returned nothing.';
