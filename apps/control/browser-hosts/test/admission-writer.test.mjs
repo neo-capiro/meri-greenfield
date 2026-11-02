@@ -43,16 +43,16 @@ function fixture(raw,existing=[],isolation='read committed'){
  return {admit:()=>writer.admit({record:raw}),log,inserted:()=>inserted,expected:prepareHostAllocation(raw,now)};
 }
 for(const [name,mode,existingMode] of [['empty','native-processing',undefined],['browser then native','native-processing','browser-only'],
- ['native then browser','browser-only','native-processing']])test('actual writer '+name,async()=>{
+ ['native then browser','browser-only','native-processing'],['browser-only empty','browser-only',undefined]])test('actual writer '+name,async()=>{
  const raw=source(mode),f=fixture(raw,existingMode===undefined?[]:[row(source(existingMode,10))]);
- if(mode==='native-processing'){
-  // A native admission is same-row only; without a reservation it must refuse and never INSERT.
-  await assert.rejects(()=>f.admit(),{message:'BROWSER_HOST_ALLOCATION_REFUSED'});
-  assert.equal(f.inserted(),0);
- }else{
-  assert.deepEqual(await f.admit(),f.expected);assert.equal(f.inserted(),1);
-  assert.ok(f.log.indexOf(S.admission)<f.log.indexOf(S.purposeRows));assert.ok(f.log.indexOf(S.purposeRows)<f.log.indexOf(S.insert));
- }
+ // A provisioned admission (native-processing, browser-only) is same-row only; without a reservation it must refuse and never INSERT.
+ await assert.rejects(()=>f.admit(),{message:'BROWSER_HOST_ALLOCATION_REFUSED'});
+ assert.equal(f.inserted(),0);
+});
+test('actual writer: a legacy (purpose-less) admission still inserts directly as active under the admission lock',async()=>{
+ const raw=source(null),f=fixture(raw,[]);
+ assert.deepEqual(await f.admit(),f.expected);assert.equal(f.inserted(),1);
+ assert.ok(f.log.indexOf(S.admission)<f.log.indexOf(S.purposeRows));assert.ok(f.log.indexOf(S.purposeRows)<f.log.indexOf(S.insert));
 });
 for(const [name,mode,other,state] of [['same purpose','native-processing','native-processing','active'],
  ['legacy existing','native-processing',null,'active'],['legacy requested',null,'native-processing','active'],
@@ -96,7 +96,8 @@ test('TEARDOWN: the browser-only branch also requires browserEgress closed',()=>
 
 test('PURPOSE FILTER: both readers select through the definer lock with a SQL purpose filter',()=>{
  const {HOST_ALLOCATION_SQL}=globalThis.__allocations;
- const native=HOST_ALLOCATION_SQL.nativeConversation,browser=HOST_ALLOCATION_SQL.browserConversation;
+ const native=HOST_ALLOCATION_SQL.nativeConversation,browser=HOST_ALLOCATION_SQL.browserConversation,browserRows=HOST_ALLOCATION_SQL.browserRows;
+ assert.match(browserRows,/lock_conversation\(\$1,\$2\)/u);assert.match(browserRows,/allocation_json->>'hostMode'='browser-only'/u);assert.equal(browserRows.includes("'legacy'"),false,'readiness is for provisioned browser-only rows only');
  assert.match(native,/lock_conversation\(\$1,\$2\)/u);
  assert.match(native,/allocation_json->>'hostMode'='native-processing'/u);
  assert.equal(native.includes('FOR UPDATE'),false);

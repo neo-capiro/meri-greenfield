@@ -127,3 +127,44 @@ test('LOCAL FAILURE: a held local observer still triggers the bounded physical b
  assert.equal(result.e.receipt.cgroup,'unknown','a held observer never becomes a local absence claim');
  assert.equal(result.e.receipt.hostDestroy,'requested','the physical backstop still ran');
 });
+
+const BROWSER_ALLOCATION={...ALLOCATION,hostId:uuid(9),hostMode:'browser-only'};
+const BROWSER_IDENTITY={...IDENTITY,hostId:uuid(9)};
+const boundBrowser=extra=>({allocationSha256:hash(BROWSER_ALLOCATION),bindingSha256:hash(BINDING),hostIdentitySha256:hash(BROWSER_IDENTITY),observedAtMs:now(),...extra});
+function remotePorts(overrides={}){
+ return {
+  remote:{async close(request){assert.equal(request.allocation.hostMode,'browser-only');return {closed:true,browserEgress:'closed',browserState:'disposed'};}},
+  processes:{async waitForExit(request){assert.equal(request.scope,'browser-host-descendants');
+   return boundBrowser({schema:'meri-d005-process-absence/1',scope:'browser-host-descendants',exited:true,remainingPids:[]});}},
+  host:{async destroy(){return {requested:true,instanceId:IDENTITY.instanceId,rootVolumeId:ROOT_VOLUME,networkInterfaceIds:ENIS};},
+   async observeAbsent(){return boundBrowser({schema:'meri-d005-physical-absence/1',instanceId:IDENTITY.instanceId,rootVolumeId:ROOT_VOLUME,
+    networkInterfaceIds:ENIS,instanceState:'terminated',rootVolumeAbsent:true,networkInterfacesAbsent:true});}},
+  ...overrides};
+}
+const remote=(overrides={},options={})=>createConversationHostTeardown({allocation:BROWSER_ALLOCATION,binding:BINDING,hostIdentity:BROWSER_IDENTITY,now,ports:remotePorts(overrides),...options});
+
+test('REMOTE BROWSER-ONLY: the host settles egress and profile inside its close; the receipt is the browser-only shape',async()=>{
+ const t=remote(),receipt=await t.settle({reason:'conversation-end'});
+ assert.equal(receipt.status,'VERIFIED');
+ assert.equal(receipt.browserEgress,'closed');assert.equal(receipt.bashEgress,'not-applicable');assert.equal(receipt.browserState,'disposed');
+ assert.equal(receipt.processScope,'browser-host-descendants');assert.equal(receipt.processes,'exited');
+ assert.equal(receipt.hostDestroy,'requested');assert.equal(receipt.hostAbsence,'confirmed');
+ assert.equal(receipt.cgroup,undefined);assert.equal(receipt.networkNamespace,undefined);
+ assert.equal(await t.settle({reason:'conversation-end'}),receipt,'settle is idempotent: one receipt per coordinator');
+});
+test('REMOTE BROWSER-ONLY UNKNOWN: a close that did not settle the profile or egress, a native-scoped process proof, or no physical proof never verifies',async()=>{
+ const outcome=(ports)=>remote(ports).settle({reason:'failed'}).then(v=>({v}),e=>({e}));
+ const profile=await outcome({remote:{async close(){return {closed:true,browserEgress:'closed',browserState:'unknown'};}}});
+ assert.equal(profile.e?.code,'HOST_TEARDOWN_UNKNOWN');assert.equal(profile.e.receipt.browserState,'unknown');assert.equal(profile.e.receipt.hostDestroy,'requested','the physical backstop still runs');
+ const egress=await outcome({remote:{async close(){return {closed:true,browserState:'disposed'};}}});
+ assert.equal(egress.e?.code,'HOST_TEARDOWN_UNKNOWN');assert.equal(egress.e.receipt.browserEgress,'unknown');
+ const scope=await outcome({processes:{async waitForExit(){return boundBrowser({schema:'meri-d005-process-absence/1',scope:'native-processing-descendants',exited:true,remainingPids:[]});}}});
+ assert.equal(scope.e?.code,'HOST_TEARDOWN_UNKNOWN');assert.equal(scope.e.receipt.processes,'unknown');
+ const physical=await outcome({host:{async destroy(){throw Error('DESTROY_FAILED');},async observeAbsent(){return boundBrowser({});}}});
+ assert.equal(physical.e?.code,'HOST_TEARDOWN_UNKNOWN');assert.equal(physical.e.receipt.hostAbsence,'unknown');
+});
+test('REMOTE BROWSER-ONLY: the branch needs exactly remote/processes/host ports and the browser-only purpose',()=>{
+ assert.throws(()=>remote({},{hostMode:'native-processing'}),{code:'HOST_TEARDOWN_CONFIGURATION'});
+ assert.throws(()=>createConversationHostTeardown({allocation:BROWSER_ALLOCATION,binding:BINDING,hostIdentity:BROWSER_IDENTITY,now,ports:{...remotePorts(),browser:{}}}),{code:'HOST_TEARDOWN_CONFIGURATION'});
+ assert.throws(()=>createConversationHostTeardown({allocation:ALLOCATION,binding:BINDING,hostIdentity:IDENTITY,now,ports:remotePorts()}),{code:'HOST_TEARDOWN_CONFIGURATION'},'a native allocation never takes the remote browser branch');
+});

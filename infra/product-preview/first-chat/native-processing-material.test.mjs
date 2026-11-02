@@ -17,6 +17,13 @@ test('existing renderer emits complete native /2 role configs and exact private 
  assert.equal(c.uploads.native.host.observer.keyPath,NATIVE_PATHS.observerKey);
  assert.equal(c.uploads.native.agentcore,undefined);assert.equal(w.nativeProvisioning.enabled,true);
  assert.equal(w.nativeProvisioning.deployment.physicalObserver.bridgeFunctionVersionArn,i.deployment.features.nativeProcessing.deployment.physicalObserver.bridgeFunctionVersionArn);
+ // The browser-only host purpose rides beside the native one: its own image/AMI/bootstrap, the same placement and control connection.
+ const bd=w.nativeProvisioning.browserDeployment,fb=i.deployment.features.nativeProcessing.browserDeployment;
+ assert.equal(bd.imageDigest,fb.imageDigest);assert.equal(bd.launch.ImageId,fb.launch.ImageId);assert.equal(bd.bootstrapSpec.document.name,'synthetic-browser-bootstrap');
+ assert.deepEqual(bd.placement,w.nativeProvisioning.deployment.placement);assert.equal(bd.bootstrapSpec.control.policySha256,w.nativeProvisioning.deployment.bootstrapSpec.control.policySha256);
+ assert.deepEqual(c.uploads.native.host.browserDeployment,{amiId:fb.launch.ImageId});
+ const withoutBrowser={...i,deployment:structuredClone(i.deployment)};delete withoutBrowser.deployment.features.nativeProcessing.browserDeployment;
+ const r2=renderMaterial(withoutBrowser);assert.equal(r2.roles['temporal-worker'].config.nativeProvisioning.browserDeployment,undefined);assert.equal(r2.roles.control.config.uploads.native.host.browserDeployment,undefined);
  for(const k of ['issuerCaCertificate','controlClientCertificate','controlClientKey','observerKey'])assert.ok(r.roles.control.expected.sha256ByPath[NATIVE_PATHS[k]]);
  for(const k of ['issuerCaCertificate','issuerCaKey','databaseConnection'])assert.ok(r.roles['temporal-worker'].expected.sha256ByPath[NATIVE_PATHS[k]]);
  assert.equal(r.roles.control.expected.sha256ByPath[NATIVE_PATHS.issuerCaKey],undefined);
@@ -33,7 +40,12 @@ test('missing, extra, modified or foreign native material refuses before render'
   i=>i.deployment.features.nativeProcessing.watchdog.definitionSha256='0'.repeat(64),
   i=>i.deployment.database.roles.nativeWorker=i.deployment.database.roles.control,
   i=>delete i.deployment.foundation.WorkerTaskRoleArn,
-  i=>delete i.deployment.features.nativeProcessing.deployment.physicalObserver]){
+  i=>delete i.deployment.features.nativeProcessing.deployment.physicalObserver,
+  i=>{i.deployment.features.nativeProcessing.browserDeployment.placement={...i.deployment.features.nativeProcessing.browserDeployment.placement,availabilityZone:'us-east-1b'};},
+  i=>{const b=i.deployment.features.nativeProcessing.browserDeployment;b.bootstrapSpec={...b.bootstrapSpec,control:{...b.bootstrapSpec.control,policySha256:'0'.repeat(64)}};},
+  i=>{i.deployment.features.nativeProcessing.browserDeployment.imageDigest=i.deployment.features.nativeProcessing.deployment.imageDigest;},
+  i=>{i.deployment.features.nativeProcessing.browserDeployment.launch.ImageId=i.deployment.features.nativeProcessing.deployment.launch.ImageId;},
+  i=>{i.deployment.features.nativeProcessing.browserDeployment.sourceCommit='1'.repeat(40);}]){
   const i=await inputs();mutate(i);assert.throws(()=>renderMaterial(i));
  }
 });

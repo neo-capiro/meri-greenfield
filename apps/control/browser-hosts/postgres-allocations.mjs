@@ -6,7 +6,7 @@ import {transact,assertPool} from '../product-persistence/transaction.mjs';
 import {prepareHostAllocation,allocationRow,hostKey,assertRequestedBinding,fail,same} from './allocation.mjs';
 import {verifiedTeardownReceipt} from './teardown-receipt.mjs';
 import {assertBrowserHostAllocation,assertHostAllocation} from '../../worker/conversation/host/binding.mjs';
-import {assertNativeHostAllocation,assertHostRunBindingPin,assertD005HostIdentityShape} from '../../../packages/contracts/native-lifecycle.mjs';
+import {assertNativeHostAllocation,assertProvisionedHostAllocation,assertHostRunBindingPin,assertD005HostIdentityShape,PROVISIONED_HOST_MODES} from '../../../packages/contracts/native-lifecycle.mjs';
 import {assertNativeUploadCustody} from '../../runtime/uploads/native-host-contract.mjs';
 import {createNativeReservationOwner,NATIVE_RESERVATION_SQL,requireCurrentNativeAuthority,assertNativeDeclaration,assertNativeBootstrapAdmission} from './native-reservations.mjs';
 import {createNativePhysicalOwner,finishPhysicalFullTeardown} from './native-physical-owner.mjs';
@@ -27,6 +27,8 @@ export const HOST_ALLOCATION_SQL=Object.freeze({
   WHERE a.allocation_json->>'hostMode'='native-processing'`,
  browserConversation:`SELECT a.* FROM meri_host_control.lock_conversation($1,$2) a
   WHERE a.state='active' AND COALESCE(a.allocation_json->>'hostMode','legacy') IN ('legacy','browser-only')`,
+ browserRows:`SELECT a.* FROM meri_host_control.lock_conversation($1,$2) a
+  WHERE a.allocation_json->>'hostMode'='browser-only'`,
  // Canonical admission lock: taken BEFORE any insert, including for a conversation with zero allocation rows.
  admission:`SELECT 1 FROM meri_host_control.lock_conversation_admission($1,$2)`,
  // Fresh VOLATILE read AFTER the lock (never a same-statement prelock snapshot).
@@ -71,7 +73,7 @@ export function createPostgresHostAllocationWriter({pool,now=Date.now,readCurren
     const existing=list(await client.query(HOST_ALLOCATION_SQL.purposeRows,[a.tenantId,a.conversationId]));
     const purpose=a.hostMode===undefined?'legacy':a.hostMode;
     const nativeCandidate=existing.find(row=>row.host_id===a.hostId&&Number(row.generation)===Number(a.generation)&&
-     row.host_mode==='native-processing');
+     PROVISIONED_HOST_MODES.includes(row.host_mode));
     const nativeSame=nativeCandidate===undefined?[]:rows(await client.query(HOST_ALLOCATION_SQL.lock,[a.hostId,a.generation]));
     const nativeRow=nativeSame.length===1?nativeSame[0]:null;
     record=prepareHostAllocation(raw,now(),nativeRow);check();
@@ -87,10 +89,10 @@ export function createPostgresHostAllocationWriter({pool,now=Date.now,readCurren
      // Legacy is exclusive in both directions; a DIFFERENT explicit purpose coexists; the SAME purpose refuses.
      if(purpose==='legacy'||other==='legacy'||other===purpose)fail();
     }
-    // NATIVE admission is SAME-ROW ONLY: complete an existing dispatching/unknown reservation, or accept an
-    // exact active replay. It never INSERTs a fresh active row after an external effect.
+    // PROVISIONED admission (native-processing, browser-only) is SAME-ROW ONLY: complete an existing dispatching/unknown
+    // reservation, or accept an exact active replay. It never INSERTs a fresh active row after an external effect.
     if(nativeRow!==null){
-     if(purpose!=='native-processing'||nativeRow.allocation_json?.hostMode!=='native-processing')fail();
+     if(!PROVISIONED_HOST_MODES.includes(purpose)||nativeRow.allocation_json?.hostMode!==purpose)fail();
      if(nativeRow.state==='active'){
       const saved=allocationRow(nativeRow);
       if(!same(saved.record,record))fail();
@@ -122,8 +124,8 @@ export function createPostgresHostAllocationWriter({pool,now=Date.now,readCurren
      grantUntil=commitAuthority.currentUntilMs;
      return active.record;
     }
-    // A native admission without a pre-existing reservation is refused; no fresh active INSERT.
-    if(purpose==='native-processing')fail();
+    // A provisioned admission without a pre-existing reservation is refused; no fresh active INSERT.
+    if(PROVISIONED_HOST_MODES.includes(purpose))fail();
     await client.query(HOST_ALLOCATION_SQL.insert,[a.hostId,a.generation,a.tenantId,a.conversationId,a,hash(a),record.originalBinding,
      record.hostIdentity,hash(record.hostIdentity),record.ownerInstanceId,record.endpoint,hash(record),record.hostCertificate.fingerprintSha256,
      record.hostCertificate.dnsName,record.hostCertificate.notAfterMs,record.serverCertificateNotAfterMs,a.leaseDeadlineMs]);check();
@@ -159,8 +161,8 @@ export function createPostgresHostAllocationWriter({pool,now=Date.now,readCurren
     const value=allocationRow(found[0]);if(value.state==='active')fail();return {revoked:true};
    },{check,unavailable:'BROWSER_HOST_ALLOCATION_REFUSED',uncertain:'BROWSER_HOST_ALLOCATION_UNKNOWN'});
   },
-  /** Read the EXACT canonical original host row for Control-owned teardown. This is the same
-   * host_allocations row/record used by admission; no second allocation or receipt is created. */
+  /** Read the EXACT canonical original host row (either provisioned purpose) for Control-owned teardown. This is the
+   * same host_allocations row/record used by admission; no second allocation or receipt is created. */
   async readNativeHostTeardown(raw){
    const {hostId,generation,signal}=own(raw,['hostId','generation'],['signal']);nativeSignal(signal);
    if(!UUID.test(hostId)||!Number.isSafeInteger(generation)||generation<1)fail();
@@ -171,13 +173,13 @@ export function createPostgresHostAllocationWriter({pool,now=Date.now,readCurren
     // Managed cleanup can finish before guest admission. Its retained canonical evidence does not
     // require (and must not invent) a guest identity, endpoint, certificate record or full receipt.
     if(found[0].declaration_json?.schema===NATIVE_DECLARATION_V2&&['reserved','dispatching','unknown','refused'].includes(found[0].state)){
-     const row=found[0],a=assertNativeHostAllocation(row.allocation_json),b=assertHostRunBindingPin(a,row.original_binding_json),
+     const row=found[0],a=assertProvisionedHostAllocation(row.allocation_json),b=assertHostRunBindingPin(a,row.original_binding_json),
       declaration=assertNativeDeclaration(row.declaration_json),physical=readNativePhysicalRow(row,{
        hostId,generation,originalBindingSha256:hash(b),declarationSha256:row.declaration_sha256});
      return Object.freeze({allocation:a,binding:b,hostIdentity:null,state:row.state,record:null,declaration,physical});
     }
     const saved=allocationRow(found[0]),r=saved.record;
-    const a=assertNativeHostAllocation(r.allocation),b=assertHostRunBindingPin(a,r.originalBinding),
+    const a=assertProvisionedHostAllocation(r.allocation),b=assertHostRunBindingPin(a,r.originalBinding),
      i=assertD005HostIdentityShape(r.hostIdentity,b,a);
     const observer=found[0].declaration_json?.schema===NATIVE_DECLARATION_V2?{
      declaration:assertNativeDeclaration(found[0].declaration_json),physical:readNativePhysicalRow(found[0],{
@@ -214,7 +216,38 @@ export function createPostgresHostAllocationWriter({pool,now=Date.now,readCurren
  * physical allocation alone never grants browser access. No fallback or cache. */
 export function createPostgresHostAllocationReader({pool,readCanonicalRun,now=Date.now}){
  assertPool(pool);if(typeof readCanonicalRun!=='function')fail();
- return Object.freeze({async resolve(raw){
+ /** Provisioning readiness of THIS run's browser-only host: absent, not-ready (reserved/dispatching, with the lease) or
+  * ready (active, bootstrap custody retained, and the canonical run says browserAdmitted). Legacy rows are not browser-only. */
+ async function ready(raw){
+  const {binding:input,signal}=own(raw,['binding'],['signal']);nativeSignal(signal);
+  const binding=assertRequestedBinding(input),check=()=>signal?.throwIfAborted();
+  return transact(pool,async client=>{
+   check();
+   const candidates=list(await client.query(HOST_ALLOCATION_SQL.browserRows,[binding.tenantId,binding.conversationId]));check();
+   const matching=[];
+   for(const row of candidates){
+    const a=assertProvisionedHostAllocation(row.allocation_json),original=assertHostRunBindingPin(a,row.original_binding_json);
+    if(a.hostMode!=='browser-only'||a.tenantId!==binding.tenantId||a.conversationId!==binding.conversationId)fail();
+    if(same(original,binding))matching.push({row,a});
+    else if(row.state==='active')fail();
+   }
+   if(matching.length===0)return Object.freeze({status:'absent',binding});
+   if(matching.length!==1)fail();
+   const {row,a}=matching[0];
+   if(!['reserved','dispatching','active'].includes(row.state))fail();
+   if(a.leaseDeadlineMs<=now())return Object.freeze({status:'not-ready',binding,state:'expired'});
+   if(row.state!=='active')return Object.freeze({status:'not-ready',binding,state:row.state,generation:a.generation,leaseDeadlineMs:a.leaseDeadlineMs});
+   const saved=allocationRow(row),r=saved.record;
+   assertNativeBootstrapAdmission({row,record:r});
+   const current=await readCanonicalRun(client,{allocation:a,originalBinding:r.originalBinding,binding,custody:null,signal});check();
+   if(!same(current.binding,binding)||current.browserAdmitted!==true||!Number.isSafeInteger(current.currentUntilMs)||current.currentUntilMs<=now())fail();
+   const currentUntilMs=Math.min(until(r),current.currentUntilMs);
+   if(currentUntilMs<=now())fail();
+   return Object.freeze({status:'ready',binding,generation:a.generation,ownerInstanceId:r.ownerInstanceId,leaseDeadlineMs:a.leaseDeadlineMs,
+    currentUntilMs,recordSha256:hash(r)});
+  },{check,unavailable:'BROWSER_HOST_ALLOCATION_REFUSED',uncertain:'BROWSER_HOST_ALLOCATION_UNKNOWN'});
+ }
+ return Object.freeze({ready,async resolve(raw){
   const {binding:input,custody=null,signal}=own(raw,['binding'],['custody','signal']);nativeSignal(signal);
   const binding=assertRequestedBinding(input);if(custody!==null)assertBrowserCustody(custody);
   const check=()=>signal?.throwIfAborted();

@@ -1,9 +1,10 @@
-/** Control-side native lifecycle coordinator: strict remote evidence -> EXISTING native teardown coordinator
- * (createConversationHostTeardown native branch) -> existing EC2 physical port -> canonical writer record.
+/** Control-side provisioned-host lifecycle coordinator (native-processing or browser-only, by the allocation's purpose):
+ * strict remote evidence -> EXISTING teardown coordinator (createConversationHostTeardown native or remote browser-only
+ * branch) -> existing EC2 physical port -> canonical writer record.
  * It never invents local/browser claims, never persists UNKNOWN as verified, and performs at most one settle
  * (duplicate calls share the same promise/result), so a lost canonical receipt ACK replays the exact receipt
  * instead of destroying twice. */
-import {assertNativeHostAllocation,assertHostRunBindingPin,assertD005HostIdentityShape} from
+import {assertProvisionedHostAllocation,assertHostRunBindingPin,assertD005HostIdentityShape} from
  '../../packages/contracts/native-lifecycle.mjs';
 import {createConversationHostTeardown} from '../worker/conversation/host/teardown.mjs';
 const fault=(code,receipt)=>{const e=Object.assign(new Error(code),{code});if(receipt!==undefined)e.receipt=receipt;return e;};
@@ -12,7 +13,7 @@ const method=(object,name)=>{if(typeof object?.[name]!=='function')throw fault('
 
 export function createNativeHostLifecycle({client,physical,writer,allocation,binding,hostIdentity,now=Date.now,
  localCleanupMs=30000,hostCleanupMs=30000}){
- const a=assertNativeHostAllocation(allocation),b=assertHostRunBindingPin(a,binding),i=assertD005HostIdentityShape(hostIdentity,b,a);
+ const a=assertProvisionedHostAllocation(allocation),b=assertHostRunBindingPin(a,binding),i=assertD005HostIdentityShape(hostIdentity,b,a);
  if(client===null||typeof client!=='object'||typeof client.close!=='function'||typeof client.processes!=='function'||
   typeof client.observe!=='function')throw fault('NATIVE_TEARDOWN_CONFIGURATION');
  // Capture the exact owner methods at construction: a later property mutation cannot retarget a settle.
@@ -25,22 +26,21 @@ export function createNativeHostLifecycle({client,physical,writer,allocation,bin
  const physicalDestroy=full?physical.destroy.bind(physical):null,
   physicalObserveAbsent=full?physical.observeAbsent.bind(physical):null;
  // The EXISTING coordinator owns ordering, deadlines, receipts and the UNKNOWN rule.
+ const remoteClose=async(request,{signal}={})=>{
+  const answer=await clientClose({signal});
+  // Coordinator semantics: only the validated 'closed' status is a close proof; unknown is a failure.
+  if(answer?.closed!==true||answer.status!=='closed')throw fault('NATIVE_LIFECYCLE_UNKNOWN');
+  return Object.freeze({closed:true,...(answer.browserEgress===undefined?{}:{browserEgress:answer.browserEgress}),
+   ...(answer.browserState===undefined?{}:{browserState:answer.browserState})});
+ };
+ const shared={processes:Object.freeze({waitForExit:async(request,{signal}={})=>clientProcesses({signal})}),
+  host:Object.freeze({destroy:(request,{signal}={})=>physicalDestroy(request,{signal}),
+   observeAbsent:(request,{signal}={})=>physicalObserveAbsent(request,{signal})})};
  const coordinator=full?createConversationHostTeardown({allocation:a,binding:b,hostIdentity:i,
-  browserPolicySha256:'0'.repeat(64),now,localCleanupMs,hostCleanupMs,hostMode:'native-processing',
-  ports:Object.freeze({
-   native:Object.freeze({
-    close:async(request,{signal}={})=>{
-     const answer=await clientClose({signal});
-     // Coordinator semantics: only the validated 'closed' status is a close proof; unknown is a failure.
-     if(answer?.closed!==true||answer.status!=='closed')throw fault('NATIVE_LIFECYCLE_UNKNOWN');
-     return Object.freeze({closed:true});
-    },
-    observe:async(request,{signal}={})=>clientObserve({signal}),
-   }),
-   processes:Object.freeze({waitForExit:async(request,{signal}={})=>clientProcesses({signal})}),
-   host:Object.freeze({destroy:(request,{signal}={})=>physicalDestroy(request,{signal}),
-    observeAbsent:(request,{signal}={})=>physicalObserveAbsent(request,{signal})}),
-  })}):null;
+  browserPolicySha256:'0'.repeat(64),now,localCleanupMs,hostCleanupMs,hostMode:a.hostMode,
+  ports:Object.freeze(a.hostMode==='browser-only'
+   ?{remote:Object.freeze({close:remoteClose}),...shared}
+   :{native:Object.freeze({close:remoteClose,observe:async(request,{signal}={})=>clientObserve({signal})}),...shared})}):null;
  let settled=null,recorded=null,candidateReceipt=null;
  async function recordReceipt(receipt,signal){
   if(recorded!==null)return recorded;

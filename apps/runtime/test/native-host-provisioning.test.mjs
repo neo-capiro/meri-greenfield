@@ -48,7 +48,7 @@ function store(){
   if(sql===N.reserve||sql===N.reserveObserver){if(!rows.has(key))rows.set(key,{host_id:args[0],generation:args[1],tenant_id:args[2],
    conversation_id:args[3],allocation_json:args[4],allocation_sha256:args[5],original_binding_json:args[6],
    owner_instance_id:args[7],declaration_json:args[8],declaration_sha256:args[9],lease_deadline_ms:args[10],
-   credential_revision:1,state:'reserved',host_mode:'native-processing',observed_instance_json:null,
+   credential_revision:1,state:'reserved',host_mode:args[4].hostMode,observed_instance_json:null,
    dispatch_started_at_ms:null,bootstrap_prepare_json:null,bootstrap_install_json:null,
    ...Object.fromEntries(Object.keys(PHYSICAL_COLUMNS).flatMap(name=>['json','sha256','canonical'].map(suffix=>
     [`native_physical_${name}_${suffix}`,name==='context'?args[11+['json','sha256','canonical'].indexOf(suffix)]:null])))});return {rows:[]};}
@@ -99,7 +99,7 @@ async function bootstrap(writer,rows,input){
  const spki=c=>sha(Buffer.from(c.publicKey.export({type:'spki',format:'der'})));
  const scope={allocation:res.allocation,originalBinding:res.originalBinding,ownerInstanceId:res.ownerInstanceId,
   cleanupCeilingMs:res.declaration.watchdog.cleanupCeilingMs,
-  instanceId:res.observedInstance.instanceId,endpoint:{address:'10.0.0.11',port:9443,serverName:'host.example'},
+  instanceId:res.observedInstance.instanceId,endpoint:{address:res.observedInstance.privateIp,port:9443,serverName:'host.example'},
   source:{imageDigest:input.declaration.imageDigest,sourceCommit:input.declaration.sourceCommit,bootstrapSha256:input.declaration.bootstrapSha256},
   declarationSha256:res.declarationSha256,bootstrapSpecSha256:hash(bootstrapSpec)};
  const prepId=B.nativeBootstrapOperationId({hostId:input.hostId,generation:input.generation,step:'prepare'});
@@ -295,4 +295,28 @@ test('default reservation arms the real managed execution before EC2, and lost S
  const out=await coordinator(s,e,{watchdog}).provision({binding,generation:1});
  assert.equal(order.filter(x=>x==='sfn:start').length,firstStart,'fresh owner reuses retained execution');
  assert.ok(['created','existing'].includes(out.state));assert.equal(e.launches(),1);
+});
+
+test('BROWSER-ONLY: the same coordinator provisions the browser host purpose beside the native one, with its own host id, declaration and image',async()=>{
+ const browserDeployment={...deployment,imageDigest:'sha256:'+'b'.repeat(64),launch:{...launchSpec,ImageId:'ami-0fedcba9876543210'}};
+ const s=store(),e=ec2();
+ const browser=createNativeHostProvisioning({writer:s.writer,deployment:browserDeployment,hostMode:'browser-only',
+  launch:createEc2NativeHostLaunchPort({ec2:e,launch:browserDeployment.launch}),material:materialFor(s.writer,s.rows),
+  authority:{verify:async()=>({currentUntilMs:now+600000,executionDeadlineMs:now+900000})},watchdog:watchdogStub,now:()=>now,ownerId:()=>id(9)});
+ const first=await browser.provision({binding,generation:1});
+ assert.ok(['created','existing'].includes(first.state));assert.equal(first.hostId,nativeHostId({binding,generation:1,hostMode:'browser-only'}));
+ assert.notEqual(first.hostId,nativeHostId({binding,generation:1}),'the two purposes of one run never share a host id');
+ const row=s.rows.get(first.hostId+':1');
+ assert.equal(row.state,'active');assert.equal(row.allocation_json.hostMode,'browser-only');assert.equal(row.allocation_json.imageDigest,browserDeployment.imageDigest);
+ assert.equal(row.declaration_json.launch.ImageId,'ami-0fedcba9876543210');assert.equal(row.host_mode,'browser-only');
+ const launched=[...e.instances.values()][0];assert.equal(launched.tags.MeriHostId,first.hostId);
+ // Replay keeps one row and one instance; the native coordinator then adds its own host beside it.
+ const again=await browser.provision({binding,generation:1});assert.equal(again.instanceId,first.instanceId);assert.equal(e.launches(),1);
+ const native=await coordinator(s,e).provision({binding,generation:1});
+ assert.notEqual(native.hostId,first.hostId);assert.equal(s.rows.size,2);assert.equal(e.launches(),2);
+ assert.equal(s.rows.get(native.hostId+':1').allocation_json.hostMode,'native-processing');
+ // A native coordinator never completes the browser reservation and vice versa: the host ids differ by purpose.
+ assert.throws(()=>createNativeHostProvisioning({writer:s.writer,deployment,hostMode:'legacy',launch:createEc2NativeHostLaunchPort({ec2:e,launch:launchSpec}),
+  material:materialFor(s.writer,s.rows),authority:{verify:async()=>({})},watchdog:watchdogStub}),{code:'NATIVE_HOST_PROVISION_CONFIGURATION'});
+ assert.throws(()=>nativeHostId({binding,generation:1,hostMode:'legacy'}),{code:'NATIVE_HOST_PROVISION_REFUSED'});
 });

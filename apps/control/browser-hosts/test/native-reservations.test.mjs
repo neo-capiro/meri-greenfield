@@ -225,3 +225,22 @@ test('effect grants require a fresh canonical authority callback and never grant
  const refused=store({verify:async()=>{throw Object.assign(Error('REVOKED'),{code:'REVOKED'});}});
  await assert.rejects(()=>refused.writer.reserveNativeHost(reserveInput()),{message:'BROWSER_HOST_ALLOCATION_REFUSED'});
 });
+
+test('browser-only hosts reserve and claim through the same writer; one unterminated host per purpose, both purposes coexist',async()=>{
+ const browser={...allocation,hostId:id(8),hostMode:'browser-only'};
+ const browserDeclaration=assertNativeDeclaration({...declaration,tags:{...declaration.tags,MeriHostId:id(8)}});
+ const s=store();
+ const reserved=await s.writer.reserveNativeHost({allocation:browser,originalBinding:binding,ownerInstanceId:id(9),declaration:browserDeclaration});
+ assert.equal(reserved.allocation.hostMode,'browser-only');assert.equal(reserved.state,'reserved');
+ assert.deepEqual(await s.writer.reserveNativeHost({allocation:browser,originalBinding:binding,ownerInstanceId:id(9),declaration:browserDeclaration}),reserved,'exact replay');
+ const claim=await s.writer.claimNativeHostDispatch({hostId:id(8),generation:1,declarationSha256:hash(browserDeclaration)});
+ assert.equal(claim.disposition,'send-once');assert.equal(claim.reservation.allocation.hostMode,'browser-only');
+ assert.equal((await s.writer.readNativeReservation({hostId:id(8),generation:1})).state,'dispatching');
+ // A second browser-only host for the same conversation refuses; the native purpose still reserves beside it.
+ await assert.rejects(s.writer.reserveNativeHost({allocation:{...browser,hostId:id(10)},originalBinding:binding,ownerInstanceId:id(9),
+  declaration:assertNativeDeclaration({...declaration,tags:{...declaration.tags,MeriHostId:id(10)}})}),/BROWSER_HOST_ALLOCATION_REFUSED/u);
+ const native=await s.writer.reserveNativeHost(reserveInput());assert.equal(native.allocation.hostMode,'native-processing');
+ assert.equal(s.rows.size,2);
+ // A legacy (purpose-less) allocation never enters the provisioned path.
+ await assert.rejects(s.writer.reserveNativeHost({...reserveInput(),allocation:{...allocation,hostMode:undefined}}),/HOST_BINDING_REFUSED/u);
+});

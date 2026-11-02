@@ -24,23 +24,26 @@ async function sleep(signal,ms){signal.throwIfAborted();await new Promise((resol
  * Cancellation, an expired run or an uncertain dispatch uses the existing stop owner with an independent bounded signal.
  * A lost Stop acknowledgement stays unknown; it never becomes a successful activity receipt.
  */
-export function createBrokerActivity({native,provisioner,hostTeardown,context=()=>Context.current(),now=Date.now,pollMs=1000}){
+export function createBrokerActivity({native,provisioner,browserProvisioner,hostTeardown,context=()=>Context.current(),now=Date.now,pollMs=1000}){
  if(!Number.isSafeInteger(pollMs)||pollMs<10||pollMs>1000)throw fault('BROKER_CONFIGURATION');
  if(provisioner!==undefined&&typeof provisioner?.provision!=='function')throw fault('BROKER_CONFIGURATION');
+ if(browserProvisioner!==undefined&&typeof browserProvisioner?.provision!=='function')throw fault('BROKER_CONFIGURATION');
  if(hostTeardown!==undefined&&typeof hostTeardown!=='function')throw fault('BROKER_CONFIGURATION');
- return async function executeConversation(input){own(input,['binding']);validateShape('RunBinding',input.binding);const activity=context(),signal=activity.cancellationSignal;signal.throwIfAborted();const executionKey=canonicalSha256(input.binding);let started,cleaning,heartbeatTimer,host;
+ return async function executeConversation(input){own(input,['binding']);validateShape('RunBinding',input.binding);const activity=context(),signal=activity.cancellationSignal;signal.throwIfAborted();const executionKey=canonicalSha256(input.binding);let started,cleaning,heartbeatTimer,host,browserHost;
   const heartbeat=()=>{try{activity.heartbeat({runId:input.binding.runId,executionId:started?.executionId});}catch{}};
   const cleanup=()=>cleaning??=stopOriginal({native,binding:input.binding,expiresAtMs:started?.expiresAtMs,now,timeoutMs:BROKER_NATIVE_MS,code:'BROKER_KICKOFF_CLEANUP_UNKNOWN'});
   // Original host teardown is separate from retaining the warm settled SDK runtime. It gets its own bounded
   // independent lifetime so an already-cancelled activity signal cannot block cleanup; a missing owner is a refusal.
-  const cleanupHost=async()=>{if(host===undefined)return;if(typeof hostTeardown!=='function')throw fault('BROKER_NATIVE_CLEANUP_UNAVAILABLE');
-   const value=await hostTeardown({binding:input.binding,generation:host.generation,hostId:host.hostId,signal:AbortSignal.timeout(BROKER_NATIVE_MS)});
+  const cleanupOne=async h=>{if(typeof hostTeardown!=='function')throw fault('BROKER_NATIVE_CLEANUP_UNAVAILABLE');
+   const value=await hostTeardown({binding:input.binding,generation:h.generation,hostId:h.hostId,signal:AbortSignal.timeout(BROKER_NATIVE_MS)});
    if(value?.closed!==true||value?.verified!==true)throw fault('BROKER_NATIVE_CLEANUP_UNKNOWN');
    // The actual private route binds the original requested identity in its reply. If present it must match exactly;
    // closed/verified booleans alone are never physical proof and never authorize another host.
    if(value.binding!==undefined&&(canonicalSha256(value.binding)!==canonicalSha256(input.binding)||
-    value.hostId!==host.hostId||value.generation!==host.generation))throw fault('BROKER_NATIVE_CLEANUP_REFUSED');
+    value.hostId!==h.hostId||value.generation!==h.generation))throw fault('BROKER_NATIVE_CLEANUP_REFUSED');
   };
+  // Every original host of this run (native-processing, browser-only) is torn down; one failure never skips the other.
+  const cleanupHost=async()=>{let failure;for(const h of [host,browserHost]){if(h===undefined)continue;try{await cleanupOne(h);}catch(error){failure??=error;}}if(failure!==undefined)throw failure;};
   try{started=own(await native.call('execution/kickoff',{binding:input.binding,executionKey},{signal}),['binding','executionId','expiresAtMs']);if(canonicalSha256(started.binding)!==executionKey||started.executionId!==executionKey||!Number.isSafeInteger(started.expiresAtMs)||started.expiresAtMs<=now())throw fault('BROKER_START_REFUSED');
    // The ACK above is prompt and durable. Only after it do we read retained native need; ordinary conversations
    // never allocate. A required-but-missing provisioner is a refusal, never a silent no-native answer.
@@ -65,6 +68,24 @@ export function createBrokerActivity({native,provisioner,hostTeardown,context=()
      }
     }finally{clearInterval(heartbeatTimer);heartbeatTimer=undefined;}
    }
+   // The browser-only host is the second provisioned purpose of the same run: control says whether its activation is open.
+   const browserNeed=own(await native.call('execution/browser/prerequisite',{binding:input.binding,executionId:started.executionId},{signal}),['kind'],['hostMode']);
+   if(!['none','browser-only'].includes(browserNeed.kind))throw fault('BROKER_BROWSER_PREREQUISITE_REFUSED');
+   if(browserNeed.kind==='browser-only'){
+    if(browserProvisioner===undefined)throw fault('BROKER_BROWSER_PROVISION_UNAVAILABLE');
+    heartbeatTimer=setInterval(heartbeat,Math.max(10,Math.min(pollMs,1000)));heartbeatTimer.unref?.();
+    try{
+     const generation=input.binding.writerFence;
+     if(hostTeardown!==undefined)browserHost=Object.freeze({hostId:nativeHostId({binding:input.binding,generation,hostMode:'browser-only'}),generation});
+     const provisioned=await browserProvisioner.provision({binding:input.binding,generation,deadlineMs:started.expiresAtMs,signal});
+     own(provisioned,['state'],['instanceId','privateIp','leaseDeadlineMs','saved','hostId','generation','ownerInstanceId','token']);
+     if(hostTeardown!==undefined){
+      if(typeof provisioned.hostId!=='string'||!Number.isSafeInteger(provisioned.generation)||provisioned.generation!==generation)
+       throw fault('BROKER_BROWSER_PROVISION_REFUSED');
+      browserHost=Object.freeze({hostId:provisioned.hostId,generation:provisioned.generation});
+     }
+    }finally{clearInterval(heartbeatTimer);heartbeatTimer=undefined;}
+   }
    const currentLease=()=>{signal.throwIfAborted();if(now()>=started.expiresAtMs)throw fault('BROKER_LEASE_EXPIRED');};
    const observe=(value,preparing=false)=>{const current=data(value);own(current,['binding','executionId','state'],preparing?['expiresAtMs']:[]);if(canonicalSha256(current.binding)!==executionKey||current.executionId!==started.executionId||!['executing','completed','failed','cancelled','paused','waiting-for-approval',...(preparing?['preparing']:[])].includes(current.state)||preparing&&current.expiresAtMs!==started.expiresAtMs)throw fault('BROKER_RECEIPT_REFUSED');heartbeat();currentLease();return current;};
    for(;;){currentLease();const current=observe(await native.call('execution/kickoff/status',{binding:input.binding,executionId:started.executionId},{signal}),true);if(!['preparing','executing'].includes(current.state)){
@@ -79,7 +100,7 @@ export function createBrokerActivity({native,provisioner,hostTeardown,context=()
    throw error;}
  };
 }
-export function workerOptions({configuration,connection,native,provisioner,hostTeardown}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native,provisioner,hostTeardown}),reconcileConversation:createReconcileActivity({native}),sweepConversationRetention:createRetentionSweepActivity({native}),...createObjectiveWorkerActivities(objectiveWorkerPorts({configuration,native}))},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
+export function workerOptions({configuration,connection,native,provisioner,browserProvisioner,hostTeardown}){return {connection,namespace:configuration.temporal.namespace,taskQueue:configuration.temporal.taskQueue,workflowsPath:fileURLToPath(new URL('../control/conversations/workflow.ts',import.meta.url)),activities:{executeConversation:createBrokerActivity({native,provisioner,browserProvisioner,hostTeardown}),reconcileConversation:createReconcileActivity({native}),sweepConversationRetention:createRetentionSweepActivity({native}),...createObjectiveWorkerActivities(objectiveWorkerPorts({configuration,native}))},maxConcurrentActivityTaskExecutions:10,shutdownGraceTime:configuration.limits.shutdownMs,shutdownForceTime:configuration.limits.shutdownMs+1000};}
 /** Native SDK poller state determines readiness; the server checks its mTLS identity on each RPC. */
 export function createWorkerReadiness({worker}){
  if(typeof worker?.getState!=='function')throw fault('WORKER_CONFIGURATION');
@@ -116,7 +137,7 @@ export async function startTemporalWorker(configuration,{signal,testOwners={}}={
    createIssuer:owners.createIssuer,createMaterial:owners.createMaterial,createSfnClient:owners.createSfnClient,
    readSecret:owners.readSecret}});checkAuthorization();
   stage='worker-create';worker=await (owners.createWorker??(options=>Worker.create(options)))(workerOptions({configuration,connection,native,
-   ...(nativeOwners===null?{}:{provisioner:nativeOwners.provisioner,hostTeardown:nativeOwners.hostTeardown})}));checkAuthorization();
+   ...(nativeOwners===null?{}:{provisioner:nativeOwners.provisioner,hostTeardown:nativeOwners.hostTeardown,...(nativeOwners.browserProvisioner?{browserProvisioner:nativeOwners.browserProvisioner}:{})})}));checkAuthorization();
   stage='worker-run';run=worker.run();run.catch(error=>reportRuntimeStartupFailure('temporal-worker','worker-run',error));
   stage='worker-listen';listener=await (owners.listen??listenRuntime)({configuration,application:fence.wrap({handle:()=>Response.json({error:{code:'NOT_FOUND'}},{status:404})}),readiness:createWorkerReadiness({worker}),signal});
   checkAuthorization();return Object.freeze({address:listener.address,close,completion:run});

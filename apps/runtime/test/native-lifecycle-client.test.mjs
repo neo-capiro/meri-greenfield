@@ -47,3 +47,38 @@ test('unknown status maps to unknown; malformed hashes/times are refused',async(
   const value=await make(answer).close();assert.equal(value.status,'unknown');assert.notEqual(value.closed,true);
  }
 });
+
+test('BROWSER-ONLY: the client carries the host\'s settled browser facts through close and observes the browser-host process scope',async()=>{
+ const browserAllocation={...allocation,hostId:id(9),hostMode:'browser-only'},browserIdentity={...hostIdentity,hostId:id(9)};
+ const d={allocationSha256:hash(browserAllocation),bindingSha256:hash(binding),hostIdentitySha256:hash(browserIdentity)};
+ const client=answer=>createNativeLifecycleClient({allocation:browserAllocation,binding,hostIdentity:browserIdentity,endpoint,tls:tlsMaterial,now:Date.now,httpsModule:httpsFor(null,{answer})});
+ const close=await client(()=>({schema:NATIVE_LIFECYCLE_SCHEMA,action:'close',...d,status:'closed',quiescedAtMs:Date.now(),browserEgress:'closed',browserState:'disposed'})).close();
+ assert.equal(close.closed,true);assert.equal(close.browserEgress,'closed');assert.equal(close.browserState,'disposed');
+ const plain=await client(()=>({schema:NATIVE_LIFECYCLE_SCHEMA,action:'close',...d,status:'closed',quiescedAtMs:Date.now()})).close();
+ assert.equal(plain.closed,true);assert.equal(plain.browserEgress,undefined);
+ const bad=await client(()=>({schema:NATIVE_LIFECYCLE_SCHEMA,action:'close',...d,status:'closed',quiescedAtMs:Date.now(),browserState:'gone'})).close();
+ assert.equal(bad.status,'unknown','an unknown browser state vocabulary is not a close proof');
+ const processes=await client(()=>({schema:'meri-d005-process-absence/1',...d,observedAtMs:Date.now(),scope:'browser-host-descendants',exited:true,remainingPids:[]})).processes();
+ assert.equal(processes.scope,'browser-host-descendants');
+ await assert.rejects(client(()=>({schema:'meri-d005-process-absence/1',...d,observedAtMs:Date.now(),scope:'native-processing-descendants',exited:true,remainingPids:[]})).processes(),{code:'NATIVE_LIFECYCLE_UNKNOWN'});
+ assert.throws(()=>createNativeLifecycleClient({allocation:{...allocation,hostMode:undefined},binding,hostIdentity,endpoint,tls:tlsMaterial,now:Date.now,httpsModule:httpsFor(null)}),/HOST_BINDING_REFUSED/u,'a legacy allocation has no lifecycle route');
+});
+test('BROWSER-ONLY: the control lifecycle drives remote close, browser-scoped processes and the physical port, then records the browser-only receipt',async()=>{
+ const {verifiedTeardownReceipt}=await import(root+'apps/control/browser-hosts/teardown-receipt.mjs');
+ const browserAllocation={...allocation,hostId:id(9),hostMode:'browser-only'},browserIdentity={...hostIdentity,hostId:id(9)};
+ const d={allocationSha256:hash(browserAllocation),bindingSha256:hash(binding),hostIdentitySha256:hash(browserIdentity)};
+ const calls=[],resources={instanceId:browserIdentity.instanceId,rootVolumeId:'vol-0123456789abcdef0',networkInterfaceIds:['eni-0123456789abcdef0']};
+ const client={async close(){calls.push('close');return {closed:true,status:'closed',observedAtMs:Date.now(),browserEgress:'closed',browserState:'disposed'};},
+  async processes(){calls.push('processes');return {schema:'meri-d005-process-absence/1',...d,observedAtMs:Date.now(),scope:'browser-host-descendants',exited:true,remainingPids:[]};},
+  async observe(){calls.push('observe');throw Error('a browser-only host has no native compartment to observe');}};
+ const physical={async destroy(){calls.push('destroy');return {requested:true,...resources};},
+  async observeAbsent(){calls.push('absent');return {schema:'meri-d005-physical-absence/1',...d,...resources,observedAtMs:Date.now(),instanceState:'terminated',rootVolumeAbsent:true,networkInterfacesAbsent:true};}};
+ const recorded=[];const writer={async recordTeardown({hostId,generation,receipt}){recorded.push({hostId,generation,receipt});return {terminated:true,receiptSha256:hash(receipt)};}};
+ const lifecycle=createNativeHostLifecycle({client,physical,writer,allocation:browserAllocation,binding,hostIdentity:browserIdentity,now:Date.now,localCleanupMs:1000,hostCleanupMs:1000});
+ const result=await lifecycle.settle({reason:'conversation-end'});
+ assert.equal(result.verified,true);assert.deepEqual(calls,['close','processes','destroy','absent'],'no native observe for a browser-only host');
+ assert.equal(recorded.length,1);assert.equal(recorded[0].hostId,id(9));
+ const record={allocation:browserAllocation,originalBinding:binding,hostIdentity:browserIdentity};
+ assert.deepEqual(verifiedTeardownReceipt(recorded[0].receipt,record,Date.now()),recorded[0].receipt,'the canonical writer accepts the browser-only receipt');
+ assert.equal(recorded[0].receipt.processScope,'browser-host-descendants');
+});
