@@ -14,7 +14,7 @@ The governed mail chain was complete apart from choosing a sender for a new mess
 ## What this change adds
 
 1. **Trusted sender resolution** (`apps/runtime/native-authority/mail-sender.mjs`). Before this change the model had to supply the internal `senderConnectionId` and `clientId`, and only a thread's `nativeActions` gave it a sender. A brand-new email therefore had no sender.
-   - The preparer now reads the actor's own Core mailbox inventory (`GET /api/engagement/integrations` with the attended credential, after `readCurrent`).
+   - The preparer now reads the actor's own Core sending mailboxes (`GET /api/engagement/mail/mailboxes` with the attended credential, after `readCurrent`).
    - It uses the one connected mailbox. If several are connected, it uses the one whose address the user named.
    - It refuses with a plain reason when no mailbox is connected, the named address is unknown, or the choice is ambiguous.
    - The client association is always the trusted selection.
@@ -27,6 +27,17 @@ The governed mail chain was complete apart from choosing a sender for a new mess
    - never say "sent" before the provider accepts;
    - point the user to Settings when no mailbox is connected.
 5. **Card** (frontend PR): internal ids are no longer shown, and failures are described in plain words.
+
+## Release check
+
+`governedIntents: true` in the worker capability policy is not enough. Before acceptance, confirm the live **control material** has both:
+
+- `intents.enabled: true`;
+- `intents.core` (origin and service secret).
+
+Without `intents.core` the mail preparer is not composed, and `propose_mail` answers "not available".
+
+The sender comes from Core `GET /api/engagement/mail/mailboxes`, read with the attended credential. This is Core's own send predicate: connected, owned by the user, token stored, address present.
 
 ## Acceptance plan (preview, connected Outlook or Gmail)
 
