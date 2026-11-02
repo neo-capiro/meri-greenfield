@@ -49,7 +49,15 @@ test('a snapshot that takes 4 s is admitted within the shared worker bound; past
  const f=await generalReadFixture(),port=f.mount(),advance=ms=>({readAvailability:async v=>{f.source.state.now+=ms;return port.readAvailability(v);},execute:v=>port.execute(v)});
  const m=await mountReads(f,{port:advance(4000)});
  try{assert.deepEqual(m.runtime.available.map(o=>o.id).sort(),MAIL_OPERATIONS.map(o=>o.id).sort());}finally{await m.close();}
- assert.equal(await mountReads(f,{port:advance(READ_AVAILABILITY_WORKER_MS+1)}),null,'past the bound the snapshot is not available for this run');
+ const reported=[];
+ assert.equal(await mountReads(f,{port:advance(READ_AVAILABILITY_WORKER_MS+1),diagnostic:failure=>reported.push(failure)}),null,'past the bound the snapshot is not available for this run');
+ assert.equal(reported.length,1);assert.equal(reported[0].code,'DEADLINE');assert.equal(reported[0].elapsedMs,READ_AVAILABILITY_WORKER_MS+1);assert.ok(['worker','runner','control'].includes(reported[0].layer));
+ // The runner client marks the layer that answered: its own transport loss is the runner's, control's refusal is control's.
+ const layered=async error=>{const seen=[];const port={readAvailability:async()=>{throw error;},execute:()=>assert.fail('never')};
+  assert.equal(await mountReads(f,{port,diagnostic:failure=>seen.push(failure)}),null);return seen;};
+ assert.deepEqual(await layered(Object.assign(Error('DEADLINE'),{code:'DEADLINE',layer:'control'})),[{code:'DEADLINE',layer:'control',elapsedMs:0}]);
+ assert.deepEqual(await layered(Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE',layer:'runner'})),[{code:'UNAVAILABLE',layer:'runner',elapsedMs:0}]);
+ assert.deepEqual(await layered(Error('private transport detail')),[{code:'UNAVAILABLE',layer:'worker',elapsedMs:0}],'no message leaves the worker');
 });
 
 test('an operation the actor is not granted is absent from the list',async()=>{
@@ -86,7 +94,7 @@ test('argument-borne authority and forged correlation never reach the gateway',a
 test('the per-run call ceiling refuses at the hook before any further gateway effect',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f,{skill:{allowedOperations:[...MAIL_OPERATIONS],budgets:{maxToolCalls:2,maxOutputBytes:1048576}}});
  try{for(const n of [1,2])assert.equal((await m.call('mail_search_messages',{...f.search,limit:n})).isError,undefined);
-  const third=await m.call('mail_search_messages',{...f.search,limit:3});assert.match(third.denied,/^RESOURCE_LIMIT: /u);assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,2);assert.equal(m.runtime.receipts().length,2);
+  const third=await m.call('mail_search_messages',{...f.search,limit:3});assert.match(third.denied,/^The Capiro data read limit for this run is reached; /u);assert.doesNotMatch(third.denied,/RESOURCE_LIMIT|mcp__/u);assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,2);assert.equal(m.runtime.receipts().length,2);
  }finally{await m.close();}
 });
 

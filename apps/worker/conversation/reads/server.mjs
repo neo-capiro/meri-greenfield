@@ -56,7 +56,7 @@ export function createGeneralReadServer(c){
   const token=randomUUID(),deliveryId='sdk:'+canonicalSha256({binding,sessionId:session,toolUseId:input.tool_use_id});
   correlations.set(token,{operation:row.operation,argumentsSha256:canonicalSha256(value.arguments),deliveryId});
   return {hookSpecificOutput:{hookEventName:'PreToolUse',updatedInput:{arguments:value.arguments,_meriInvocation:token}}};
- }catch(error){return deny(failureCode(error)==='RESOURCE_LIMIT'?'RESOURCE_LIMIT: the general read call limit for this run is reached. No evidence, absence or completeness is established.':'General read correlation unavailable');}};
+ }catch(error){return deny(failureCode(error)==='RESOURCE_LIMIT'?'The Capiro data read limit for this run is reached; no further source can be read in this message. No evidence, absence or completeness is established.':'General read correlation unavailable');}};
  /** @param {{operation:OperationRef,descriptor:any}} row */
  const handler=row=>async(/** @type {any} */raw,/** @type {any} */extra)=>{
   const name=readToolName(row);let life;

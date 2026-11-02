@@ -48,7 +48,7 @@ function sqlDiagnostics(error,code){
 }
 /** The mail handler returns the canonical page itself, not a `{result}` envelope. */
 const MAIL_TOOLS=new Set(['mail.list_messages','mail.search_messages','mail.read_thread']);
-const RECONNECT='the user can reconnect it or run Sync now under Capiro Settings > Integrations';
+const RECONNECT='the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations';
 const notice=(/** @type {string} */text)=>({type:/** @type {const} */('text'),text});
 /** Mailbox connection states other than connected among the returned messages. @param {any[]} messages */
 const staleStatuses=messages=>[...new Set(messages.map(m=>m?.connectionStatus).filter(s=>typeof s==='string'&&s!=='connected'))];

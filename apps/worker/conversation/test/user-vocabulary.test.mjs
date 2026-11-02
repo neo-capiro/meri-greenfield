@@ -25,7 +25,7 @@ import {selectSkill} from '../../../../packages/skills/index.mjs';
 
 /** Words the user must never hear back. Codes are matched exactly (UNAVAILABLE, ACCESS_DENIED); words case-insensitively.
  * `relations:` is the pinned argument name of describe_capiro_data and is allowed; "table" is the SQL-writing term. */
-const BANNED=[/\bgoverned\b/iu,/\bgateway\b/iu,/\brelations?\b(?!:)/iu,/\btool names?\b/iu,/\bUNAVAILABLE\b/u,/\bACCESS_DENIED\b/u,/\bscheduler interface\b/iu,/\bbounded session\b/iu,/\bacceptance\b/iu];
+const BANNED=[/\bgoverned\b/iu,/\bgateway\b/iu,/\brelations?\b(?!:)/iu,/\btool names?\b/iu,/\bUNAVAILABLE\b/u,/\bACCESS_DENIED\b/u,/\bRESOURCE_LIMIT\b/u,/\bscheduler interface\b/iu,/\bbounded session\b/iu,/\bacceptance\b/iu];
 /** Every violation of every text, reported together. */
 const violations=[];
 const check=(text,where)=>{for(const pattern of BANNED){const m=pattern.exec(text);if(m)violations.push(`${where} says "${m[0]}": ...${text.slice(Math.max(0,m.index-80),m.index+60).replaceAll('\n',' ')}...`);}};
@@ -46,7 +46,7 @@ function mountEverything(){
  const intents=createIntentServer({available:INTENT_ROWS,binding,scopes,timeoutMs:60000,deadlineMs:now()+60000,now,stillAvailable:async()=>true,prepare:async()=>{throw Error('UNAVAILABLE');}});
  // The selected-skill server (only document-compiler skills are admitted to it) at its offered version.
  const skill=createOriginalSkillServer({selected:selectSkill('quick_skill.commitments_audit','1.0.1'),read:async()=>'{}',timeoutMs:60000,binding});
- return {reads,intents,skill,
+ return {reads,intents,skill,available,
   readOptions:{mcpServers:{meri_reads:reads.server},allowedTools:[...reads.allowedTools],canUseTool:reads.canUseTool,hooks:reads.hooks},
   intentOptions:{mcpServers:{meri_intents:intents.server},allowedTools:[...intents.allowedTools],canUseTool:intents.canUseTool,hooks:intents.hooks}};
 }
@@ -66,6 +66,14 @@ test('the full system prompt of a reads+intents run, both server instructions an
   for(const t of [...reads.tools,...intents.tools,...skill.tools]){check(t.description,t.name);for(const [path,text] of descriptions(t.inputSchema))check(text,`${t.name} ${path}`);}
   for(const [server,canUseTool] of [['meri_reads',m.readOptions.canUseTool],['meri_intents',m.intentOptions.canUseTool],['meri_original_reads',m.skill.canUseTool]])check((await canUseTool('mcp__other__tool',{},{})).message,`${server} denial`);
   check((await o.canUseTool('mcp__other__tool',{},{})).message,'the default denial');
+  // The correlation hook's own denials (the run's read limit, a lost correlation) are read by the model too.
+  const limited=createGeneralReadServer({available:m.available,unavailable:[],binding,budgets:{...GENERAL_READ_CEILINGS,maxToolCalls:1},timeoutMs:60000,deadlineMs:now()+60000,now,executionCatalogSha256:null,execute:async()=>'{}'});
+  try{const hook=limited.hooks.PreToolUse[0].hooks[0],input=i=>({hook_event_name:'PreToolUse',session_id:'71000000-0000-4000-8000-000000000091',tool_name:limited.allowedTools[0],tool_use_id:`toolu_vocabulary_${i}`,tool_input:{arguments:{}}});
+   assert.equal((await hook(input(0),undefined,{})).hookSpecificOutput.permissionDecision,undefined);
+   const limit=(await hook(input(1),undefined,{})).hookSpecificOutput;assert.equal(limit.permissionDecision,'deny');check(limit.permissionDecisionReason,'the read limit denial');
+   assert.match(limit.permissionDecisionReason,/^The Capiro data read limit for this run is reached; no further source can be read in this message\./u);
+   const lost=(await hook({...input(2),tool_use_id:'not a tool use!'},undefined,{})).hookSpecificOutput;assert.equal(lost.permissionDecision,'deny');check(lost.permissionDecisionReason,'the correlation denial');
+  }finally{await limited.close();}
   assert.ok(violations.length===0,violations.join('\n'));
   // The argument descriptions the model reads are projected too; the catalog bytes behind them are the pinned ones.
   const awards=reads.tools.find(t=>t.name==='search_federal_contract_awards');

@@ -133,7 +133,7 @@ test('a run bound to another actor mounts nothing against this execution identit
 test('the explicit call limit closes the server after one connected read',async t=>{
  const {s,f,m}=await mount(t,'read_connected_app',{},{});
  const limited=await connect(t,f,{skill:{allowedOperations:[f.operation],budgets:{maxToolCalls:1,maxOutputBytes:1048576}}});assert.ok(limited);
- assert.equal((await limited.call()).isError,undefined);assert.match((await limited.call()).denied,/RESOURCE_LIMIT/u);
+ assert.equal((await limited.call()).isError,undefined);assert.match((await limited.call()).denied,/^The Capiro data read limit for this run is reached; /u);
  assert.equal(s.wire.length,1);assert.equal(limited.runtime.receipts().length,1);assert.deepEqual(m.runtime.receipts(),[]);
  assert.equal(CAPABILITY.connectionId,s.arguments.connectionId);
 });
