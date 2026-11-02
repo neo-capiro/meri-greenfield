@@ -139,10 +139,11 @@ export function nativeWorkerPolicy({purposes,stateMachineVersionArn}){
   return [
    {Effect:'Allow',Action:['ec2:RunInstances'],Resource:[`arn:aws:ec2:${REGION}::image/${d.launch.ImageId}`,ec2+`subnet/${d.placement.subnetId}`,
     ...d.placement.securityGroupIds.map(id=>ec2+`security-group/${id}`),ec2+'network-interface/*'],Condition:regionCondition},
-   // The instance launches only with IMDSv2 required and a one-hop limit (native-observer.mjs NATIVE_HOST_METADATA_OPTIONS).
+   // The instance launches only with IMDSv2 required, a one-hop limit and no instance tags in metadata (native-observer.mjs
+   // NATIVE_HOST_METADATA_OPTIONS).
    {Effect:'Allow',Action:['ec2:RunInstances'],Resource:instanceArn,Condition:{...requestTags,StringEquals:{...requestTags.StringEquals,
     'ec2:InstanceType':d.launch.InstanceType,'ec2:InstanceProfile':`arn:aws:iam::${ACCOUNT}:instance-profile/${d.placement.iamInstanceProfile}`,
-    'ec2:MetadataHttpTokens':'required','ec2:MetadataHttpEndpoint':'enabled'},NumericEquals:{'ec2:MetadataHttpPutResponseHopLimit':1}}},
+    'ec2:MetadataHttpTokens':'required','ec2:MetadataHttpEndpoint':'enabled','ec2:InstanceMetadataTags':'disabled'},NumericEquals:{'ec2:MetadataHttpPutResponseHopLimit':1}}},
    {Effect:'Allow',Action:['ec2:RunInstances'],Resource:volume,Condition:{...requestTags,Bool:{'ec2:Encrypted':'true'}}},
    {Effect:'Allow',Action:['ec2:CreateTags'],Resource:[instanceArn,volume],Condition:{...requestTags,StringEquals:{...requestTags.StringEquals,'ec2:CreateAction':'RunInstances'}}},
    {Effect:'Allow',Action:['iam:PassRole'],Resource:instanceRoleArn,Condition:{StringEquals:{'iam:PassedToService':'ec2.amazonaws.com'}}},

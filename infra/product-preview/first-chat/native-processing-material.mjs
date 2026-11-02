@@ -9,6 +9,7 @@ import {compileNativeDeployment} from '../../../apps/runtime/native-deployment-c
 import {compileNativeWatchdogDefinition} from '../../browser-enforcement/workflow.mjs';
 import {createNativeObserverSecret} from '../../../apps/runtime/native-observer-entrypoint.mjs';
 import {NATIVE_OBSERVER_ORIGIN} from '../../../apps/runtime/native-observer-http.mjs';
+import {PINNED_CONTROL_LIFETIME_MS} from '../../../apps/worker/conversation/host/control/tls.mjs';
 const ACCOUNT='967807252336',REGION='us-east-1',HEX=/^[a-f0-9]{64}$/u;
 const fail=()=>{throw Object.assign(Error('RENDER_NATIVE_PROCESSING_REFUSED'),{code:'RENDER_NATIVE_PROCESSING_REFUSED'});};
 const sha=b=>createHash('sha256').update(b).digest('hex');
@@ -18,9 +19,6 @@ export const NATIVE_PATHS=Object.freeze({
  observerKey:'/run/meri/native-observer.key',databaseConnection:'/run/meri/native-database.uri',
 });
 const keys=Object.keys(NATIVE_PATHS);
-/** The Control client leaf is pinned by exact fingerprint in every bootstrap spec and lives as long as the rendered material
- * (rotated by re-rendering control and the worker together): it must outlast the material validity, at most 31 days. */
-export const CONTROL_CLIENT_CERT_MAX_LIFETIME_MS=31*86400000;
 export function parseNativeProcessing(raw){
  if(raw===undefined)return undefined;
  try{
@@ -82,7 +80,8 @@ export function composeNativeProcessing({feature,material={},deployment,pki,nowM
   const client=cert(m.controlClientCertificate),controlCa=cert(s.control.caCertificate);
   if(client.ca||!client.checkIssued(controlCa)||!client.verify(controlCa.publicKey)||
    client.subjectAltName!==`DNS:${s.control.clientName}`||client.keyUsage?.length!==1||client.keyUsage[0]!=='1.3.6.1.5.5.7.3.2'||
-   client.validToDate.getTime()-client.validFromDate.getTime()>CONTROL_CLIENT_CERT_MAX_LIFETIME_MS||
+   // The pinned Control client leaf outlasts the material and stays inside the hosts' client bound (tls.mjs).
+   client.validToDate.getTime()-client.validFromDate.getTime()>PINNED_CONTROL_LIFETIME_MS.client||
    !Number.isSafeInteger(validUntilMs)||client.validToDate.getTime()<=validUntilMs)fail();
   const db=new URL(m.databaseConnection.toString('utf8')),target=deployment.database;
   if(db.protocol!=='postgresql:'||db.hostname!==target.host||db.port!==String(target.port)||

@@ -6,7 +6,7 @@ const HEX64=/^[0-9a-f]{64}$/u;
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 import {installedRuntimeConfig} from './protected-bootstrap.mjs';
 import {UPLOAD_INSPECTION_WIRE_BYTES} from '../uploads/agentcore-contract.mjs';
-import {privateAddress,MAX_PINNED_CERT_LIFETIME_MS} from '../../worker/conversation/host/control/tls.mjs';
+import {privateAddress,PINNED_CONTROL_LIFETIME_MS} from '../../worker/conversation/host/control/tls.mjs';
 import {assertHostRunBinding,HOST_ALLOCATION_SCHEMA} from '../../worker/conversation/host/binding.mjs';
 const fail=()=>{throw Object.assign(new Error('NATIVE_PROCESSING_CONFIGURATION'),{code:'NATIVE_PROCESSING_CONFIGURATION'});};
 /** The canonical wire bound plus the fixed envelope allowance; never an invented 1 MB or 100 MB cap. */
@@ -86,7 +86,7 @@ export function nativeProcessingConfig({env=globalThis.process?.env??{},store}={
    caPath:absolute(get('MERI_NATIVE_PROCESSING_TLS_CA')),
    peerSan:text(get('MERI_NATIVE_PROCESSING_PEER_SAN'),/^[a-z0-9][a-z0-9.-]{2,252}$/u),
    peerFingerprint:text(get('MERI_NATIVE_PROCESSING_PEER_FINGERPRINT'),HEX64),
-   maxPeerLifetimeMs:integer(Number(get('MERI_NATIVE_PROCESSING_PEER_MAX_LIFETIME_MS')),1000,MAX_PINNED_CERT_LIFETIME_MS),
+   maxPeerLifetimeMs:integer(Number(get('MERI_NATIVE_PROCESSING_PEER_MAX_LIFETIME_MS')),1000,PINNED_CONTROL_LIFETIME_MS.client),
    peerNotAfterMs:integer(Number(get('MERI_NATIVE_PROCESSING_PEER_NOT_AFTER_MS')),1,Number.MAX_SAFE_INTEGER)}),
   image:Object.freeze({digest:imageDigest}),
   binding:Object.freeze(originalBinding(get('MERI_NATIVE_PROCESSING_ORIGINAL_BINDING'))),

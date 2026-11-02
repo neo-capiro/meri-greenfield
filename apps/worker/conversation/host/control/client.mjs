@@ -11,7 +11,7 @@ import {validateBrowserPolicy} from '../../browser/policy.mjs';
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity,MAX_HOST_CURRENTNESS_MS} from '../binding.mjs';
 import {assertBrowserHostFacts} from '../../../../../packages/contracts/runtime-0.2/browser-host-facts.mjs';
 import {assertBrowserCustody} from '../../../../../packages/runtime/browser-custody.mjs';
-import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate,MAX_PINNED_CERT_LIFETIME_MS} from './tls.mjs';
+import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate} from './tls.mjs';
 import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,HOST_CONTROL_PURPOSES,HOST_NATIVE_CONTROL_PURPOSE,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_PATH,HOST_FACTS_WIRE_MAX_BYTES,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
@@ -82,7 +82,7 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
      servername:serverName,cert,key,ca,agent:false,rejectUnauthorized:true,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',
      signal:combined,headers:{'content-type':'application/json','content-length':String(bytes.length),'connection':'close'},
      checkServerIdentity(_name,peer){try{
-      checkedCertificate(peer?.raw,{name:serverName,nowMs:now(),maxLifetimeMs:MAX_PINNED_CERT_LIFETIME_MS,
+      checkedCertificate(peer?.raw,{name:serverName,nowMs:now(),pinnedControl:'server',
        fingerprintSha256:serverFingerprintSha256});return undefined;
      }catch{return new Error('HOST_CONTROL_TLS_REFUSED');}}
     },res=>bodyResponse(res,combined,maxResponse).then(resolve,reject));

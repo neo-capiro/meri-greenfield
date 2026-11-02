@@ -4,7 +4,8 @@ import {createHash} from 'node:crypto';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {nativeProcessingInputs} from './native-processing-material.fixture.mjs';
 import {renderMaterial,readPrivateDirectory} from './render-material.mjs';
-import {parseNativeProcessing,NATIVE_PATHS,CONTROL_CLIENT_CERT_MAX_LIFETIME_MS} from './native-processing-material.mjs';
+import {parseNativeProcessing,NATIVE_PATHS} from './native-processing-material.mjs';
+import {PINNED_CONTROL_LIFETIME_MS} from '../../../apps/worker/conversation/host/control/tls.mjs';
 import {compileUploadNativeConfiguration} from '../../../apps/runtime/uploads/control-lifecycle.mjs';
 import {validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {execFileSync} from 'node:child_process';
@@ -156,7 +157,7 @@ test('the pinned Control client leaf must outlast the rendered material and live
   for(const d of [f.deployment,f.browserDeployment])d.bootstrapSpec.control.clientCertificate=leaf.cert;
   for(const k of ['controlClientCertificate','controlClientKey'])f.materialSha256[k]=sha(i.nativeMaterial[k]);
   return {...i,nowMs:Date.now()};};
- assert.equal(CONTROL_CLIENT_CERT_MAX_LIFETIME_MS,31*86400000);
+ assert.equal(PINNED_CONTROL_LIFETIME_MS.client,31*86400000);
  // The former 15-minute leaf ends long before the 7-day material: refused. A leaf beyond 31 days: refused.
  const short=await withLeaf(15),long=await withLeaf(32*24*60);
  assert.throws(()=>renderMaterial(short),/RENDER_NATIVE_PROCESSING_REFUSED/u);

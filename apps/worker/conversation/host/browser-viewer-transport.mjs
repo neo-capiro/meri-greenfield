@@ -2,7 +2,7 @@
  * and credentials come from the existing host owner; no public URL, credential
  * issuer, model listener, replay queue or allocation registry is introduced. */
 import https from 'node:https';
-import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate,MAX_PINNED_CERT_LIFETIME_MS} from './control/tls.mjs';
+import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate} from './control/tls.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {parseBytes} from '../../../../packages/contracts/document-application/boundary.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -42,8 +42,8 @@ export function createBrowserViewerHostClient({binding,ownerInstanceId,hostId,ge
  const source=structuredClone(binding),address=privateAddress(endpoint.address),serverName=dnsName(endpoint.serverName),serverFingerprint=fingerprint(endpoint.serverFingerprintSha256);
  const clientName=dnsName(tls.clientName),cert=tlsBytes(tls.cert),key=tlsBytes(tls.key),ca=tlsBytes(tls.ca),lifetime=new AbortController();
  if(!Number.isSafeInteger(endpoint.port)||endpoint.port<1||endpoint.port>65535||!Number.isSafeInteger(requestMs)||requestMs<1||requestMs>30000)fail();
- // The Control client leaf is a rendered, fingerprint-pinned identity (tls.mjs MAX_PINNED_CERT_LIFETIME_MS).
- const ownLeaf=()=>checkedCertificate(cert,{name:clientName,nowMs:now(),maxLifetimeMs:MAX_PINNED_CERT_LIFETIME_MS});
+ // The Control client leaf is a rendered, fingerprint-pinned identity (tls.mjs PINNED_CONTROL_LIFETIME_MS.client).
+ const ownLeaf=()=>checkedCertificate(cert,{name:clientName,nowMs:now(),pinnedControl:'client'});
  ownLeaf();
  async function send(payload,signal,{path=PATH,deadlineMs=now()+requestMs,requestLimit=REQUEST_LIMIT,responseLimit=BROWSER_VIEWER_LIMITS.responseBytes}={}){
   lifetime.signal.throwIfAborted();ownLeaf();
@@ -111,7 +111,7 @@ export function createBrowserViewerHostServer({bind,tls,peer,relay,custodyOwner,
     const tools=req.url===TOOL_PATH;
     if(req.httpVersion!=='1.1'||req.method!=='POST'||!tools&&req.url!==PATH||req.socket.authorized!==true||tools&&typeof operationOwner?.executeBrowserOperation!=='function')fail();
     const seen=new Set();for(let n=0;n<req.rawHeaders.length;n+=2){const name=req.rawHeaders[n].toLowerCase();if(seen.has(name)||!['host','content-type','content-length','connection'].includes(name))fail();seen.add(name);}
-    checkedCertificate(req.socket.getPeerCertificate(false).raw,{name:peerName,nowMs:now(),fingerprintSha256:peerFingerprint});
+    checkedCertificate(req.socket.getPeerCertificate(false).raw,{name:peerName,nowMs:now(),pinnedControl:'client',fingerprintSha256:peerFingerprint});
     const raw=await life.run(signal=>body(req,tools?TOOL_REQUEST_LIMIT:REQUEST_LIMIT,signal));
     let q;
     if(tools){

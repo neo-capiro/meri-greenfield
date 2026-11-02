@@ -16,7 +16,7 @@ export function createControlPeerAuthenticator({peerSan,peerFingerprint,maxPeerL
   const raw=socket.getPeerCertificate?.(true);
   if(!raw||!Buffer.isBuffer(raw.raw))return {verified:false};
   if(fingerprint(sha256Der(raw.raw))!==peerFingerprint)return {verified:false};
-  const checked=checkedCertificate(raw.raw,{name:peerSan,nowMs:now(),maxLifetimeMs:maxPeerLifetimeMs,notAfterMs:peerNotAfterMs});
+  const checked=checkedCertificate(raw.raw,{name:peerSan,nowMs:now(),pinnedControl:'client',maxLifetimeMs:maxPeerLifetimeMs,notAfterMs:peerNotAfterMs});
   return {verified:true,fingerprintSha256:checked.fingerprintSha256,notAfterMs:checked.notAfterMs};
  };
 }

@@ -20,7 +20,7 @@ import {
 } from '@capiro/meri-contracts/native-bootstrap';
 import {canonicalJson,canonicalSha256} from '@capiro/meri-contracts/node';
 import {UPLOAD_INSPECTION_WIRE_BYTES} from '../uploads/agentcore-contract.mjs';
-import {MAX_PINNED_CERT_LIFETIME_MS} from '../../worker/conversation/host/control/tls.mjs';
+import {PINNED_CONTROL_LIFETIME_MS} from '../../worker/conversation/host/control/tls.mjs';
 import {createRunnerPoststartCsr,verifyRunnerPoststartProof} from '../native-authority/runner-poststart-csr.mjs';
 
 const fault=code=>{throw Object.assign(new Error(code),{code});};
@@ -465,7 +465,7 @@ export function installedHostMaterial({store=createBootstrapStateStore(),now=Dat
  const serverFingerprint=sha256(Buffer.from(controlServer.raw));
  const clientFingerprint=sha256(Buffer.from(controlClient.raw));
  // The Control client leaf is pinned by exact fingerprint and lives as long as the rendered material.
- const maxPeerLifetimeMs=MAX_PINNED_CERT_LIFETIME_MS;
+ const maxPeerLifetimeMs=PINNED_CONTROL_LIFETIME_MS.client;
  // Inbound peer is the Control CLIENT; outbound server pin is the Control SERVER. Both use their ACTUAL leaf expiry.
  const peerNotAfterMs=Date.parse(controlClient.validTo),cleanupCeilingMs=nativeBootstrapCleanupCeiling(scope);
  if(!(Date.parse(controlClient.validFrom)<=at&&Date.parse(controlClient.validTo)>at))fault(REFUSED);

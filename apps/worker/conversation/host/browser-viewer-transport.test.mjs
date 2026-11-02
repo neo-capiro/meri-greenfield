@@ -1,4 +1,5 @@
-/** Real local TLS sockets, memory-only generated test certificates, no live host. */
+/** Real local TLS sockets, memory-only generated test certificates, no live host. The Control client leaf is a rendered
+ * 7-day identity, as in production; host leaves are minutes. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
@@ -16,19 +17,20 @@ from cryptography.hazmat.primitives.asymmetric import ed25519
 from cryptography.hazmat.primitives import serialization
 from cryptography.x509.oid import NameOID,ExtendedKeyUsageOID
 now=datetime.now(timezone.utc)
-def make(name,parent=None,server=False):
+def make(name,parent=None,server=False,life=timedelta(minutes=5)):
  key=ed25519.Ed25519PrivateKey.generate()
  subject=x509.Name([x509.NameAttribute(NameOID.COMMON_NAME,name)])
- b=x509.CertificateBuilder().subject_name(subject).issuer_name(parent[1].subject if parent else subject).public_key(key.public_key()).serial_number(x509.random_serial_number()).not_valid_before(now-timedelta(seconds=10)).not_valid_after(now+timedelta(minutes=5))
+ b=x509.CertificateBuilder().subject_name(subject).issuer_name(parent[1].subject if parent else subject).public_key(key.public_key()).serial_number(x509.random_serial_number()).not_valid_before(now-timedelta(seconds=10)).not_valid_after(now+life)
  b=b.add_extension(x509.BasicConstraints(ca=parent is None,path_length=None),critical=True)
  if parent:
   b=b.add_extension(x509.SubjectAlternativeName([x509.DNSName(name)]),critical=False)
   b=b.add_extension(x509.ExtendedKeyUsage([ExtendedKeyUsageOID.SERVER_AUTH if server else ExtendedKeyUsageOID.CLIENT_AUTH]),critical=False)
  cert=b.sign(parent[0] if parent else key,algorithm=None)
  return key,cert
-root=make('fixture-ca'); host=make('browser.meri.internal',root,True); control=make('control.meri.internal',root)
+root=make('fixture-ca',life=timedelta(days=60)); host=make('browser.meri.internal',root,True); control=make('control.meri.internal',root,life=timedelta(days=7))
+overlong=make('control.meri.internal',root,life=timedelta(days=40))
 out={}
-for name,pair in [('ca',root),('host',host),('control',control)]:
+for name,pair in [('ca',root),('host',host),('control',control),('overlong',overlong)]:
  out[name+'Cert']=base64.b64encode(pair[1].public_bytes(serialization.Encoding.PEM)).decode()
  if name!='ca':out[name+'Key']=base64.b64encode(pair[0].private_bytes(serialization.Encoding.PEM,serialization.PrivateFormat.PKCS8,serialization.NoEncryption())).decode()
 print(json.dumps(out))
@@ -39,14 +41,14 @@ const digest=b=>new X509Certificate(b).fingerprint256.replaceAll(':','').toLower
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`;
 const binding={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),attemptId:id(5),workerId:id(6),writerFence:1};
 const context={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),selectedClientId:null};
-async function fixture(t,{operationOwner,lifecycle,requestMs=2000}={}){
+async function fixture(t,{operationOwner,lifecycle,requestMs=2000,peerCert=material.controlCert}={}){
  const ownerInstanceId=id(7),hostId=id(8),until=Date.now()+120000,calls=[];let state='agent';
  const relay=createBrowserViewerRelay({ownerInstanceId,binding,expiresAtMs:until});
  await relay.bind({binding,pages:()=>[],controls:{readState:async()=>({state,leaseEpoch:1,leaseExpiresAtMs:until}),
   view:async()=>{throw Error('No page');},userInput:async()=>{calls.push('input');},handBack(){state='returning';},endLease(){state='returning';}}});
  const server=createBrowserViewerHostServer({bind:{address:'127.0.0.1',port:0},
   tls:{serverName:'browser.meri.internal',cert:material.hostCert,key:material.hostKey,clientCa:material.caCert},
-  peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay,requestMs,operationOwner,...(lifecycle?{lifecycle}:{}),
+  peer:{name:'control.meri.internal',fingerprintSha256:digest(peerCert)},relay,requestMs,operationOwner,...(lifecycle?{lifecycle}:{}),
   custodyOwner:{async prepareResume({binding:source,custody}){assert.deepEqual(source,binding);calls.push('prepare');return {ownerInstanceId,leaseEpoch:custody.leaseEpoch+1,snapshotSha256:'f'.repeat(64)};}}});
  t.after(async()=>{await server.close();await relay.close();});const at=await server.start();
  const config={binding,ownerInstanceId,hostId,generation:1,endpoint:{address:at.address,port:at.port,serverName:'browser.meri.internal',serverFingerprintSha256:digest(material.hostCert)},
@@ -136,4 +138,23 @@ test('the fixed Control lifecycle route shares the pinned listener, reaches only
  assert.throws(()=>createBrowserViewerHostServer({bind:{address:'127.0.0.1',port:0},
   tls:{serverName:'browser.meri.internal',cert:material.hostCert,key:material.hostKey,clientCa:material.caCert},
   peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay:{execute(){},readAdmission(){}},lifecycle:'not-a-function'}));
+});
+
+test('the host admits the pinned 7-day Control client leaf on the viewer and tool paths, and refuses one beyond the 31-day bound',async t=>{
+ const calls=[],operationOwner={async executeBrowserOperation(operation){calls.push(operation);return {binding,result:{tools:[]}};}};
+ const f=await fixture(t,{operationOwner});
+ assert.equal((await f.client.read({binding})).admitted,true);
+ assert.deepEqual(await f.client.executeBrowserOperation('browser-tools',{binding},{deadlineMs:Date.now()+2000}),{tools:[]});
+ assert.deepEqual(calls,['browser-tools']);
+ // Pinned by fingerprint but 40 days long: the client refuses to present it, and the host refuses it on both paths.
+ assert.throws(()=>createBrowserViewerHostClient({...f.config,tls:{...f.config.tls,cert:material.overlongCert,key:material.overlongKey}}));
+ const g=await fixture(t,{operationOwner,peerCert:material.overlongCert});
+ const post=(path,body)=>new Promise((resolve,reject)=>{const bytes=Buffer.from(JSON.stringify(body));
+  const req=https.request({host:g.config.endpoint.address,port:g.config.endpoint.port,path,method:'POST',servername:'browser.meri.internal',
+   cert:material.overlongCert,key:material.overlongKey,ca:material.caCert,agent:false,
+   headers:{'content-type':'application/json','content-length':String(bytes.length),connection:'close'}},res=>{res.resume();res.on('end',()=>resolve(res.statusCode));});
+  req.on('error',()=>resolve('refused'));req.end(bytes);});
+ for(const [path,body] of [['/internal/browser-tools',{operation:'browser-tools',request:{binding},deadlineMs:Date.now()+2000}],
+  ['/internal/browser-viewer',{operation:'admission',binding,custody:null}]])assert.notEqual(await post(path,body),200,path);
+ assert.deepEqual(calls,['browser-tools'],'the overlong leaf never reached the operation owner');
 });

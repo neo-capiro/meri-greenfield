@@ -1,7 +1,7 @@
 /** Private mTLS currentness listener. It owns only the network boundary and delegates durable authority to `store`.
  * An authenticated TLS peer is still merely a claim until the transactional store accepts its current credential. */
 import https from 'node:https';
-import {privateAddress,dnsName,tlsBytes,checkedCertificate,MAX_PINNED_CERT_LIFETIME_MS} from './tls.mjs';
+import {privateAddress,dnsName,tlsBytes,checkedCertificate} from './tls.mjs';
 import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,hostControlRequest,hostControlResponse,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_PATH,HOST_FACTS_WIRE_MAX_BYTES,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
@@ -96,7 +96,7 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
   if(!Number.isSafeInteger(bind.port)||bind.port<0||bind.port>65535||
    bind.port===0&&address!=='127.0.0.1')fail();
   cert=tlsBytes(tls.cert);key=tlsBytes(tls.key);clientCa=tlsBytes(tls.clientCa);
-  checkedCertificate(cert,{name:serverName,nowMs:now(),maxLifetimeMs:MAX_PINNED_CERT_LIFETIME_MS});
+  checkedCertificate(cert,{name:serverName,nowMs:now(),pinnedControl:'server'});
  }catch{fail();}
  let closed=false,starting,closing,active=0;const sockets=new Set(),lifetime=new AbortController();
  const server=httpsModule.createServer({cert,key,ca:clientCa,requestCert:true,rejectUnauthorized:true,

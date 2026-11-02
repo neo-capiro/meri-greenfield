@@ -14,7 +14,7 @@ import {hostClientDnsName,HOST_DECIDE_PATH} from './protocol.mjs';
 
 mock.module(new URL('./tls.mjs',import.meta.url).href,{exports:{
  privateAddress:value=>value,dnsName:value=>value,fingerprint:value=>value,
- tlsBytes:value=>Buffer.from(value),MAX_PINNED_CERT_LIFETIME_MS:398*86400000,
+ tlsBytes:value=>Buffer.from(value),
  checkedCertificate:(_raw,{nowMs})=>Object.freeze({fingerprintSha256:'d'.repeat(64),notAfterMs:nowMs+300000}),
 }});
 

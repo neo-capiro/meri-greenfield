@@ -63,6 +63,7 @@ test('the browser-only purpose launches exactly its own AMI, groups, profile and
  // The worker may launch only with IMDSv2 required and a one-hop limit, the options the launch request sets.
  assert.equal(run(alone)[1].Condition.StringEquals['ec2:MetadataHttpTokens'],'required');
  assert.equal(run(alone)[1].Condition.StringEquals['ec2:MetadataHttpEndpoint'],'enabled');
+ assert.equal(run(alone)[1].Condition.StringEquals['ec2:InstanceMetadataTags'],'disabled');
  assert.deepEqual(run(alone)[1].Condition.NumericEquals,{'ec2:MetadataHttpPutResponseHopLimit':1});
  assert.deepEqual(alone.filter(s=>s.Action.includes('ssm:SendCommand')&&String(s.Resource).includes(':document/')).map(s=>s.Resource),
   [`arn:aws:ssm:us-east-1:${account}:document/synthetic-browser-bootstrap`]);
