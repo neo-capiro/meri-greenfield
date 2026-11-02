@@ -138,6 +138,17 @@ test('current native resolver advertises direct saved-note owner beside governed
  for(const operation of ['save_note','watch_action','save_business_development_brief','create_client','apply_legiwatch_suggestion','prepare_legiwatch_briefing','mail_send'])assert(ids.includes(operation),operation);
  assert.equal(f.sql.state.rows.size,0);
 });
+test('Research Portfolio actions and sharing are offered only outside a client conversation, where Core can bind the portfolio',async()=>{
+ // Core refuses every Research Portfolio request from a conversation without the portfolio's receipt, and a client conversation never
+ // has one (2 Nov M37: two refused cards in a client conversation). The other governed owners stay offered there.
+ const {RESEARCH_ACTION_INTENTS}=await import('../../../../packages/contracts/retrieval-0.2/research-portfolio-action-validation.mjs');
+ const portfolio=[...RESEARCH_ACTION_INTENTS,'publish_research_portfolio_share_link','revoke_research_portfolio_share_link'];
+ const offered=async general=>{const f=fixture({tasks:true,documents:false,general,resolveClients:true});const r=await f.post('availability');assert.equal(r.status,200,await r.clone().text());return (await r.json()).operations.map(row=>row.id);};
+ const client=await offered(false),general=await offered(true);
+ assert.deepEqual(portfolio.filter(id=>client.includes(id)),[]);
+ assert.deepEqual(portfolio.filter(id=>!general.includes(id)),[]);
+ for(const operation of ['save_note','watch_action','update_client_profile','mail_send'])assert(client.includes(operation),operation);
+});
 test('an availability snapshot may name every catalog intent (client scope mounts all 33); one more refuses',async()=>{
  const {runnerIntentAvailability}=await import('../intents-client.mjs');
  const {INTENT_ROWS}=await import('../../../worker/conversation/intents/catalog.mjs');
