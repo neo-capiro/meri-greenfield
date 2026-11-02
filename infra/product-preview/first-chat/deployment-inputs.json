@@ -2760,7 +2760,7 @@
             "version": "0.2.0"
           }
         ],
-        "maxExecuteMs": 20000,
+        "maxExecuteMs": 30000,
         "maxRequestBytes": 65536,
         "maxResponseBytes": 1048576
       }

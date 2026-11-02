@@ -108,6 +108,16 @@ export const READ_GUIDANCE=Object.freeze({
  meeting_read_client_meetings:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart.',
  })}),
+ find_contacts:Object.freeze({usage:Object.freeze([
+  'In General, omit clientId and find people by name, email or email domain (query or domain). clientId narrows to one client only in the conversation of that client, with clientId set to the selected client.',
+ ]),limitations:Object.freeze([]),failures:Object.freeze({
+  ACCESS_DENIED:'A client filter is allowed only in the conversation of that client. In General, search again without clientId by name, email or domain; to list the contacts of one client, tell the user to open a conversation for that client (choose the client in Meri) and ask there. Do not retry with another client.',
+ })}),
+ meeting_query_debriefs:Object.freeze({usage:Object.freeze([
+  'Debriefs belong to one client and are read only in the conversation of that client, with clientId set to the selected client. A General conversation has no client to read debriefs for: do not call this there; tell the user to open a conversation for that client (choose the client in Meri) and ask again.',
+ ]),limitations:Object.freeze([]),failures:Object.freeze({
+  ACCESS_DENIED:'Debriefs are readable only in the conversation of the client they belong to. In General, or for a client other than the selected one, tell the user to open a conversation for that client (choose the client in Meri) and ask there; do not retry with another client and do not say no debriefs exist.',
+ })}),
  search_memory:Object.freeze({
   usage:Object.freeze([
    'Recall of approved saved memory: what the user, the firm or Meri previously saved and a reviewer approved (facts, preferences, playbooks, client notes). Arguments: query (required text naming the topic or client to recall), clientId (in a selected-client conversation the selected client\'s UUID, which returns that client\'s items and the firm-wide items the user may recall; null in General, which returns tenant-neutral personal and firm memory; never another client), k (requested page size 1-15, default 8; pages are small, effectivePageSize in the result says how many, and nextCursor continues), cursor (continue a search), memoryItemId with contentCursor (read one item\'s complete content, taken from content.nextRead).',

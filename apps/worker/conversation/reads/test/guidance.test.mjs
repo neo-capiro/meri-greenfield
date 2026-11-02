@@ -71,6 +71,21 @@ test('public-web failures carry a precise next step between the closed head and 
  assert.equal(readGuidance('mcp__other_server__search_public_web'),READ_GUIDANCE.search_public_web,'guidance is keyed by the read, not the server');
 });
 
+test('a debrief refusal names the conversation to switch to instead of a bare "not permitted"',()=>{
+ const text=failureResult('ACCESS_DENIED','mcp__meri_reads__meeting_query_debriefs').content[0].text;
+ assert.match(text,/^This read is not permitted for this user, client or conversation now/u);assert.doesNotMatch(text,/ACCESS_DENIED/u);
+ assert.match(text,/open a conversation for that client \(choose the client in Meri\) and ask there/u);
+ assert.match(text,/do not say no debriefs exist/u);
+ assert.match(describe('meeting.query_debriefs'),/read only in the conversation of that client, with clientId set to the selected client/u);
+});
+
+test('a General contacts refusal says to search without the client filter or switch to that client',()=>{
+ const text=failureResult('ACCESS_DENIED','mcp__meri_reads__find_contacts').content[0].text;
+ assert.match(text,/In General, search again without clientId/u);
+ assert.match(text,/open a conversation for that client \(choose the client in Meri\) and ask there/u);
+ assert.match(describe('find_contacts'),/In General, omit clientId and find people by name, email or email domain/u);
+});
+
 test('a stored-mail read Core could not complete is a budget or refusal, never a connection fault',()=>{
  // 2 November 2026: "summarize emails from yesterday" spent Core's 10 s mail budget on a 37k-message mailbox, Core answered 503,
  // the gateway reported SOURCE_UNAVAILABLE and Meri told the user the mail source "didn't respond" and to reconnect it.
