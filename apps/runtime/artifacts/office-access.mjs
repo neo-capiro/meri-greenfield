@@ -8,10 +8,12 @@ import {configuration,documentLimits,requestCurrent,method} from '../../control/
 import {createArtifactService} from '../../artifacts/service.mjs';
 import {createPostgresArtifactService} from '../../artifacts/postgres-service.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
+/** `retention` is control's retention read gate. The canonical options owner composes artifact options without one,
+ * so it is applied here exactly as the document application and revision source apply their own. */
 export function createRuntimeOfficeAccess(value){
- const c=own(value,['optionsOwner','sessions','now','limits']),resolve=method(c.optionsOwner,'resolve'),limits=documentLimits(c.limits);
+ const c=own(value,['optionsOwner','sessions','now','limits','retention']),resolve=method(c.optionsOwner,'resolve'),limits=documentLimits(c.limits);
  const nativeCurrent=authenticatedCurrentState(c.sessions);
- if(typeof nativeCurrent!=='function'||typeof c.now!=='function')fail('OFFICE_CONFIGURATION');
+ if(typeof nativeCurrent!=='function'||typeof c.now!=='function'||typeof c.retention?.assertServable!=='function')fail('OFFICE_CONFIGURATION');
  return Object.freeze({async run(value,work){
   const q=own(value,['credential','intent','versionId','deadlineMs'],['signal','selection']);
   if(!['revise','download','inspect','office-import'].includes(q.intent)||typeof work!=='function')fail('OFFICE_CONFIGURATION');
@@ -31,8 +33,8 @@ export function createRuntimeOfficeAccess(value){
    const raw=await life.run(signal=>resolve({credential:q.credential,intent,body,requestSha256,deadlineMs:life.deadline(),signal}));
    if(raw===null)fail('UNAVAILABLE');const resolved=own(raw,['documentOptions','recheck']);
    if(resolved.documentOptions.sessions!==c.sessions||resolved.documentOptions.now!==c.now)fail('ACCESS_DENIED');
-   const config=configuration(resolved.documentOptions),context=config.options.context;
-   if(!config.enabled||!config.options.retention)fail('UNAVAILABLE');
+   const config=configuration({...resolved.documentOptions,artifactOptions:{...resolved.documentOptions.artifactOptions,retention:c.retention}}),context=config.options.context;
+   if(!config.enabled)fail('UNAVAILABLE');
    if(hash(context.binding)!==hash(initial.state.binding)||hash(context.scopes)!==hash(initial.state.scopes)||config.selectedClientId!==initial.state.selectedClientId)fail('ACCESS_DENIED');
    life.limitDeadline(context.deadlineMs);
    const current=requestCurrent(config,{credential:q.credential},life,life.deadline()),recheck=method(resolved,'recheck');
