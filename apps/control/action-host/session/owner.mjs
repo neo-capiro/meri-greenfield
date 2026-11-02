@@ -159,8 +159,8 @@ export function createActionSessionOwner(configuration){
    const b=record.context.binding,out=assertActionSessionReceipt({credential,expiresAtMs:record.expiresAtMs,context:publicContext(b,record.context.selectedClientId,record.context),...(record.initialRunRebind?{initialRunRebind:record.initialRunRebind}:{})},active(t.signal),{research:record.context.scopeKind==='research_portfolio'});release(record,t);
    return withCurrent?data({receipt:out,current:{binding:b,scopes:record.context.scopes,selectedClientId:record.context.selectedClientId,...researchContextFields(record.context),checkedAtMs:active(t.signal),expiresAtMs:record.expiresAtMs}}):out;
   }catch(error){if(record)remove(record);if(!t.isRequestCancellation(error))refusals(progress.step,error);if(errors.has(error))throw error;
-   // An owner that did not answer refuses only this issuance, as it does a recheck. The issuance route still answers 401
-   // (http.mjs); worker-http answers 503 so the runner can replay an idempotent call.
+   // An owner that did not answer refuses only this issuance, as it does a recheck. The issuance route (http.mjs) and
+   // worker-http both answer 503 for it: the client keeps its conversation and asks again, the runner replays an idempotent call.
    if(isAuthorityUnavailable(error))throw markAuthorityUnavailable(new ActionSessionError('SESSION_AUTHORITY_UNAVAILABLE'));deny();}finally{t.close();}
  }
  function currentReceipt(r,authentication,current,t){return data({authenticationSha256:canonicalSha256(authentication),binding:current.context.binding,scopes:current.context.scopes,selectedClientId:current.context.selectedClientId,...researchContextFields(current.context),checkedAtMs:active(t.signal),expiresAtMs:r.expiresAtMs});}
