@@ -1,9 +1,9 @@
 /** Closed feedback texts for the text-to-SQL tools: argument refusals, Core SQL refusals and result count lines. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {failureResult,readNotices,READ_FAILURE_CODES} from '../results.mjs';
+import {failureResult,readNotices,READ_FAILURE_CODES,sqlQueryView,modelResultText,SQL_VIEW_ROWS_MAX,SQL_VIEW_CHARS_MAX,SQL_VIEW_CELL_MAX} from '../results.mjs';
 import {READ_GUIDANCE,SQL_REFUSAL_GUIDANCE} from '../guidance.mjs';
-import {capiroDataPage,privateCapiroDataPage,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
+import {capiroDataPage,privateCapiroDataPage,sqlRefusal,governmentForecastsPage} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
 
 const NOTHING='No evidence, absence or completeness is established.';
 /** Closes every refusal notice (2 November acceptance: a refusal's statement and names reached the user verbatim). */
@@ -51,9 +51,9 @@ test('every closed Core SQL refusal code yields one fixed correction notice and 
 
 test('a successful query gets one count line; truncation and empty pages add their fixed remedies',()=>{
  const page=capiroDataPage();
- assert.deepEqual(notices(query,page),[{type:'text',text:'Notice: 2 row(s) returned of rowLimit 2 from program_elements.'}]);
+ assert.deepEqual(notices(query,page),[{type:'text',text:'Notice: 2 row(s) returned of rowLimit 2 from program_elements; each row lists its values in the order of columns.'}]);
  const cut={...page,rowLimitReached:true,byteTruncated:true};
- assert.equal(notices(query,cut)[0].text,'Notice: 2 row(s) returned of rowLimit 2 from program_elements. rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n). byteTruncated: whole rows were dropped at the 256 KiB output budget; select fewer columns or lower rowLimit.');
+ assert.equal(notices(query,cut)[0].text,'Notice: 2 row(s) returned of rowLimit 2 from program_elements; each row lists its values in the order of columns. rowLimitReached: more rows matched; to say how many, count them (count(*) OVER () AS total_matching in the same query), or narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n). byteTruncated: whole rows were dropped at the 256 KiB output budget; select fewer columns or lower rowLimit.');
  const empty={...page,rows:[],rowCount:0};
  assert.equal(notices(query,empty)[0].text,'Notice: 0 row(s) returned of rowLimit 2 from program_elements. Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the data set coverage limitations before concluding.');
  assert.deepEqual(notices(describe,capiroDataPage('describe_capiro_data')),[{type:'text',text:`Notice: 1 public data set(s) described: program_elements. Spell data set and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each data set's grain and limitations; rowLimit default 200, max 1000. ${DESCRIBE_TAIL}`}]);
@@ -95,4 +95,53 @@ test('relation refusals render Core\'s restated message verbatim: Core, not Meri
  assert.match(line(locking),/PostgreSQL 42501: Only a read-only SELECT is permitted on congress_bills; locking and write clauses are refused\./);
  // PostgreSQL's own report of the model's statement still renders in full.
  assert.match(line(sqlRefusal({code:'INVALID_QUERY',message:'could not determine data type of parameter $1',sqlstate:'42P18',position:undefined,hint:undefined,candidates:undefined})),/PostgreSQL 42P18: could not determine data type of parameter \$1\./);
+});
+
+// 2 November acceptance: "which government forecasts have a window in the next two quarters" returned a result too large for
+// the SDK's tool-result limit; it spilled to a file the model read with Read and a shell command, and the answer gave monthly
+// counts instead of the forecasts.
+test('a large query result reaches the model compact and bounded while the canonical envelope stays the result of record',()=>{
+ const page=governmentForecastsPage(250),canonical=JSON.stringify(envelope(page));
+ assert.ok(canonical.length>120000,`the canonical result is ${canonical.length} characters`);
+ const text=modelResultText(query,canonical,envelope(page)),view=JSON.parse(text);
+ assert.ok(text.length<=SQL_VIEW_CHARS_MAX,`${text.length} characters`);assert.equal(text,JSON.stringify(sqlQueryView(page)));
+ assert.equal(view.binding,undefined);assert.equal(view.coverage,undefined);
+ // Columns once; every row an array in that order; the columns the same in every row given once.
+ assert.deepEqual(view.sameInEveryRow,{status:'published',edition:'202604',observed_at:'2026-11-02 09:31:07.412+00',recorded_at:'2026-10-30 09:30:55.118+00'});
+ assert.deepEqual(view.columns,['forecast_id','rin','title','event_type','window_from','window_to','period_precision','period_text','source_url','revision']);
+ assert.equal(view.rowCount,250);assert.ok(view.shownRows>=40&&view.shownRows<=SQL_VIEW_ROWS_MAX,`${view.shownRows} rows shown`);assert.equal(view.rows.length,view.shownRows);
+ const title=view.columns.indexOf('title');assert.equal(view.rows[0][title],page.rows[0].title);assert.equal(view.cutCells,undefined,'titles are short enough to stay whole');
+ const [line]=notices(query,page);
+ assert.match(line.text,/^Notice: 250 row\(s\) returned of rowLimit 1000 from government_forecasts; each row lists its values in the order of columns, and sameInEveryRow gives once the columns whose value is the same in every row\. Only the first \d+ row\(s\) are shown; the rest are kept for the record\. For a list answer name about 20 representative rows from these with the total and offer the rest; for counts, totals or trends aggregate in SQL/);
+ // The listing query the guidance asks for: identifying columns, the total and the source check time in one result.
+ const listing={...page,columns:['title','rin','event_type','window_from','total_matching','source_checked_at'].map(name=>({name,type:'string',pgType:'text',nullable:true})),
+  rows:page.rows.slice(0,60).map(r=>({title:r.title,rin:r.rin,event_type:r.event_type,window_from:r.window_from,total_matching:'250',source_checked_at:r.observed_at})),rowCount:60,limits:{rowLimit:60,maxOutputBytes:262144},rowLimitReached:true};
+ const compact=sqlQueryView(listing);
+ assert.deepEqual(compact.sameInEveryRow,{total_matching:'250',source_checked_at:'2026-11-02 09:31:07.412+00'});assert.equal(compact.rows.length,60);assert.equal(compact.shownRows,undefined);
+ assert.ok(JSON.stringify(compact).length<12000,`${JSON.stringify(compact).length} characters for 60 listed forecasts`);
+});
+
+test('a result that fits is shown whole; only an oversized one has its long text cut, and at least one row is always shown',()=>{
+ const page=capiroDataPage(),long='x'.repeat(5000);
+ const whole=sqlQueryView({...page,rows:[{...page.rows[0],pe_code:long},page.rows[1]]});
+ assert.equal(whole.rows[0][0],long);assert.equal(whole.cutCells,undefined);assert.equal(whole.shownRows,undefined);
+ assert.deepEqual(whole.columns,['pe_code','total','count','absent','last_synced_at']);assert.equal(whole.sameInEveryRow,undefined,'two rows never fold a column');
+ assert.deepEqual(whole.units,{total:'USD millions'});
+ const huge=sqlQueryView({...page,rows:[{...page.rows[0],pe_code:'y'.repeat(60000)}],rowCount:1});
+ assert.equal(huge.rows.length,1);assert.equal(huge.rows[0][0],`${'y'.repeat(SQL_VIEW_CELL_MAX)}...`);assert.equal(huge.cutCells,1);assert.equal(huge.shownRows,undefined);
+ const [line]=notices(query,{...page,rows:[{...page.rows[0],pe_code:'y'.repeat(60000)}],rowCount:1});
+ assert.match(line.text,/ 1 long text value\(s\) are cut to 300 characters and end with "\.\.\.": to quote one whole, select substr\(column, 1, 20000\) for that row\.$/);
+ const many=sqlQueryView({...page,rows:Array.from({length:500},(_,i)=>({...page.rows[0],count:String(i)})),rowCount:500});
+ assert.equal(many.rows.length,SQL_VIEW_ROWS_MAX);assert.equal(many.shownRows,SQL_VIEW_ROWS_MAX);
+ assert.deepEqual(many.sameInEveryRow,{pe_code:'0600001A',total:'100.10',absent:null,last_synced_at:'2026-01-01 00:00:00.123456+00'});
+ // Refusals and describe pages reach the model unchanged.
+ for(const result of [sqlRefusal(),capiroDataPage('describe_capiro_data')]){const text=JSON.stringify(envelope(result));assert.equal(modelResultText(query,text,envelope(result)),text);}
+});
+
+test('the describe notice names each freshness field and how to state when Capiro last checked the source',()=>{
+ const page=capiroDataPage('describe_capiro_data');
+ assert.doesNotMatch(notices(describe,page)[0].text,/Freshness fields/,'no field, no freshness line');
+ const fresh={...page,relations:[{...page.relations[0],freshness:{field:'last_synced_at',sourceAsOf:null,sourceVersion:null}},{...page.relations[0],name:'government_forecasts',freshness:{field:'observed_at',sourceAsOf:null,sourceVersion:null}}]};
+ const text=notices(describe,fresh)[0].text;
+ assert.match(text,/ Freshness fields: program_elements\.last_synced_at, government_forecasts\.observed_at\. The latest value of a freshness field is when Capiro last checked or synchronized that source: .*select its max \(for example max\(observed_at\) OVER \(\) AS source_checked_at in the listing query, with the edition where the data set has one\) and state it as the data's as-of time; never say a data set's freshness is not recorded when it lists a freshness field\. These names are for writing queries/);
 });

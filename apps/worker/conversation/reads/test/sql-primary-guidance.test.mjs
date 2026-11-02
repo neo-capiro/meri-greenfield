@@ -23,7 +23,9 @@ test('SQL routing is admitted only with both actual query tools, and only as rou
  // The retired contract envelope and the per-tool argument and result detail stay out of the prompt.
  assert.doesNotMatch(prompt,/contract grammar|rowLimitReached|byteTruncated|keyset|legacy global query tools|Use read_saved_record/);
  // 3,300: the no-gap-filling and government-forecast sentences (2 November acceptance R06, R07) added about 520 characters.
- assert.ok(prompt.length<3300,`${prompt.length} characters`);
+ // 3,600: the list-answer, freshness and no-file-talk sentence (2 November forecasts acceptance) added about 370 characters.
+ assert.ok(prompt.length<3600,`${prompt.length} characters`);
+ assert.match(prompt,/A "which" or "list" question is answered with the records \(for forecasts: title, agency or RIN, window, stage\) and the total: all of them up to about 30, otherwise about 20 representative ones and an offer of the rest, with a count by month, agency or stage only when asked or as a short overview of a large set\. When currency matters, state when Capiro last checked the source \(its freshness field\)\. Never mention files, JSON or shell commands\./);
 });
 
 const DATE_BASIS='When a question asks for the most recent, latest, newest or oldest records without naming a date, rank by the latest action or activity date when the data has one and otherwise by the introduction or creation date, say in one clause which date the ranking used, and when two plausible dates would change the answer say so in one sentence.';

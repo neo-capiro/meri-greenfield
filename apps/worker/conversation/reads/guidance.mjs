@@ -42,6 +42,14 @@ const PAGE_FAILURES=Object.freeze({
  DEADLINE:'The page did not load within the time limit; try once more with mode "summary" or a different URL.',
  RESOURCE_LIMIT:'The page or the run\'s read budget limit is reached; use a smaller maxChars or stop reading pages this turn.',
 });
+/** Replace the descriptors' registration-era limitations, whose "unknown (null) freshness" made the 2 November answer say the
+ * government forecasts' freshness was not recorded although its freshness field holds the source check time. */
+const SQL_LIMITATIONS=Object.freeze([
+ 'Rows are bounded by the query and by the data Capiro has ingested; an empty result is not proof of absence.',
+ 'A data set\'s freshness field, when describe lists one, records when Capiro last checked or synchronized its source; generatedAt is only the query time.',
+ 'Derived rows are not immutable source evidence; use canonical readers for decisive bill text, report passages and consolidated PE funding.',
+ 'Client-record sources read only the current authorized scope; General may narrow with clientId, a selected-client conversation cannot broaden, saved jobs have no private SQL admission.',
+]);
 /** The three mail reads share one source, one candidate shape and the same mailbox and subject failures. */
 const MAIL_SOURCE='Stored mail of the user\'s connected mailbox (Microsoft 365 or Google Workspace) as last synchronized into Capiro: never the live inbox and never a send. subject is {kind:"personal"} in General (the user\'s own mailbox view) or {kind:"client", entityId:<the selected client\'s UUID>} in a selected-client conversation (mail associated with that client).';
 const MAIL_CANDIDATES='Result: one compact row per message, newest first: threadId, messageId, receivedAt or sentAt, from, to (up to 3 names), ccCount, subject and preview (an incomplete excerpt, never the full body), plus clientId and connectionStatus when present; window, totalMatches, threads (distinct threads on the page), hasMore and nextOffset (pass it as offset to continue). The notice that follows states counts, continuation, incomplete coverage and a stale mailbox. Summarize from the rows; read a thread\'s body with mail_read_thread using its threadId only to quote it or when one message\'s full content changes the answer. A connectionStatus other than connected (needs_configuration, error or disabled) means the mailbox stopped synchronizing: say the mail may be stale and that the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations.';
@@ -164,10 +172,14 @@ export const READ_GUIDANCE=Object.freeze({
   limitations:Object.freeze([MAIL_STORED]),
   failures:Object.freeze({...MAIL_THREAD_FAILURES,INVALID_ARGUMENTS:'mail_read_thread takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), threadId (UUID), optional messageId (UUID), messageOffset (0-10000), limit (1-10), bodyOffset (0-10000000) and maxCharacters (1-6000).'}),
  }),
- describe_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
+ describe_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:SQL_LIMITATIONS,failures:Object.freeze({
   INVALID_ARGUMENTS:'describe_capiro_data takes optional relations: 1-15 unique lowercase data set names, plus source (one of the listed sources) and clientId (UUID, client_records only).',
  }),refusals:SQL_REFUSAL_GUIDANCE}),
- query_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
+ query_capiro_data:Object.freeze({usage:Object.freeze([
+  // The descriptor's whenToUse describes Core's canonical row objects; the model reads `sqlQueryView` (results.mjs).
+  'What you receive: generatedAt (query time), columns (names, once), rows (each an array of values in that order), sameInEveryRow (columns identical in every row, given once), units, rowCount, rowLimitReached, byteTruncated, and shownRows and cutCells when only part could be shown; the complete result is kept for the record.',
+  'For a "which" or "list" question select the identifying columns (title, number, agency, date or window, stage or status) in a useful order with count(*) OVER () AS total_matching, and list the rows with the total: all up to about 30, otherwise about 20 representative ones and an offer of the rest; aggregate (by month, agency or stage) only when asked.',
+ ]),limitations:SQL_LIMITATIONS,failures:Object.freeze({
   INVALID_ARGUMENTS:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source (one of the listed sources) and clientId (UUID, client_records only).',
  }),refusals:SQL_REFUSAL_GUIDANCE}),
 });
