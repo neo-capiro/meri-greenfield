@@ -42,7 +42,7 @@ const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,DEL
  * stays on 0.2.0, so a stored row of either version still decides against the owner that produced it. */
 const CLIENT_RECORD_VERSIONS=Object.freeze(new Set(['0.2.0','0.3.0']));
 /** How long a claimed (PENDING) preparation may still settle: longer than any preparing call lives (runner 30 s, worker 60 s at
- * most), so a row older than this reads as failed at its deadline rather than "pending" for good. */
+ * most), so a row older than this reads as unknown rather than "pending" for good. */
 export const PENDING_SETTLE_WINDOW_MS=300000;
 /** Commands an approved intent may execute: those with a proposal (approval-metadata) owner today. */
 export const APPROVABLE_ACTIONS=Object.freeze(['task.create','task.update','document.draft','artifact.file','mail.send','memory.propose']);
@@ -469,10 +469,11 @@ async function decideWatch(life,principal,entry,r){
  }
  /** A PENDING row is settled only by the preparation that claimed it, inside that call's own lifetime (the runner allows 30 s, the
   * worker at most 60 s, the mount's request bound is shorter). One still PENDING long after its claim can never settle (a lost
-  * settle acknowledgement, or a settle the journal refused): it reads as a failed preparation at its deadline, so the
-  * conversation's card ends and the composer unlocks, instead of "Preparing" for good (2 Nov: three such rows). The row itself
-  * is not rewritten; a replay of that delivery still answers UNKNOWN. */
- const pendingItem=(base,entry)=>instant(entry.createdAt)+PENDING_SETTLE_WINDOW_MS>c.now()?{...base,state:'pending'}:{...base,state:'failed',code:'DEADLINE'};
+  * settle acknowledgement, or a settle the journal refused): it is listed as unknown, the same item an UNKNOWN row lists, so the
+  * conversation's card ends and the composer unlocks, instead of "Preparing" for good (2 Nov: three such rows). It is never
+  * listed as stopped: a lost settle acknowledgement can mean the owner's proposal exists, and a replay of that delivery answers
+  * UNKNOWN. The row itself is not rewritten. */
+ const pendingItem=(base,entry)=>instant(entry.createdAt)+PENDING_SETTLE_WINDOW_MS>c.now()?{...base,state:'pending'}:{...base,state:'unknown'};
  async function item(life,principal,entry,conversationId){
   const base={deliveryId:entry.deliveryId,createdAt:entry.createdAt,operation:entry.record.operation};
   if(entry.state==='PENDING')return pendingItem(base,entry);
