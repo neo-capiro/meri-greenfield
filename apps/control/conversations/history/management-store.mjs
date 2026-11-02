@@ -25,7 +25,9 @@ export function createConversationManagementStore({tx,rowRun,settlement,now}){
    if(hash(r)!==row.reservation_sha256||row.tenant_id!==k.tenantId||row.conversation_id!==k.conversationId||row.source_run_id!==r.source.runId||row.target_run_id!==r.target.runId||r.source.actorId!==input.principal.actorId||r.source.tenantId!==k.tenantId||r.source.conversationId!==k.conversationId||!['RESERVED','ACCEPTED'].includes(row.state))fail('STORE_CORRUPT');
    if(row.state==='RESERVED')canManage=false;
   }
-  return {conversation,hasTranscript:runs.length>0,canManage};
+  // The original submission opens the conversation; later segments resume or continue it. Its prompt names an unrenamed chat.
+  const first=ordered[0]&&runs.find(r=>r.projection.binding.runId===ordered[0].binding.runId);
+  return {conversation,hasTranscript:runs.length>0,canManage,firstPrompt:typeof first?.request?.prompt==='string'?first.request.prompt:null};
  }
  const inspect=(input,check)=>tx(key(input),check,c=>state(c,input,check));
  async function withConversation(input,work,check,lease){

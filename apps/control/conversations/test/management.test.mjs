@@ -96,3 +96,12 @@ test('summary joins actual transcript state and propagates unavailable ownership
  const result=await f.service.summaries({principal:f.principal,request,management:f.core});assert.equal(result.conversations[0].hasTranscript,false);assert.equal(result.conversations[0].canManage,true);
  f.core.summaries=async()=>{throw Error('Core unavailable');};await assert.rejects(f.service.summaries({principal:f.principal,request,management:f.core}),/Core unavailable/);
 });
+test('an unrenamed chat is summarized by its first prompt, or as New conversation before one exists; a Core title passes through',async()=>{
+ const f=await managementFixture(),request={version:'meri.conversation-management.v1',status:'active',title:'',before:null},summaries=()=>f.service.summaries({principal:f.principal,request,management:f.core});
+ assert.equal((await summaries()).conversations[0].title,'Original');
+ f.setMetadata({...f.metadata,title:'New Meri session'});await f.register();
+ assert.equal((await summaries()).conversations[0].title,'New conversation');
+ await f.store.initialInputs.claim(f.p.facts,check);await f.store.initialInputs.accept(f.p.acceptance,check);
+ assert.equal((await summaries()).conversations[0].title,'Original prompt');
+ await f.manage(f.request('rename',{title:'Owned title'}));assert.equal((await summaries()).conversations[0].title,'Owned title');
+});

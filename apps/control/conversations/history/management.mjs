@@ -1,7 +1,12 @@
 /** Core owns metadata/receipts; this owner serializes them with canonical run
  * admission and the existing retention transition. No cross-service journal. */
 import {ProductError,productFailure,refuse} from '../../product-access/errors.mjs';
+import {derivedConversationTitle,UNNAMED_CONVERSATION_TITLE} from './conversation-title.mjs';
 const reason=requestId=>'conversation-trash:'+requestId;
+/** Core names every bootstrapped chat with this placeholder (apps/api meri-conversation-bootstrap). A summary shows the first
+ * prompt instead until the person renames the chat; a rename reaches Core through `manage` and then wins here. */
+const CORE_PLACEHOLDER_TITLE='New Meri session';
+const summaryTitle=(metadata,state)=>metadata.title===CORE_PLACEHOLDER_TITLE?derivedConversationTitle(state.firstPrompt)??UNNAMED_CONVERSATION_TITLE:metadata.title;
 const check=signal=>()=>signal?.throwIfAborted();
 export function assertManagedScope(principal,metadata,conversation){
  if(conversation===null)return;
@@ -14,7 +19,7 @@ export function createConversationManagementService({store,suppression}){
  const required=core=>{if(['metadata','read','apply','registration','summaries'].some(k=>typeof core?.[k]!=='function'))refuse('CONVERSATION_UNAVAILABLE');};
  async function summaries({principal,request,management:core,signal}){required(core);const result=await core.summaries(request),conversations=[];
   for(const metadata of result.conversations){check(signal)();const state=await store.management.inspect({principal,conversationId:metadata.conversationId},check(signal));sameScope(principal,metadata,state.conversation);
-   conversations.push({...metadata,hasTranscript:state.hasTranscript,canManage:metadata.scopeKind!=='research_portfolio'&&state.canManage});}
+   conversations.push({...metadata,title:summaryTitle(metadata,state),hasTranscript:state.hasTranscript,canManage:metadata.scopeKind!=='research_portfolio'&&state.canManage});}
   return {...result,conversations};
  }
  async function manage({principal,request,management:core,signal}){required(core);
