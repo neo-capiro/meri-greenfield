@@ -369,12 +369,15 @@ test('the host-currentness listener and the host listener load balancer travel t
  assert.deepEqual(service(t).LoadBalancers.find(l=>l.ContainerPort===8443),{ContainerName:'control',ContainerPort:8443,TargetGroupArn:edge.HostListenerTargetGroupArn});
 });
 
-test('native material reaches the Temporal worker task role alongside the control host listener',async()=>{
- const {args,stage3}=await setup(),edge={HostListenerTargetGroupArn:'arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-host-control/0123456789abcdef'};
+test('native material reaches the Temporal worker task role and database network alongside the control host listener',async()=>{
+ const {args,revisions}=await setup(),edge={HostListenerTargetGroupArn:'arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-host-control/0123456789abcdef'};
  for(const browserOnly of [true,false]){
-  const i=await nativeProcessingInputs(fixture);i.stage3=structuredClone(stage3);
+  const i=await nativeProcessingInputs(fixture);
   if(browserOnly)delete i.deployment.features.nativeProcessing.deployment;
-  const rendered=renderMaterial(i),f={...args.foundationOutputs,WorkerTaskRoleArn:i.deployment.foundation.WorkerTaskRoleArn};
+  const f={...args.foundationOutputs,WorkerTaskRoleArn:i.deployment.foundation.WorkerTaskRoleArn};
+  i.stage3=stage3RenderInput({deployment:i.deployment,foundationOutputs:f,revisions});
+  sameSet(i.stage3.network['temporal-worker'].securityGroups,[f.WorkerSecurityGroupId,f.DbClientSecurityGroupId]);
+  const rendered=renderMaterial(i);
   const bound=buildStage3Bindings({...args,deployment:i.deployment,foundationOutputs:f,renderSummary:rendered.summary,
    renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),hostListenerOutputs:edge});
   const t=synthesizeStage3(bound).templates.app,tasks=resources(t,'AWS::ECS::TaskDefinition');
@@ -382,24 +385,31 @@ test('native material reaches the Temporal worker task role alongside the contro
   assert.equal(worker.TaskRoleArn,f.WorkerTaskRoleArn,'native provisioning needs the distinct worker role on the actual task');
   assert.equal(worker.TaskRoleArn,rendered.summary.wiring['temporal-worker'].taskRoleArn);
   assert.notEqual(worker.TaskRoleArn,control.TaskRoleArn);assert.equal(control.TaskRoleArn,f.ControlTaskRoleArn);
+  const workerService=resources(t,'AWS::ECS::Service').find(s=>s.ServiceName==='meri-product-preview-temporal-worker');
+  sameSet(workerService.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,i.stage3.network['temporal-worker'].securityGroups);
   assert.ok(control.ContainerDefinitions.find(c=>c.Name==='control').PortMappings.some(p=>p.ContainerPort===8443));
   const service=resources(t,'AWS::ECS::Service').find(s=>s.ServiceName==='meri-product-preview-control');
+  sameSet(service.NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[f.ControlSecurityGroupId,f.DbClientSecurityGroupId]);
   assert.deepEqual(service.LoadBalancers.find(l=>l.ContainerPort===8443),{ContainerName:'control',ContainerPort:8443,TargetGroupArn:edge.HostListenerTargetGroupArn});
  }
 });
 
-test('absent or disabled native processing does not grant the existing native worker role',async()=>{
- const {args,stage3}=await setup();
+test('absent or disabled native processing grants neither the native worker role nor database network',async()=>{
+ const {args,revisions}=await setup();
  for(const nativeProcessing of [undefined,{enabled:false}]){
-  const i=structuredClone(await fixture.setup());i.stage3=structuredClone(stage3);
+  const i=structuredClone(await fixture.setup());
   i.deployment.foundation.WorkerTaskRoleArn='arn:aws:iam::967807252336:role/synthetic-native-worker';
   if(nativeProcessing!==undefined)i.deployment.features={nativeProcessing};
+  const f={...args.foundationOutputs,...i.deployment.foundation};
+  i.stage3=stage3RenderInput({deployment:i.deployment,foundationOutputs:f,revisions});
+  assert.deepEqual(i.stage3.network['temporal-worker'].securityGroups,[f.WorkerSecurityGroupId]);
   const rendered=await fixture.render(x=>Object.assign(x,i));
   const bound=buildStage3Bindings({...args,deployment:i.deployment,foundationOutputs:{...args.foundationOutputs,...i.deployment.foundation},renderSummary:rendered.summary,
    renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected]))});
   const t=synthesizeStage3(bound).templates.app;
   assert.equal(bound.app.workerTaskRoleArn,undefined);
   assert.equal(resources(t,'AWS::ECS::TaskDefinition').find(d=>d.Family==='meri-product-preview-temporal-worker').TaskRoleArn,undefined);
+  assert.deepEqual(resources(t,'AWS::ECS::Service').find(s=>s.ServiceName==='meri-product-preview-temporal-worker').NetworkConfiguration.AwsvpcConfiguration.SecurityGroups,[f.WorkerSecurityGroupId]);
   assert.equal(resources(t,'AWS::ECS::Service').find(s=>s.ServiceName==='meri-product-preview-control').LoadBalancers.some(l=>l.ContainerPort===8443),false);
  }
 });
