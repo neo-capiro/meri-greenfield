@@ -8,16 +8,29 @@ import {enabledPolicy,APPROVED} from './fixtures.mjs';
 /** Source-level only (dot corrected browser review H3): these fix the decisions the egress control must make; they are
  * not a measured browser or network result. */
 const requirement=id=>EGRESS_REQUIREMENTS.find(r=>r.startsWith(`${id}:`));
-test('H3: the activation record makes the effective origin allowlist mandatory for every connection kind and hop',()=>{
- const allowlist=requirement('effective-origin-allowlist');assert.ok(allowlist,'mandatory requirement present');
- for(const term of ['every redirect hop','sub-resources','fetch/XHR','WebSocket','downloads','platform-maximum ∧ tenant ∧ role','in addition to the non-public and resolved-address rules','allowlisted public origin redirecting to an unlisted public origin','narrowed away','egressDecision'])assert.ok(allowlist.includes(term),term);
- assert.match(requirement('redirects'),/effective-allowlist and destination-address checks/u);
- for(const probe of ['allowlisted-to-unlisted public redirect','unlisted public sub-resource','unlisted public WebSocket','narrowed away by tenant or role'])assert.ok(requirement('evidence').includes(probe),probe);
+test('H3: the activation record makes the effective destination policy mandatory for every connection kind and hop',()=>{
+ const policy=requirement('destination-policy');assert.ok(policy,'mandatory requirement present');
+ for(const term of ['every redirect hop','sub-resources','fetch/XHR','WebSocket','downloads','platform-maximum ∧ tenant ∧ role','in addition to the non-public and resolved-address rules','every denied host','the exact name or any name below it','under destinations listed only an origin on the effective allowedOrigins','a public origin redirecting to a denied host','narrowed away','egressDecision'])assert.ok(policy.includes(term),term);
+ assert.match(requirement('redirects'),/destination-policy and destination-address checks/u);
+ for(const probe of ['public-to-denied-host redirect','denied-host sub-resource','denied-host WebSocket','unlisted public origin','narrowed away by tenant or role','positive public-origin probe'])assert.ok(requirement('evidence').includes(probe),probe);
  assert.equal(activationOpen(HELD_BROWSER_ACTIVATION),false,'still held');
- assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:canonicalSha256(EGRESS_REQUIREMENTS.filter(r=>!r.startsWith('effective-origin-allowlist:')))}),false,'a record measured without the allowlist requirement never opens');
+ assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:canonicalSha256(EGRESS_REQUIREMENTS.filter(r=>!r.startsWith('destination-policy:')))}),false,'a record measured without the destination requirement never opens');
  const receipt={schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256};
  assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}),false,'no render verification receipt, no open');
  assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:receipt}),true);
+});
+test('the open default admits every public origin for every connection kind and refuses denied hosts at every hop',()=>{
+ const p=validateBrowserPolicy({enabled:true,deniedHosts:['app.capiro.example']});
+ for(const kind of EGRESS_CONNECTION_KINDS.filter(k=>k!=='websocket')){
+  assert.deepEqual(egressDecision(p,{kind,url:'https://anything.example/x'}),{ok:true,origin:'https://anything.example'},kind);
+  assert.equal(egressDecision(p,{kind,url:'https://cdn.app.capiro.example/a.js'}).code,'BROWSER_HOST_DENIED',kind);
+  assert.equal(egressDecision(p,{kind,url:'http://169.254.169.254/'}).code,'BROWSER_URL_NOT_PUBLIC',kind);
+ }
+ assert.deepEqual(egressDecision(p,{kind:'websocket',url:'wss://anything.example/s'}),{ok:true,origin:'https://anything.example'});
+ assert.equal(egressDecision(p,{kind:'websocket',url:'wss://app.capiro.example/s'}).code,'BROWSER_HOST_DENIED');
+ assert.deepEqual(egressRedirectChain(p,['https://a.example/','https://b.example/','https://c.example/']),{ok:true});
+ assert.deepEqual(egressRedirectChain(p,['https://a.example/','https://app.capiro.example/login']),{ok:false,code:'BROWSER_HOST_DENIED',hop:1},'public to denied host');
+ assert.deepEqual(egressRedirectChain(p,['https://a.example/','http://10.0.0.5/']),{ok:false,code:'BROWSER_URL_NOT_PUBLIC',hop:1});
 });
 test('H3: an allowlisted public origin redirecting to an unlisted public origin is refused at the redirect hop',()=>{
  const p=validateBrowserPolicy(enabledPolicy());
@@ -51,7 +64,7 @@ test('H3: the egress decision uses the effective tenant/role-narrowed list, neve
  assert.equal(egressRedirectChain(roleNarrowed,[`${APPROVED[0]}/a`,`${APPROVED[1]}/b`]).hop,1,'role ceiling narrows the redirect target');
  const tenantRole=resolveBrowserPolicy({platform,tenant:{roles:{member:{allowedOrigins:[APPROVED[1]]}}},role:'member'});
  assert.equal(egressDecision(tenantRole,{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_ORIGIN_NOT_ALLOWED','tenant role narrowing');
- assert.equal(egressDecision(validateBrowserPolicy(),{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_NO_ALLOWED_DESTINATIONS','empty effective list admits nothing');
+ assert.equal(egressDecision(validateBrowserPolicy({enabled:true,destinations:'listed'}),{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_NO_ALLOWED_DESTINATIONS','empty effective list admits nothing');
  assert.equal(egressDecision(resolveBrowserPolicy({platform,tenant:{browser:{enabled:false}},role:'member'}),{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_DISABLED');
 });
 test('the activation checklist names every egress requirement, the proxy route and connection coalescing are required, and an unconfigured gate stays held',async()=>{

@@ -123,7 +123,7 @@ async function joinedFixture(t,{dropFirstReceiptResponse=false,dropFirstIngestRe
   if(statement.includes('clock_timestamp'))return {rows:[{now_ms:clock.now}]};
   return {rows:[]};}};
  const transact=async effect=>effect(sqlClient);
- const browserPolicy={...DEFAULT_BROWSER_POLICY,enabled:true,allowedOrigins:['https://files.example'],downloads:{...DEFAULT_BROWSER_POLICY.downloads,maxFiles}};
+ const browserPolicy=validateBrowserPolicy({...DEFAULT_BROWSER_POLICY,enabled:true,allowedOrigins:['https://files.example'],downloads:{...DEFAULT_BROWSER_POLICY.downloads,maxFiles}});
  const capabilityPolicy=assertCapabilityPolicy({});
  const state={binding,currentUntilMs:NOW+900000,phase:'active',sdkAdmitted:true,bashAdmitted:false,
   browserAdmitted:true,capabilityPolicySha256:hash(capabilityPolicy),browserPolicySha256:hash(browserPolicy)};

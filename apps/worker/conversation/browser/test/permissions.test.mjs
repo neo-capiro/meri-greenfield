@@ -46,15 +46,36 @@ test('a denied interaction never executes; an approved one executes once, after 
  assert.deepEqual(request,{schema:APPROVAL_REQUEST_SCHEMA,subject,subjectSha256:canonicalSha256(subject),input:{element:'Next page',target:'e3'},requestedAtMs:clock(),expiresAtMs:clock()+APPROVAL_DEADLINE_MS.default});
  assert.equal(APPROVAL_REQUEST_SCHEMA,'meri-browser-approval-request/3');
 });
-test('navigations outside the allowlist or the platform limits are denied before execution; the default allowlist opens nothing external',async()=>{
+test('navigations outside the destination policy or the platform limits are denied before execution; the open default refuses denied hosts and an empty list opens nothing',async()=>{
  const sdk=scriptedSdk(openFragment({cwd,policy:enabledPolicy({tools:['browser_navigate','browser_tabs','browser_snapshot']})}).cap);
  for(const url of ['http://169.254.169.254/latest/meta-data/','http://localhost:8080/','http://[::1]/','http://10.0.0.1/','file:///etc/passwd','javascript:alert(1)','data:text/html,x','https://u:p@records.example/','https://archive.example/','https://unlisted.example/'])
   assert.equal(await sdk.call('browser_navigate',{url}),'denied-by-hook',url);
  assert.equal(await sdk.call('browser_tabs',{action:'new',url:'http://127.0.0.1/'}),'denied-by-hook');
  assert.equal(await sdk.call('browser_navigate',{url:`${APPROVED[0]}/notice/1`}),'executed');assert.equal(await sdk.call('browser_tabs',{action:'new'}),'executed');assert.equal(await sdk.call('browser_navigate',{url:'about:blank'}),'executed');
  assert.equal(sdk.executed.length,3);
- const empty=scriptedSdk(openFragment({cwd,policy:DEFAULT_BROWSER_POLICY}).cap);
+ const open=scriptedSdk(openFragment({cwd,policy:{...DEFAULT_BROWSER_POLICY,deniedHosts:['app.capiro.example']}}).cap);
+ assert.equal(await open.call('browser_navigate',{url:'https://unlisted.example/'}),'executed','the open default reaches any public origin');
+ for(const url of ['https://app.capiro.example/','https://sso.app.capiro.example/','http://10.0.0.1/','https://u:p@unlisted.example/'])assert.equal(await open.call('browser_navigate',{url}),'denied-by-hook',url);
+ assert.equal(await open.call('browser_tabs',{action:'new',url:'https://app.capiro.example/'}),'denied-by-hook');
+ const empty=scriptedSdk(openFragment({cwd,policy:{enabled:true,destinations:'listed'}}).cap);
  assert.equal(await empty.call('browser_navigate',{url:`${APPROVED[0]}/`}),'denied-by-hook');assert.equal(await empty.call('browser_snapshot',{}),'executed');
+});
+test('the host classifier decides interactions before execution, once per call: routine runs without asking, a submission asks, credential input is refused and its page restored',async()=>{
+ const classes={e_routine:'routine',e_submit:'submission',e_secret:'credential'},asked=[];
+ const classify=async({tool,input})=>{asked.push([tool,input.ref]);return classes[input.ref]??'unexpected';};
+ const {cap,r}=openFragment({cwd,policy:interactive(),approvals:{async decide(request){r.approvalRequests.push(structuredClone(request));return approvalReceipt(request);}},classify});
+ const sdk=scriptedSdk(cap);await sdk.call('browser_navigate',{url:PAGE});
+ assert.equal(await sdk.call('browser_click',{ref:'e_routine'}),'executed','a routine interaction needs no approval');assert.equal(r.approvalRequests.length,0);
+ assert.equal(await sdk.call('browser_type',{ref:'e_submit',text:'x'}),'executed');assert.equal(r.approvalRequests.length,1,'a submission asked and was approved');
+ assert.equal(await sdk.call('browser_type',{ref:'e_secret',text:'hunter2'}),'denied-by-permission','credential input is refused outright');assert.equal(r.approvalRequests.length,1,'nothing was asked for the refused call');
+ assert.equal((await cap.canUseTool(T('browser_type'),{ref:'e_secret',text:'x'},{toolUseID:'toolu_secret',signal:new AbortController().signal})).message,'BROWSER_CREDENTIAL_INPUT_REFUSED','credential input is refused before any page question');
+ assert.equal((await cap.canUseTool(T('browser_type'),{ref:'e_submit',text:'x'},{toolUseID:'toolu_nohook',signal:new AbortController().signal})).message,'BROWSER_APPROVAL_PAGE_UNKNOWN','a submission that skipped the hook has no page and denies');
+ assert.equal(await sdk.call('browser_click',{ref:'e_unknown'}),'executed');assert.equal(r.approvalRequests.length,2,'an unknown class asks');
+ assert.equal(await sdk.call('browser_click',{ref:'e_routine'}),'executed','the refused call restored the page, so later interactions are still bound to it');
+ assert.deepEqual(asked.map(([t])=>t),['browser_click','browser_type','browser_type','browser_type','browser_type','browser_click','browser_click'],'each interaction is classified exactly once (five SDK calls, two direct canUseTool calls)');
+ const throwing=scriptedSdk(openFragment({cwd,policy:interactive(),approvals:{async decide(request){return approvalReceipt(request);}},classify:async()=>{throw Error('no page');}}).cap);
+ await throwing.call('browser_navigate',{url:PAGE});assert.equal(await throwing.call('browser_click',{ref:'e_routine'}),'executed','a failing classifier asks rather than runs');
+ assert.throws(()=>openFragment({cwd,classify:'yes'}),e=>e.code==='BROWSER_CONFIGURATION');
 });
 test('unadmitted and excluded tools are unavailable or denied before execution',async()=>{
  const {cap}=openFragment({cwd}),sdk=scriptedSdk(cap);

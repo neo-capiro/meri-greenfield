@@ -27,13 +27,18 @@ test('the artifact owner must echo the idempotency key: a different or missing k
   await assert.rejects(cap.downloads.accept({filename:'a.pdf',url:src('a.pdf')}),e=>e.code==='BROWSER_DOWNLOAD_DUPLICATE','an attempted ingest keeps its claim');
  }
 }));
-test('download sources follow the effective destination policy: allowlist only, platform limits always',()=>within(async({cwd,output})=>{
+test('download sources follow the effective destination policy: a list admits listed origins, the open default admits public origins but no denied host, platform limits always',()=>within(async({cwd,output})=>{
  const {cap,r}=openFragment({cwd});await writeFile(join(output,'ok.pdf'),pdf());
  const refuse=url=>assert.rejects(cap.downloads.accept({filename:'ok.pdf',url}),e=>e.code==='BROWSER_DOWNLOAD_SOURCE',String(url));
  for(const url of [`${APPROVED[2]}/ok.pdf`,'https://unlisted.example/ok.pdf','http://notices.example/ok.pdf','http://169.254.169.254/ok.pdf','http://127.0.0.1/ok.pdf','http://[fd00:ec2::254]/ok.pdf','http://localhost/ok.pdf','https://u:p@notices.example/ok.pdf','file:///tmp/ok.pdf','data:application/pdf,x','about:blank','not a url',undefined])await refuse(url);
- const none=openFragment({cwd,policy:DEFAULT_BROWSER_POLICY}).cap;
- await assert.rejects(none.downloads.accept({filename:'ok.pdf',url:src('ok.pdf')}),e=>e.code==='BROWSER_DOWNLOAD_SOURCE','an empty allowlist admits no download source');
- assert.equal(r.ingested.length,0);await access(join(output,'ok.pdf'));
+ const none=openFragment({cwd,policy:{enabled:true,destinations:'listed'}}).cap;
+ await assert.rejects(none.downloads.accept({filename:'ok.pdf',url:src('ok.pdf')}),e=>e.code==='BROWSER_DOWNLOAD_SOURCE','an empty list admits no download source');
+ const open=openFragment({cwd,policy:{...DEFAULT_BROWSER_POLICY,deniedHosts:['notices.example']}});
+ await assert.rejects(open.cap.downloads.accept({filename:'ok.pdf',url:src('ok.pdf')}),e=>e.code==='BROWSER_DOWNLOAD_SOURCE','a denied host admits no download source');
+ await assert.rejects(open.cap.downloads.accept({filename:'ok.pdf',url:'http://10.0.0.5/ok.pdf'}),e=>e.code==='BROWSER_DOWNLOAD_SOURCE');
+ assert.equal(r.ingested.length+open.r.ingested.length,0);await access(join(output,'ok.pdf'));
+ const stored=await open.cap.downloads.accept({filename:'ok.pdf',url:'https://unlisted.example/ok.pdf'});
+ assert.equal(open.r.ingested.length,1);assert.deepEqual(open.r.ingested[0].source.origin,'https://unlisted.example');assert.equal(stored.mimeType,'application/pdf');
 }));
 test('downloads require structural validity: corrupt ZIP-prefix bytes are not a DOCX, and wrong, macro or CRC-broken packages refuse',()=>within(async({cwd,output})=>{
  const {cap,r}=openFragment({cwd,policy:enabledPolicy({downloads:{enabled:true,formats:['pdf','txt','docx','xlsx','pptx','zip'],maxBytes:8192,maxFiles:50}})});

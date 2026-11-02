@@ -28,12 +28,13 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
   async prepareResume(input){if(!active)fail('BROWSER_CUSTODY_UNAVAILABLE');return active.prepareResume(input);},
   async readModelTools(input){if(!active)fail('BROWSER_CUSTODY_UNAVAILABLE');return active.readModelTools(input);},
   async callModelTool(input){if(!active)fail('BROWSER_CUSTODY_UNAVAILABLE');return active.callModelTool(input);},
+  async classifyInteraction(input){if(!active)fail('BROWSER_CUSTODY_UNAVAILABLE');return active.classifyInteraction(input);},
   async adopt(input,native){if(!adopt)fail('BROWSER_CUSTODY_UNAVAILABLE');return adopt(input,native);},
   async destroy(input){if(!closeOwner)fail('BROWSER_CUSTODY_UNAVAILABLE');return closeOwner(input);},
   async open(raw){
   const q=data(own(raw,['binding','policy','deadlineMs','manifest']));
   if(opened||canonicalSha256(q.binding)!==bound||!Number.isSafeInteger(q.deadlineMs)||q.deadlineMs<=now())fail('BROWSER_HOST_BINDING_REFUSED');
-  opened=true;const policy=validateBrowserPolicy(q.policy),manifest=q.manifest===null?null:validateSiteWorkflowManifest(q.manifest,{platformMaximumOrigins:policy.allowedOrigins});
+  opened=true;const policy=validateBrowserPolicy(q.policy),manifest=q.manifest===null?null:validateSiteWorkflowManifest(q.manifest,{platform:policy});
   if(manifest?.logoutUrl&&typeof contexts.logout!=='function')fail('BROWSER_CONFIGURATION');
   let context,session,modelRelay,userRelay,closing,workflow,custody,retained=false,captured=false,pendingResume,preparingResume;
   let run=q,runInstallation=installed,runPorts={relay,modelTransport,controls,retirement,hold},adopting=false,retiringRelays=false,resume,activation;
@@ -113,6 +114,8 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
     return Object.freeze({mcpServers:expected,...(snapshot?{resumeSnapshot:structuredClone(snapshot)}:{}),
     async readModelTools(input){assertRun();if(!hostOwned)fail('BROWSER_CUSTODY_UNAVAILABLE');return runModel.readModelTools(input);},
     async callModelTool(input){assertRun();if(!hostOwned)fail('BROWSER_CUSTODY_UNAVAILABLE');return runModel.callModelTool(input);},
+    /** Permission-gate classification against the live pages (session/interaction-classifier.mjs); no page effect. */
+    async classifyInteraction(input){assertRun();return session.classify(input);},
     destroy(input){if(ownerRun!==run)fail('BROWSER_CUSTODY_REFUSED');return close(input);},
     async prepareResume({binding:source,custody:expectedCustody,signal}){
      assertRun();if(!retained||!custody||canonicalSha256(source)!==runBound||canonicalSha256(expectedCustody)!==canonicalSha256(custody))fail('BROWSER_CUSTODY_REFUSED');

@@ -11,7 +11,7 @@ The PR makes the browser gate a **configuration record owned by control** instea
 | Activation record | `BROWSER_ACTIVATION={state:'held'}` literal in `apps/worker/conversation/browser/activation.mjs`, read in five processes | `features.browserActivation` in the deployment inputs, rendered to control's `browserActivation`, compiled by `compileBrowserActivation`; absent or `{state:'held'}` is the same held record (`BROWSER_EGRESS_UNQUALIFIED`) |
 | What opens it | A reviewed source change | A reviewed deployment-input change citing the evidence record path, its SHA-256 and `EGRESS_REQUIREMENTS_SHA256` of the exact source being deployed; the renderer reads the evidence file from the source root, refuses a hash mismatch or a missing file, and attaches a verification receipt (`renderVerification`) that control checks against the record; both refuse any other shape, and refuse an open record without the browser-host router. Only the renderer, run by the release executor from reviewed inputs, produces the control configuration |
 | Who enforces it | Each process re-read the literal | Control: host currentness answers `browserAdmitted:false` while held (every host browser read refuses: `host/control/postgres-store.mjs`, `browser-host-run-facts.mjs`), and the AgentCore invocation settings carry `browser.enabled` (`agentcore-candidate.mjs`), which alone mounts the runtime's browser port (`agentcore-query.mjs`) |
-| Destination allowlist | `browserPlatform` existed in control configuration only; nothing rendered it; default empty | `features.browserPlatform` rendered and validated; committed default list in `infra/product-preview/first-chat/deployment-inputs.json` (section 5, decision 1) |
+| Destination policy | `browserPlatform` existed in control configuration only; nothing rendered it; default empty (nothing opened) | `features.browserPlatform` rendered and validated. Since 2 November 2026 (Neo, 1 November: "make it feel like Claude") the committed record is `destinations:'public-web'` with `deniedHosts` for Meri's own application hosts (`infra/product-preview/first-chat/deployment-inputs.json`); private, link-local and metadata ranges, credential URLs and non-web schemes stay refused by the platform limits; tenants may narrow to a list or add denied hosts |
 | Control-to-host router | `browserHosts` never rendered | Rendered whenever `features.nativeProcessing` is enabled, pinning the same control client leaf, key and issuer root the native inspection host already uses (`/run/meri/native-control-client.pem`, `.key`, `/run/meri/native-issuer-ca.pem`) |
 
 Requirement digest at the PR head (recompute at the deployed commit; see step 6):
@@ -28,23 +28,16 @@ EGRESS_REQUIREMENTS_SHA256 = 3fb9c99619a78021205c5fc3708230ec9f4fd5d0a5618515bae
 4. **Native processing itself is not live.** `deployment-inputs.json` has no `features.nativeProcessing`; no observer Lambda, watchdog state machine, native worker database role, issuer CA or control client leaf exists live. The browser router is rendered from that material, so native processing ships first.
 5. **The egress measurements.** Every item in the checklist (A1 to F1, and each `EGRESS_REQUIREMENTS` entry) must be measured on the real host from the real non-root sandboxed browser. Source tests and local fixtures do not count.
 
-## 1. Decisions Neo must confirm before step 5
+## 1. Decisions (confirmed by Neo, 1 November 2026: "for browser host just make it feel like Claude")
 
-1. **Origin allowlist** (`features.browserPlatform`, committed in the PR; trim or extend before rendering). Exact origins, one per line in the inputs; the policy matches exact origins, so `www.` and bare variants are both listed:
-   congress.gov (www, bare), govinfo.gov (www, bare), federalregister.gov (www, bare), regulations.gov (www, bare), sam.gov, gao.gov (www, bare), cbo.gov (www, bare), whitehouse.gov (www, bare), house.gov (www, bare, xml), senate.gov (www, bare), flsenate.gov (www, bare), myfloridahouse.gov (www, bare). `defaults` and all three role ceilings equal `maximum`, so tenants start with the whole list and may only narrow it. The frontend's own origin is **not** listed: the selected-tab extension shares a tab from the user's device to the frontend and never needs the cloud browser to open the app.
-2. **Host sizing and cost.** The D005 enabled binding pins one `t3.large` with a 30 GiB encrypted root and a 900 s lease per conversation (`infra/browser-host/enabled-binding.mjs`); the native fixture uses `c7g.large` (ARM64, matching the ARM64 image rule). Approximate on-demand us-east-1 prices, to be confirmed against the current price list before committing:
-
-   | Instance | Approx. $/hour | Per 900 s lease |
-   | --- | --- | --- |
-   | t3.large (x86, D005 binding) | 0.0832 | 0.021 |
-   | c7g.large (ARM64, native fixture) | 0.0725 | 0.018 |
-
-   Plus EBS (30 GiB gp3, about 0.08 $/GiB-month, billed per second), the observer Lambda, the Standard state machine (per transition) and the internal NLB if chosen in step 3. Neo decides instance type, whether browser hosts reuse the native-processing AMI/image or get their own, and the per-tenant concurrency ceiling.
-3. **Selected-tab extension now or later.** The extension (`apps/browser-extension/selected-tab/`) is independent of the cloud browser: it needs a Web Store or enterprise identity, the frontend `NEXT_PUBLIC_MERI_SELECTED_TAB_EXTENSION_ID` setting and the `https://app.capiro.ai/*` manifest match (`DISTRIBUTION.md`). It can ship before or after the browser; it adds no cloud host. Recommendation: ship it as its own frontend/distribution task and keep it out of the browser host window.
+1. **Destinations: the open public web.** `features.browserPlatform` is `destinations:'public-web'` with `deniedHosts:['app.capiro.ai','meri-preview.capiro.ai']` on `maximum`, `defaults` and every role ceiling. No origin allowlist is maintained. What is refused by policy, not by a list: private, loopback, link-local, carrier-grade NAT, multicast and metadata address ranges, `localhost`/`.local`/`.internal`/`.test`/`.onion` names, non-web schemes, credential-bearing URLs (platform limits in `public-web.mjs`); Meri's own application hosts and every name below them (`deniedHosts`, enforced in the pre-execution URL check and in the host egress grant on every connection kind and redirect hop); non-web ports and unresolved or rebinding addresses (egress control). Tenants may narrow to a list (`browserPolicy.browser.allowedOrigins`) or add denied hosts; neither can reopen the web under a list or remove a platform denial. Per-site approval remains only for consequential interactions: typing into a credential field is refused outright (sign-in only through user takeover), submitting a form or accepting a dialog asks the user, routine clicks and typing run (`permissions.mjs`, `session/interaction-classifier.mjs`).
+2. **Host.** `c7g.large` ARM64, one isolated browser context per conversation, the Playwright MCP 0.0.83 + Chromium image, the browser-only provisioner, launcher and currentness listener as designed in step 3; non-root sandbox and the measured egress evidence of `ACTIVATION-CHECKLIST.md` remain the gate. The D005 `t3.large` binding is superseded.
+3. **Viewer.** Live screenshot/stream viewer with takeover control in chat, in Meri's visual language (the frontend browser panel and the viewer relay).
+4. **Selected-tab extension: deferred.** Not built in this window; `apps/browser-extension/selected-tab/` stays as is.
 
 ## 2. Step 1: merge the PR and keep the gate held (source only)
 
-Live effect: none. Deploying the merged source with the current inputs changes nothing at runtime: `features.browserActivation` is absent (held), `features.nativeProcessing` is absent (no router), `features.browserPlatform` renders the allowlist into control, where it is inert until a host exists (the frontend hides the browser panel unless a run uses the browser).
+Live effect: none. Deploying the merged source with the current inputs changes nothing at runtime: `features.browserActivation` is absent (held), `features.nativeProcessing` is absent (no router), `features.browserPlatform` renders the open-web destination policy into control, where it is inert until a host exists (the frontend hides the browser panel unless a run uses the browser).
 
 Receipts: PR URL, merge SHA, the test run recorded in the PR.
 
@@ -102,7 +95,7 @@ Compute the requirement digest in the exact checkout of the deployed source comm
 node -e "import('./apps/worker/conversation/browser/activation.mjs').then(m=>console.log(m.EGRESS_REQUIREMENTS_SHA256))"
 ```
 
-Keep `features.browserPlatform` as decided in section 1 (edit origins there, nothing else). `features.nativeProcessing` must stay enabled: the renderer refuses an open record without it, and control refuses an open record without the `browserHosts` router.
+Keep `features.browserPlatform` as decided in section 1 (add denied hosts there if needed, nothing else). `features.nativeProcessing` must stay enabled: the renderer refuses an open record without it, and control refuses an open record without the `browserHosts` router.
 
 5b. Render from the checkout of the reviewed commit (the CLI reads `evidence` from that checkout's root and refuses a missing file or a hash mismatch with `RENDER_INPUT_REFUSED`), ship-packet, stage3 deploy **control only** (worker and runtime bytes are unchanged by this flip). The rendered control record carries `renderVerification:{schema,sourceCommit,renderedAtMs,evidenceSha256,requirementsSha256}`, which startup checks against the record; `summary.json` records `features.browserActivation.evidenceVerified:true`. The receipt is a render marker, not a cryptographic binding: the real binding is that the control configuration is only ever produced by the renderer from reviewed inputs by the release executor, and anyone who can edit the published control configuration already controls the deployment. Expected startup: healthy; a `BROWSER_ACTIVATION_CONFIGURATION` refusal means the record is malformed, lacks the renderer's receipt or carries one that disagrees with it, its requirement digest belongs to another source commit, or the router block is missing.
 
@@ -110,9 +103,9 @@ Keep `features.browserPlatform` as decided in section 1 (edit origins there, not
 
 1. Control telemetry for a new run shows the AgentCore invocation with `browser.enabled: true` (the admission settings; see `agentcore-candidate.mjs`).
 2. The run's browser-only host is allocated, its currentness read returns `browserAdmitted: true`, and the runtime's `browser-prepare` succeeds (the frontend browser panel appears for that run).
-3. `browser_navigate` to an allowlisted origin loads; to an unlisted public origin refuses with `BROWSER_ORIGIN_NOT_ALLOWED`; to a private address refuses with `BROWSER_URL_NOT_PUBLIC`; an interaction tool waits for the Core approval round trip.
+3. `browser_navigate` to an ordinary public origin loads; to `https://app.capiro.ai/` refuses with `BROWSER_HOST_DENIED`; to a private address refuses with `BROWSER_URL_NOT_PUBLIC`; a click on a link runs without a prompt; a form submission waits for the Core approval round trip; typing into a password field refuses with `BROWSER_CREDENTIAL_INPUT_REFUSED`.
 4. The run ends; the host is destroyed with a verified teardown receipt; no browser state remains.
-5. A tenant admin narrows `browserPolicy` in tenant settings and the next run's effective list shrinks (revocation path).
+5. A tenant admin narrows `browserPolicy` in tenant settings (a list, or an added denied host) and the next run refuses accordingly (revocation path).
 
 Time: render and deploy 2 hours; verification 2 to 4 hours.
 

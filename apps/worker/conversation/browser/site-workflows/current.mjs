@@ -13,7 +13,7 @@ export async function prepareCurrentSiteWorkflow({binding,selection,resolve,poli
   signal?.throwIfAborted();
   const answered=data(own(await resolve({binding:structuredClone(binding),signal}),['manifest','manifestSha256','enabled']));
   signal?.throwIfAborted();
-  const m=validateSiteWorkflowManifest(answered.manifest,{platformMaximumOrigins:policy.allowedOrigins});
+  const m=validateSiteWorkflowManifest(answered.manifest,{platform:policy});
   if(answered.enabled!==true||m.siteId!==pinned.siteId||m.workflowId!==pinned.workflowId||m.version!==pinned.version||
     answered.manifestSha256!==pinned.manifestSha256||canonicalSha256(m)!==pinned.manifestSha256)refuse();
   return Object.freeze({...answered,manifest:m});

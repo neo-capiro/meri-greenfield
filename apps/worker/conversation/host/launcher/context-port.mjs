@@ -6,15 +6,12 @@ import {createOperationLifetime} from '../../../../../packages/runtime/operation
 import {createContextTransport} from './context-transport.mjs';
 import {pinnedChromium} from './context-child.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
+import {browserWideningField} from '../../browser/resolution.mjs';
 const fail=()=>{throw Error('HOST_BROWSER_CONTEXT_REFUSED');};
 export function createConfinedContextPort({native,binding,policy,installation,paths,signal,now=Date.now,
  chromium=pinnedChromium(installation.cliPath)}){
  policy=validateBrowserPolicy(policy);const pins=canonicalSha256({binding,installation,paths});
- const narrowed=raw=>{const p=validateBrowserPolicy(raw);return p.enabled===true&&policy.enabled===true&&
-  p.tools.every(value=>policy.tools.includes(value))&&p.allowedOrigins.every(value=>policy.allowedOrigins.includes(value))&&
-  p.timeouts.actionMs<=policy.timeouts.actionMs&&p.timeouts.navigationMs<=policy.timeouts.navigationMs&&
-  (!p.downloads.enabled||policy.downloads.enabled)&&p.downloads.formats.every(value=>policy.downloads.formats.includes(value))&&
-  p.downloads.maxBytes<=policy.downloads.maxBytes&&p.downloads.maxFiles<=policy.downloads.maxFiles;};
+ const narrowed=raw=>{const p=validateBrowserPolicy(raw);return p.enabled===true&&policy.enabled===true&&browserWideningField(p,policy)===undefined;};
  let stopping;const stop=()=>stopping??=Promise.resolve(native.close());
  const wire=createContextTransport({readable:native.readable,writable:native.writable,stop});
  let taken=false,context;

@@ -38,27 +38,29 @@ function assertCredentialFree(value,path='manifest'){
  if(Array.isArray(value)){value.forEach((v,i)=>assertCredentialFree(v,`${path}[${i}]`));return;}
  if(value&&typeof value==='object')for(const [k,v] of Object.entries(value)){if(CREDENTIAL_KEY.test(k))fault('SITE_WORKFLOW_CREDENTIAL_REFUSED',`${path}.${k}`);assertCredentialFree(v,`${path}.${k}`);}
 }
-function originsWithin(values,field,maximum,{allowEmpty}){
+function originsWithin(values,field,platform,{allowEmpty}){
  if(!list(values,32)||!allowEmpty&&!values.length)fault('SITE_WORKFLOW_MANIFEST',field);
- for(const o of values){if(!isPublicOrigin(o))fault('SITE_WORKFLOW_MANIFEST',field);if(!maximum.includes(o))fault('SITE_WORKFLOW_OUTSIDE_PLATFORM_MAXIMUM',field);}
+ for(const o of values){if(!isPublicOrigin(o))fault('SITE_WORKFLOW_MANIFEST',field);if(!checkBrowserUrl(platform,o).ok)fault('SITE_WORKFLOW_OUTSIDE_PLATFORM_MAXIMUM',field);}
 }
 function urlWithin(value,field,origins){
  const c=classifyWebUrl(value);
  if(!c.ok||c.blank||!origins.includes(c.origin))fault('SITE_WORKFLOW_MANIFEST',field);
 }
 
-/** Validates one manifest against the platform maximum (`platform.maximum.allowedOrigins`). Every origin, including the
- * identity-provider redirects needed for sign-in, must already be platform-approved; a manifest never widens it. */
-export function validateSiteWorkflowManifest(raw,{platformMaximumOrigins}){
- if(!Array.isArray(platformMaximumOrigins))fault('SITE_WORKFLOW_CONFIGURATION');
+/** Validates one manifest against the platform destination policy (`platform`: a complete enabled browser policy, normally
+ * the platform maximum). Every origin, including the identity-provider redirects needed for sign-in, must be admitted by
+ * that policy (public, not a denied host, and on the list when destinations are `listed`); a manifest never widens it. */
+export function validateSiteWorkflowManifest(raw,{platform}){
+ let p;try{p=validateBrowserPolicy(platform);}catch{fault('SITE_WORKFLOW_CONFIGURATION');}
+ if(!p.enabled)fault('SITE_WORKFLOW_CONFIGURATION');
  assertCredentialFree(raw);
  let m;try{m=own(raw,KEYS);}catch{fault('SITE_WORKFLOW_MANIFEST','keys');}
  if(m.schema!==SITE_WORKFLOW_MANIFEST_SCHEMA)fault('SITE_WORKFLOW_MANIFEST','schema');
  if(!SLUG.test(m.siteId??''))fault('SITE_WORKFLOW_MANIFEST','siteId');if(!SLUG.test(m.workflowId??''))fault('SITE_WORKFLOW_MANIFEST','workflowId');
  if(!Number.isSafeInteger(m.version)||m.version<1)fault('SITE_WORKFLOW_MANIFEST','version');
  if(typeof m.taskSummary!=='string'||!m.taskSummary.trim()||m.taskSummary.length>500)fault('SITE_WORKFLOW_MANIFEST','taskSummary');
- originsWithin(m.origins,'origins',platformMaximumOrigins,{allowEmpty:false});
- originsWithin(m.idpOrigins,'idpOrigins',platformMaximumOrigins,{allowEmpty:true});
+ originsWithin(m.origins,'origins',p,{allowEmpty:false});
+ originsWithin(m.idpOrigins,'idpOrigins',p,{allowEmpty:true});
  const reachable=[...m.origins,...m.idpOrigins];
  urlWithin(m.signInUrl,'signInUrl',reachable);
  let probe;try{probe=own(m.signedInProbe,['kind','value']);}catch{fault('SITE_WORKFLOW_MANIFEST','signedInProbe');}
@@ -100,7 +102,8 @@ export function siteWorkflowPolicy(effective,manifest){
  const reachable=[...manifest.origins,...manifest.idpOrigins];
  const formats=p.downloads.formats.filter(f=>manifest.downloads.formats.includes(f));
  const downloadsOn=p.downloads.enabled&&formats.length>0&&manifest.downloads.maxFiles>0;
- return validateBrowserPolicy({enabled:true,tools:p.tools.filter(t=>manifest.tools.includes(t)),allowedOrigins:p.allowedOrigins.filter(o=>reachable.includes(o)),timeouts:p.timeouts,
+ // A workflow run is always a listed run: exactly the manifest's reachable origins the effective policy admits.
+ return validateBrowserPolicy({enabled:true,tools:p.tools.filter(t=>manifest.tools.includes(t)),destinations:'listed',allowedOrigins:reachable.filter(o=>checkBrowserUrl(p,o).ok),deniedHosts:p.deniedHosts,timeouts:p.timeouts,
   downloads:{enabled:downloadsOn,formats:downloadsOn?formats:p.downloads.formats,maxBytes:Math.min(p.downloads.maxBytes,manifest.downloads.maxBytes),maxFiles:Math.max(1,Math.min(p.downloads.maxFiles,manifest.downloads.maxFiles))}});
 }
 

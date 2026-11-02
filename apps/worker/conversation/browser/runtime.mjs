@@ -43,10 +43,12 @@ export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,
   return prepareRemoteBrowserRun({port,binding,deadlineMs,now,signal,browserHandoff});
  }
  if(typeof port?.policy!=='function'||typeof now!=='function')throw fault('BROWSER_CONFIGURATION');
- let policy=await port.policy({binding:structuredClone(binding),signal}),workflow;
+ let policy=await port.policy({binding:structuredClone(binding),signal}),workflow,session;
+ // The gate's live-page classifier is the session owner this run opens below; until it exists every interaction asks.
+ const classify=port.sessions?.open===undefined?undefined:async request=>{if(typeof session?.classifyInteraction!=='function')throw fault('BROWSER_SESSION_OWNER_REQUIRED');return session.classifyInteraction(request);};
  // Receipts of a site workflow run name the exact selection they ran under (output provenance); the selection was
  // pinned and rechecked by prepareCurrentSiteWorkflow before the fragment exists.
- const createFragment=()=>createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,modelTransport:port.modelTransport,now,assertCurrent:workflow?.assertCurrent,
+ const createFragment=()=>createBrowserCapability({binding,cwd,policy,installation:port.installation,sourceScopes:port.sourceScopes,approvals:port.approvals,artifacts:port.artifacts,receipts:port.receipts,approvalDeadlineMs:port.approvalDeadlineMs,modelTransport:port.modelTransport,now,assertCurrent:workflow?.assertCurrent,classify,
   ...(workflow?{siteWorkflow:structuredClone(siteWorkflow)}:{})});
  let fragment=createFragment(),lifecycle=createBrowserRunLifecycle({fragment,binding,cwd,egress:port.egress,processes:port.processes,now});
  if(siteWorkflow!==undefined){
@@ -62,7 +64,6 @@ export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,
   }
  }
  if(browserHandoff!==undefined&&fragment.activation!=='open')throw fault('BROWSER_CUSTODY_UNAVAILABLE');
- let session;
  if(fragment.activation==='open'){
   try{
    // No direct upstream-only MCP launch: an open browser requires the trusted

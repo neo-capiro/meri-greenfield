@@ -9,7 +9,7 @@ const manifest=(over={})=>({schema:SITE_WORKFLOW_MANIFEST_SCHEMA,siteId:'synthet
  origins:['https://records.example'],idpOrigins:['https://idp.example'],signInUrl:'https://records.example/login',signedInProbe:{kind:'selector',value:'#account-menu'},
  sensitiveSelectors:['#security-answer'],tools:['browser_navigate','browser_snapshot','browser_click','browser_type'],approvalRequired:['browser_click','browser_type'],
  downloads:{formats:['pdf','xlsx'],maxBytes:1048576,maxFiles:3},sessionTtlMs:SITE_SESSION_MAX_IDLE_MS,logoutUrl:'https://records.example/logout',tosReviewRef:null,qualificationEvidenceRef:null,...over});
-const v=(m,max=MAX)=>validateSiteWorkflowManifest(m,{platformMaximumOrigins:max});
+const v=(m,platform={enabled:true,allowedOrigins:MAX})=>validateSiteWorkflowManifest(m,{platform});
 
 test('a credential-free manifest inside the platform maximum validates and is frozen',()=>{
  const m=v(manifest());
@@ -23,10 +23,13 @@ test('no credential custody: any credential, cookie, token or stored-session fie
  assert.throws(()=>v(manifest({signInUrl:'https://user:pw@records.example/login'})),code('SITE_WORKFLOW_MANIFEST','signInUrl'),'credentials in URLs are refused by the platform limits');
 });
 
-test('a manifest never widens the platform maximum; IdP origins must be approved too; URLs stay inside the manifest origins',()=>{
- assert.throws(()=>v(manifest(),['https://records.example']),code('SITE_WORKFLOW_OUTSIDE_PLATFORM_MAXIMUM','idpOrigins'));
+test('a manifest never widens the platform maximum; IdP origins must be admitted too; URLs stay inside the manifest origins',()=>{
+ assert.throws(()=>v(manifest(),{enabled:true,allowedOrigins:['https://records.example']}),code('SITE_WORKFLOW_OUTSIDE_PLATFORM_MAXIMUM','idpOrigins'));
  assert.throws(()=>v(manifest({origins:['https://other.example']})),code('SITE_WORKFLOW_OUTSIDE_PLATFORM_MAXIMUM','origins'));
- assert.throws(()=>v(manifest({origins:['http://10.0.0.5']}),[...MAX,'http://10.0.0.5']),code('SITE_WORKFLOW_MANIFEST','origins'));
+ assert.equal(v(manifest({origins:['https://other.example'],signInUrl:'https://other.example/login',logoutUrl:'https://other.example/logout'}),{enabled:true}).origins[0],'https://other.example','under the open default every public origin is inside the maximum');
+ assert.throws(()=>v(manifest(),{enabled:true,deniedHosts:['idp.example']}),code('SITE_WORKFLOW_OUTSIDE_PLATFORM_MAXIMUM','idpOrigins'),'a denied host is outside the maximum');
+ assert.throws(()=>v(manifest(),{enabled:true,destinations:'all'}),code('SITE_WORKFLOW_CONFIGURATION'));
+ assert.throws(()=>v(manifest({origins:['http://10.0.0.5']}),{enabled:true}),code('SITE_WORKFLOW_MANIFEST','origins'));
  assert.throws(()=>v(manifest({signInUrl:'https://notices.example/login'})),code('SITE_WORKFLOW_MANIFEST','signInUrl'));
  assert.throws(()=>v(manifest({logoutUrl:'https://notices.example/out'})),code('SITE_WORKFLOW_MANIFEST','logoutUrl'));
  assert.throws(()=>v(manifest({signedInProbe:{kind:'url',value:'https://idp.example/me'}})),code('SITE_WORKFLOW_MANIFEST','signedInProbe'),'the probe checks the site itself');
@@ -72,5 +75,9 @@ test('the run policy is narrowed to the manifest and never widened; a narrowed-a
  assert.deepEqual(p.tools,['browser_navigate','browser_snapshot','browser_click'],'browser_type stays off: the tenant never enabled it');
  assert.deepEqual([p.downloads.formats,p.downloads.maxBytes,p.downloads.maxFiles],[['pdf'],4096,3]);
  assert.throws(()=>siteWorkflowPolicy({...effective,allowedOrigins:['https://notices.example']},v(manifest())),code('SITE_WORKFLOW_ORIGIN_NARROWED'));
+ const open=validateBrowserPolicy({enabled:true,tools:['browser_navigate','browser_snapshot','browser_click'],deniedHosts:['notices.example']});
+ const q=siteWorkflowPolicy(open,v(manifest()));
+ assert.deepEqual([q.destinations,q.allowedOrigins,q.deniedHosts],['listed',['https://records.example','https://idp.example'],['notices.example']],'a workflow under the open default still runs on its own list and keeps the denials');
+ assert.throws(()=>siteWorkflowPolicy(validateBrowserPolicy({enabled:true,deniedHosts:['records.example']}),v(manifest())),code('SITE_WORKFLOW_ORIGIN_NARROWED'),'a denied sign-in host refuses');
  assert.throws(()=>siteWorkflowPolicy({enabled:false},v(manifest())),code('SITE_WORKFLOW_BROWSER_DISABLED'));
 });
