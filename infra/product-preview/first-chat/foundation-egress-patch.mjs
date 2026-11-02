@@ -39,7 +39,10 @@ export function sourceEgressResource(binding){
 /** @param {any} live the template `get-template --template-stage Original` returned @param {any} binding the committed foundation binding */
 export function patchLiveFoundation(live,binding){
  const rule=sourceEgressResource(binding);
- const owner=live?.Resources?.[rule.ownerLogicalId];
+ // Only a plain JSON template is patched: parameters, a transform or dynamic references would make CloudFormation re-resolve
+ // values on update, so the change set could carry more than the one added rule.
+ if(!live||typeof live!=='object'||['Parameters','Transform','Rules','Conditions'].some(k=>k in live)||JSON.stringify(live).includes('{{resolve:'))fail(REFUSED);
+ const owner=live.Resources?.[rule.ownerLogicalId];
  if(owner?.Type!=='AWS::EC2::SecurityGroup'||owner.Properties?.GroupName!=='meri-preview-control')fail(REFUSED);
  if(rule.logicalId in live.Resources)fail(REFUSED);
  for(const resource of Object.values(live.Resources))

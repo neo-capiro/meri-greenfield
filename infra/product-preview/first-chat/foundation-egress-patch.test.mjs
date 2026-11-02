@@ -57,6 +57,10 @@ test('the patch refuses a live template that already has the rule, lacks the con
  const noOwner=live();delete noOwner.Resources[rule.ownerLogicalId];
  assert.throws(()=>patchLiveFoundation(noOwner,binding()),{code:'FOUNDATION_EGRESS_PATCH_REFUSED'});
  assert.throws(()=>patchLiveFoundation(live(),withoutKey()),{code:'FOUNDATION_EGRESS_PATCH_REFUSED'});
+ for(const mutate of [t=>{t.Parameters={P:{Type:'String'}};},t=>{t.Transform='AWS::Serverless-2016-10-31';},t=>{t.Conditions={C:{'Fn::Equals':['a','a']}};},
+  t=>{Object.values(t.Resources).find(r=>r.Type==='AWS::IAM::Policy').Properties.PolicyName='{{resolve:ssm:/x}}';}]){
+  const l=live();mutate(l);assert.throws(()=>patchLiveFoundation(l,binding()),{code:'FOUNDATION_EGRESS_PATCH_REFUSED'});
+ }
  const extra=patchLiveFoundation(live(),binding()).template;extra.Resources.Another={Type:'AWS::SNS::Topic',Properties:{}};
  assert.throws(()=>assertOnlyOneAddition(diffTemplates(live(),extra)),{code:'FOUNDATION_EGRESS_PATCH_REFUSED'});
 });
