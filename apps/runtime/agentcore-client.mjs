@@ -3,7 +3,7 @@ import {BedrockAgentCoreClient,InvokeAgentRuntimeCommand,StopRuntimeSessionComma
 import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
-import {invocationInput,settlementResult,agentcoreFault} from './agentcore-contract.mjs';
+import {invocationInput,settlementResult,agentcoreFault,endedUnsettled} from './agentcore-contract.mjs';
 
 async function readSettlement(stream,contentType,life){
  if(!stream||typeof stream[Symbol.asyncIterator]!=='function')throw agentcoreFault('AGENTCORE_RESULT_REFUSED');
@@ -26,8 +26,9 @@ export function createAgentCoreClient(configuration){
    nativeSignal(signal);const input=invocationInput(raw),life=createOperationLifetime({now,signal,deadlineMs:input.execution.expiresAtMs,errorFactory:agentcoreFault});let dispatched=false,response;
    try{life.check();response=await life.run(abortSignal=>{dispatched=true;return client.send(new InvokeAgentRuntimeCommand({agentRuntimeArn:c.agentRuntimeArn,qualifier:c.qualifier,runtimeSessionId:input.execution.runtimeSessionId,contentType:'application/json',accept:'text/event-stream',payload:Buffer.from(JSON.stringify(input))}),{abortSignal});});
     if(response.statusCode!==200||response.$metadata?.httpStatusCode!==200||response.runtimeSessionId!==input.execution.runtimeSessionId||!['application/json','text/event-stream'].includes(response.contentType))throw agentcoreFault('AGENTCORE_RESULT_REFUSED');
-    const value=await readSettlement(response.response,response.contentType,life);life.check();return settlementResult(value,input.execution);
-   }catch(error){if(dispatched)throw agentcoreFault('AGENTCORE_OUTCOME_UNKNOWN');throw error;}
+    const value=await readSettlement(response.response,response.contentType,life);life.check();
+    if(endedUnsettled(value))throw agentcoreFault('AGENTCORE_EXECUTION_ENDED');return settlementResult(value,input.execution);
+   }catch(error){if(dispatched&&error?.code!=='AGENTCORE_EXECUTION_ENDED')throw agentcoreFault('AGENTCORE_OUTCOME_UNKNOWN');throw error;}
    finally{response?.response?.destroy?.();life.close();}
   },
   async stop(raw){

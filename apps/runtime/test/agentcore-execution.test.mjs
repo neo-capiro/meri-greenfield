@@ -4,9 +4,9 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {binding,versions} from '../../control/conversations/test/store-fixture.mjs';
 import {createAgentCoreExecutionOwner} from '../agentcore-execution.mjs';
 
-function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation,browserNeed,browserReady}={}){
+function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation,browserNeed,browserReady,reconcileEnded}={}){
  const run={binding:targetBinding,versions,scopes:[],policyRevision:'policy-v1',state:'queued'};
- let record=null,invocations=0,admissions=0,call,unknown=0;
+ let record=null,invocations=0,admissions=0,call;
  const response=Promise.withResolvers(),entered=Promise.withResolvers();
  const store={executions:{
   async read(b){return predecessor&&b.runId===predecessor.run.binding.runId?predecessor:{run,record};},
@@ -15,9 +15,9 @@ function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation
   nextRuns:{async readTarget(){return predecessor?{source:predecessor.run.binding,facts:{execution:{recordSha256:hash(predecessor.record)}}}:null;}}};
  const owner=createAgentCoreExecutionOwner({store,versions,plan:{runtimeVersion:'qualified-v1'},credentialSecret:'synthetic-control-secret-'.repeat(3),
   now:()=>1000,newId:()=> 'c'.repeat(64),contextFor:async()=>({selectedClientId:null}),...(beforeInvocation?{beforeInvocation}:{}),...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),
-  admit:async()=>{admissions++;return {run,expiresAtMs:61000};},onUnknown:()=>unknown++,
+  admit:async()=>{admissions++;return {run,expiresAtMs:61000};},...(reconcileEnded?{reconcileEnded}:{}),
   provider:{async invoke(input){invocations++;call=input;entered.resolve();if(invokeError)throw invokeError;return response.promise;},stop:async()=>{throw Error('Stop should not run in these controls');}}});
- return {owner,run,store,response,entered:entered.promise,call:()=>call,counts:()=>({invocations,admissions,unknown}),record:()=>record,
+ return {owner,run,store,response,entered:entered.promise,call:()=>call,counts:()=>({invocations,admissions}),record:()=>record,
   reorderRecord:()=>{record=Object.fromEntries(Object.entries(record).reverse());}};
 }
 test('kickoff replay invokes once and terminal publication alone is not settled execution',async()=>{
@@ -46,11 +46,25 @@ test('credentials survive database JSON key ordering but reject a foreign bearer
  await assert.rejects(f.owner.admitted({execution:{...execution,runtimeSessionId:'d'.repeat(64)},versions,credential}),/EXECUTION_AUTHORITY_REFUSED/u);
  f.run.state='failed';f.response.resolve(await f.owner.settle({execution,state:'failed',credential}));await f.owner.close();
 });
-test('uncertain provider invocation does not redispatch on a later retry',async()=>{
- const f=fixture({invokeError:Error('LOST_RESPONSE')});await f.owner.kickoff({binding,executionKey:hash(binding)});
+test('uncertain provider invocation does not redispatch on a later retry and is never reconciled as ended',async()=>{
+ const reconciled=[],f=fixture({invokeError:Error('LOST_RESPONSE'),reconcileEnded:value=>reconciled.push(value)});await f.owner.kickoff({binding,executionKey:hash(binding)});
  await new Promise(resolve=>setImmediate(resolve));
  await f.owner.kickoff({binding,executionKey:hash(binding)});
- await f.owner.close();assert.equal(f.counts().unknown,1);assert.equal(f.record().phase,'unknown');assert.equal(f.counts().invocations,1);
+ await f.owner.close();assert.equal(f.record().phase,'unknown');assert.equal(f.counts().invocations,1);
+ assert.deepEqual(reconciled,[],'a lost stream says nothing about the SDK process: the run may still settle itself');
+});
+test('an invocation that ended unsettled is reconciled once, so its run cannot stay "working" until the lease expires',async()=>{
+ // 2 Nov: a first turn refused at activity-load (runner/load 403) published nothing; control recorded the phase unknown and the
+ // worker polled it as executing for minutes. The runtime's ended-unsettled answer now hands the run to the reconciler.
+ const reconciled=[],ended=Object.assign(Error('AGENTCORE_EXECUTION_ENDED'),{code:'AGENTCORE_EXECUTION_ENDED'});
+ const f=fixture({invokeError:ended,reconcileEnded:async value=>{reconciled.push(value);}});
+ await f.owner.kickoff({binding,executionKey:hash(binding)});await new Promise(resolve=>setTimeout(resolve,20));await f.owner.close();
+ assert.equal(f.record().phase,'unknown');assert.equal(f.counts().invocations,1);
+ assert.equal(reconciled.length,1);assert.deepEqual(reconciled[0].binding,binding);assert.ok(reconciled[0].signal instanceof AbortSignal);
+ // A reconciler that cannot finish leaves the run to the workflow's own reconcile; the invocation owner never throws for it.
+ const g=fixture({invokeError:ended,reconcileEnded:async()=>{throw Error('RECONCILE_UNKNOWN');}});
+ await g.owner.kickoff({binding,executionKey:hash(binding)});await new Promise(resolve=>setTimeout(resolve,20));await g.owner.close();assert.equal(g.record().phase,'unknown');
+ assert.throws(()=>fixture({reconcileEnded:'not a function'}),/EXECUTION_CONFIGURATION/u);
 });
 test('settlement rejects a state different from the canonical run',async()=>{
  const f=fixture();await f.owner.kickoff({binding,executionKey:hash(binding)});await f.entered;const {execution,credential}=f.call();
@@ -88,7 +102,7 @@ test('an unready browser host withholds the invocation exactly like an unready n
  const absent=fixture({browserReady:async()=>({status:'absent'})});
  await absent.owner.kickoff({binding,executionKey:hash(binding)});
  await new Promise(r=>setTimeout(r,20));
- assert.equal(absent.counts().invocations,0,'no model turn before the browser host is ready');assert.equal(absent.counts().unknown,1);
+ assert.equal(absent.counts().invocations,0,'no model turn before the browser host is ready');assert.equal(absent.record().phase,'unknown');
  const ready=fixture({browserReady:async()=>({status:'ready',currentUntilMs:5000,leaseDeadlineMs:6000,generation:1})});
  await ready.owner.kickoff({binding,executionKey:hash(binding)});await ready.entered;
  assert.equal(ready.counts().invocations,1);

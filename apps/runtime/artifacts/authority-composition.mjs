@@ -7,6 +7,7 @@ import {createCoreArtifactAuthority} from './core-authority.mjs';
 import {createFixedRuntimeArtifactExecutor} from './composition.mjs';
 import {documentsFamily,createDocumentsFamily} from '../product-ports/documents.mjs';
 import {createAgentCoreRenderer,writeRendererEvent} from './renderer-client.mjs';
+import {DOCUMENT_PREPARATION_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 export async function composeDocumentsFamily(options){
  const c=own(options,['configuration'],['executor','fetchImpl','readSecret','now','nativeCredentials','renderer']),configuration=c.configuration,now=c.now??Date.now;
  const declared=compileRuntimeArtifactsConfiguration(configuration),missing=[];
@@ -28,6 +29,8 @@ export async function composeDocumentsFamily(options){
  if(executor===undefined){const e=declared.executor;executor=createFixedRuntimeArtifactExecutor({...e,nodeExecutable:e.nodeExecutable??process.execPath,...(renderer?{renderer}:{})});}
  const client=createCoreArtifactAuthorityClient({origin:declared.authority.origin,fetchImpl:c.fetchImpl??globalThis.fetch,now});
  const authority=createCoreArtifactAuthority({client,credentials,now,maxOutputBytes:configuration.agentcore.maxOutputBytes,
-  limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}});
+  // The authority's ceiling admits the conversation document preparation's allowance; every caller (the public document
+  // routes at control's request budget, the intent preparers at DOCUMENT_PREPARATION_MS) applies its own smaller bound.
+  limits:{maxRequestMs:DOCUMENT_PREPARATION_MS,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}});
  return Object.freeze({family:documentsFamily({authority,executor,nativeCredentials:c.nativeCredentials,...(renderer?{renderer}:{})}),authority,missing:Object.freeze([]),...(rendererReadiness?{renderer:rendererReadiness}:{})});
 }

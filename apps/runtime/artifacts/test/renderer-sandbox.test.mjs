@@ -64,7 +64,11 @@ test('probe, version and conversions retain the closed mounts, identity and reso
    {kind:'--ro-bind',source:'/etc/fonts',target:'/etc/fonts'},
    {kind:'--ro-bind-try',source:'/etc/ld.so.cache',target:'/etc/ld.so.cache'},
    {kind:'--ro-bind',source:'/sys/fs/cgroup',target:'/sys/fs/cgroup'},
-   {kind:'--bind',source:call.cwd,target:call.cwd}]);
+   {kind:'--bind',source:call.cwd,target:call.cwd},
+   // LibreOffice's IPC pipe needs a writable /tmp or /var/tmp ("ERROR: no valid pipe path found.", exit 1, 33 stderr bytes on
+   // 2 Nov); the read-only root keeps /tmp read-only, so /var/tmp is the same owned workspace and nothing else becomes writable.
+   {kind:'--bind',source:call.cwd,target:'/var/tmp'}]);
+  assert.deepEqual(plan.slice(plan.indexOf('/var/tmp')-4,plan.indexOf('/var/tmp')),['--dir','/var','--bind',call.cwd]);
   assert.deepEqual(plan.slice(plan.indexOf('--chdir')),['--chdir',call.cwd,'--remount-ro','/',
    '--',RENDERER_IMAGE_PATHS.prlimit,'--fsize=16777216:16777216','--nofile=128:128','--nproc=64:64','--',call.executable,...call.args]);
  }

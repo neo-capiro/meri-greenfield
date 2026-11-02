@@ -11,9 +11,9 @@ const refuse=code=>{throw Object.assign(Error(code),{code});};
 const checkSignal=signal=>()=>signal?.throwIfAborted();
 
 export function createAgentCoreExecutionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,beforeInvocation,nativeNeed,nativeReady,browserNeed,browserReady,
- now=Date.now,newId=randomUUID,onUnknown=()=>{}}){
+ now=Date.now,newId=randomUUID,reconcileEnded}){
  validateShape('RuntimeVersions',versions);
- if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function'||beforeInvocation!==undefined&&typeof beforeInvocation!=='function'||browserNeed!==undefined&&typeof browserNeed!=='function'||browserReady!==undefined&&typeof browserReady!=='function'||nativeNeed!==undefined&&typeof nativeNeed!=='function'||nativeReady!==undefined&&typeof nativeReady!=='function')refuse('EXECUTION_CONFIGURATION');
+ if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function'||reconcileEnded!==undefined&&typeof reconcileEnded!=='function'||beforeInvocation!==undefined&&typeof beforeInvocation!=='function'||browserNeed!==undefined&&typeof browserNeed!=='function'||browserReady!==undefined&&typeof browserReady!=='function'||nativeNeed!==undefined&&typeof nativeNeed!=='function'||nativeReady!==undefined&&typeof nativeReady!=='function')refuse('EXECUTION_CONFIGURATION');
  const journal=store.executions,pending=new Map(),observation=new AbortController();let closed=false;
  const credentialFor=execution=>'meri_execution_'+createHmac('sha256',credentialSecret)
   .update('meri-agentcore-execution-v1\0').update(hash(assertExecutionIdentity(execution))).digest('base64url');
@@ -68,13 +68,17 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
    if(!same(result.execution,execution)||!isExecutionOutcome(result.state)||result.settled!==true)refuse('EXECUTION_RESPONSE_REFUSED');
    const saved=await existing(execution.binding);
    if(saved.record?.phase!=='settled'||saved.record.native.state!==result.state)refuse('EXECUTION_NOT_SETTLED');
-  }catch{
+  }catch(error){
    // A transport failure says nothing about the SDK process. Never dispatch a replacement or fake completion.
    try{const saved=await existing(execution.binding);
     if(saved.record&&!['settled','stopping'].includes(saved.record.phase))
      await journal.record({binding:execution.binding,executionId:execution.executionId,phase:'unknown',native:null},()=>{});
    }catch{}
-   try{onUnknown('AGENTCORE_INVOCATION_UNKNOWN');}catch{}
+   // An invocation that answered that its execution ended unsettled (a runner refused before it could publish) is over:
+   // nothing will settle this run, and its worker would report it executing until the lease expires (2 Nov: a first turn
+   // refused at activity-load showed "working" for minutes). The run reconciler fences it failed and stops the session,
+   // exactly as the workflow's reconcile does after a lost activity.
+   if(error?.code==='AGENTCORE_EXECUTION_ENDED'&&reconcileEnded)try{await reconcileEnded({binding:execution.binding,signal:observation.signal});}catch{}
   }finally{pending.delete(execution.executionId);}
  }
  async function nativePrerequisite({binding,executionId,signal}){

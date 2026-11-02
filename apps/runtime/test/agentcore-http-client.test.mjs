@@ -83,3 +83,13 @@ test('HTTP does not manufacture a receipt for a foreign execution returned by it
  const app=createAgentCoreApplication({execute:async()=>settlementFor(input({binding:{...binding,writerFence:2}}).execution,'completed')});
  const response=await app.handle(request(input()));assert.match(await response.text(),/EXECUTION_UNKNOWN/);assert.equal((await app.handle(new Request('http://synthetic.invalid/ping'))).status,503);
 });
+test('an execution that ended unsettled reaches control as AGENTCORE_EXECUTION_ENDED, never as a lost outcome',async()=>{
+ // The runtime's own answer after its runner returned without a terminal run (2 Nov: runner/load refused at activity-load).
+ const value=input(),app=createAgentCoreApplication({execute:async()=>{throw Error('runner refused at activity-load');}});
+ const answer=await app.handle(request(value));
+ const ended=await client(async()=>response(value,{response:Readable.from([Buffer.from(await answer.text())])})).invoke(value).catch(error=>error);
+ assert.equal(ended.code,'AGENTCORE_EXECUTION_ENDED');
+ // Any other refused or partial settlement stays an unknown outcome.
+ for(const event of [{error:{code:'EXECUTION_UNKNOWN',detail:'x'}},{error:{code:'OTHER'}}])
+  await assert.rejects(client(async()=>response(value,{response:body(event)})).invoke(value),{code:'AGENTCORE_OUTCOME_UNKNOWN'});
+});

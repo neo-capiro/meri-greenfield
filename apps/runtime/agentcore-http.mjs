@@ -7,7 +7,7 @@ import {own,nativeSignal} from '../../packages/contracts/commands-0.2/execution-
 import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {jsonBody} from '../control/action-application/http.mjs';
-import {invocationInput,settlementResult,agentcoreFault,AGENTCORE_SESSION_HEADER,AGENTCORE_INVOCATION_BYTES} from './agentcore-contract.mjs';
+import {invocationInput,settlementResult,agentcoreFault,AGENTCORE_SESSION_HEADER,AGENTCORE_INVOCATION_BYTES,EXECUTION_ENDED_UNSETTLED} from './agentcore-contract.mjs';
 import {RENDERER_SESSION_PREFIX} from './artifacts/renderer-contract.mjs';
 import {UPLOAD_INSPECTION_SESSION_PREFIX} from './uploads/agentcore-contract.mjs';
 
@@ -45,7 +45,7 @@ export function createAgentCoreApplication(configuration){
   const heartbeat=setInterval(()=>{try{enqueue(': active\n\n');}catch{abort.abort();}},15000);heartbeat.unref?.();
   pending=Promise.resolve().then(()=>execute(input,{signal:joined})).then(result=>{
    const receipt=settlementResult(result,e);enqueue('data: '+JSON.stringify(receipt)+'\n\n');
-  }).catch(()=>{poisoned=true;try{enqueue('data: {"error":{"code":"EXECUTION_UNKNOWN"}}\n\n');}catch{}}).finally(()=>{clearInterval(heartbeat);active=false;if(!ended){ended=true;try{controller.close();}catch{}}});
+  }).catch(()=>{poisoned=true;try{enqueue('data: '+JSON.stringify(EXECUTION_ENDED_UNSETTLED)+'\n\n');}catch{}}).finally(()=>{clearInterval(heartbeat);active=false;if(!ended){ended=true;try{controller.close();}catch{}}});
   return new Response(stream,{headers:{'content-type':'text/event-stream','cache-control':'no-store',[AGENTCORE_SESSION_HEADER]:e.runtimeSessionId}});
  }});
 }

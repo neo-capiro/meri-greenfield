@@ -11,6 +11,8 @@ import {intentFixture,mountIntents} from '../../../worker/conversation/intents/t
 import {delivery} from '../../../control/intents/test/fixture.mjs';
 import {createTurnTelemetry} from '../../telemetry/turn-context.mjs';
 import {intentFault} from '../../../control/intents/faults.mjs';
+import {DOCUMENT_PREPARATION_MS,INTENT_PREPARE_CONTROL_MS,INTENT_PREPARE_RUNNER_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
+import {INTENT_TIMEOUT_MS} from '../../../worker/conversation/intents/server.mjs';
 const ORIGIN='https://control.synthetic.invalid',TASK='task-capability-synthetic',CONTROL='control-capability-synthetic';
 const CREATE={id:'create_task',version:'0.2.0'};
 function setup({enabled=true,clientEnabled=true,mount,limits,fetchHook,responseHook}={}){
@@ -122,12 +124,15 @@ test('control explains a failed preparation once in its own telemetry: closed co
   [['meri.intent.prepare','control','REFUSED','owner',detail,'PREVIEW_ROUTE_NOT_FOUND',true],['meri.intent.prepare','control','UNKNOWN','owner',undefined,undefined,true]]);
  assert.ok(lines.every(line=>!JSON.stringify(line).includes(f.binding.tenantId)&&!JSON.stringify(line).includes('private owner detail')));
 });
-test('control: a prepare cancelled after it reached the mount answers UNKNOWN, never a retryable refusal',async()=>{
- let entered;const reached=new Promise(r=>{entered=r;});
- const s=setup({mount:f=>({readAvailability:v=>f.port.readAvailability(v),prepare:()=>{entered();return new Promise(()=>{});}})});
+test('control: a prepare cancelled after it reached the mount answers UNKNOWN, never a retryable refusal; the owner still settles',async()=>{
+ let entered,ownerSignal,finish;const reached=new Promise(r=>{entered=r;}),settled=Promise.withResolvers();
+ const s=setup({mount:f=>({readAvailability:v=>f.port.readAvailability(v),prepare:({signal})=>{ownerSignal=signal;entered();
+  return new Promise(resolve=>{finish=()=>resolve({status:'draft'});}).then(value=>{settled.resolve(signal.aborted);return value;});}})});
  const abort=new AbortController(),pending=s.app.handle(new Request(ORIGIN+RUNNER_INTENT_PATHS.prepare,{method:'POST',signal:abort.signal,headers:{'content-type':'application/json',authorization:'Bearer '+TASK},
   body:JSON.stringify({binding:s.f.binding,operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(1)})}));
  await reached;abort.abort();const r=await pending;assert.equal(r.status,502);assert.deepEqual(await r.json(),{error:{code:'UNKNOWN'}});
+ // The runner left, but the owner keeps control's deadline and settles its own journal row (the conversation card follows it).
+ assert.equal(ownerSignal.aborted,false);finish();assert.equal(await settled.promise,false);
  const thrown=setup({mount:()=>({readAvailability:async()=>null,prepare:async()=>{throw Error('private owner detail');}})});
  const t=await thrown.post(RUNNER_INTENT_PATHS.prepare,{binding:thrown.f.binding,operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(1)});assert.equal(t.status,502);assert.deepEqual(await t.json(),{error:{code:'UNKNOWN'}});
 });
@@ -139,4 +144,22 @@ test('construction is inert and closed',()=>{
  for(const origin of ['http://control.synthetic.invalid','https://control.synthetic.invalid/v1','https://u@control.synthetic.invalid','https://control.synthetic.invalid?x=1'])
   assert.throws(()=>createRunnerIntentsClient({origin,credential:TASK,binding:intentFixture().binding,fetchImpl:async()=>{}}),failed('UNAVAILABLE'),origin);
  assert.throws(()=>createRunnerIntentsClient({origin:ORIGIN,credential:'has space',binding:intentFixture().binding,fetchImpl:async()=>{}}),failed('UNAVAILABLE'));
+});
+
+test('control: a document owner that needs a cold renderer (40 s) is answered inside the nested prepare budgets',async t=>{
+ // 2 Nov: the runner client and control both stopped at 30 s, so the runner gave up exactly when control did, and the document
+ // owner had only control's 25 s request budget. A renderer on a new AgentCore microVM takes about 30 s before LibreOffice starts.
+ assert.ok(DOCUMENT_PREPARATION_MS>=40000&&DOCUMENT_PREPARATION_MS<INTENT_PREPARE_CONTROL_MS&&INTENT_PREPARE_CONTROL_MS<INTENT_PREPARE_RUNNER_MS&&INTENT_PREPARE_RUNNER_MS<INTENT_TIMEOUT_MS.max);
+ t.mock.timers.enable({apis:['setTimeout','Date'],now:1_000_000});
+ const f=intentFixture({approverActorId:'actor'}),coldRenderer=40000;
+ const mount={readAvailability:async()=>null,prepare:()=>new Promise(resolve=>setTimeout(()=>resolve({status:'draft'}),coldRenderer))};
+ const send=app=>app.handle(new Request(ORIGIN+RUNNER_INTENT_PATHS.prepare,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+TASK},
+  body:JSON.stringify({binding:f.binding,operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(1)})}));
+ const flush=async()=>{for(let i=0;i<20;i++)await new Promise(resolve=>setImmediate(resolve));};
+ const current=send(createRunnerIntentsApplication({resolveRun:async()=>mount,enabled:true,now:Date.now}));await flush();
+ t.mock.timers.tick(coldRenderer);const answered=await current;assert.equal(answered.status,200);assert.deepEqual(await answered.json(),{status:'draft'});
+ // The former 30 s bound answered UNKNOWN before the same owner could finish.
+ const former=send(createRunnerIntentsApplication({resolveRun:async()=>mount,enabled:true,now:Date.now,limits:{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000}}));await flush();
+ t.mock.timers.tick(30000);const late=await former;assert.equal(late.status,502);assert.deepEqual(await late.json(),{error:{code:'UNKNOWN'}});
+ t.mock.timers.tick(coldRenderer);
 });

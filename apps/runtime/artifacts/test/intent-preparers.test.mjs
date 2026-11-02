@@ -29,7 +29,7 @@ async function fixture(t,operation='create_word'){
  const current=async(credential,signal)=>{const authentication=await sessions.authenticateSession({credential,signal}),value=await sessions.readCurrentState({authentication,signal});if(hash(value.binding)!==hash(f.artifactOptions.context.binding)||hash(value.scopes)!==hash(f.artifactOptions.context.scopes))throw Error('ACCESS_DENIED');};
  const optionsOwner={async resolve(call){state.resolved.push(call);if(state.resolve)return state.resolve(call);
   await current(call.credential,call.signal);
-  return {documentOptions:{sessions,selectedClientId:f.selectedClientId,artifactOptions:f.artifactOptions,credential:f.credential,now:f.now,limits:f.limits,enabled:true},async recheck(check){await current(call.credential,check.signal);}};
+  return {documentOptions:{sessions,selectedClientId:f.selectedClientId,artifactOptions:f.artifactOptions,now:f.now,limits:f.limits,enabled:true},async recheck(check){await current(call.credential,check.signal);}};
  }};
  const config={binding:f.artifactOptions.context.binding,selectedClientId:f.selectedClientId,sessions,optionsOwner,nativeCredentials,borrowSession:call=>{state.borrowed.push(call);return borrowedRunSession(f.sessions)(call);},now:f.now,limits:f.limits};
  const preparers=createRuntimeDocumentIntentPreparers(config),word=preparers.find(p=>p.operation.id==='create_word');
@@ -134,11 +134,25 @@ test('revoking the original session cannot be masked by the derived session',asy
  assert.equal(h.state.resolved.length,0);assert.equal(h.f.stats().generations,0);assert.equal(h.f.sessions.status().sessions,0);
 });
 
-test('runtime refusal after dispatch is UNKNOWN, while a cancelled pre-dispatch request has no effect',async t=>{
+test('a runtime refusal the application reports NOT_DISPATCHED is definite, while a cancelled pre-dispatch request has no effect',async t=>{
  const h=await fixture(t);h.state.resolve=async()=>null;
- await assert.rejects(h.prepare(),code('UNKNOWN','unknown'));
+ await assert.rejects(h.prepare(),code('UNAVAILABLE','none'));
  const cancelled=new AbortController();cancelled.abort();await assert.rejects(h.prepare(spec,{signal:cancelled.signal}),error=>['DEADLINE','CANCELLED'].includes(error?.code)&&error.effect==='none');
  assert.equal(h.state.resolved.length,1);assert.equal(h.f.stats().generations,0);assert.equal(h.f.sessions.status().sessions,1);
+});
+
+test('a PDF conversion that did not complete is a definite refusal the journal replays; any other generation failure stays UNKNOWN',async t=>{
+ // 2 Nov: the renderer's LibreOffice exited before converting and the conversation showed two "Result uncertain" cards although
+ // no draft existed. A refused conversion stores nothing, so the delivery settles FAILED and a replay never generates again.
+ const h=await fixture(t);let executions=0;
+ h.f.artifactOptions.executor.execute=async()=>{executions++;throw Object.assign(Error('ARTIFACT_RENDERER_UNAVAILABLE'),{code:'ARTIFACT_RENDERER_UNAVAILABLE'});};
+ const m=mount({binding:h.config.binding,preparers:[h.word],now:h.f.now,scopes:h.f.artifactOptions.context.scopes}).mount;
+ const call={operation:h.word.operation,arguments:spec,deliveryId:delivery(11)};
+ const refused=error=>code('UNAVAILABLE')(error)&&/PDF conversion did not complete/u.test(error.detail??'');
+ await assert.rejects(m.prepare(call),refused);await assert.rejects(m.prepare(call),code('UNAVAILABLE'));assert.equal(executions,1);
+ h.f.artifactOptions.executor.execute=async()=>{executions++;throw Object.assign(Error('ARTIFACT_PROCESS_FAILED'),{code:'ARTIFACT_PROCESS_FAILED'});};
+ await assert.rejects(h.prepare(spec,{deliveryId:delivery(12)}),code('UNKNOWN','unknown'));assert.equal(executions,2);
+ assert.equal(h.state.revoked.length,0);
 });
 
 test('a post-generation identity denial withholds the result and durable intent replay never generates again',async t=>{
@@ -167,6 +181,6 @@ test('the trusted runtime retention gate stops suppressed conversation generatio
 
 test('all borrowed-session operations are bounded by the originating native relay expiry',async t=>{
  const h=await fixture(t),expiry=h.f.now()+10000;h.state.native=()=>({credential:h.f.nativeCredential,expiresAtMs:expiry});
- h.state.resolve=async()=>null;await assert.rejects(h.prepare(),code('UNKNOWN','unknown'));
+ h.state.resolve=async()=>null;await assert.rejects(h.prepare(),code('UNAVAILABLE','none'));
  assert.equal(h.state.issued.length,0);assert.ok(h.state.resolved.every(call=>call.deadlineMs<=expiry));assert.equal(h.state.revoked.length,0);
 });

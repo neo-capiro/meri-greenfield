@@ -8,7 +8,12 @@ import {RUNTIME_CREDENTIAL_PATHS} from '../credential-inventory.mjs';
 import {agentcoreRuntimePlatform} from '../agentcore-platform.mjs';
 export const RENDERER_IMAGE_PATHS=Object.freeze({bwrap:'/usr/bin/bwrap',prlimit:'/usr/bin/prlimit',executable:'/usr/lib/libreoffice/program/soffice',nodeExecutable:'/usr/local/bin/node',tempRoot:'/tmp'});
 const PROBE_OBSERVATION_PATH=join(dirname(RENDERER_PROBE_PATH),'renderer-probe-observation.mjs');
-/** The image is a closed allowlist. No host /run, /home, /workspace, parent /proc, socket, environment or credential mount. */
+/** The image is a closed allowlist. No host /run, /home, /workspace, parent /proc, socket, environment or credential mount.
+ * The owned workspace is the only writable path, mounted at its own path and again at /var/tmp: LibreOffice's launcher and
+ * office process both place their single-instance IPC pipe in /tmp or else /var/tmp (sal/osl/unx/pipe.cxx, desktop/unx/source/
+ * start.cxx) and exit 1 with "ERROR: no valid pipe path found." when neither is writable, before any conversion. The read-only
+ * root keeps /tmp read-only, so /var/tmp is the workspace itself and the pipe is removed with it. `--version` never opens the
+ * pipe, which is why the qualification passed while every conversion failed (2 Nov 2026, exit 1 with 33 stderr bytes). */
 export function rendererSandboxArguments({executable,args,cwd}){
  const p=RENDERER_IMAGE_PATHS;if(dirname(cwd)!==p.tempRoot||!/^meri-(office|renderer-probe)-[A-Za-z0-9]{6}$/u.test(basename(cwd)))throw rendererFault('RENDERER_SANDBOX_REFUSED');
  const probe=executable===p.nodeExecutable&&JSON.stringify(args)===JSON.stringify([RENDERER_PROBE_PATH]);
@@ -21,7 +26,7 @@ export function rendererSandboxArguments({executable,args,cwd}){
   '--proc','/proc','--dev','/dev','--dir','/sys','--dir','/sys/fs','--ro-bind','/sys/fs/cgroup','/sys/fs/cgroup',
   '--dir','/opt','--dir','/opt/meri','--dir','/opt/meri/apps','--dir','/opt/meri/apps/artifacts',
   '--ro-bind',RENDERER_PROBE_PATH,RENDERER_PROBE_PATH,'--ro-bind',PROBE_OBSERVATION_PATH,PROBE_OBSERVATION_PATH,
-  '--dir','/tmp','--bind',cwd,cwd,'--chdir',cwd,'--remount-ro','/',
+  '--dir','/tmp','--bind',cwd,cwd,'--dir','/var','--bind',cwd,'/var/tmp','--chdir',cwd,'--remount-ro','/',
   '--',p.prlimit,'--fsize=16777216:16777216','--nofile=128:128','--nproc=64:64','--',executable,...args];
 }
 export async function runRendererSandbox(executable,args,options){

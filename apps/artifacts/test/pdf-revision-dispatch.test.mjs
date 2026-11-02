@@ -77,6 +77,19 @@ test('executor re-renders a PDF revision from the complete revised spec and the 
   assert.equal(converter.calls.length,1);assert.deepEqual(await readdir(root),[]);
 }));
 
+test('a conversion the renderer does not complete is the definite ARTIFACT_RENDERER_UNAVAILABLE refusal, with its cause kept',()=>owned(async dir=>{
+  // 2 Nov: LibreOffice in the renderer sandbox exited 1 before converting. Nothing is stored before conversion, so the service
+  // settles the delivery FAILED and the conversation reports a refusal instead of an uncertain document.
+  const spy=await spyPython(dir),root=join(dir,'tmp');await mkdir(root);
+  for(const failure of [{code:'ARTIFACT_PROCESS_FAILED'},{code:'RENDERER_RESULT_REFUSED'},{code:'DEADLINE'}]){
+    const converter={async transform(){throw Object.assign(new Error(failure.code),failure);}};
+    const executor=createLocalArtifactExecutor({pythonExecutable:spy.script,nodeExecutable:process.execPath,pptxModulePath,tempRoot:root,officeTransformer:converter});
+    await assert.rejects(executor.execute({request:word,assets:[],base:null,deadlineMs:Date.now()+15000,maxBytes:1048576}),
+      e=>e.code==='ARTIFACT_RENDERER_UNAVAILABLE'&&e.cause?.code===failure.code);
+    assert.deepEqual(await readdir(root),[]);
+  }
+}));
+
 test('python entry refuses any base whose retained format differs from the generation format, before parsing it',()=>owned(async dir=>{
   const run=(request,base)=>spawnSync(python,['-I','-B',entry],{cwd:dir,input:JSON.stringify({request,maxBytes:1048576,base,assets:[]}),env:{PATH:'/usr/bin:/bin',HOME:dir,TMPDIR:dir,LANG:'C.UTF-8'}});
   const docx={...revised,format:'docx'};

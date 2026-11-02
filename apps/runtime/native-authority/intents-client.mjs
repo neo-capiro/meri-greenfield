@@ -14,7 +14,7 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
-import {INTENT_AVAILABILITY_RUNNER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
+import {INTENT_AVAILABILITY_RUNNER_MS,INTENT_PREPARE_RUNNER_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import catalog from '../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {INTENT_ROWS} from '../../worker/conversation/intents/catalog.mjs';
 /* Shared wire protocol (this module imports only packages/*, so the runner image gains one file; intents-http.mjs reuses it). */
@@ -68,7 +68,7 @@ const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
 class ControlAnswer extends Error{constructor(code,detail){super(code);this.code=code;if(detail!==undefined)this.detail=detail;}}
 export function createRunnerIntentsClient(configuration){
  const c=own(configuration,['origin','credential','binding','fetchImpl'],['enabled','now','limits']),now=c.now??Date.now,enabled=c.enabled??false;let binding,origin;
- const limits=c.limits===undefined?{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:30000}:own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
+ const limits=c.limits===undefined?{maxRequestBytes:65536,maxResponseBytes:262144,maxPrepareMs:INTENT_PREPARE_RUNNER_MS}:own(c.limits,['maxRequestBytes','maxResponseBytes','maxPrepareMs']);
  try{const u=new URL(c.origin);if(u.protocol!=='https:'||u.pathname!=='/'||u.username||u.password||u.search||u.hash||u.origin!==c.origin)throw 0;origin=u.origin;}catch{throw runnerIntentFault('UNAVAILABLE');}
  try{binding=data(c.binding);validateShape('RunBinding',binding);}catch{throw runnerIntentFault('UNAVAILABLE');}
  if(typeof c.credential!=='string'||!/^\S{1,8192}$/u.test(c.credential)||typeof c.fetchImpl!=='function'||types.isProxy(c.fetchImpl)||typeof now!=='function'||typeof enabled!=='boolean'||

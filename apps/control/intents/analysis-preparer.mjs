@@ -3,7 +3,7 @@
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {artifactValidators as v,resolveOperationContract} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
-import {intentFault} from './faults.mjs';
+import {intentFault,definiteRefusal} from './faults.mjs';
 import {validateShape} from '../../../packages/contracts/validate.mjs';
 import {assertIntentArtifactDraft} from './artifact-draft-result.mjs';
 
@@ -49,7 +49,7 @@ export function createAnalysisIntentPreparer(configuration){
    try{
     result=data(await selected.execute({deliveryId:call.deliveryId,request,
      ...(request.format==='zip'?{baseVersionId:null}:{})},call.signal));
-   }catch{throw intentFault('UNKNOWN','unknown');}
+   }catch(error){throw definiteRefusal(error)??intentFault('UNKNOWN','unknown');}
    try{
     if(call.signal?.aborted)throw 0;
     if(request.format==='zip')result=assertIntentArtifactDraft(result,{binding,request,context:selected.context});

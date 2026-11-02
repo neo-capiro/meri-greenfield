@@ -2,7 +2,8 @@
  * Only trusted composition supplies these ports. The originating run's action session is borrowed and never revoked here;
  * the native credential and session credential never enter an intent argument, prepared result or retained command.
  * Missing owners omit the preparers. Before the application is called, refusal has no document effect; afterward every
- * failure is conservatively UNKNOWN and the canonical intent journal prevents another preparation of that delivery. */
+ * failure is conservatively UNKNOWN, except the application's own NOT_DISPATCHED refusal (see `refusal`), and the canonical
+ * intent journal prevents another preparation of that delivery. */
 import {types} from 'node:util';
 import catalog from '../../../packages/contracts/retrieval-0.2/catalog.json' with {type:'json'};
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -28,6 +29,21 @@ function method(owner,name){
  const d=Object.getOwnPropertyDescriptor(owner,name);
  if(!d||!Object.hasOwn(d,'value')||typeof d.value!=='function'||types.isProxy(d.value))throw intentFault('INTENT_CONFIGURATION');
  return (...args)=>Reflect.apply(d.value,owner,args);
+}
+
+/** The document application's answer to a started write. Its error `outcome` is the owner's own account of the effect
+ * (`apps/control/document-application/http.mjs` errorResponse): NOT_DISPATCHED means nothing was generated or committed (a
+ * refusal before generation, or a definite refusal such as a PDF conversion that did not complete), which the artifact journal
+ * already settled as a refusal, so it is a definite intent refusal the model can explain or retry. Every other answer, and an
+ * answer that cannot be read, stays UNKNOWN: a draft may exist. */
+const NOT_DISPATCHED_CODES=Object.freeze({ARTIFACT_RENDERER_UNAVAILABLE:'UNAVAILABLE',ARTIFACT_STALE_PARENT:'CONFLICT',CONFLICT:'CONFLICT',
+ ACCESS_DENIED:'ACCESS_DENIED',SESSION_REFUSED:'ACCESS_DENIED',DEADLINE:'DEADLINE',CANCELLED:'CANCELLED'});
+const NOT_DISPATCHED_DETAIL=Object.freeze({ARTIFACT_RENDERER_UNAVAILABLE:'The PDF conversion did not complete, so no document was created.',
+ ARTIFACT_STALE_PARENT:'The selected document changed since it was read, so no revision was created.'});
+async function refusal(read){
+ let error;try{const text=await read();if(Buffer.byteLength(text)<=65536)error=JSON.parse(text)?.error;}catch{}
+ if(error===null||typeof error!=='object'||error.outcome!=='NOT_DISPATCHED'||typeof error.code!=='string'||!/^[A-Z][A-Z0-9_]{1,62}$/u.test(error.code))return intentFault('UNKNOWN','unknown');
+ return intentFault(NOT_DISPATCHED_CODES[error.code]??'UNAVAILABLE','none',NOT_DISPATCHED_DETAIL[error.code],error.code);
 }
 
 /** Returns the canonical document and typed ZIP preparers, or [] when a required production owner is absent. No sandbox owner. */
@@ -56,7 +72,7 @@ export function createRuntimeDocumentIntentPreparers(configuration){
   const formats=Object.freeze(analysis?['zip']:[...admitDocumentDescriptor(descriptor,{pdf}).formats]);
   return Object.freeze({operation:data(entry.operation),owner:analysis?'artifact':'document',binding,formats,
    async prepare(call){
-    let life,session,started=false,deadlineMs;
+    let life,session,started=false,deadlineMs,ownerRefusal=null;
     try{
      const input=own(call,['arguments','deliveryId'],['signal']);nativeSignal(input.signal);
      const at=c.now();if(!Number.isSafeInteger(at)||at<0)throw intentFault('UNAVAILABLE','none');
@@ -108,16 +124,21 @@ export function createRuntimeDocumentIntentPreparers(configuration){
        const request=new Request('https://meri-control.internal/api/documents/'+route,{method:'POST',headers:{authorization:'Bearer '+session.credential,'content-type':'application/json','content-length':String(Buffer.byteLength(body))},body,signal});
        // The preserved parent facts ride this in-process call only, and only for the exact base they were pinned to.
        const retained=route==='revise'&&write.preserve!==undefined?{retained:{baseVersionId:write.preserve.parent.versionId,evidence:write.preserve.evidence,assets:write.preserve.assets,evidenceSha256:write.preserve.evidenceSha256}}:{};
-       started=true;const response=await life.run(()=>app.handle(request,{deadlineMs,...retained}));
-       if(response.status!==200)throw intentFault('UNKNOWN','unknown');
-       const text=await life.run(()=>response.text());if(Buffer.byteLength(text)>limits.maxResponseBytes)throw intentFault('UNKNOWN','unknown');
+       // From here only the application's own NOT_DISPATCHED answer is a refusal; a deadline, cancellation or unreadable answer
+       // after dispatch is UNKNOWN (a draft may exist).
+       started=true;let response,text;
+       try{response=await life.run(()=>app.handle(request,{deadlineMs,...retained}));}catch{throw intentFault('UNKNOWN','unknown');}
+       if(response.status!==200){ownerRefusal=await refusal(()=>life.run(()=>response.text()));throw ownerRefusal;}
+       try{text=await life.run(()=>response.text());}catch{throw intentFault('UNKNOWN','unknown');}
+       if(Buffer.byteLength(text)>limits.maxResponseBytes)throw intentFault('UNKNOWN','unknown');
        return JSON.parse(text);
      }};
      const canonical=analysis?createAnalysisIntentPreparer({descriptor,binding,artifact:{writes}}):createDocumentIntentPreparer({descriptor,binding,pdf,writes:{...writes,...(revision?{preservation}:{})},...(revision?{revision:{selection:revision,read:readRevision}}:{})});
      const result=await canonical.prepare({...input,signal:life.signal});
      await current();life.check();return result;
     }catch(error){
-     if(started)throw intentFault('UNKNOWN','unknown');
+     // Only the owner's own definite refusal survives a started write; a later current-authority refusal withholds a draft that exists.
+     if(started)throw ownerRefusal!==null&&error===ownerRefusal?error:intentFault('UNKNOWN','unknown');
      const code=['INVALID_ARGUMENTS','UNAVAILABLE','ACCESS_DENIED','CONFLICT','DEADLINE','CANCELLED'].includes(error?.code)?error.code:'ACCESS_DENIED';
      throw intentFault(code,'none');
     }finally{life?.close();}

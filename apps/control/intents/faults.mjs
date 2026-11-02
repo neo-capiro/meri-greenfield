@@ -14,6 +14,10 @@ export const intentFault=(code,effect,detail,reason)=>{
  faults.add(fault);return fault;
 };
 export const isIntentFault=error=>error!==null&&typeof error==='object'&&faults.has(error);
+/** A trusted owner port's own refusal that left no effect (`effect: 'none'`, made here). A preparer that has already called its
+ * owner passes it through unchanged, so the delivery settles FAILED with the owner's code and detail; anything else from the
+ * owner stays UNKNOWN. */
+export const definiteRefusal=error=>isIntentFault(error)&&error.effect==='none'?error:undefined;
 export const intentFaultDetail=error=>isIntentFault(error)&&typeof error.detail==='string'?error.detail:undefined;
 export const intentFaultReason=error=>isIntentFault(error)&&typeof error.reason==='string'?error.reason:undefined;
 export const INTENT_FAILURE_CODES=Object.freeze(['UNAVAILABLE','ACCESS_DENIED','REFUSED','INVALID_ARGUMENTS','DEADLINE','CANCELLED','CONFLICT','UNKNOWN']);

@@ -36,6 +36,7 @@ import {createRoutinesServiceSecret} from './routines-core-client.mjs';
 import {routinesReservedSecretFiles} from './routines-configuration.mjs';
 import {createReservedCredentialDigests} from './approval-forwarder.mjs';
 import {createDraftPublication} from './draft-publication.mjs';
+import {INTENT_MOUNT_PREPARE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 const ordinary=fn=>typeof fn==='function'&&!types.isProxy(fn);
 const same=(a,b)=>hash(a)===hash(b);
 const configurationFault=()=>intentFault('INTENT_CONFIGURATION');
@@ -137,7 +138,8 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
   // The conversation store (when composed) receives each new document draft as the run's own `artifact.available` event.
   const publishDraft=store?createDraftPublication({store,binding,current:fresh}):undefined;
   return createIntentMount({binding,preparers,journalStore:createPostgresIntentJournalStore({pool}),now,
-   limits:{maxRequestMs:configuration.limits.requestMs},enabled:true,...(publishDraft?{publishDraft}:{}),
+   // The conversation mount encloses a document preparation (runner-load-budget.mjs), not control's HTTP request budget.
+   limits:{maxRequestMs:INTENT_MOUNT_PREPARE_MS},enabled:true,...(publishDraft?{publishDraft}:{}),
    resultRelease:createIntentResultReleaseAuthority({binding,now,currentRights,async currentRun(_binding,{signal}){
     const current=await fresh(signal);return JSON.stringify({binding,policyRevision:current.policyRevision,deadlineMs:current.execution.expiresAtMs,checkedAtMs:now()});
    }})});
