@@ -3354,7 +3354,11 @@
         "vendorAdvisory": "https://packages.wolfi.dev/os/security.json lists both CVEs under expat secfixes 2.10.0-r0",
         "index": "fixedPipIndex",
         "package": {"name": "libexpat1", "version": "2.10.0-r0", "sha256": "68d2212a36051d122200630086b3f9f3edae4785b4700599ac47edb92364e8c5", "bytes": 113820, "indexChecksum": "Q1PNKLH+bUHNB3bSnT9O/FGajZYI8="},
-        "pinnedForTheNewIndex": "libbz2-1=1.0.8-r28: the refreshed index also advertises unstaged libbz2-1 1.0.8-r29, which the first runtime install would otherwise select for python-3.13-base",
+        "pinnedForTheNewIndex": "libbz2-1=1.0.8-r28, ncurses=6.6.20261024-r0 and ncurses-terminfo-base=6.6.20261024-r0: the refreshed index also advertises unstaged libbz2-1 1.0.8-r29 and ncurses/ncurses-terminfo-base 6.6.20261031-r0, which the first runtime install would otherwise select for python-3.13-base, bash and readline (the base provides none of them)",
+        "firstInstallBase": {
+          "observed": "apk installed database of the pinned runtimeImageUri arm64 manifest (top layer sha256:a841b9382db80309e046e30ff4a1b99e72622cf4e8dbdb56ee65d92ec7e889a9), retrieved 2026-11-02; provides are read from the signed indexes",
+          "packages": ["apk-tools-2.14.10-r17", "busybox-1.38.0-r3", "ca-certificates-bundle-20260909-r3", "glibc-2.44-2.44-r9", "glibc-2.44-locale-posix-2.44-r9", "ld-linux-2.44-2.44-r9", "libbrotlicommon1-1.2.1-r1", "libbrotlidec1-1.2.1-r1", "libbrotlienc1-1.2.1-r1", "libcrypt1-2.44-2.44-r9", "libgcc-16.2.0-r1", "libxcrypt-4.5.2-r6", "openssl-4.0-libcrypto-4.0.3-r8", "openssl-4.0-libssl-4.0.3-r8", "openssl-provider-legacy-allowed-4.0.3-r1", "wolfi-base-1-r7", "wolfi-baselayout-20230201-r30", "wolfi-keys-1-r14", "zlib-1.3.2.1_rc20260921-r0"]
+        },
         "buildOnly": "the ClamAV compiler stage keeps its development-closure libexpat1 2.9.0-r0; that stage is not exported",
         "qualification": "Authenticated source/index/package closure only; actual ARM image execution and zero-HIGH/CRITICAL scan required."
       },
