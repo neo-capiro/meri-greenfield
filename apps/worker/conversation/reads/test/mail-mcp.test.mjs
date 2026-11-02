@@ -21,7 +21,7 @@ test('a connected search returns the page plus one notice with counts, continuat
  const f=await generalReadFixture(),m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',f.search);assert.equal(r.isError,undefined,JSON.stringify(r));
   const page=JSON.parse(text(r));assert.equal(page.kind,'mail-candidate-source-page');assert.equal(page.messages.length,1);
-  assert.equal(r.content[1].text,'Notice: 1 stored message candidate(s) of 2 matching; more exist, continue with offset 1. Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content. Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect the mailbox in Capiro\'s mail integration settings.');
+  assert.equal(r.content[1].text,'Notice: 1 stored message candidate(s) of 2 matching; more exist, continue with offset 1. Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content. Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations.');
  }finally{await m.close();}
 });
 
@@ -37,8 +37,9 @@ test('an empty page is absence within its filter only',async()=>{
 test('no connected mailbox reads as UNAVAILABLE with the connect hint, before any Core mail request',async()=>{
  const f=await generalReadFixture();f.rows(rows=>rows.filter(row=>row.provider==='zoom'));const m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',f.search);assert.equal(r.isError,true);
-  assert.match(text(r),/^UNAVAILABLE: mcp__meri_reads__mail_search_messages is not enabled, installed or served/);
-  assert.match(text(r),/No connected Microsoft 365 or Google Workspace mailbox is available for this user, or stored mail is not served in this conversation\. Tell the user to connect their mailbox in Capiro's mail integration settings; do not say that no email exists\. No evidence, absence or completeness is established\.$/);
+  assert.match(text(r),/^This source cannot be read in this conversation right now: it is not connected, not enabled or not served for this request/);
+  assert.match(text(r),/No connected Microsoft 365 or Google Workspace mailbox is available for this user, or stored mail is not served in this conversation\. Tell the user to connect their mailbox, or run Sync now \(or Retry sync\) for it, under Capiro Settings > Integrations, or to try again in a minute if the mailbox is already connected; do not say that no email exists\. No evidence, absence or completeness is established\.$/);
+  assert.doesNotMatch(text(r),/mcp__|\bUNAVAILABLE\b/u,'the model text names neither the tool nor the code');
   assert.deepEqual(corePaths(f),[]);assert.deepEqual(m.runtime.receipts(),[]);
  }finally{await m.close();}
 });
@@ -46,7 +47,7 @@ test('no connected mailbox reads as UNAVAILABLE with the connect hint, before an
 test('another client\'s subject is a denied scope with the subject rule, never an empty page',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',{...f.search,subject:{kind:'client',entityId:'71000000-0000-4000-8000-000000000999'}});
-  assert.equal(r.isError,true);assert.match(text(r),/^ACCESS_DENIED: mcp__meri_reads__mail_search_messages is not permitted/);
+  assert.equal(r.isError,true);assert.match(text(r),/^This read is not permitted for this user, client or conversation now/);
   assert.match(text(r),/use \{kind:"personal"\} in General and \{kind:"client", entityId\} only for the selected client\. Do not retry with another client\./);
   assert.deepEqual(corePaths(f),[]);
  }finally{await m.close();}
@@ -55,7 +56,7 @@ test('another client\'s subject is a denied scope with the subject rule, never a
 test('an unrestricted search is refused with the filter rule',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',{subject:{kind:'personal'}});
-  assert.equal(r.isError,true);assert.match(text(r),/^INVALID_ARGUMENTS: mcp__meri_reads__mail_search_messages /);
+  assert.equal(r.isError,true);assert.match(text(r),/^These arguments were refused; supply literal arguments matching the input schema\. /);
   assert.match(text(r),/at least one filter among query \(1-200 characters\), from, participant, withinDays \(1-3650\) or folder \(inbox or sent\)/);
   assert.deepEqual(corePaths(f),[]);
  }finally{await m.close();}
@@ -65,6 +66,6 @@ test('a thread read reports its message count, incomplete body sections and the 
  const f=await generalReadFixture({id:'mail.read_thread'}),m=await mountReads(f);
  try{const r=await m.call('mail_read_thread',f.source.args);assert.equal(r.isError,undefined,JSON.stringify(r));
   const page=JSON.parse(text(r));assert.equal(page.kind,'mail-thread-source-page');assert.equal(page.messages[0].section.hasMore,true);
-  assert.equal(r.content[1].text,'Notice: 1 message(s) of 1 in this thread. 1 body section(s) are incomplete: continue with the listed nextBodyOffsets before quoting, and say what was not read. Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect the mailbox in Capiro\'s mail integration settings.');
+  assert.equal(r.content[1].text,'Notice: 1 message(s) of 1 in this thread. 1 body section(s) are incomplete: continue with the listed nextBodyOffsets before quoting, and say what was not read. Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations.');
  }finally{await m.close();}
 });

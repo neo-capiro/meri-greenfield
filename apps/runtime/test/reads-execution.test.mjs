@@ -9,6 +9,7 @@ import {createReadsOwner} from '../reads-owner.mjs';
 import {createReadsApplication} from '../reads-http.mjs';
 import {createControlReadsComposer} from '../reads-composer.mjs';
 import {GENERAL_READ_ADAPTER_FAMILIES} from '../read-families.mjs';
+import {READ_AVAILABILITY_CONTROL_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 const schemaVersion='meri-native-general-reads/1',operation={id:'read_bill_text',version:'0.2.0'};
 function fixture(){
  let at=1000,change,authError,onExecute,availabilityChange;const calls=[];
@@ -68,6 +69,12 @@ test('original expiry and cancellation stop dispatch; a late source response is 
  const expired=fixture();expired.clock(10001);assert.equal((await expired.app.handle(expired.request())).status,408);assert.equal(expired.created(),0);
  const cancelled=fixture(),controller=new AbortController();controller.abort();assert.equal((await cancelled.app.handle(cancelled.request('execute',undefined,controller.signal))).status,408);assert.equal(cancelled.created(),0);
  const late=fixture();late.onExecute(async()=>{late.clock(2001);return '{"private":"late"}';});assert.equal((await late.app.handle(late.request())).status,408);
+});
+test('an availability chain that takes 4 s still answers; past the shared control bound it is a deadline, not an empty availability',async()=>{
+ const slow=fixture();slow.availability(s=>{slow.clock(1000+4000);return s;});
+ const answered=await slow.app.handle(slow.request('availability'));assert.equal(answered.status,200);assert.deepEqual((await answered.json()).discovery.operations,[operation]);
+ const late=fixture();late.availability(s=>{late.clock(1000+READ_AVAILABILITY_CONTROL_MS+1);return s;});
+ const refused=await late.app.handle(late.request('availability'));assert.equal(refused.status,408);assert.equal((await refused.json()).error.code,'DEADLINE');
 });
 test('catalog/snapshot mutation and stale descriptor pins fail closed',async()=>{
  const f=fixture();f.onExecute(async()=>{f.availability(s=>({...s,installation:{...s.installation,executionCatalogSha256:'c'.repeat(64)}}));return '{}';});assert.equal((await f.app.handle(f.request())).status,503);

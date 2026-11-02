@@ -41,7 +41,7 @@ test('selected client: recall takes that client\'s UUID, and omitting it is a de
   assert.equal(ok.isError,undefined,JSON.stringify(ok));assert.equal(JSON.parse(text(ok)).result.results.length,1);
   assert.equal(corePaths(f).length,2);
   const denied=await m.call('search_memory',{query:'approved allocation'});
-  assert.equal(denied.isError,true);assert.match(text(denied),/^ACCESS_DENIED: mcp__meri_reads__search_memory is not permitted/);
+  assert.equal(denied.isError,true);assert.match(text(denied),/^This read is not permitted for this user, client or conversation now/);
   assert.match(text(denied),/in a selected-client conversation clientId must be that client's UUID, in General it must be null/);
   assert.equal(corePaths(f).length,2,'the denied call made no Core request');assert.equal(m.runtime.receipts().length,1);
  }finally{await m.close();}
@@ -50,7 +50,7 @@ test('selected client: recall takes that client\'s UUID, and omitting it is a de
 test('an item no longer eligible for the user fails the whole call as ACCESS_DENIED with no receipt',async()=>{
  const f=await memoryReadFixture(),m=await mountReads(f);f.eligible(false);
  try{const r=await m.call('search_memory',{query:'approved allocation'});
-  assert.equal(r.isError,true);assert.match(text(r),/^ACCESS_DENIED: /);assert.match(text(r),/every returned item must still be eligible for this user/);
+  assert.equal(r.isError,true);assert.match(text(r),/^This read is not permitted for this user, client or conversation now/);assert.match(text(r),/every returned item must still be eligible for this user/);
   assert.deepEqual(corePaths(f),['/api/clio/tools/search_memory','/api/clio/tools/search_memory_eligibility']);assert.deepEqual(m.runtime.receipts(),[]);
  }finally{await m.close();}
 });
@@ -78,7 +78,7 @@ test('Core\'s argument error page tells the model to supply query text',async()=
 test('disabled recall is UNAVAILABLE with the memory hint, never an empty success',async()=>{
  const f=await memoryReadFixture(),m=await mountReads(f);f.enabled(false);
  try{const r=await m.call('search_memory',{query:'approved allocation'});
-  assert.equal(r.isError,true);assert.match(text(r),/^UNAVAILABLE: mcp__meri_reads__search_memory /);
+  assert.equal(r.isError,true);assert.match(text(r),/^This source cannot be read in this conversation right now/);assert.doesNotMatch(text(r),/mcp__|\bUNAVAILABLE\b/u);
   assert.match(text(r),/Saved memory cannot be read in this conversation; say nothing about what is or is not saved beyond that it could not be read\. No evidence, absence or completeness is established\.$/);
   assert.deepEqual(corePaths(f),[]);
  }finally{await m.close();}

@@ -19,8 +19,10 @@ import {resolveAvailableReads,profileReads} from './availability.mjs';
 import {nextTurnSessionId} from '../continuation/next-turn-options.mjs';
 import {createGeneralReadServer} from './server.mjs';
 import {effectiveReadBudgets,READ_TIMEOUT_MS} from './budget.mjs';
+import {READ_AVAILABILITY_WORKER_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
+import {availabilityFailure} from '../capabilities/availability-failure.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
-const CATALOG_SHA256=canonicalSha256(catalog),SNAPSHOT_MS=3000;
+const CATALOG_SHA256=canonicalSha256(catalog);
 /** Session id the SDK must report when continuing: the resumed checkpoint session, or the fork target.
  * @param {any} lineage @returns {string|undefined} */
 export function continuationSessionId(lineage){
@@ -31,25 +33,31 @@ export function continuationSessionId(lineage){
 /**
  * @param {{binding:unknown,scopes:any[],policy:{generalReads:boolean,readFamilies:readonly string[],activeReadOperations?:readonly {id:string,version:string}[]},port:{readAvailability:Function,execute:Function},
  *  now:()=>number,deadlineMs:number,timeoutMs?:number,expectedSessionId?:string,skill?:{allowedOperations:{id:string,version:string}[],budgets:{maxToolCalls:number,maxOutputBytes:number}},
- *  exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal,mount?:'available'|'profile'}} configuration
+ *  exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal,mount?:'available'|'profile',
+ *  diagnostic?:(failure:{code:string,layer:'worker'|'runner'|'control',elapsedMs:number})=>void}} configuration `diagnostic` receives a failed initial snapshot
  */
 export async function createGeneralReadRuntime(configuration){
- const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','procedure','exclude','runBudgets','signal','mount']);
+ const c=own(configuration,['binding','scopes','policy','port','now','deadlineMs'],['timeoutMs','expectedSessionId','skill','procedure','exclude','runBudgets','signal','mount','diagnostic']);
  const binding=data(c.binding),scopes=data(c.scopes),port=own(c.port,['readAvailability','execute'],['externalUsage']);nativeSignal(c.signal);validateShape('RunBinding',binding);
- if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.execute!=='function'||port.externalUsage!==undefined&&typeof port.externalUsage!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount))throw fault('READ_CONFIGURATION');
+ if(!Array.isArray(scopes)||!scopes.length||typeof port.readAvailability!=='function'||typeof port.execute!=='function'||port.externalUsage!==undefined&&typeof port.externalUsage!=='function'||typeof c.now!=='function'||!Number.isSafeInteger(c.deadlineMs)||![undefined,'available','profile'].includes(c.mount)||c.diagnostic!==undefined&&typeof c.diagnostic!=='function')throw fault('READ_CONFIGURATION');
  const profile=c.mount==='profile';
  scopes.forEach(s=>validateShape('Scope',s));const policyRevision=scopes[0].policyRevision;
  if(c.policy?.generalReads!==true)return null;
  const timeoutMs=Math.min(c.timeoutMs??READ_TIMEOUT_MS.max,READ_TIMEOUT_MS.max),budgets=effectiveReadBudgets(c.skill?.budgets,c.runBudgets);
- /** Fresh snapshot within a bounded wait; any failure is "not available". @param {AbortSignal|undefined} signal */
- const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+SNAPSHOT_MS,now:c.now,signal,errorFactory:fault});
+ /** Fresh snapshot within the shared read-availability bound (runner-load-budget.mjs); any failure is "not available" for this
+  * run, so the bound must hold the control chain (execution authentication, two snapshots with a Core role read each).
+  * @param {AbortSignal|undefined} signal */
+ const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+READ_AVAILABILITY_WORKER_MS,now:c.now,signal,errorFactory:fault});
   try{return assertAvailabilitySnapshot(await life.run(s=>port.readAvailability.call(c.port,{signal:s})),{binding,policyRevision,catalogSha256:CATALOG_SHA256,now:c.now});}finally{life.close();}};
  const narrowing={...(c.skill?{narrowTo:c.skill.allowedOperations}:{}),exclude:c.exclude??[]};
  // Profile mount: the exact active tool list is fixed by the profile before any availability is read.
  const mounted=profile?profileReads({policy:c.policy,...narrowing}):undefined;if(mounted&&!mounted.length)return null;
  const gates=(/** @type {ReturnType<typeof assertAvailabilitySnapshot>} */snapshot)=>resolveAvailableReads({policy:c.policy,installation:snapshot.installation,discovery:snapshot.discovery,scopes,
   ...(profile?{narrowTo:mounted?.map(row=>row.operation)??[],exclude:narrowing.exclude}:narrowing)});
- /** @type {ReturnType<typeof assertAvailabilitySnapshot>|undefined} */let initial;try{initial=await read(c.signal);}catch{if(!profile)return null;}
+ // A failed initial snapshot is never silent: `diagnostic` receives its closed fact (code, the layer whose bound answered, elapsed
+ // time) so the shared read-availability bound can be confirmed live; the model sees only the closed result texts.
+ /** @type {ReturnType<typeof assertAvailabilitySnapshot>|undefined} */let initial;const started=c.now();
+ try{initial=await read(c.signal);}catch(error){try{c.diagnostic?.(availabilityFailure(error,c.now()-started));}catch{}if(!profile)return null;}
  const {available:gatedAvailable,unavailable}=initial?gates(initial):{available:[],unavailable:[]};
  // Wave5 MO01/ST16: a selected procedure intersects the mounted read surface with the capability tools it grants. The
  // grant is resolved through the catalog's own spellings for one operation (reads/vocabulary.mjs), and because this

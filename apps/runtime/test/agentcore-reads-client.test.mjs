@@ -21,6 +21,11 @@ test('execution assertion rejects foreign binding/scopes, injected ECS provenanc
  assert.deepEqual(assertNativeReadTaskAssertion(value,expected),value);for(const change of [{taskArn:'forged'},{grantId:'forged'},{inputSha256:'c'.repeat(64)},{binding:{...binding,actorId:'foreign'}},{scopes:[{...value.scopes[0],tenantId:'foreign'}]},{expiresAtMs:at}])assert.throws(()=>assertNativeReadTaskAssertion({...value,...change},expected));
 });
 
+test('a refusal control answered is marked layer control; the client\'s own transport loss is marked runner',async()=>{
+ const refused=fixture(value=>Response.json({error:{code:'DEADLINE'}},{status:408}));
+ await assert.rejects(refused.client.readAvailability(),error=>error.code==='DEADLINE'&&error.layer==='control');
+ const lost=fixture();lost.fail();await assert.rejects(lost.client.readAvailability(),error=>error.code==='UNAVAILABLE'&&error.layer==='runner');
+});
 test('native source publication UNKNOWN/conflict reaches the caller without automatic redispatch',async()=>{
  for(const [code,status]of [['SOURCE_PUBLICATION_UNKNOWN',503],['SOURCE_PUBLICATION_CONFLICT',409]]){let calls=0;const f=fixture(value=>++calls===1?value:Response.json({error:{code}},{status}));await f.client.readAvailability();await assert.rejects(f.client.execute({operation,arguments:{},deliveryId:'stable'}),{code});assert.equal(f.wires.length,2);}
 });

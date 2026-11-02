@@ -91,8 +91,9 @@ export function createIntentMount(configuration){
     try{result=data(await life.run(s=>preparer.prepare({arguments:v.arguments,deliveryId:v.deliveryId,signal:s})));}
     catch(error){
      // A failure with no owner effect settles FAILED and replays the same refusal; anything else stays UNKNOWN.
-     // An INVALID_ARGUMENTS refusal is settled with the canonical schema's field-path detail, so its replay explains itself too.
-     const none=error?.effect==='none',code=none?closed(error.code):'UNKNOWN',detail=code==='INVALID_ARGUMENTS'?explain(preparer.operation,v.arguments):undefined;
+     // An INVALID_ARGUMENTS refusal is settled with the owner's own field-path detail when it gives one (it completed the request
+     // from the trusted run), else the canonical schema's, so its replay explains itself too.
+     const none=error?.effect==='none',code=none?closed(error.code):'UNKNOWN',detail=code==='INVALID_ARGUMENTS'?detailOf(error)?.slice(0,INTENT_DETAIL_MAX)??explain(preparer.operation,v.arguments):undefined;
      try{await life.run(s=>journal.settle({...key,state:none?'FAILED':'UNKNOWN',outcome:none?{code,...(detail===undefined?{}:{detail})}:null,signal:s}));}catch{}
      throw intentFault(code,undefined,detail);
     }
