@@ -235,6 +235,19 @@ function watchInput(_operation,canonical){
 /** Owner-lane declarations, by operation: the model-facing branches of that operation's canonical request.
  * @type {Readonly<Record<string,(operation:{id:string,version:string},canonical:any)=>Declaration[]>>} */
 const DECLARED=Object.freeze({save_memory:memoryInput,mail_send:mailInput,create_word:documentInput,create_excel:documentInput,create_powerpoint:documentInput,watch_action:watchInput});
+/** The model-facing projection of a canonical request that names its conversation: `conversationId` is the trusted run's
+ * own identity (the server binds it before the port, `server.mjs`), so each canonical branch is advertised without it required
+ * and the proof re-establishes it as the canonical field before judging containment. Nothing else of the branch changes.
+ * @param {any} _operation @param {any} canonical @returns {Declaration[]} */
+function conversationInput(_operation,canonical){
+ const branches=Array.isArray(canonical?.oneOf)?canonical.oneOf:[canonical];
+ return branches.map(branch=>{
+  const named=Array.isArray(branch?.required)&&branch.required.includes('conversationId')&&Object.hasOwn(branch.properties??{},'conversationId');
+  if(!named)return {advertised:branch,canonical:branch,rebound:[]};
+  const properties={...branch.properties,conversationId:{...branch.properties.conversationId,description:'Bound to this conversation by the trusted run; omit it, any value supplied is replaced'}};
+  return {advertised:{...branch,properties,required:branch.required.filter(field=>field!=='conversationId')},canonical:branch,rebound:['conversationId']};
+ });
+}
 /** @param {{operation:{id:string,version:string}}} row */
 function operationOf(row){
  const operation=row?.operation;
@@ -247,7 +260,7 @@ const record=()=>z.record(z.string(),z.unknown());
  * @param {{operation:{id:string,version:string}}} row @returns {{operation:{id:string,version:string},mode:'declared'|'canonical'|'record',arguments:z.ZodType}} */
 export function intentRowArguments(row){
  const operation=operationOf(row),canonical=canonicalIntentInputSchema(intentDescriptor(operation).inputSchema);
- const declared=DECLARED[operation.id]?.(operation,canonical);
+ const declared=DECLARED[operation.id]?.(operation,canonical)??(conversationBound(row)?conversationInput(operation,canonical):undefined);
  if(declared){
   const converted=declared.map(branch=>prove(branch.advertised,branch.canonical,branch.rebound));
   return {operation,mode:'declared',arguments:converted.length===1?converted[0]:z.union(/** @type {[z.ZodType,z.ZodType,...z.ZodType[]]} */(converted))};

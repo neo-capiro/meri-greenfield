@@ -27,6 +27,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {jsonBody,response,ApplicationError} from '../../control/action-application/http.mjs';
 import {matchesCapability} from './task-verifier.mjs';
 import {RUNNER_INTENT_FAILURES,RUNNER_INTENT_PATHS,runnerIntentFault,runnerIntentCode as closed,runnerIntentDetail,runnerIntentRequest,runnerIntentAvailability} from './intents-client.mjs';
+import {intentFaultReason} from '../../control/intents/faults.mjs';
 export {RUNNER_INTENT_FAILURES,RUNNER_INTENT_PATHS,runnerIntentFault};
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
@@ -74,7 +75,8 @@ export function createRunnerIntentsApplication(configuration){
   const detail=error!==null&&typeof error==='object'&&!types.isProxy(error)?runnerIntentDetail(Object.getOwnPropertyDescriptor(error,'detail')?.value):undefined;
   // A failed offer or preparation for a named run is explained once here; the runner's answer carries only the closed code and detail.
   if(route==='availability'&&named&&emit)try{emit('meri.intent.availability',{...named,layer:'control',code,elapsedMs:now()-started});}catch{}
-  if(route==='prepare'&&named&&emit)try{emit('meri.intent.prepare',{...named,layer:'control',code,dispatched:dispatched?'owner':'before-owner',elapsedMs:now()-started,...(detail===undefined?{}:{detail})});}catch{}
+  const reason=intentFaultReason(error);
+  if(route==='prepare'&&named&&emit)try{emit('meri.intent.prepare',{...named,layer:'control',code,dispatched:dispatched?'owner':'before-owner',elapsedMs:now()-started,...(detail===undefined?{}:{detail}),...(reason===undefined?{}:{reason})});}catch{}
   return response({error:{code,...(detail===undefined?{}:{detail})}},RUNNER_INTENT_FAILURES[code]);}
  finally{life?.close();try{if(info?.body&&!info.body.locked)void info.body.cancel().catch(()=>{});}catch{}}}});
 }

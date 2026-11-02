@@ -34,22 +34,25 @@ test('replay/idempotency: the same delivery returns the same proposal without a 
 });
 
 test('a refusal before any owner effect settles FAILED with the owner\'s bounded detail and replays it; an unknown effect carries none',async()=>{
- const {c,store}=setup(),detail='HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created';
- let answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'none',detail});
+ const {c,store}=setup(),detail='the proposal request was answered before any proposal was created (HTTP 404)';
+ let answer=intentFault('REFUSED','none',detail,'PREVIEW_ROUTE_NOT_FOUND');
  const preparer={binding:c.binding,owner:'command',operation:CREATE,async prepare(){throw answer;}};
  const {mount:m}=mount({binding:c.binding,preparers:[preparer],store});
- const first=await call(m).catch(error=>error);assert.equal(first.code,'REFUSED');assert.equal(first.detail,detail);
+ const first=await call(m).catch(error=>error);assert.equal(first.code,'REFUSED');assert.equal(first.detail,detail);assert.equal(first.reason,'PREVIEW_ROUTE_NOT_FOUND','the reason travels on the fault for the log line');
  assert.deepEqual([...store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'REFUSED',detail}]]);
- answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'none'});
- const replayed=await call(m).catch(error=>error);assert.equal(replayed.code,'REFUSED');assert.equal(replayed.detail,detail,'the journal replays the explained refusal');
+ answer=intentFault('REFUSED','none');
+ const replayed=await call(m).catch(error=>error);assert.equal(replayed.code,'REFUSED');assert.equal(replayed.detail,detail,'the journal replays the explained refusal');assert.equal(replayed.reason,undefined,'never the constant');
  // A detail longer than the journal bound is cut, never refused. An unknown effect is journaled without one (the owner may have
  // acted), but the thrown fault keeps the owner's reason so control's log line can name it.
- answer=Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE',effect:'none',detail:'x'.repeat(500)});
+ answer=intentFault('UNAVAILABLE','none','x'.repeat(500));
  const long=await call(m,{deliveryId:delivery(2)}).catch(error=>error);assert.equal(long.code,'UNAVAILABLE');assert.equal(long.detail.length,400);
- answer=Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE',effect:'unknown',detail:'the proposal request got no answer (ECONNREFUSED)'});
- const unknown=await call(m,{deliveryId:delivery(3)}).catch(error=>error);assert.equal(unknown.code,'UNKNOWN');assert.equal(unknown.detail,'the proposal request got no answer (ECONNREFUSED)');
- assert.deepEqual([...store.rows.values()].map(r=>[r.state,r.outcome]).slice(2),[['UNKNOWN',null]]);
- assert.deepEqual([...store.rows.values()].map(r=>r.state),['FAILED','FAILED','UNKNOWN']);
+ answer=intentFault('UNAVAILABLE','unknown','the proposal request got no answer','ECONNREFUSED');
+ const unknown=await call(m,{deliveryId:delivery(3)}).catch(error=>error);assert.equal(unknown.code,'UNKNOWN');assert.equal(unknown.detail,'the proposal request got no answer');assert.equal(unknown.reason,'ECONNREFUSED');
+ // A detail or reason on a plain error (not an intent fault) never travels: the owner's words are the only source.
+ answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'none',detail:'core.internal.example 11111111-1111-4111-8111-111111111111',reason:'SESSION_UNAVAILABLE'});
+ const plain=await call(m,{deliveryId:delivery(4)}).catch(error=>error);assert.equal(plain.code,'REFUSED');assert.equal(Object.hasOwn(plain,'detail'),false);assert.equal(Object.hasOwn(plain,'reason'),false);
+ assert.deepEqual([...store.rows.values()].map(r=>[r.state,r.outcome]).slice(2,3),[['UNKNOWN',null]]);
+ assert.deepEqual([...store.rows.values()].map(r=>r.state),['FAILED','FAILED','UNKNOWN','FAILED']);
 });
 
 test('UNKNOWN after a lost owner acknowledgement: never prepared again, never released as success',async()=>{

@@ -9,36 +9,35 @@ import {researchActionValidators as validators,validateShape} from '../../../pac
 import {RESEARCH_ACTION_INTENTS} from '../../../packages/contracts/retrieval-0.2/research-portfolio-action-validation.mjs';
 import {intentFault} from '../../control/intents/faults.mjs';
 const prefix='/api/clio/action-proposals',token=/^[\x21-\x7e]{1,8192}$/u;
-const refuse=(code='UNAVAILABLE',effect='none',detail)=>{throw intentFault(code,effect,detail);};
+/** A refusal decided by this client outside the request exchange (a malformed answer or argument): no owner effect. */
+const refuse=(code='UNAVAILABLE',effect='none')=>{throw intentFault(code,effect);};
 const sha=value=>createHash('sha256').update(value).digest('hex');
 const scalar=value=>value===null||['string','number','boolean'].includes(typeof value);
-const EFFECTS=new Set(['none','unknown']),ownValue=(error,name)=>error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,name)?.value:undefined;
+const ownValue=(error,name)=>error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,name)?.value:undefined;
 /** A proposal POST answered with one of these statuses created nothing: Core's create refuses before its transaction
  * (400 invalid input, 401/403 identity or service authority, 404 conversation or route, 422 validation) and only ever
  * answers 201 after it. The preview edge answers 404 for a route it does not forward, so Core never saw the request. */
 const DEFINITE_REFUSALS=new Set([400,401,403,404,422]);
-/** Why the owner request never got an answer, as a closed token for the control log line (never a host, URL or message): the
- * session owner's own constant before dispatch (`SESSION_UNAVAILABLE`), or the transport failure's own code after it
- * (`ECONNREFUSED`, `ENOTFOUND`, `UNABLE_TO_VERIFY_LEAF_SIGNATURE`, `ERR_...`), else the error's name. */
-function transportReason(error,sent){
- const token=[ownValue(error,'code'),ownValue(ownValue(error,'cause'),'code'),ownValue(error,'name')].find(value=>typeof value==='string'&&/^[A-Z][A-Z0-9_]{1,62}$/u.test(value)&&!['Error','TypeError'].includes(value));
- return token===undefined?undefined:`${sent?'the proposal request got no answer':'the proposal request was not sent'} (${token})`;
-}
-/** The owner's own bounded refusal token (`{"error":"PREVIEW_ROUTE_NOT_FOUND"}` or a Nest `{"message":...}`), read within
- * the same lifetime from at most 1 KiB of the answer, so the explained refusal names who answered; anything else is dropped. */
+/** One owner constant for control's log line (`SESSION_UNAVAILABLE`, `ECONNREFUSED`, `UNABLE_TO_VERIFY_LEAF_SIGNATURE`,
+ * `PREVIEW_ROUTE_NOT_FOUND`): never a message, host, identifier or free text. */
+const TOKEN=/^[A-Z][A-Z0-9_]{1,62}$/u;
+const tokenOf=error=>[ownValue(error,'code'),ownValue(ownValue(error,'cause'),'code'),ownValue(error,'name')].find(value=>typeof value==='string'&&TOKEN.test(value));
+/** The answering owner's own constant (`{"error":"PREVIEW_ROUTE_NOT_FOUND"}`), read within the same lifetime from at most 1 KiB
+ * of a definite refusal; a message, a host or anything not constant-shaped is dropped. */
 async function refusalToken(response,life){
  let reader;try{
   const stream=responseBody(response);if(!stream||!/^application\/json/iu.test(response.headers.get('content-type')??''))return undefined;
   reader=stream.getReader();const chunks=[];let bytes=0;
   while(bytes<1024){const part=await life.run(()=>reader.read());if(part.done)break;if(!(part.value instanceof Uint8Array))return undefined;bytes+=part.value.byteLength;chunks.push(part.value);}
-  const parsed=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks))),token=[parsed?.error,parsed?.message].find(value=>typeof value==='string');
-  return typeof token==='string'&&/^[A-Za-z0-9 _.:-]{1,80}$/u.test(token)?token:undefined;
+  const parsed=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks)));
+  return [parsed?.error,parsed?.message].find(value=>typeof value==='string'&&TOKEN.test(value));
  }catch{return undefined;}finally{try{reader?.releaseLock();}catch{}}
 }
 export function createResearchActionCoreClient({origin,getCredentials,getServiceSecret,reservedCredentials,now,fetchImpl=globalThis.fetch,maxRequestMs=10000}){
  origin=retainedOrigin(origin);
  if([getCredentials,getServiceSecret,reservedCredentials,now,fetchImpl].some(fn=>typeof fn!=='function'))refuse();
- async function call(selection,method,path,body,effect=false){
+ /** `kind` names the request in the user's terms for the explained failure. */
+ async function call(selection,method,path,body,effect=false,kind='the request'){
   const life=createOperationLifetime({now,signal:selection.signal,deadlineMs:Math.min(selection.deadlineMs??Infinity,now()+maxRequestMs),errorFactory:code=>intentFault(code)});
   let acquired,sent=false;
   try{
@@ -54,22 +53,26 @@ export function createResearchActionCoreClient({origin,getCredentials,getService
    sent=true;
    acquired=await life.run(signal=>fetchImpl(origin+path,{method,redirect:'error',credentials:'omit',cache:'no-store',signal,
     headers:{authorization:'Bearer '+first.credential,'x-internal-service-secret':secret,accept:'application/json','accept-encoding':'identity',...(body===undefined?{}:{'content-type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})}));
-   if(acquired?.redirected)refuse('UNAVAILABLE',effect?'unknown':'none');
+   if(acquired?.redirected)refuse('UNAVAILABLE');
    if(![200,201].includes(acquired?.status)){
     const status=acquired?.status,code=[401,403].includes(status)?'ACCESS_DENIED':[400,404,409,422].includes(status)?'REFUSED':'UNAVAILABLE';
-    // A definite refusal of the proposal POST left nothing behind: the delivery settles FAILED with the answering owner's
-    // token, never UNKNOWN. A 409, a 5xx or a lost answer after dispatch still may have created the proposal.
-    const definite=effect&&path===prefix&&method==='POST'&&DEFINITE_REFUSALS.has(status),token=definite?await refusalToken(acquired,life):undefined;
-    refuse(code,definite||!effect?'none':'unknown',definite?`HTTP ${status}${token===undefined?'':' '+token} answered the proposal request before any proposal was created`:undefined);
+    // A definite refusal of the proposal POST left nothing behind: the delivery settles FAILED, with the answering owner's
+    // constant as the reason for the log line. Only this path decides its effect; a 409, a 5xx or a lost answer after dispatch
+    // still may have created the proposal and keeps the unknown effect below.
+    if(effect&&path===prefix&&method==='POST'&&DEFINITE_REFUSALS.has(status))throw Object.assign(intentFault(code,'none',`${kind} was answered before any proposal was created (HTTP ${status})`,(await refusalToken(acquired,life))??`HTTP_${status}`),{definite:true});
+    refuse(code);
    }
    // Nest's existing action-proposal POSTs return 201; the bounded reader otherwise expects 200.
    const response=acquired.status===201?new Response(responseBody(acquired),{status:200,headers:acquired.headers}):acquired;
    const value=data(await readJsonResponse(response,{lifetime:life,maxResponseBytes:4194304}));
-   if((await borrow()).credential!==first.credential)refuse('ACCESS_DENIED',effect?'unknown':'none');life.check();return value;
+   if((await borrow()).credential!==first.credential)refuse('ACCESS_DENIED');life.check();return value;
   }catch(error){
-   // A refusal that already names its effect (a definite 4xx answer above) keeps it; anything else after dispatch stays unknown.
-   const effectOf=ownValue(error,'effect'),detail=ownValue(error,'detail')??transportReason(error,sent);
-   throw intentFault(['ACCESS_DENIED','INVALID_ARGUMENTS','DEADLINE','CANCELLED','REFUSED'].includes(error?.code)?error.code:'UNAVAILABLE',EFFECTS.has(effectOf)?effectOf:sent&&effect?'unknown':'none',typeof detail==='string'?detail:undefined);
+   // Only the definite refusal above decides its own effect; anything else after dispatch stays unknown (Core may have acted),
+   // as on every other Core client. The detail says in plain words what happened; the owner's constant is the reason.
+   const definite=ownValue(error,'definite')===true,status=acquired?.status;
+   const detail=definite?error.detail:acquired===undefined?`${kind} ${sent?'got no answer':'was not sent'}`:Number.isSafeInteger(status)&&status<300?`${kind} was answered but could not be released`:`${kind} was answered HTTP ${Math.floor(status/100)}xx`;
+   const reason=definite?error.reason:Number.isSafeInteger(status)&&status>=300?`HTTP_${status}`:tokenOf(error);
+   throw intentFault(['ACCESS_DENIED','INVALID_ARGUMENTS','DEADLINE','CANCELLED','REFUSED'].includes(error?.code)?error.code:'UNAVAILABLE',definite?'none':sent&&effect?'unknown':'none',detail,reason);
   }
   finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life.close();}
  }
@@ -88,27 +91,27 @@ export function createResearchActionCoreClient({origin,getCredentials,getService
  return Object.freeze({
   async readManagement({binding,selectedClientId,request,signal,deadlineMs}){
    if(!validators.isManagementRead('manage_research_portfolio',request,{binding}))refuse('INVALID_ARGUMENTS');
-   const result=await call({binding,selectedClientId,signal,deadlineMs},'POST','/api/clio/tools/manage_research_portfolio',{version:1,input:request,currentTurn:{tenantId:binding.tenantId,userId:binding.actorId,conversationId:binding.conversationId,selectedClientId}});
+   const result=await call({binding,selectedClientId,signal,deadlineMs},'POST','/api/clio/tools/manage_research_portfolio',{version:1,input:request,currentTurn:{tenantId:binding.tenantId,userId:binding.actorId,conversationId:binding.conversationId,selectedClientId}},false,'the management read');
    return validators.managementResult(request.action,result);
   },
   async prepare({binding,selectedClientId,operation,request,operationKey,signal,deadlineMs}){
    if(!RESEARCH_ACTION_INTENTS.includes(operation))refuse('INVALID_ARGUMENTS');
    const bound=validators.bind(operation,validators.normalizeInput(operation,request,{binding}),operationKey),selection={binding,selectedClientId,signal,deadlineMs};
    const answer=await call(selection,'POST',prefix,{version:1,proposal:{tool:operation,input:bound,conversationId:binding.conversationId,surface:'chat'},
-    currentTurn:{tenantId:binding.tenantId,userId:binding.actorId,conversationId:binding.conversationId,selectedClientId}},true);
-   if(answer?.disposition!=='pending_approval'||answer.proposal?.status!=='proposed'||answer.proposal.tool!==operation||Object.hasOwn(answer.proposal,'oneTimeResult'))refuse('REFUSED','unknown');
+    currentTurn:{tenantId:binding.tenantId,userId:binding.actorId,conversationId:binding.conversationId,selectedClientId}},true,'the proposal request');
+   if(answer?.disposition!=='pending_approval'||answer.proposal?.status!=='proposed'||answer.proposal.tool!==operation||Object.hasOwn(answer.proposal,'oneTimeResult'))throw intentFault('REFUSED','unknown','the proposal request was answered with something other than a pending proposal');
    const p=answer.proposal;
-   if(operation==='save_research_portfolio_output_to_client'&&p.preview?.client?.id!==bound.clientId)refuse('REFUSED','unknown');
+   if(operation==='save_research_portfolio_output_to_client'&&p.preview?.client?.id!==bound.clientId)throw intentFault('REFUSED','unknown','the proposal request was answered for another client');
    return {proposalId:p.proposalId,request:bound,preview:preview(p.preview,typeof p.preview?.portfolioId==='string'?p.preview.portfolioId:undefined),createdAt:p.createdAt,expiresAt:p.expiresAt};
   },
   async read({proposal,signal,deadlineMs}){
    validators.assertProposal(proposal);
-   const rows=await call({proposal,signal,deadlineMs},'GET',prefix+'?'+new URLSearchParams({conversationId:proposal.binding.conversationId,proposalId:proposal.proposalId}));
+   const rows=await call({proposal,signal,deadlineMs},'GET',prefix+'?'+new URLSearchParams({conversationId:proposal.binding.conversationId,proposalId:proposal.proposalId}),undefined,false,'the proposal status read');
    if(!Array.isArray(rows)||rows.length!==1)refuse();return decided(rows[0],proposal);
   },
   async decide({proposal,decision,signal,deadlineMs}){
    validators.assertProposal(proposal);if(!['approved','rejected'].includes(decision))refuse('INVALID_ARGUMENTS');
-   return decided(await call({proposal,signal,deadlineMs},'POST',prefix+'/'+proposal.proposalId+'/'+(decision==='approved'?'approve':'dismiss'),{},true),proposal);
+   return decided(await call({proposal,signal,deadlineMs},'POST',prefix+'/'+proposal.proposalId+'/'+(decision==='approved'?'approve':'dismiss'),{},true,'the decision request'),proposal);
   },
  });
 }

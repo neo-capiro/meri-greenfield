@@ -10,6 +10,7 @@ import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.m
 import {intentFixture,mountIntents} from '../../../worker/conversation/intents/test/fixture.mjs';
 import {delivery} from '../../../control/intents/test/fixture.mjs';
 import {createTurnTelemetry} from '../../telemetry/turn-context.mjs';
+import {intentFault} from '../../../control/intents/faults.mjs';
 const ORIGIN='https://control.synthetic.invalid',TASK='task-capability-synthetic',CONTROL='control-capability-synthetic';
 const CREATE={id:'create_task',version:'0.2.0'};
 function setup({enabled=true,clientEnabled=true,mount,limits,fetchHook,responseHook}={}){
@@ -99,26 +100,26 @@ test('an INVALID_ARGUMENTS answer carries the mount\'s field-path detail across 
   assert.equal(e.code,'INVALID_ARGUMENTS');assert.equal(Object.hasOwn(e,'detail'),false,JSON.stringify(odd));
  }
  // A refusal explains who answered (bounded, never values); the same shape rule applies, so an odd detail is dropped there too.
- const other=setup({responseHook:async()=>Response.json({error:{code:'REFUSED',detail:'HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created'}},{status:409})});
+ const other=setup({responseHook:async()=>Response.json({error:{code:'REFUSED',detail:'the proposal request was answered before any proposal was created (HTTP 404)'}},{status:409})});
  const e=await other.client.prepare({operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(9)}).catch(error=>error);
- assert.equal(e.code,'REFUSED');assert.equal(e.detail,'HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created');
+ assert.equal(e.code,'REFUSED');assert.equal(e.detail,'the proposal request was answered before any proposal was created (HTTP 404)');
  const odd=setup({responseHook:async()=>Response.json({error:{code:'REFUSED',detail:'x\n'}},{status:409})});
  const d=await odd.client.prepare({operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(9)}).catch(error=>error);
  assert.equal(d.code,'REFUSED');assert.equal(Object.hasOwn(d,'detail'),false);
 });
 test('control explains a failed preparation once in its own telemetry: closed code, whether the owner was reached, bounded detail',async t=>{
  const lines=[],telemetry=createTurnTelemetry({service:'control',write:line=>lines.push(JSON.parse(line)),now:()=>1800000000000});t.after(()=>telemetry.close());
- const detail='HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created';
+ const detail='the proposal request was answered before any proposal was created (HTTP 404)';
  const f=intentFixture({approverActorId:'actor'}),mountOf=prepare=>({readAvailability:v=>f.port.readAvailability(v),prepare});
  const appOf=prepare=>createRunnerIntentsApplication({resolveRun:async()=>mountOf(prepare),enabled:true,now:f.now,telemetry});
  const post=(app,body)=>app.handle(new Request(ORIGIN+RUNNER_INTENT_PATHS.prepare,{method:'POST',headers:{'content-type':'application/json',authorization:'Bearer '+TASK},body:JSON.stringify(body)}));
  const body={binding:f.binding,operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(1)};
- const refused=await post(appOf(async()=>{throw Object.assign(Error('REFUSED'),{code:'REFUSED',detail});}),body);
+ const refused=await post(appOf(async()=>{throw intentFault('REFUSED','none',detail,'PREVIEW_ROUTE_NOT_FOUND');}),body);
  assert.equal(refused.status,409);assert.deepEqual(await refused.json(),{error:{code:'REFUSED',detail}});
  const unknown=await post(appOf(async()=>{throw Error('private owner detail');}),body);assert.equal(unknown.status,502);
  const prepared=await post(appOf(v=>f.port.prepare(v)),body);assert.equal(prepared.status,200,'a prepared delivery emits nothing');
- assert.deepEqual(lines.map(line=>[line.event,line.layer,line.code,line.dispatched,line.detail,line.runId===f.binding.runId]),
-  [['meri.intent.prepare','control','REFUSED','owner',detail,true],['meri.intent.prepare','control','UNKNOWN','owner',undefined,true]]);
+ assert.deepEqual(lines.map(line=>[line.event,line.layer,line.code,line.dispatched,line.detail,line.reason,line.runId===f.binding.runId]),
+  [['meri.intent.prepare','control','REFUSED','owner',detail,'PREVIEW_ROUTE_NOT_FOUND',true],['meri.intent.prepare','control','UNKNOWN','owner',undefined,undefined,true]]);
  assert.ok(lines.every(line=>!JSON.stringify(line).includes(f.binding.tenantId)&&!JSON.stringify(line).includes('private owner detail')));
 });
 test('control: a prepare cancelled after it reached the mount answers UNKNOWN, never a retryable refusal',async()=>{

@@ -87,7 +87,7 @@ test('a Research Portfolio request never needs the conversation id: the run bind
   // A request the advertised schema accepts but the canonical validator refuses (a model-supplied derived key) is still sent to
   // the port: the mount journals the refusal with its reason, the model reads INVALID_ARGUMENTS, and the conversation gets a card.
   const refused=await m.call('propose_research_portfolio_management',{operation:'manage_research_portfolio',arguments:{...create,parameters:{name:'x',idempotencyKey:'meri-rp-'+'0'.repeat(64)}}},{toolUseId:'toolu_rp_refused'});
-  assert.equal(refused.isError,true);assert.equal(text(refused),'INVALID_ARGUMENTS: mcp__meri_intents__propose_research_portfolio_management refused these arguments (not a canonical request for this conversation: derived keys (idempotencyKey, operationKey) and identity fields are never supplied); correct the named fields and supply literal arguments matching its input schema. Nothing has been changed.');
+  assert.equal(refused.isError,true);assert.equal(text(refused),'INVALID_ARGUMENTS: mcp__meri_intents__propose_research_portfolio_management refused these arguments (not a canonical request for this conversation: derived keys (the idempotency and operation keys) and identity fields are never supplied); correct the named fields and supply literal arguments matching its input schema. Nothing has been changed.');
   const rows=[...journal.store.rows.values()].map(r=>[r.state,r.outcome?.code??null]);
   assert.deepEqual(rows,[['PREPARED',null],['PREPARED',null],['FAILED','INVALID_ARGUMENTS']]);
   assert.equal(sent.length,2,'the refused request never reached Core');
@@ -96,12 +96,12 @@ test('a Research Portfolio request never needs the conversation id: the run bind
 });
 
 test('a REFUSED answer tells the model who refused and with what; without a detail the plain closed text stands',async()=>{
- const f=intentFixture();let detail='HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created';
+ const f=intentFixture();let detail='the proposal request was answered before any proposal was created (HTTP 404)';
  const port={readAvailability:v=>f.port.readAvailability(v),prepare:async()=>{throw Object.assign(Error('REFUSED'),{code:'REFUSED',layer:'control',...(detail===undefined?{}:{detail})});}};
  const m=await mountIntents(f,{port});
  try{
   const r=await m.call('propose_task',CREATE,{toolUseId:'toolu_refused'});failed(r,'REFUSED');
-  assert.equal(text(r),'REFUSED: mcp__meri_intents__propose_task was refused by its owner (HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created). Nothing has been changed.');
+  assert.equal(text(r),'REFUSED: mcp__meri_intents__propose_task was refused by its owner (the proposal request was answered before any proposal was created (HTTP 404)). Nothing has been changed.');
   detail=undefined;const plain=await m.call('propose_task',CREATE,{toolUseId:'toolu_refused_plain'});failed(plain,'REFUSED');
   assert.equal(text(plain),'REFUSED: mcp__meri_intents__propose_task was refused by its owner (arguments, permissions or current state). Nothing has been changed.');
   assert.deepEqual(m.runtime.receipts(),[]);

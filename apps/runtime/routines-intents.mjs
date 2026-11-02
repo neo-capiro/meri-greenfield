@@ -7,20 +7,22 @@ import {canonicalSha256 as hash} from '../../packages/contracts/validate.mjs';
 import {LEGACY_SCHEDULE_OPERATION_VERSION,scheduleOperationFamily} from '../../packages/contracts/schedule-operation-family.mjs';
 import {borrowedRunSession,assertActionSessionReceipt} from '../control/action-host/session/owner.mjs';
 import {SCHEDULE_INTENT_OPERATIONS} from '../control/intents/schedule-preparer.mjs';
-import {intentFault,INTENT_FAILURE_CODES} from '../control/intents/faults.mjs';
+import {intentFault,intentFaultDetail,intentFaultReason,INTENT_FAILURE_CODES} from '../control/intents/faults.mjs';
 const owners=new WeakMap();
 const CLOSED=new Set(INTENT_FAILURE_CODES),ownValue=(error,name)=>error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,name)?.value:undefined;
-/** The closed intent failure for one failed schedule preparation. The service's own closed answer passes through with its detail;
- * an UNKNOWN keeps its unknown effect (the routines journal may hold a preparation); a session or context refusal maps by its
- * own constant (`SESSION_UNAVAILABLE`, `ROUTINES_INVALID_REQUEST`, `ROUTINES_ACCESS_DENIED`, ...) to the closed code it names and
- * carries that constant as the bounded detail, so the conversation journal and the model learn what refused instead of a bare
- * REFUSED. Nothing here widens authority: every mapped failure happened before the schedule tool dispatched anything. */
+/** The closed intent failure for one failed schedule preparation. The service's own closed answer passes through with its detail
+ * and reason; an UNKNOWN keeps its unknown effect (the routines journal may hold a preparation); a session or context refusal
+ * maps by its own constant (`SESSION_UNAVAILABLE`, `ROUTINES_INVALID_REQUEST`, `ROUTINES_ACCESS_DENIED`, ...) to the closed code
+ * it names, with plain words as the detail and the constant as the reason for control's log line. Every mapped failure was
+ * raised before the schedule tool dispatched anything; this changes which closed code is reported, not what may run. */
+const WORDS=Object.freeze({UNAVAILABLE:'no live session or schedule service answered for this run',INVALID_ARGUMENTS:'the schedule request is not a canonical request',ACCESS_DENIED:'current access does not allow this schedule request',REFUSED:'the schedule service refused the request as it stands'});
 export function routineIntentFailure(error){
- const code=ownValue(error,'code'),detail=ownValue(error,'detail'),named=typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,62}$/u.test(code)?code:undefined;
- if(code==='UNKNOWN')return intentFault('UNKNOWN','unknown');
- if(typeof code==='string'&&CLOSED.has(code))return intentFault(code,'none',typeof detail==='string'?detail:undefined);
+ const code=ownValue(error,'code'),named=typeof code==='string'&&/^[A-Z][A-Z0-9_]{0,62}$/u.test(code)?code:undefined;
+ if(code==='UNKNOWN')return intentFault('UNKNOWN','unknown',undefined,intentFaultReason(error));
+ if(typeof code==='string'&&CLOSED.has(code))return intentFault(code,'none',intentFaultDetail(error),intentFaultReason(error));
  const closed=named===undefined?'REFUSED':/(?:^|_)UNKNOWN$/u.test(named)?'UNKNOWN':/(?:^|_)(?:INVALID_REQUEST|REQUEST)$/u.test(named)?'INVALID_ARGUMENTS':/(?:^|_)UNAVAILABLE$/u.test(named)?'UNAVAILABLE':/(?:^|_)ACCESS_DENIED$/u.test(named)?'ACCESS_DENIED':'REFUSED';
- return closed==='UNKNOWN'?intentFault('UNKNOWN','unknown'):intentFault(closed,'none',named);
+ // An error with no owned constant says nothing: a plain REFUSED with neither words nor reason.
+ return closed==='UNKNOWN'?intentFault('UNKNOWN','unknown',undefined,named):intentFault(closed,'none',named===undefined?undefined:WORDS[closed],named);
 }
 export function registerRoutineIntentOwner(context,factory){if(owners.has(context)||typeof factory!=='function')throw intentFault('INTENT_CONFIGURATION');owners.set(context,factory);}
 export function routineIntentPreparersFor(context,value){return owners.get(context)?.(value)??[];}
