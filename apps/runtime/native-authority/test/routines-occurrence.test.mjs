@@ -49,7 +49,7 @@ function multiplexed(h){
   return client.query(text,values);
  },release(error){client?.release(error);}};}};
 }
-async function harness({agentcore=false}={}){
+async function harness({agentcore=false,templateFor}={}){
  const h=await scheduledJobFixture({admit:false,allocated:false,agentcore}),signer=coreSigner({kid:'routine-fire-1'}),nowS=()=>Math.floor(h.now()/1000);
  const state={requests:[],signer,now:h.now,status:null,consent:{id:id(700),scopes:h.scopes,issuedAtS:nowS()-60,expiresAtS:nowS()+7*86400,revoked:false,limits:{maxCostMicrousd:2000000,maxRuntimeSeconds:900,retryLimit:0}}};
  // The schedule SQL fixture lacks the by-conversation occurrence SELECT; answer it from the fixture's own rows.
@@ -60,7 +60,7 @@ async function harness({agentcore=false}={}){
  const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions:h.template.versions,models:MODEL_CATALOG,limits:{startupMs:1000,shutdownMs:1000,requestMs:1000,requestBytes:131072},
   temporal:{taskQueue:'meri-schedules'},scheduledDispatch:{enabled:true,conversationTaskQueue:'meri-conversations',maxConcurrentActivities:1},
   routines:{enabled:true,core:{origin:CORE_ORIGIN,serviceSecretFile:'/run/meri/routines-service-secret',unattendedGrant:signer.pin}}};
- const owners={...(agentcore?{templateFor:()=>h.template}:{template:h.template}),retirement:h.options.retirement};
+ const owners={...(agentcore?{templateFor:templateFor??(()=>h.template)}:{template:h.template}),retirement:h.options.retirement};
  const control=composeRoutinesOccurrences({configuration,controlCapabilitySha256:capabilityDigest(CONTROL),pool,owners,transport,now:h.now});
  const urls=[];
  const native=createNativeCapabilityClient({configuration:{origin,maxResponseBytes:4194304},credential:CONTROL,now:h.now,
@@ -158,6 +158,20 @@ test('the worker\'s composed owners dispatch, hold and settle an occurrence thro
  assert.deepEqual(Object.keys(record).sort(),['authority','client','now','pool','retirement','runAdmission','runControl']);assert.equal(record.pool,h.pool);
 });
 
+test('an occurrence this deployment cannot admit is refused and settled, so later firings are not held behind it',async t=>{
+ // 2 Nov review: the template refusal answered 503 (no evidence), the dispatch reported UNKNOWN and its OPEN barrier refused
+ // every later firing of the schedule as SCHEDULE_OCCURRENCE_UNRESOLVED.
+ const h=await harness({agentcore:true,templateFor:()=>{throw Error('approved task differs from this deployment');}});t.after(h.close);
+ const owners=composeRoutinesWorkerOwners({configuration:h.configuration,pool:h.pool,client:h.temporal.client,now:h.now,transport:h.transport,...h.ports});
+ const jobOwner=createScheduledJobLifecycle({store:h.store,runControl:owners.runControl,retirement:owners.retirement,now:h.now,maxRequestMs:1000});
+ const dispatch=createScheduledDispatch({scheduleOwner:h.scheduleOwner,store:h.store,dispatcher:h.dispatcher,runs:h.runs,authority:owners.authority,taskInstructions:{async read(){return {instruction:h.input.request.prompt};}},
+  versions:h.template.versions,runAdmission:owners.runAdmission,jobOwner,now:h.now,maxRequestMs:1000});
+ const out=await dispatch.dispatch({occurrence:h.occurrence});
+ assert.equal(out.outcome,'REFUSED');assert.equal(out.code,'ROUTINES_OCCURRENCE_NOT_ADMISSIBLE');assert.equal(out.admitted,false);
+ assert.equal(h.occurrenceState(),'REFUSED');assert.deepEqual(counts(h),{bindings:0,inputs:0,runs:0});assert.equal(h.temporal.workflows.size,0);
+ h.advance(1);const later={...h.occurrence,workflowId:'later-firing',scheduledAt:new Date(h.now()).toISOString()};
+ assert.equal((await dispatch.dispatch({occurrence:later})).code,'ROUTINES_OCCURRENCE_NOT_ADMISSIBLE','the next firing is judged on its own, not held as UNRESOLVED');
+});
 test('the native operations require the exact control capability, POST JSON and closed bodies; composition states follow the declaration',async t=>{
  const h=await harness();t.after(h.close);const url=origin+'/v1/'+ROUTINES_OCCURRENCE_OPERATIONS.retire,body=JSON.stringify({binding:h.identity.binding});
  const call=(init={},target=url)=>h.control.application.handle(new Request(target,{method:'POST',headers:{authorization:'Bearer '+CONTROL,'content-type':'application/json'},body,...init}));

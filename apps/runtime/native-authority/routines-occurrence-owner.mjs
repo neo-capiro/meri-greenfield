@@ -87,7 +87,9 @@ export function createRoutinesOccurrenceOwner(options){
   if(v.occurrenceKey!==id.occurrenceKey)return refused('REQUEST');
   // Only this control's candidate principal is admitted here; a foreign owner's occurrence is refused before Core is asked.
   if(principal!==null&&!same(occ.projection.owner,principal))return refused('FOREIGN');
-  let admission;try{admission=storageMethod(admissionFor(occ,id.occurrenceKey),'admit');}catch{throw fault('UNAVAILABLE');}
+  // No template for this occurrence (its approved task or scope no longer matches this deployment's profile) is a definite
+  // refusal before any effect: the dispatch settles its barrier instead of holding every later firing behind it.
+  let admission;try{admission=storageMethod(admissionFor(occ,id.occurrenceKey),'admit');}catch{return refused('NOT_ADMISSIBLE');}
   try{
    const r=data(await admission({occurrence:occ,occurrenceKey:id.occurrenceKey,effect:data(v.effect),input:data(v.input),...(v.signal===undefined?{}:{signal:v.signal}),deadlineMs:now()+maxRequestMs}));
    own(r,['binding','requestSha256','expiresAtMs','replayed']);

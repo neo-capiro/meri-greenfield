@@ -49,7 +49,11 @@ test('native routine task keeps configured identity and pins the effective SDK p
  const configuration={agentcore:agentcoreConfig(),versions,sourceEnabled:true,models:MODEL_CATALOG,routines:{enabled:true,task:{taskId:binding.runId,version:3}}};
  const task=compileNativeRoutinesTask(configuration);assert.equal(task.taskId,binding.runId);assert.equal(task.version,3);
  assert.deepEqual(compileNativeRoutinesTask({...configuration,agentcore:Object.fromEntries(Object.entries(configuration.agentcore).reverse())}),task);
- for(const change of [c=>c.agentcore.runtimeVersion='3',c=>c.agentcore.runWindowMs=60000,c=>c.agentcore.maxOutputBytes--,
+ // A deploy changes the image digest and the AgentCore runtime version, never the approved profile; the operator version stays the knob.
+ const deployed=structuredClone(configuration);deployed.versions.imageDigest='sha256:'+'c'.repeat(64);deployed.agentcore.runtimeVersion='99';
+ assert.deepEqual(compileNativeRoutinesTask(deployed),task);
+ assert.notDeepEqual(compileNativeRoutinesTask({...configuration,routines:{enabled:true,task:{taskId:binding.runId,version:4}}}),task);
+ for(const change of [c=>c.agentcore.runtimeArn+='Other',c=>c.agentcore.policyRevision='p9',c=>c.agentcore.runWindowMs=60000,c=>c.agentcore.maxOutputBytes--,c=>c.versions.sdk='9.9.9',
   c=>c.versions.skillsDigest='c'.repeat(64),c=>c.sourceEnabled=false,c=>c.models.models[0].available=false,c=>c.intents={enabled:true}]){
   const altered=structuredClone(configuration);change(altered);assert.notEqual(compileNativeRoutinesTask(altered).manifestSha256,task.manifestSha256);
  }
@@ -63,6 +67,10 @@ test('native occurrence templates use each approved owner and scope, and retirem
  const general={...occurrence,projection:{...occurrence.projection,scopes:[{tenantId:template.principal.tenantId,kind:'private-user',resourceId:template.principal.actorId,policyRevision:template.policyRevision}]}};
  assert.equal(owners.templateFor(general).selectedClientId,null);
  assert.throws(()=>owners.templateFor({...occurrence,task:{...task,manifestSha256:'d'.repeat(64)}}));
+ // 2 Nov review: a deploy (new image digest and AgentCore runtime version) must leave an approved schedule admissible.
+ const deployed=structuredClone(configuration);deployed.versions={...deployed.versions,imageDigest:'sha256:'+'c'.repeat(64)};deployed.agentcore.runtimeVersion='99';
+ const after=createNativeRoutinesOccurrenceOwners({configuration:deployed,now:f.now,native:{async call(){throw Error('unused');}},store:{executions:{async settlement(){throw Error('unused');}}}});
+ assert.deepEqual(after.templateFor(occurrence).task,task);assert.deepEqual(after.templateFor(occurrence).versions,deployed.versions);
  await assert.rejects(owners.retirement.retire({binding:f.identity.binding}));settled=true;
  // A settled record is the runner's acknowledgement; without a provider-confirmed stop the retirement is honestly unproven.
  assert.deepEqual(await owners.retirement.retire({binding:f.identity.binding}),{physicalStopProven:false});stopped=true;
