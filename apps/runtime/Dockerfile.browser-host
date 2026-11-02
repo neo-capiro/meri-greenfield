@@ -43,8 +43,12 @@ WORKDIR /opt/meri
 # The host service imports shared worker and runtime modules; their locked dependency sets are installed exactly as the
 # runtime image installs them (the Claude Agent SDK package arrives as a module dependency of shared worker modules and is
 # never invoked here: this host has no query, provider credential or Bash process).
-COPY package.json package-lock.json ./
-RUN npm ci --ignore-scripts --no-audit --no-fund --omit=dev
+# The repository root declares no runtime dependency; the shared contracts and the modules beside them resolve ajv,
+# ajv-formats, canonicalize and saxes from /opt/meri/node_modules, so the contracts' own locked runtime set is installed
+# there.
+COPY packages/contracts/package.json packages/contracts/package-lock.json /tmp/meri-contracts-deps/
+RUN npm ci --prefix /tmp/meri-contracts-deps --ignore-scripts --no-audit --no-fund --omit=dev && \
+    mv /tmp/meri-contracts-deps/node_modules /opt/meri/node_modules && rm -rf /tmp/meri-contracts-deps
 COPY apps/runtime/package.json apps/runtime/package-lock.json ./apps/runtime/
 RUN npm ci --prefix apps/runtime --ignore-scripts --no-audit --no-fund --omit=dev
 COPY apps/worker/conversation/package.json apps/worker/conversation/package-lock.json ./apps/worker/conversation/
