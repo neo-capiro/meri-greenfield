@@ -114,3 +114,71 @@ test('an owner that completed the request from the trusted run explains its own 
  for(let i=0;i<2;i++)await assert.rejects(call(m),e=>e.code==='INVALID_ARGUMENTS'&&e.detail===detail);
  assert.equal(calls,1,'the refused delivery is answered from the journal');
 });
+
+test('a document draft is published to the conversation on preparation and on each replay, the offer carries the owner\'s formats, and a lost publication keeps the draft',async()=>{
+ const c=commandComposition(),scopes=[{tenantId:c.binding.tenantId,kind:'private-user',resourceId:c.binding.actorId,policyRevision:'r1'}];
+ const version={artifactId:'7'.repeat(8)+'-7777-4777-8777-'+'7'.repeat(12),versionId:'8'.repeat(8)+'-8888-4888-8888-'+'8'.repeat(12),binding:c.binding,scopes};
+ const published=[];let prepared=0,down=false;
+ const preparer={binding:c.binding,operation:{id:'create_word',version:'0.2.0'},owner:'document',formats:['docx','txt','xml','pdf'],async prepare(){prepared++;return {status:'draft',version};}};
+ const authority={async check({selection,selectionSha256}){return {authorized:true,selectionSha256,binding:selection.binding,scopes,checkedAtMs:NOW,expiresAtMs:NOW+60000};}};
+ const build=(store,publishDraft)=>createIntentMount({binding:c.binding,preparers:[preparer],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000},enabled:true,resultRelease:authority,...(publishDraft?{publishDraft}:{})});
+ const store=createMemoryJournalStore(),m=build(store,async({version:v,signal})=>{assert.ok(signal instanceof AbortSignal);published.push(v);if(down)throw Error('conversation store down');});
+ const word=extra=>m.prepare({operation:{id:'create_word',version:'0.2.0'},arguments:{operation:'create_word',format:'docx',title:'Note',content:{blocks:[]}},deliveryId:delivery(3),...extra});
+ const out=await word();assert.equal(out.status,'draft');assert.deepEqual(out.version,version);
+ assert.deepEqual(published,[version],'published exactly once from the first preparation');
+ assert.deepEqual(await word(),out);assert.equal(prepared,1);assert.deepEqual(published,[version,version],'a replay is answered from the journal and publishes again (idempotently), so a publication lost the first time is made good');
+ down=true;const second=await word({deliveryId:delivery(4)});assert.equal(second.status,'draft');assert.equal(published.length,3,'the publication was attempted');
+ assert.deepEqual([...store.rows.values()].map(r=>r.state),['PREPARED','PREPARED'],'a failed publication never withdraws the prepared draft');
+ down=false;assert.deepEqual(await word({deliveryId:delivery(4)}),second);assert.equal(published.length,4,'the retry of that delivery publishes the draft the first call lost');
+ const availability=await m.readAvailability();assert.deepEqual(availability.operations,[{id:'create_word',version:'0.2.0',formats:['docx','txt','xml','pdf']}]);
+ const plain=build(createMemoryJournalStore());assert.equal((await plain.prepare({operation:{id:'create_word',version:'0.2.0'},arguments:{operation:'create_word'},deliveryId:delivery(5)})).status,'draft','no publication port: the draft is still prepared');
+ for(const formats of [[],['DOCX'],['docx','docx'],'docx'])assert.throws(()=>createIntentMount({binding:c.binding,preparers:[{...preparer,formats}],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000}}),code('INTENT_CONFIGURATION'),JSON.stringify(formats));
+ assert.throws(()=>createIntentMount({binding:c.binding,preparers:[preparer],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000},publishDraft:'yes'}),code('INTENT_CONFIGURATION'));
+});
+
+test('a document draft is published only after the release check admits it: a revoked or expired grant publishes nothing',async()=>{
+ // Core's live revocation and the original-expiry check run inside the release; a card published before them would show a draft
+ // the conversation may no longer see. The order is release, then publication, on the first preparation and on every replay.
+ const c=commandComposition(),scopes=[{tenantId:c.binding.tenantId,kind:'private-user',resourceId:c.binding.actorId,policyRevision:'r1'}];
+ const version={artifactId:'7'.repeat(8)+'-7777-4777-8777-'+'7'.repeat(12),versionId:'8'.repeat(8)+'-8888-4888-8888-'+'8'.repeat(12),binding:c.binding,scopes};
+ const events=[];let now=NOW,revoked=false;
+ const preparer={binding:c.binding,operation:{id:'create_word',version:'0.2.0'},owner:'document',async prepare(){events.push('prepare');return {status:'draft',version};}};
+ const authority={async check({selection,selectionSha256}){
+  const releasing=selection.original!==null;if(releasing)events.push('release');
+  return {authorized:!(releasing&&revoked),selectionSha256,binding:selection.binding,scopes,checkedAtMs:now,expiresAtMs:now+60000};}};
+ const store=createMemoryJournalStore();
+ const m=createIntentMount({binding:c.binding,preparers:[preparer],journalStore:store.port,now:()=>now,limits:{maxRequestMs:5000},enabled:true,resultRelease:authority,
+  publishDraft:async({version:v})=>{events.push('publish');assert.deepEqual(v,version);}});
+ const word=n=>m.prepare({operation:{id:'create_word',version:'0.2.0'},arguments:{operation:'create_word',format:'docx',title:'Note',content:{blocks:[]}},deliveryId:delivery(n)});
+ // Revoked between capture and release: the draft is prepared (durable custody) but nothing is published.
+ revoked=true;await assert.rejects(word(6),code('ACCESS_DENIED'));
+ assert.deepEqual(events,['prepare','release'],'the release refused before any publication');
+ assert.deepEqual([...store.rows.values()].map(r=>r.state),['PREPARED']);
+ // The grant restored: the model's retry of that delivery is answered from the journal, released, then published.
+ revoked=false;events.length=0;assert.equal((await word(6)).status,'draft');assert.deepEqual(events,['release','publish']);
+ // A fresh delivery: release first, then publication.
+ events.length=0;assert.equal((await word(7)).status,'draft');assert.deepEqual(events,['prepare','release','publish']);
+ // The original grant has expired: the replay is refused before Core is even asked, and nothing is published again.
+ events.length=0;now=NOW+60000;await assert.rejects(word(7),code('ACCESS_DENIED'));assert.deepEqual(events,[],'expired: no release receipt, no publication');
+ // Revoked on replay: the live check refuses and nothing is published.
+ now=NOW;revoked=true;await assert.rejects(word(7),code('ACCESS_DENIED'));assert.deepEqual(events,['release']);
+});
+
+test('a journal that refuses the explained row still settles the code: a refused delivery never stays PENDING',async()=>{
+ // 2 Nov: the 0002 outcome CHECK admitted a FAILED outcome of exactly {code}; every refusal settled with a detail rolled back and
+ // the three schedule deliveries stayed PENDING ("Preparing" for good). Until intents/0006 is applied, the code alone is journaled.
+ const base=createMemoryJournalStore(),detail='the routine owner answered: not a canonical routine request';
+ const attempts=[],store={...base,port:{...base.port,async settle(call){attempts.push(call.outcome);if(call.outcome!==null&&Object.hasOwn(call.outcome,'detail'))throw Error('synthetic CHECK violation');return base.port.settle(call);}}};
+ const c=commandComposition();let answer=intentFault('REFUSED','none',detail,'ROUTINES_INVALID_REQUEST');
+ const preparer={binding:c.binding,owner:'command',operation:CREATE,async prepare(){throw answer;}};
+ const {mount:m}=mount({binding:c.binding,preparers:[preparer],store});
+ const first=await call(m).catch(error=>error);
+ assert.equal(first.code,'REFUSED');assert.equal(first.detail,detail,'the live answer keeps the words');assert.equal(first.reason,'ROUTINES_INVALID_REQUEST');
+ assert.deepEqual([...base.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'REFUSED'}]]);assert.deepEqual(attempts,[{code:'REFUSED',detail},{code:'REFUSED'}],'explained first, then the code alone');
+ const replayed=await call(m).catch(error=>error);assert.equal(replayed.code,'REFUSED');assert.equal(replayed.detail,undefined,'the journal replays what it kept');
+ // A journal that refuses even the code leaves the row PENDING and the fault still explains itself; nothing is thrown past it.
+ const down={...base,port:{...base.port,async settle(){throw Error('synthetic journal down');}}};
+ const {mount:d}=mount({binding:c.binding,preparers:[preparer],store:down});answer=intentFault('REFUSED','none',detail);
+ const unsettled=await call(d,{deliveryId:delivery(2)}).catch(error=>error);assert.equal(unsettled.code,'REFUSED');assert.equal(unsettled.detail,detail);
+ assert.equal([...base.rows.values()].at(-1).state,'PENDING');
+});

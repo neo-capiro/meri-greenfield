@@ -201,3 +201,20 @@ test('a general (private-user) conversation prepares with a null selected client
  const f=setup('watch_research_portfolio',{selected:false}),{proposal}=await f.prepare();assert.equal(proposal.scopes[0].kind,'private-user');
  assert.equal((await f.decide(proposal)).proposalStatus,'succeeded');
 });
+
+test('Core\'s own "proposals are disabled" 503 is a definite refusal: FAILED with the gate named, never UNKNOWN',async()=>{
+ // 2 Nov preview: MERIV2_ACTION_PROPOSALS_ENABLED was unset on the preview Core task, every proposal POST answered 503
+ // "MeriV2 action proposals are disabled." in about 1 ms before any proposal existed, and every card ended "Result uncertain".
+ const f=setup('manage_research_portfolio');f.state.edge={status:503,body:{statusCode:503,message:'MeriV2 action proposals are disabled.',error:'Service Unavailable'}};
+ const e=await f.prepare().catch(error=>error);
+ assert.equal(e.code,'UNAVAILABLE');assert.equal(e.detail,'the proposal request was refused because proposals are switched off at the backend, so nothing was created (HTTP 503)');assert.equal(e.reason,'CORE_PROPOSALS_DISABLED');
+ assert.deepEqual([...f.store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'UNAVAILABLE',detail:e.detail}]]);assert.equal(f.state.prepares,0);
+ const listed=await f.list();assert.equal(listed.intents[0].state,'failed');assert.equal(listed.intents[0].code,'UNAVAILABLE');
+ const again=await f.prepare().catch(error=>error);assert.equal(again.code,'UNAVAILABLE');assert.equal(again.detail,e.detail);assert.equal(f.state.paths.filter(p=>p.method==='POST').length,1,'replayed from the journal');
+ // Any other 503 (Core overloaded after dispatch, a gateway in front of it) may have created the proposal: UNKNOWN as before.
+ for(const body of [{message:'Service Unavailable'},{statusCode:503,error:'Service Unavailable'},'<html>']){
+  const g=setup('manage_research_portfolio');g.state.edge={status:503,body};
+  const u=await g.prepare().catch(error=>error);assert.equal(u.code,'UNKNOWN',JSON.stringify(body));assert.equal(u.reason,'HTTP_503');
+  assert.deepEqual([...g.store.rows.values()].map(r=>r.state),['UNKNOWN']);
+ }
+});

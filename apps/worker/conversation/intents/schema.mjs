@@ -23,14 +23,22 @@
  *   application admits (`apps/control/document-application/format-admission.mjs`, never a copied table), and a
  *   canonical `oneOf` becomes one advertised branch per admitted format: every advertised branch is contained in
  *   the canonical branch it was narrowed from, and a row's branches stay disjoint on `format`, so no accepted body
- *   falls outside the canonical request. Default admission is advertised; a composition that additionally admits
- *   PDF is narrower here than its owner, never wider.
+ *   falls outside the canonical request. Default admission is advertised unless the run's offer declares the owner's
+ *   formats for the operation (`formats`, from the composed preparer: PDF only when the document application admits
+ *   it); an offered format outside the canonical branch is never advertised, so the tool stays narrower than its owner.
  * - `watch_action`: the canonical `WatchInput` couples its fields with `if/then` conditionals (the operations and target
  *   kinds each family admits, and the delivery flag only with `set_delivery`), which the conversion cannot express, so
  *   the row used to advertise an open record and the model guessed the fields. The watch owner's own tables
  *   (`WATCH_SUPPORTED`, `WATCH_TARGET_KINDS`) select the branches: one per family and operation group, each the
  *   canonical request with its conditionals resolved for that selection, so every branch is contained in the canonical
  *   request and the tables are proved against the canonical conditionals in the same step.
+ *
+ * A third kind, the BOUND projection, exists where the canonical request is a configuration the model cannot be expected
+ * to assemble (`schedule_task`: a Temporal calendar with eight range fields, a nine-field policy, limits and the fixed
+ * destination; on 2 Nov the model guessed three different shapes and every one was refused). The model gives a few plain
+ * fields and the trusted run completes the canonical request deterministically before the port (`server.mjs`); the
+ * canonical owner validates the completed request, and the proof here is that the completion is accepted by that owner's
+ * own validators for every advertised cadence (`test/schema.test.mjs`). A bound row advertises only its plain fields.
  *
  * A row whose canonical schema cannot be proved keeps the open record rather than advertising a contract that has
  * not been shown to match; `intentToolArguments` reports which rows those are.
@@ -41,6 +49,7 @@ import {createHash} from 'node:crypto';
 import {z} from 'zod';
 import {executionSchemaDependencies,executionSchemaSources} from '../../../../packages/contracts/retrieval-0.2/execution-schema-sources.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {isDeclaredFormats} from '../../../../packages/runtime/intent-formats.mjs';
 import {WORK_SELECTION_SCHEMA_ID,workSelectionSchema} from '../../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {admitDocumentDescriptor} from '../../../control/document-application/format-admission.mjs';
 import {WATCH_SUPPORTED,WATCH_TARGET_KINDS} from '../../../../packages/contracts/retrieval-0.2/watch-action-validation.mjs';
@@ -163,9 +172,10 @@ function admittedFormats(operation){
  return admission.formats;
 }
 /** The document rows' model-facing branches, one per admitted format of each canonical branch.
- * @param {{id:string,version:string}} operation @param {any} canonical @returns {Declaration[]} */
-function documentInput(operation,canonical){
- const admitted=admittedFormats(operation),branches=Array.isArray(canonical?.oneOf)?canonical.oneOf:[canonical],declarations=[];
+ * @param {{id:string,version:string}} operation @param {any} canonical @param {readonly string[]} [offered] the run's declared formats
+ * @returns {Declaration[]} */
+function documentInput(operation,canonical,offered){
+ const admitted=offered??admittedFormats(operation),branches=Array.isArray(canonical?.oneOf)?canonical.oneOf:[canonical],declarations=[];
  for(const branch of branches){
   const properties=branch?.properties;
   if(branch?.type!=='object'||branch.additionalProperties!==false||!properties||!Array.isArray(branch.required))fail();
@@ -233,7 +243,7 @@ function watchInput(_operation,canonical){
  return declarations;
 }
 /** Owner-lane declarations, by operation: the model-facing branches of that operation's canonical request.
- * @type {Readonly<Record<string,(operation:{id:string,version:string},canonical:any)=>Declaration[]>>} */
+ * @type {Readonly<Record<string,(operation:{id:string,version:string},canonical:any,offered?:readonly string[])=>Declaration[]>>} */
 const DECLARED=Object.freeze({save_memory:memoryInput,mail_send:mailInput,create_word:documentInput,create_excel:documentInput,create_powerpoint:documentInput,watch_action:watchInput});
 /** The model-facing projection of a canonical request that names its conversation: `conversationId` is the trusted run's
  * own identity (the server binds it before the port, `server.mjs`), so each canonical branch is advertised without it required
@@ -248,6 +258,41 @@ function conversationInput(_operation,canonical){
   return {advertised:{...branch,properties,required:branch.required.filter(field=>field!=='conversationId')},canonical:branch,rebound:['conversationId']};
  });
 }
+/** The schedule owner's bound projection: cadence, day, time and time zone become one calendar of the canonical policy;
+ * everything else is the fixed routine shape (results to the user's Meri inbox, the only destination the Core policy admits,
+ * `apps/control/schedules/runtime-context.mjs`; skip overlapping runs; pause after a failure; a one-hour catch-up window;
+ * requested limits the owner still clamps to the tenant's). The completion is deterministic, so a replay of the same
+ * delivery binds the same canonical request. */
+const WEEKDAYS=Object.freeze(['monday','tuesday','wednesday','thursday','friday','saturday','sunday']);
+export const SCHEDULE_CADENCES=Object.freeze(['daily','weekdays','weekly','monthly']);
+const TIME=/^(?:[01]\d|2[0-3]):[0-5]\d$/u,TIMEZONE=/^[A-Za-z][A-Za-z0-9_+-]*(?:\/[A-Za-z0-9_+-]+)*$/u;
+export const SCHEDULE_DEFAULTS=Object.freeze({destinationReference:'meri-inbox',timezone:'UTC',catchupWindowMs:3600000,
+ requestedLimits:Object.freeze({maxCostMicrousd:2000000,maxRuntimeSeconds:900,retryLimit:1})});
+const scheduleInput=()=>z.object({
+ taskInstruction:z.string().min(1).max(20000).describe('What Meri should do on each run, in full: the user\'s own words plus the scope (which client, portfolio, committee or topic)'),
+ cadence:z.enum(SCHEDULE_CADENCES).describe('"daily" (every day), "weekdays" (Monday to Friday), "weekly" (one weekday) or "monthly" (one day of the month)'),
+ day:z.union([z.enum(WEEKDAYS),z.number().int().min(1).max(28)]).optional().describe('weekly: the weekday name; monthly: the day of the month, 1 to 28; omit for daily and weekdays'),
+ time:z.string().regex(TIME).describe('The local time of day each run starts, 24-hour "HH:MM"'),
+ timezone:z.string().min(1).max(128).regex(TIMEZONE).optional().describe('IANA time zone of that time, such as "America/New_York"; UTC when omitted'),
+}).strict();
+const invalid=(/** @type {string} */detail)=>{throw Object.assign(Error('INVALID_ARGUMENTS'),{code:'INVALID_ARGUMENTS',layer:'worker',detail});};
+/** @param {any} a the model's schedule_task arguments, already admitted by `scheduleInput` */
+export function bindScheduleTask(a){
+ const one=(/** @type {any} */value)=>[{start:value,end:value,step:1}],[hour,minute]=String(a.time).split(':').map(Number),timezone=a.timezone??SCHEDULE_DEFAULTS.timezone;
+ let dayOfWeek='*',dayOfMonth='*',when;
+ if(a.cadence==='weekly'){if(typeof a.day!=='string')invalid('day: a weekly routine names its weekday');dayOfWeek=one(a.day.toUpperCase());when=`Every ${a.day[0].toUpperCase()+a.day.slice(1)}`;}
+ else if(a.cadence==='monthly'){if(typeof a.day!=='number')invalid('day: a monthly routine names its day of the month, 1 to 28');dayOfMonth=one(a.day);when=`Monthly on day ${a.day}`;}
+ else{if(a.day!==undefined)invalid('day: only weekly and monthly routines take a day');if(a.cadence==='weekdays')dayOfWeek=[{start:'MONDAY',end:'FRIDAY',step:1}];when=a.cadence==='weekdays'?'Every weekday':'Every day';}
+ when+=` at ${a.time} ${timezone}`;
+ return {taskInstruction:a.taskInstruction,destinationReference:SCHEDULE_DEFAULTS.destinationReference,requestedLimits:{...SCHEDULE_DEFAULTS.requestedLimits},
+  policy:{spec:{calendars:[{second:one(0),minute:one(minute),hour:one(hour),dayOfMonth,month:'*',year:'*',dayOfWeek,comment:when}],intervals:[],cronExpressions:[],skip:[],startAt:null,endAt:null,jitterMs:0,timezone},
+   overlap:'SKIP',catchupWindowMs:SCHEDULE_DEFAULTS.catchupWindowMs,pauseOnFailure:true,remainingActions:null,paused:false,note:when,runNow:false,runNowOverlap:'ALLOW_ALL'}};
+}
+/** Bound projections, by operation: the advertised plain fields and the trusted completion into the canonical request. */
+const BOUND=Object.freeze({schedule_task:Object.freeze({arguments:scheduleInput,bind:bindScheduleTask})});
+/** The trusted completion of one row's model arguments, or undefined where the row's arguments are sent as given.
+ * @param {{operation:{id:string,version:string}}} row @returns {((args:any)=>any)|undefined} */
+export function intentRowBinding(row){return BOUND[operationOf(row).id]?.bind;}
 /** @param {{operation:{id:string,version:string}}} row */
 function operationOf(row){
  const operation=row?.operation;
@@ -256,11 +301,15 @@ function operationOf(row){
 }
 /** The open record a row advertises while no canonical contract has been proved for it. */
 const record=()=>z.record(z.string(),z.unknown());
-/** The advertised `arguments` schema of one intent row.
- * @param {{operation:{id:string,version:string}}} row @returns {{operation:{id:string,version:string},mode:'declared'|'canonical'|'record',arguments:z.ZodType}} */
-export function intentRowArguments(row){
+/** The advertised `arguments` schema of one intent row. `offered`: the run's declared formats for a document row.
+ * @param {{operation:{id:string,version:string}}} row @param {readonly string[]} [offered]
+ * @returns {{operation:{id:string,version:string},mode:'bound'|'declared'|'canonical'|'record',arguments:z.ZodType}} */
+export function intentRowArguments(row,offered){
  const operation=operationOf(row),canonical=canonicalIntentInputSchema(intentDescriptor(operation).inputSchema);
- const declared=DECLARED[operation.id]?.(operation,canonical)??(conversationBound(row)?conversationInput(operation,canonical):undefined);
+ if(offered!==undefined&&!isDeclaredFormats(offered))fail();
+ const bound=BOUND[operation.id];
+ if(bound)return {operation,mode:'bound',arguments:bound.arguments()};
+ const declared=DECLARED[operation.id]?.(operation,canonical,offered)??(conversationBound(row)?conversationInput(operation,canonical):undefined);
  if(declared){
   const converted=declared.map(branch=>prove(branch.advertised,branch.canonical,branch.rebound));
   return {operation,mode:'declared',arguments:converted.length===1?converted[0]:z.union(/** @type {[z.ZodType,z.ZodType,...z.ZodType[]]} */(converted))};
@@ -283,12 +332,12 @@ export function conversationBound(row){
  return requires(canonical);
 }
 /** The `arguments` schema of one intent tool over its rows: its rows' advertised schemas, or the open record
- * while any of them still advertises none.
- * @param {readonly {operation:{id:string,version:string}}[]} rows */
-export function intentToolArguments(rows){
- const resolved=(Array.isArray(rows)?rows:[]).map(intentRowArguments);
+ * while any of them still advertises none. `formats`: the offer's declared document formats by `id@version` key.
+ * @param {readonly {operation:{id:string,version:string}}[]} rows @param {Map<string,readonly string[]>} [formats] */
+export function intentToolArguments(rows,formats){
+ const resolved=(Array.isArray(rows)?rows:[]).map(row=>intentRowArguments(row,formats?.get(canonicalSha256({id:row?.operation?.id,version:row?.operation?.version}))));
  if(!resolved.length)fail();
  if(resolved.some(row=>row.mode==='record'))return {mode:'record',arguments:record()};
- return {mode:resolved.some(row=>row.mode==='declared')?'declared':'canonical',
+ return {mode:resolved.some(row=>row.mode==='bound')?'bound':resolved.some(row=>row.mode==='declared')?'declared':'canonical',
   arguments:resolved.length===1?resolved[0].arguments:z.union(/** @type {[z.ZodType,z.ZodType,...z.ZodType[]]} */(resolved.map(row=>row.arguments)))};
 }

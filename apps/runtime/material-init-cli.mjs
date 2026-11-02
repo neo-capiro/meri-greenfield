@@ -3,6 +3,7 @@ import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {materializeStaticProductMaterial,parseStaticProductMaterialExpected,releaseStaticProductMaterial} from './material-init.mjs';
 import {materializeControlCaBundle} from './control-ca-bundle.mjs';
+import {materializeMaterialReceipt} from './material-receipt.mjs';
 
 export const materialInitEnvironment=Object.freeze({expected:'MERI_STATIC_MATERIAL_EXPECTED',bundle:'MERI_STATIC_MATERIAL_BUNDLE'});
 const usage='Usage: node apps/runtime/material-init-cli.mjs write [--control-node-ca] | --help\nExit codes: 0 success/help; 64 arguments; 78 missing/refused material; 1 cleanup/internal failure.\n';
@@ -26,7 +27,8 @@ export async function runMaterialInitCli(argv,{environment=process.env,writeOut=
    const text=bundleText;bundleText=undefined;return JSON.parse(text);
   }};
   const result=await materializeStaticProductMaterial({expected,delivery});
-  if(controlCa)try{await materializeControlCaBundle({configurationPath:result.configurationPath,expected});}
+  // The receipt (serving source for /health/live) follows the bundle into the same init-owned directory.
+  if(controlCa)try{await materializeControlCaBundle({configurationPath:result.configurationPath,expected});await materializeMaterialReceipt({expected});}
   catch(error){await releaseStaticProductMaterial(result.receipt);throw error;}
   writeOut(JSON.stringify({ready:true,role:result.receipt.role,fileCount:result.receipt.fileCount})+'\n');return 0;
  }catch(error){

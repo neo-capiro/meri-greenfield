@@ -74,8 +74,8 @@ runs).
   (`guard_allocation` five purpose gates, `guard_native_observer` `V2_CONTEXT_REQUIRED`) and the 0005/0006/0007
   constraints (`native_physical_phase`, `native_declaration_shape`, `host_allocation_certificate_window`) with
   `'native-processing'` widened to the two provisioned purposes; predecessor pins on the exact function bodies; legacy
-  rows and historical native rows untouched; the 0004 browser-only teardown receipt branch unchanged. Ordinal 85 in
-  `first-chat-migrate.mjs` (after main's 0032 at 84). `browser-only-provisioning-migration.test.mjs` recomputes the derivation.
+  rows and historical native rows untouched; the 0004 browser-only teardown receipt branch unchanged. Ordinal 86 in
+  `first-chat-migrate.mjs` (after main's 0032 at 84 and intents 0006 at 85). `browser-only-provisioning-migration.test.mjs` recomputes the derivation.
 - `native-reservations.mjs`, `postgres-allocations.mjs`, `allocation.mjs`, `native-physical-state.mjs`: provisioned
   purposes reserve, claim, record, bootstrap and admit same-row; a provisioned admission without a reservation refuses
   (the direct active insert remains legacy-only); `createPostgresHostAllocationReader.ready` answers the browser-only
@@ -137,10 +137,10 @@ subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step belo
    pointing at a throwaway database, run `node --test infra/product-preview/first-chat-database.test.mjs
    apps/control/browser-hosts/test/browser-only-provisioning-migration.test.mjs` and then the full plan
    `node infra/product-preview/first-chat-migrate.mjs integration` against that database twice (the second run must be a
-   no-op). Then snapshot `capiro-newstack-preview-clone` and apply ordinal 85
+   no-op). Then snapshot `capiro-newstack-preview-clone` and apply ordinal 86
    (`0008_browser_only_provisioning.sql`) with the existing `first-chat-migrate.mjs integration` stage. Verify:
    `guard_allocation()` and `guard_native_observer()` `prosrc` hashes changed from `ee96403b…`/`24b99863…`; the three
-   constraints are `convalidated`; the ledger has 85 rows. Rollback: the forward migration is reversible only by
+   constraints are `convalidated`; the ledger has 86 rows. Rollback: the forward migration is reversible only by
    restoring the snapshot (no browser-only rows exist before the first browser run).
 2. **Image.** Create the ECR repository `meri-greenfield/browser-host` (immutable tags, scan on push) if it does not
    exist. In the gate environment (WSL Codex-Gates): generate the browser stack lockfile once with

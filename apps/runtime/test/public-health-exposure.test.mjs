@@ -41,3 +41,30 @@ test('control binds the private listener with readiness and the public listener 
  calls.length=0;await listenControlApplications({configuration,publicApplication:app,privateApplication:null,readiness,listen});
  assert.equal(calls.length,1);assert.equal(calls[0].exposeReadiness,true);
 });
+
+const sourceCommit='8d22fb8a'.padEnd(40,'0');
+test('liveness names the serving source commit when the listener has one, on the public listener and the default alike',async()=>{
+ for(const exposeReadiness of [false,undefined]){
+  let fetch;const server={listening:true,on(){},once(){},close(cb){cb?.();},closeIdleConnections(){},address:()=>({port:0})};
+  const listener=await listenRuntime({configuration,application:{handle:async()=>new Response('app')},readiness,sourceCommit,
+   ...(exposeReadiness===undefined?{}:{exposeReadiness}),testOwners:{serve(options){fetch=options.fetch;return server;}}});
+  const live=await get(fetch,'/health/live');assert.equal(live.status,200);assert.deepEqual(await live.json(),{status:'live',sourceCommit});
+  await listener.close();
+ }
+});
+
+test('liveness carries no sourceCommit field when the listener has none; a malformed commit refuses the listener',async()=>{
+ const {fetch,listener}=await handlerFor(false);
+ const live=await get(fetch,'/health/live');assert.deepEqual(Object.keys(await live.json()),['status']);
+ await listener.close();
+ for(const bad of ['8d22fb8a','G'.repeat(40),sourceCommit.toUpperCase(),null,42])await assert.rejects(listenRuntime({configuration,application:{handle:async()=>null},readiness,sourceCommit:bad,testOwners:{serve(){assert.fail('no listener for a malformed commit');}}}),{message:/HTTP_CONFIGURATION/u});
+});
+
+test('control forwards the serving source commit to both listeners and nothing when it has none',async()=>{
+ const calls=[];const listen=async options=>{calls.push(options);return {close:async()=>({})};};
+ const app={handle:async()=>null},privateHttp={...configuration.http,port:8082};
+ await listenControlApplications({configuration:{...configuration,privateHttp},publicApplication:app,privateApplication:app,readiness,listen,sourceCommit});
+ assert.deepEqual(calls.map(call=>call.sourceCommit),[sourceCommit,sourceCommit]);
+ calls.length=0;await listenControlApplications({configuration:{...configuration,privateHttp},publicApplication:app,privateApplication:app,readiness,listen});
+ assert.deepEqual(calls.map(call=>'sourceCommit' in call),[false,false]);
+});

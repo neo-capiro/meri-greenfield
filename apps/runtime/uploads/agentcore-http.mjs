@@ -17,6 +17,8 @@ import {jsonBody} from '../../control/action-application/http.mjs';
 import {AGENTCORE_SESSION_HEADER} from '../agentcore-contract.mjs';
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {UPLOAD_NATIVE_MOUNT_MS,mountUploadNativeControl} from './control-lifecycle.mjs';
+import {UPLOAD_BAKED_DEFINITIONS_ROOT,UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS} from './native-sandbox.mjs';
+import {createSignedDefinitionStore,runDefinitionProgram} from './native-definitions.mjs';
 import {RUNTIME_CREDENTIAL_PATHS} from '../credential-inventory.mjs';
 import {agentcoreRuntimePlatform} from '../agentcore-platform.mjs';
 import {uploadInspectionFault,uploadInspectionPurpose,uploadInspectionRequest,uploadInspectionBody,
@@ -77,20 +79,22 @@ export function createUploadInspectionApplication({inspection=null,imageDigest,n
 /** The one environment entry this host reads: the runtime image digest its own deployment gave it. It is a DECLARED
  * expectation carried into the wire and into the receipts, never evidence that a running image was observed. */
 export const UPLOAD_INSPECTION_IMAGE_ENVIRONMENT='MERI_RENDERER_IMAGE_DIGEST';
-/** The closed container-side `uploads.native` declaration. This host names exactly one thing -- the image digest of
- * the deployment it runs in -- and no root, program, tool, session, runtime, budget or command can be selected from
- * the environment, a request or the upload. An absent or malformed digest declares NO native inspection, so the
- * purpose stays honestly unavailable instead of offering a scanner this host cannot attest. */
+/** The closed container-side `uploads.native` declaration. This host reads exactly one thing from its environment --
+ * the image digest of the deployment it runs in -- and names, as fixed image facts, the BAKED definitions root and
+ * the age it may serve. No root, program, tool, session, runtime, budget or command can be selected from the
+ * environment, a request or the upload. An absent or malformed digest declares NO native inspection, so the purpose
+ * stays honestly unavailable instead of offering a scanner this host cannot attest. */
 export function uploadInspectionHostConfiguration(environment=globalThis.process?.env??{},options={}){
  const digest=environment===null||typeof environment!=='object'?undefined:environment[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT];
  // `scratchRoot` and `definitionsRoot` are the same kind of narrow fixture port `mountUploadNativeControl` already
- // accepts from a test: production supplies NEITHER, so the fixed task-local image paths are what run, and a focused
- // check can point the composition at its own temporary roots instead of a shared one. Both remain absolute paths
- // validated by the declaration compiler.
+ // accepts from a test: production supplies NEITHER, so the fixed image paths are what run (the task-local scratch
+ // and the image-baked snapshot root), and a focused check can point the composition at its own temporary roots
+ // instead of a shared one. Both remain absolute paths validated by the declaration compiler.
  const scratch=typeof options.scratchRoot==='string'?{scratchRoot:options.scratchRoot}:{};
- const definitions=typeof options.definitionsRoot==='string'?{definitionsRoot:options.definitionsRoot}:{};
+ const definitionsRoot=typeof options.definitionsRoot==='string'?options.definitionsRoot:UPLOAD_BAKED_DEFINITIONS_ROOT;
  const native=typeof digest==='string'&&DIGEST.test(digest)
-  ?Object.freeze({enabled:true,imageDigest:digest,...scratch,...definitions}):Object.freeze({enabled:false});
+  ?Object.freeze({enabled:true,imageDigest:digest,definitionsRoot,maxDefinitionsAgeMs:UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS,...scratch})
+  :Object.freeze({enabled:false});
  return Object.freeze({uploads:Object.freeze({native})});
 }
 /** The container-side host join: this purpose's own startup composition, run BEFORE the application serves.
@@ -118,13 +122,27 @@ export function uploadInspectionHostConfiguration(environment=globalThis.process
  * as `boundedBy:'agentcore-microvm'`; without the verified environment, or without a resolved host hierarchy, the
  * finite-cgroup requirement stands unchanged.
  *
+ * The definitions this host scans with are the snapshot BAKED into its image (`UPLOAD_BAKED_DEFINITIONS_ROOT`,
+ * published at build time by `definitions-bake-cli.mjs`), resolved through a PINNED store: the composition is handed
+ * the store itself, so it builds no updater, the startup probe never refreshes, and a scan that finds the snapshot
+ * missing or older than `UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS` reports UPLOAD_DEFINITIONS_UNAVAILABLE / _STALE instead
+ * of fetching. The reason is the session model: an inspection session is a cold one-use microVM invoked seconds after
+ * boot under a 60 s wire deadline, so the previous task-local root (`/run/meri/upload-definitions`, empty on every
+ * boot) could only ever be answered by a full signed CVD download that never fit, and every cold session attempting
+ * it was one more full download from the vendor CDN through the VPC's one NAT address. The remedy for a stale baked
+ * snapshot is a rebuilt image, which the release cadence already produces.
+ *
  * A host that cannot attest the sandbox, observe the tools or resolve a signed snapshot yields `inspection:null` plus
  * the exact `missing` list, so the application answers 503 and no caller ever sees a fabricated scan. */
-export async function composeUploadInspectionHost({environment=globalThis.process?.env??{},now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,scratchRoot,definitionsRoot,hostCgroup}={}){
+export async function composeUploadInspectionHost({environment=globalThis.process?.env??{},now=Date.now,signal,deadlineMs,run,processing,paths,readFileImpl,scratchRoot,definitionsRoot,definitionsRun=runDefinitionProgram,hostCgroup}={}){
  const roots={...(scratchRoot===undefined?{}:{scratchRoot}),...(definitionsRoot===undefined?{}:{definitionsRoot})};
  const configuration=uploadInspectionHostConfiguration(environment,roots);
+ const native=configuration.uploads.native;
+ // `definitionsRun` is the same narrow fixed-program port the composition's own checks inject (sigtool verification
+ // of the baked containers); production supplies none, so the fixed definition programs run.
+ const pinned=native.enabled===true?createSignedDefinitionStore({root:native.definitionsRoot,now,run:definitionsRun,maxAgeMs:native.maxDefinitionsAgeMs}):undefined;
  const handle=await mountUploadNativeControl({configuration,now,signal,credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],platform:agentcoreRuntimePlatform(environment),
-  deadlineMs:Number.isSafeInteger(deadlineMs)?deadlineMs:now()+UPLOAD_NATIVE_MOUNT_MS,
+  deadlineMs:Number.isSafeInteger(deadlineMs)?deadlineMs:now()+UPLOAD_NATIVE_MOUNT_MS,...(pinned===undefined?{}:{definitions:pinned}),
   ...(processing===undefined?{}:{processing}),...(run===undefined?{}:{run}),...(paths===undefined?{}:{paths}),
   ...(readFileImpl===undefined?{}:{readFileImpl}),...(hostCgroup===undefined?{}:{hostCgroup})});
  const declared=configuration.uploads.native.enabled===true?configuration.uploads.native.imageDigest:null;

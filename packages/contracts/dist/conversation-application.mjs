@@ -24922,7 +24922,7 @@ function validate110(data, { instancePath = "", parentData, parentDataProperty, 
 }
 validate110.evaluated = { "dynamicProps": true, "dynamicItems": false };
 var validateError = validate118;
-var schema116 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "SESSION_REFUSED", "UNSUPPORTED_MEDIA_TYPE", "INVALID_REQUEST", "INVALID_CURSOR", "REQUEST_REPLAY_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "CONVERSATION_SELECTOR_REFUSED", "DEADLINE", "CANCELLED", "REQUEST_TOO_LARGE", "CONVERSATION_UNAVAILABLE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE", "FEEDBACK_TARGET_REFUSED", "FEEDBACK_SOURCE_REFUSED", "FEEDBACK_REVISION_CHANGED", "FEEDBACK_REPLAY_REFUSED", "FEEDBACK_LIMIT", "FEEDBACK_WRITE_UNKNOWN", "SKILL_SOURCES_UNAVAILABLE", "SKILL_SCOPE_REFUSED"] }, "sources": { "$ref": "#/$defs/SkillRefusalSources" }, "requiredScope": { "$ref": "#/$defs/SkillRequiredScope" } }, "required": ["code"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
+var schema116 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "SESSION_REFUSED", "UNSUPPORTED_MEDIA_TYPE", "INVALID_REQUEST", "INVALID_CURSOR", "REQUEST_REPLAY_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "CONVERSATION_SELECTOR_REFUSED", "DEADLINE", "CANCELLED", "REQUEST_TOO_LARGE", "CONVERSATION_UNAVAILABLE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE", "FEEDBACK_TARGET_REFUSED", "FEEDBACK_SOURCE_REFUSED", "FEEDBACK_REVISION_CHANGED", "FEEDBACK_REPLAY_REFUSED", "FEEDBACK_LIMIT", "FEEDBACK_WRITE_UNKNOWN", "SKILL_SOURCES_UNAVAILABLE", "SKILL_SCOPE_REFUSED", "TENANT_MONTHLY_CAP_REACHED"] }, "sources": { "$ref": "#/$defs/SkillRefusalSources" }, "requiredScope": { "$ref": "#/$defs/SkillRequiredScope" } }, "required": ["code"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
 var schema118 = { "enum": ["client", "general"] };
 function validate118(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
@@ -24972,7 +24972,7 @@ function validate118(data, { instancePath = "", parentData, parentDataProperty, 
                     if (data0.code !== void 0) {
                       let data1 = data0.code;
                       const _errs5 = errors2;
-                      if (!(data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "SESSION_REFUSED" || data1 === "UNSUPPORTED_MEDIA_TYPE" || data1 === "INVALID_REQUEST" || data1 === "INVALID_CURSOR" || data1 === "REQUEST_REPLAY_REFUSED" || data1 === "SCOPE_REFUSED" || data1 === "SESSION_CHANGED" || data1 === "STALE_WRITER" || data1 === "CONVERSATION_SELECTOR_REFUSED" || data1 === "DEADLINE" || data1 === "CANCELLED" || data1 === "REQUEST_TOO_LARGE" || data1 === "CONVERSATION_UNAVAILABLE" || data1 === "MODEL_SELECTION_UNAVAILABLE" || data1 === "MODEL_SETTINGS_UNAVAILABLE" || data1 === "FEEDBACK_TARGET_REFUSED" || data1 === "FEEDBACK_SOURCE_REFUSED" || data1 === "FEEDBACK_REVISION_CHANGED" || data1 === "FEEDBACK_REPLAY_REFUSED" || data1 === "FEEDBACK_LIMIT" || data1 === "FEEDBACK_WRITE_UNKNOWN" || data1 === "SKILL_SOURCES_UNAVAILABLE" || data1 === "SKILL_SCOPE_REFUSED")) {
+                      if (!(data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "SESSION_REFUSED" || data1 === "UNSUPPORTED_MEDIA_TYPE" || data1 === "INVALID_REQUEST" || data1 === "INVALID_CURSOR" || data1 === "REQUEST_REPLAY_REFUSED" || data1 === "SCOPE_REFUSED" || data1 === "SESSION_CHANGED" || data1 === "STALE_WRITER" || data1 === "CONVERSATION_SELECTOR_REFUSED" || data1 === "DEADLINE" || data1 === "CANCELLED" || data1 === "REQUEST_TOO_LARGE" || data1 === "CONVERSATION_UNAVAILABLE" || data1 === "MODEL_SELECTION_UNAVAILABLE" || data1 === "MODEL_SETTINGS_UNAVAILABLE" || data1 === "FEEDBACK_TARGET_REFUSED" || data1 === "FEEDBACK_SOURCE_REFUSED" || data1 === "FEEDBACK_REVISION_CHANGED" || data1 === "FEEDBACK_REPLAY_REFUSED" || data1 === "FEEDBACK_LIMIT" || data1 === "FEEDBACK_WRITE_UNKNOWN" || data1 === "SKILL_SOURCES_UNAVAILABLE" || data1 === "SKILL_SCOPE_REFUSED" || data1 === "TENANT_MONTHLY_CAP_REACHED")) {
                         validate118.errors = [{ instancePath: instancePath + "/error/code", schemaPath: "#/properties/error/properties/code/enum", keyword: "enum", params: { allowedValues: schema116.properties.error.properties.code.enum }, message: "must be equal to one of the allowed values" }];
                         return false;
                       }
@@ -28382,7 +28382,10 @@ var conversationErrorStatuses = freeze({
   // before any run exists (allocate, admit, submit) and carry their detail next to `code`: `sources` names the required
   // source ids no available read covers; `requiredScope` names the conversation scope the skill needs.
   SKILL_SOURCES_UNAVAILABLE: [400],
-  SKILL_SCOPE_REFUSED: [400]
+  SKILL_SCOPE_REFUSED: [400],
+  // Run admission refused: this month's recorded spend reached the tenant's monthly cap. Decided before any run is queued;
+  // only an administrator raising the cap (or the next month) admits another run.
+  TENANT_MONTHLY_CAP_REACHED: [429]
 });
 var RUN_REASON_CODES = freeze([
   "EXECUTION_FAILED",
@@ -28409,7 +28412,7 @@ var RUN_REASON_CODES = freeze([
   // failed: the answer exceeded the run's output byte limit
 ]);
 var conversationApplicationMetadata = freeze({
-  packageVersion: "0.1.16",
+  packageVersion: "0.1.17",
   schemaId: "urn:meri:conversation-application:0.4.0",
   wireContractVersion: "0.4.0",
   routes: {

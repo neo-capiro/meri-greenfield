@@ -164,8 +164,11 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/intents/migrations/0005_actor_inbox_index.sql','fd04b221c7ec9a7d058d709d806e4b9f113182b98803e12420a968ddcbdf9ad3','integration'],
  // Ordinal 84: per-run turn ceiling 1000 and the 100-turn / USD 10 never-configured defaults on the unchanged settings row (0021 immutable).
  ['migration',conversation('0032_sdk_run_turns_ceiling.sql'),'94219ab4dc92a2bdd28b37739254b674dd89226be043e73a7de0840701049ce8','integration'],
- // Ordinal 85: browser-only hosts join the provisioned lifecycle (reserve/dispatch/bootstrap/admit) on the unchanged table.
- ['migration','apps/control/browser-hosts/migrations/0008_browser_only_provisioning.sql','cde425c83f49eec6455a511d43daede77306fc8a8db28e5643df0a1ed5016825','integration'],
+ // Ordinal 85: a FAILED preparation may keep the owner's bounded plain-words detail beside its code (the 0002 outcome CHECK admitted
+ // only {code}; on 2 Nov every explained refusal rolled back and stayed PENDING). Same constraint name; no data, grant or index change.
+ ['migration','apps/control/intents/migrations/0006_failed_outcome_detail.sql','3e29055f13282aa0cc590639662d533f06a152df2d9e3bde2723540228b52ef6','integration'],
+ // Ordinal 86: browser-only hosts join the provisioned lifecycle (reserve/dispatch/bootstrap/admit) on the unchanged table.
+ ['migration','apps/control/browser-hosts/migrations/0008_browser_only_provisioning.sql','ed9163245b8aaa7a04a9c51b1a3bfeeca0b3f4defa78a85f9b7b8019cd2c3414','integration'],
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

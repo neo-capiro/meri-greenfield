@@ -28,7 +28,7 @@ function fixture(){
  const inspection=createUploadInspection({now,scanner:{async scan({file}){await state.onScan?.();return {...receipt(file),status:'clean',tool,definitionsSha256:'b'.repeat(64),reason:null};}},extractor:{async extract(){return state.extractionUnavailable?{...receipt(),status:'unavailable',tool:null,segments:[],limitations:['EXTRACTOR_UNAVAILABLE']}:{...receipt(),status:'available',tool,segments:state.segments??[],limitations:[]};}}});
  const journal=createMemoryRetentionJournal(),retention=createRetentionReadGate({journal:{...journal,get:async()=>state.suppressed?{state:'SUPPRESSED'}:null},serving:{isEnabled:()=>true}});
  const suppress=()=>journal.withTransition(`${binding.tenantId}:conversation:${binding.conversationId}`,async()=>{state.suppressed=true;});
- const removeOriginal=async({object})=>{if(state.hold)throw Error('LEGAL_HOLD');state.onDelete?.();return {deleted:true,objectId:object.objectId,versionId:object.versionId};};
+ const removeOriginal=async({object})=>{if(state.hold==='fault')throw Error('REMOVAL_FAULT');if(state.hold)throw Object.assign(Error('UPLOAD_REMOVAL_HELD'),{code:'UPLOAD_REMOVAL_HELD'});state.onDelete?.();return {deleted:true,objectId:object.objectId,versionId:object.versionId};};
  let sequence=20;const config={store,objects,inspection,current,retention,removeOriginal,now,ids:()=>id(sequence++)},options={deadlineMs:state.at+180000};
  const create=changes=>createUploadCustody({...config,...changes});
  const initiate=owner=>owner.initiate({requestId:id(10),declaration},options);
@@ -105,7 +105,10 @@ test('revoked access during scanning cannot publish extraction',async()=>{
 });
 test('removal suppresses serving first; holds and UNKNOWN deletion preserve exact original identity',async()=>{
  const f=fixture(),owner=f.create(),r=await f.initiate(owner);await owner.put(r.uploadId,f.bytes,f.options);await owner.inspect(r.uploadId,f.options);f.state.hold=true;
- await assert.rejects(owner.remove(r.uploadId,f.options),/LEGAL_HOLD/);assert.equal(f.state.rows.get(r.uploadId).state,'removing');assert.equal(f.state.rows.get(r.uploadId).object.versionId,'NATIVE_ORIGINAL_VERSION');
+ // A held original is the settled answer "serving stopped, deletion deferred": the record is reported as `removing`,
+ // never as an unknown outcome the caller should retry, while an unexplained removal fault still rejects.
+ const held=await owner.remove(r.uploadId,f.options);assert.equal(held.state,'removing');assert.equal(f.state.rows.get(r.uploadId).state,'removing');assert.equal(f.state.rows.get(r.uploadId).object.versionId,'NATIVE_ORIGINAL_VERSION');
+ f.state.hold='fault';await assert.rejects(owner.remove(r.uploadId,f.options),/REMOVAL_FAULT/);assert.equal(f.state.rows.get(r.uploadId).state,'removing');f.state.hold=true;
  await assert.rejects(owner.read(r.uploadId,f.options),{code:'UPLOAD_NOT_CLEAN'});f.state.hold=false;
  const removed=await f.create().remove(r.uploadId,f.options);assert.equal(removed.state,'removed');assert.equal(removed.inspection,null);assert.equal(removed.object.versionId,'NATIVE_ORIGINAL_VERSION');
 });

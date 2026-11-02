@@ -8,6 +8,8 @@ import {mount} from '../../../../control/intents/test/fixture.mjs';
 import {createResearchActionPreparers} from '../../../../control/intents/research-action-preparer.mjs';
 import {id} from '../../../../control/conversations/test/store-fixture.mjs';
 import {intentDeliveryId,MAX_INTENT_CALLS} from '../server.mjs';
+import {bindScheduleTask} from '../schema.mjs';
+import {intentFault} from '../../../../control/intents/faults.mjs';
 import {DEFERRED_ORIGINALS} from '../../reads/availability.mjs';
 import {UNAVAILABLE_INTENT_PORT} from '../../capabilities/mounts.mjs';
 import {INTENT_AVAILABILITY_WORKER_MS} from '../../../../../packages/runtime/runner-load-budget.mjs';
@@ -204,4 +206,52 @@ test('per-run write-request limit, operation/tool mismatch and token tampering a
   failed(await n.client.callTool({name:'propose_task',arguments:{...d.hookSpecificOutput.updatedInput,arguments:{title:'Swapped'}}}),'ACCESS_DENIED');
   assert.equal(g.metadataCalls.prepare,0);
  }finally{await n.close();}
+});
+
+test('a schedule request needs only cadence, day, time and time zone: the run completes the canonical routine request before the port',async()=>{
+ // 2 Nov: schedule_task advertised an open record; the model assembled three policy shapes and the routine owner refused each
+ // ("backend needs a more precisely structured request"). The plain fields are advertised and completed here, and the control
+ // mount admits the completed request against the canonical schema before the owner is called.
+ const f=intentFixture(),sent=[];
+ const preparer={binding:f.binding,owner:'schedule',operation:{id:'schedule_task',version:'0.2.0'},async prepare({arguments:request}){sent.push(request);throw intentFault('REFUSED','none','the routine was not accepted this time','ROUTINES_TEST');}};
+ const journal=mount({binding:f.binding,preparers:[f.preparer(),preparer],now:f.now}),m=await mountIntents(f,{port:journal.mount});
+ try{
+  const {tools}=await m.client.listTools(),tool=tools.find(t=>t.name==='propose_schedule');
+  assert.deepEqual(Object.keys(tool.inputSchema.properties.arguments.properties),['taskInstruction','cadence','day','time','timezone']);
+  assert.match(tool.description,/cadence \("daily", "weekdays", "weekly" or "monthly"\)/u);assert.match(tool.description,/the trusted run completes these into canonical input schema/u);
+  const args={taskInstruction:'Summarize new committee activity for the selected client.',cadence:'weekly',day:'monday',time:'09:00',timezone:'America/New_York'};
+  const answer=await m.call('propose_schedule',{operation:'schedule_task',arguments:args},{toolUseId:'toolu_sched_ok'});
+  assert.equal(answer.isError,true);assert.match(text(answer),/^REFUSED: /u);assert.match(text(answer),/the routine was not accepted this time/u);
+  assert.deepEqual(sent,[bindScheduleTask(args)],'the owner receives the completed canonical request, admitted by the mount');
+  assert.equal(sent[0].destinationReference,'meri-inbox');assert.deepEqual(sent[0].policy.spec.calendars[0].dayOfWeek,[{start:'MONDAY',end:'MONDAY',step:1}]);
+  assert.deepEqual([...journal.store.rows.values()].map(r=>[r.state,r.outcome?.code]),[['FAILED','REFUSED']]);
+  // A guessed policy shape is refused by the advertised fields before any correlation or port call; an incomplete cadence
+  // is refused here with the field named. Neither reaches the owner or the journal.
+  const guessed=await m.call('propose_schedule',{operation:'schedule_task',arguments:{taskInstruction:'x',policy:{spec:{calendars:[]}}}},{toolUseId:'toolu_sched_guess'});
+  assert.match(text(guessed),/Invalid arguments for tool propose_schedule/u);assert.match(text(guessed),/"cadence"/u);
+  const {day:_omitted,...noDayArgs}=args;
+  const noDay=await m.call('propose_schedule',{operation:'schedule_task',arguments:noDayArgs},{toolUseId:'toolu_sched_noday'});
+  assert.equal(noDay.isError,true);assert.match(text(noDay),/^INVALID_ARGUMENTS: mcp__meri_intents__propose_schedule refused these arguments \(day: a weekly routine names its weekday\)/u);
+  assert.equal(sent.length,1);assert.equal(journal.store.rows.size,1);
+ }finally{await m.close();}
+});
+
+test('a prepared draft\'s notice names the Office Workspace only when the run offers an Office owner',async()=>{
+ // `officeEditing` is the run's offer (an `office` row available), not the draft's format: a run without Office editing must not
+ // tell the model the document opens in the Workspace.
+ const f=intentFixture();
+ const draft={status:'draft',version:{versionId:'v-1',generationStatus:'draft',binding:f.binding,scopes:f.scopes}};
+ const notices=[];
+ for(const offerOffice of [false,true]){
+  const port={readAvailability:async v=>{const s=await f.port.readAvailability(v);return {...s,operations:[{id:'create_word',version:'0.2.0'},...(offerOffice?[{id:'propose_office_edit',version:'0.2.0'}]:[])]};},prepare:async()=>structuredClone(draft)};
+  const m=await mountIntents(f,{port});
+  try{
+   const tools=(await m.client.listTools()).tools.map(t=>t.name);assert.equal(tools.includes('propose_office_edit'),offerOffice);
+   const response=await m.call('request_document',{operation:'create_word',arguments:{operation:'create_word',format:'docx',title:'Note',content:{blocks:[{kind:'paragraph',style:'Normal',runs:[{text:'Hello'}]}]}}});
+   assert.equal(response.isError,undefined,JSON.stringify(response));assert.equal(JSON.parse(response.content[0].text).status,'draft');notices.push(response.content[1].text);
+  }finally{await m.close();}
+ }
+ assert.match(notices[0],/^PREPARED DRAFT: /u);assert.doesNotMatch(notices[0],/Workspace/u);
+ assert.match(notices[1],/\(Download, Details; Office documents open in the Workspace\)/u);
+ assert.equal(notices[1].replace('; Office documents open in the Workspace',''),notices[0],'the Office clause is the only difference');
 });

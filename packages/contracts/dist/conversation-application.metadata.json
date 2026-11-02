@@ -1,5 +1,5 @@
 {
-  "packageVersion": "0.1.16",
+  "packageVersion": "0.1.17",
   "schemaId": "urn:meri:conversation-application:0.4.0",
   "sources": [
     {
@@ -9,13 +9,13 @@
     },
     {
       "path": "../../apps/control/conversations/http.mjs",
-      "sha256": "5d623eeac2f87beaa727ae3a17d5d5840ecb2b2c7fae9b7ff7332e1eb0469843",
-      "bytes": 6977
+      "sha256": "fca1460ae319d2abf55560f4c4bedb88f2b2747fc7044e7188ebb28d28836a5a",
+      "bytes": 7090
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "ac62671105e6a01a5e6b4785a480f7f627283fb57547211495a8617a78b0a9bd",
-      "bytes": 40838
+      "sha256": "12b5bd58d89a8214412f1216f81c4bb381e87b5662312e11cd134c613d5ffbad",
+      "bytes": 41309
     },
     {
       "path": "../skills/./originals/bill_watch/1.1.1/manifest.json",
@@ -174,7 +174,7 @@
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "099152f48d07ddbd8e3b31d0fc5d439d38dff710a6f832f6598d104efb8f2985",
+      "sha256": "a8d07b199a93a0d35c1bcd5b403c870179c3ec357ccdb0510509fdc1c1eb1928",
       "bytes": 5185
     },
     {
@@ -194,8 +194,8 @@
     },
     {
       "path": "conversation-application/protocol.mjs",
-      "sha256": "4ecdb8014f1e1fc0229e26cdb0afb1c06ba2f6f195c57cc43217a7ac3e605f4e",
-      "bytes": 4242
+      "sha256": "2e76b3744229525a768ae4f46d23aef8df4083823604ab6489dab16911485943",
+      "bytes": 4485
     },
     {
       "path": "conversation-application/receive.mjs",
@@ -313,7 +313,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "880a041fccdea439f45e6b608b5d3c58aed1ac10511dd65aa3da4b377a9de5cf",
+  "schemaSha256": "7d472d1b442c86266b049f959bb45c8f8f0c2ff6d691bec479ab145246067e06",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",

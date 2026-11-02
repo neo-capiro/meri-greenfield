@@ -90,3 +90,18 @@ test('a write-owner failure after the call is UNKNOWN and never re-prepared; a n
  const garbage=createDocumentIntentPreparer({descriptor:descriptor('create_word'),binding,writes:{async execute(){return {version:{generationStatus:'final'}};}}});
  await assert.rejects(mount({binding,preparers:[garbage],now:()=>NOW}).mount.prepare({operation:WORD,arguments:spec,deliveryId:delivery(4)}),code('UNKNOWN'));
 });
+test('PDF is admitted for create_word only when the trusted composition says so, and the preparer declares its formats',async()=>{
+ const calls=[],writes={async execute(call){calls.push(call.request.format);throw Error('stop before any owner effect is read');}};
+ const plain=createDocumentIntentPreparer({descriptor:descriptor('create_word'),writes,binding});
+ assert.deepEqual(plain.formats,['docx','txt','xml']);
+ const pdf=createDocumentIntentPreparer({descriptor:descriptor('create_word'),writes,binding,pdf:true});
+ assert.deepEqual(pdf.formats,['docx','txt','xml','pdf']);
+ assert.deepEqual(Object.keys(pdf).sort(),['binding','formats','operation','owner','prepare']);
+ const request={operation:'create_word',format:'pdf',title:'Draft',content:{blocks:[{kind:'paragraph',style:'Normal',runs:[{text:'Hello'}]}]}};
+ // Without the admission the request never reaches the owner; with it the owner is called with the pdf request.
+ await assert.rejects(plain.prepare({arguments:request,deliveryId:delivery(20)}),code('INVALID_ARGUMENTS'));assert.deepEqual(calls,[]);
+ await assert.rejects(pdf.prepare({arguments:request,deliveryId:delivery(21)}),code('UNKNOWN'));assert.deepEqual(calls,['pdf']);
+ // PDF admission is create_word's alone; a non-boolean switch is a configuration fault.
+ assert.deepEqual(createDocumentIntentPreparer({descriptor:descriptor('create_excel'),writes,binding,pdf:false}).formats,['xlsx']);
+ for(const [op,value] of [['create_excel',true],['create_powerpoint',true],['create_word','yes']])assert.throws(()=>createDocumentIntentPreparer({descriptor:descriptor(op),writes,binding,pdf:value}),code('INTENT_CONFIGURATION'),op);
+});
