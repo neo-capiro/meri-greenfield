@@ -2,7 +2,7 @@
   "name": "@meri/browser-host-image",
   "version": "0.1.0",
   "private": true,
-  "description": "Pinned Playwright MCP and Chromium for the provisioned browser-only host image (apps/runtime/Dockerfile.browser-host). Not a product package; the lockfile owner generates package-lock.json in the gate environment before the image build.",
+  "description": "Pinned Playwright MCP and Chromium for the provisioned browser-only host image (apps/runtime/Dockerfile.browser-host). Not a product package; package-lock.json beside it is the locked install the image build runs.",
   "type": "module",
   "engines": {
     "node": ">=24 <25"

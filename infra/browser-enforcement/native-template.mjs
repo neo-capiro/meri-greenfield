@@ -99,37 +99,59 @@ export function compileNativeWatchdogTemplate(raw={enabled:false}){
  }catch{fail();}
 }
 
-/** Additional Control observation/ordinary cleanup rights, scoped to the selected deployment and original machine name. */
-export function nativeControlPolicy({deployment,stateMachineName}){
- const d=compileNativeDeployment(deployment);
- if(d.accountId!==ACCOUNT||d.region!==REGION||typeof stateMachineName!=='string'||!/^[A-Za-z0-9_-]{1,80}$/u.test(stateMachineName))fail();
+/** The provisioned purposes one policy covers: 1..2 of {deployment, instanceRoleArn} (the native-processing host and/or
+ * the browser-only host), each its own AMI and bootstrap document, all in this account and region. */
+function provisionedPurposes(purposes){
+ if(!Array.isArray(purposes)||purposes.length<1||purposes.length>2)fail();
+ const out=purposes.map(raw=>{
+  if(raw===null||typeof raw!=='object'||Object.keys(raw).sort().join(',')!=='deployment,instanceRoleArn')fail();
+  const d=compileNativeDeployment(raw.deployment);
+  if(d.accountId!==ACCOUNT||d.region!==REGION||!new RegExp(`^arn:aws:iam::${ACCOUNT}:role/[A-Za-z0-9_+=,.@/-]{1,512}$`,'u').test(raw.instanceRoleArn??''))fail();
+  return {deployment:d,instanceRoleArn:raw.instanceRoleArn};
+ });
+ if(out.length===2&&(out[0].deployment.launch.ImageId===out[1].deployment.launch.ImageId||
+  out[0].deployment.bootstrapSpec.document.name===out[1].deployment.bootstrapSpec.document.name))fail();
+ return out;
+}
+
+/** Additional Control observation/ordinary cleanup rights, scoped to each provisioned purpose's placement and the original machine name. */
+export function nativeControlPolicy({purposes,stateMachineName}){
+ const p=provisionedPurposes(purposes);
+ if(typeof stateMachineName!=='string'||!/^[A-Za-z0-9_-]{1,80}$/u.test(stateMachineName))fail();
  return policy([{Effect:'Allow',Action:reads,Resource:'*',Condition:regionCondition},
-  {Effect:'Allow',Action:['ec2:TerminateInstances'],Resource:instanceArn,Condition:owned(d.placement)},
+  ...p.map(({deployment:d})=>({Effect:'Allow',Action:['ec2:TerminateInstances'],Resource:instanceArn,Condition:owned(d.placement)})),
   {Effect:'Allow',Action:['states:DescribeExecution','states:GetExecutionHistory'],Resource:executionArn(stateMachineName)}]);
 }
 
-/** Source proposal for the existing worker role. IAM does not replace the durable single-use launch/SSM/graph owners. */
-export function nativeWorkerPolicy({deployment,stateMachineVersionArn,instanceRoleArn}){
- const d=compileNativeDeployment(deployment);
+/** Source proposal for the existing worker role. IAM does not replace the durable single-use launch/SSM/graph owners.
+ * Each provisioned purpose gets exactly its own launch (AMI, subnet, groups, type, profile, placement tag), instance role
+ * pass and bootstrap document; nothing is widened to cover the other purpose. */
+export function nativeWorkerPolicy({purposes,stateMachineVersionArn}){
+ const p=provisionedPurposes(purposes);
  const machine=new RegExp(`^arn:aws:states:${REGION}:${ACCOUNT}:stateMachine:([A-Za-z0-9_-]{1,80}):[1-9][0-9]*$`,'u').exec(stateMachineVersionArn??'');
- if(d.accountId!==ACCOUNT||d.region!==REGION||!machine||
-  !new RegExp(`^arn:aws:iam::${ACCOUNT}:role/[A-Za-z0-9_+=,.@/-]{1,512}$`,'u').test(instanceRoleArn??''))fail();
+ if(!machine)fail();
  const ec2=`arn:aws:ec2:${REGION}:${ACCOUNT}:`,volume=ec2+'volume/*';
  const tagKeys=['Project','MeriProvisionToken','MeriHostId','MeriGeneration','MeriPlacementSha256','MeriAllocationSha256','MeriDeclarationSha256'];
- const requestTags={StringEquals:{'aws:RequestedRegion':REGION,'aws:RequestTag/Project':'meri-greenfield','aws:RequestTag/MeriPlacementSha256':hash(d.placement)},
-  'ForAllValues:StringEquals':{'aws:TagKeys':tagKeys},Null:{'aws:TagKeys':'false',...Object.fromEntries(tagKeys.map(k=>[`aws:RequestTag/${k}`,'false']))}};
- const sendTags={StringEquals:{'aws:RequestedRegion':REGION,'ssm:resourceTag/Project':'meri-greenfield','ssm:resourceTag/MeriPlacementSha256':hash(d.placement)}};
+ const launch=({deployment:d,instanceRoleArn})=>{
+  const requestTags={StringEquals:{'aws:RequestedRegion':REGION,'aws:RequestTag/Project':'meri-greenfield','aws:RequestTag/MeriPlacementSha256':hash(d.placement)},
+   'ForAllValues:StringEquals':{'aws:TagKeys':tagKeys},Null:{'aws:TagKeys':'false',...Object.fromEntries(tagKeys.map(k=>[`aws:RequestTag/${k}`,'false']))}};
+  const sendTags={StringEquals:{'aws:RequestedRegion':REGION,'ssm:resourceTag/Project':'meri-greenfield','ssm:resourceTag/MeriPlacementSha256':hash(d.placement)}};
+  return [
+   {Effect:'Allow',Action:['ec2:RunInstances'],Resource:[`arn:aws:ec2:${REGION}::image/${d.launch.ImageId}`,ec2+`subnet/${d.placement.subnetId}`,
+    ...d.placement.securityGroupIds.map(id=>ec2+`security-group/${id}`),ec2+'network-interface/*'],Condition:regionCondition},
+   // The instance launches only with IMDSv2 required and a one-hop limit (native-observer.mjs NATIVE_HOST_METADATA_OPTIONS).
+   {Effect:'Allow',Action:['ec2:RunInstances'],Resource:instanceArn,Condition:{...requestTags,StringEquals:{...requestTags.StringEquals,
+    'ec2:InstanceType':d.launch.InstanceType,'ec2:InstanceProfile':`arn:aws:iam::${ACCOUNT}:instance-profile/${d.placement.iamInstanceProfile}`,
+    'ec2:MetadataHttpTokens':'required','ec2:MetadataHttpEndpoint':'enabled'},NumericEquals:{'ec2:MetadataHttpPutResponseHopLimit':1}}},
+   {Effect:'Allow',Action:['ec2:RunInstances'],Resource:volume,Condition:{...requestTags,Bool:{'ec2:Encrypted':'true'}}},
+   {Effect:'Allow',Action:['ec2:CreateTags'],Resource:[instanceArn,volume],Condition:{...requestTags,StringEquals:{...requestTags.StringEquals,'ec2:CreateAction':'RunInstances'}}},
+   {Effect:'Allow',Action:['iam:PassRole'],Resource:instanceRoleArn,Condition:{StringEquals:{'iam:PassedToService':'ec2.amazonaws.com'}}},
+   {Effect:'Allow',Action:['ssm:SendCommand'],Resource:`arn:aws:ssm:${REGION}:${ACCOUNT}:document/${d.bootstrapSpec.document.name}`,Condition:regionCondition},
+   {Effect:'Allow',Action:['ssm:SendCommand'],Resource:instanceArn,Condition:sendTags}];
+ };
  return policy([
   {Effect:'Allow',Action:['ec2:DescribeInstances'],Resource:'*',Condition:regionCondition},
-  {Effect:'Allow',Action:['ec2:RunInstances'],Resource:[`arn:aws:ec2:${REGION}::image/${d.launch.ImageId}`,ec2+`subnet/${d.placement.subnetId}`,
-   ...d.placement.securityGroupIds.map(id=>ec2+`security-group/${id}`),ec2+'network-interface/*'],Condition:regionCondition},
-  {Effect:'Allow',Action:['ec2:RunInstances'],Resource:instanceArn,Condition:{...requestTags,StringEquals:{...requestTags.StringEquals,
-   'ec2:InstanceType':d.launch.InstanceType,'ec2:InstanceProfile':`arn:aws:iam::${ACCOUNT}:instance-profile/${d.placement.iamInstanceProfile}`}}},
-  {Effect:'Allow',Action:['ec2:RunInstances'],Resource:volume,Condition:{...requestTags,Bool:{'ec2:Encrypted':'true'}}},
-  {Effect:'Allow',Action:['ec2:CreateTags'],Resource:[instanceArn,volume],Condition:{...requestTags,StringEquals:{...requestTags.StringEquals,'ec2:CreateAction':'RunInstances'}}},
-  {Effect:'Allow',Action:['iam:PassRole'],Resource:instanceRoleArn,Condition:{StringEquals:{'iam:PassedToService':'ec2.amazonaws.com'}}},
-  {Effect:'Allow',Action:['ssm:SendCommand'],Resource:`arn:aws:ssm:${REGION}:${ACCOUNT}:document/${d.bootstrapSpec.document.name}`,Condition:regionCondition},
-  {Effect:'Allow',Action:['ssm:SendCommand'],Resource:instanceArn,Condition:sendTags},
+  ...p.flatMap(launch),
   {Effect:'Allow',Action:['ssm:GetCommandInvocation'],Resource:'*',Condition:regionCondition},
   {Effect:'Allow',Action:['states:DescribeStateMachine','states:StartExecution'],Resource:stateMachineVersionArn},
   {Effect:'Allow',Action:['states:DescribeExecution'],Resource:executionArn(machine[1])},
@@ -139,13 +161,13 @@ export function nativeWorkerPolicy({deployment,stateMachineVersionArn,instanceRo
 export function compileNativeRuntimePolicyTemplate(raw={enabled:false}){
  try{
   const t=base('Additional native /2 policies on existing Control and Temporal worker roles; no role creation or application enablement.');
-  const b=enabled(raw,['deployment','stateMachineVersionArn','instanceRoleArn','controlRoleName','workerRoleName']);if(b===null)return t;
+  const b=enabled(raw,['purposes','stateMachineVersionArn','controlRoleName','workerRoleName']);if(b===null)return t;
   for(const name of [b.controlRoleName,b.workerRoleName])if(typeof name!=='string'||!/^[A-Za-z0-9_+=,.@-]{1,64}$/u.test(name))fail();
   if(b.controlRoleName===b.workerRoleName)fail();
   const worker=nativeWorkerPolicy(b),machine=b.stateMachineVersionArn.split(':').at(-2);
   t.Resources.NativeControlPolicy={Type:'AWS::IAM::Policy',Metadata:context('Existing Control owns original physical observation and ordinary cleanup.',[
    'No launch, SSM dispatch, redrive or graph mutation; retain policies required by unresolved historical contexts.']),
-   Properties:{PolicyName:'NativePhysicalObservation',Roles:[b.controlRoleName],PolicyDocument:nativeControlPolicy({deployment:b.deployment,stateMachineName:machine})}};
+   Properties:{PolicyName:'NativePhysicalObservation',Roles:[b.controlRoleName],PolicyDocument:nativeControlPolicy({purposes:b.purposes,stateMachineName:machine})}};
   t.Resources.NativeWorkerPolicy={Type:'AWS::IAM::Policy',Metadata:context('Existing worker owns reviewed /2 provisioning and exact-version watchdog admission.',[
    'No direct termination or redrive. RunInstances tagging is instance and root-volume only.','Match instance profile membership, document version/hash, network, source/image and effective policies before activation.']),
    Properties:{PolicyName:'NativeOriginalProvisioning',Roles:[b.workerRoleName],PolicyDocument:worker}};

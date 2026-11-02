@@ -1,7 +1,7 @@
 /** Private mTLS currentness listener. It owns only the network boundary and delegates durable authority to `store`.
  * An authenticated TLS peer is still merely a claim until the transactional store accepts its current credential. */
 import https from 'node:https';
-import {privateAddress,dnsName,tlsBytes,checkedCertificate} from './tls.mjs';
+import {privateAddress,dnsName,tlsBytes,checkedCertificate,MAX_PINNED_CERT_LIFETIME_MS} from './tls.mjs';
 import {HOST_CONTROL_PATH,HOST_CONTROL_MAX_BYTES,hostControlRequest,hostControlResponse,
  hostFactsRequest,hostFactsResponse,HOST_FACTS_PATH,HOST_FACTS_WIRE_MAX_BYTES,
  hostWorkflowRequest,hostWorkflowResponse,HOST_WORKFLOW_PATH,HOST_WORKFLOW_WIRE_MAX_BYTES,
@@ -79,7 +79,10 @@ function bounded(operation,signal){
 }
 
 /** `store.readCurrent` must consume nonce, authenticate the current credential and read canonical run state in one
- * acknowledged write transaction. A syntax-valid request or a verified TLS certificate alone is insufficient. */
+ * acknowledged write transaction. A syntax-valid request or a verified TLS certificate alone is insufficient.
+ * `bind.address` is a private IPv4 literal, loopback, or `0.0.0.0` for a Control task whose only interfaces are its
+ * awsvpc ENI and loopback (its private address is assigned at launch); the security group in front of the listener and
+ * the mutual TLS below decide who reaches it. The server certificate is Control's reviewed, fingerprint-pinned leaf. */
 export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs,maxConcurrent=32,maxSockets=maxConcurrent,
  now=Date.now,httpsModule=https}={}){
  if(!bind||!tls||typeof store?.readCurrent!=='function'||typeof store?.readFacts!=='function'||
@@ -89,11 +92,11 @@ export function createHostCurrentnessServer({bind,tls,store,maxFreshMs,requestMs
   !Number.isSafeInteger(maxConcurrent)||maxConcurrent<1||maxConcurrent>128||
   !Number.isSafeInteger(maxSockets)||maxSockets<maxConcurrent||maxSockets>256)fail();
  let address,serverName,cert,key,clientCa;
- try{address=privateAddress(bind.address);serverName=dnsName(tls.serverName);
+ try{address=bind.address==='0.0.0.0'?bind.address:privateAddress(bind.address);serverName=dnsName(tls.serverName);
   if(!Number.isSafeInteger(bind.port)||bind.port<0||bind.port>65535||
    bind.port===0&&address!=='127.0.0.1')fail();
   cert=tlsBytes(tls.cert);key=tlsBytes(tls.key);clientCa=tlsBytes(tls.clientCa);
-  checkedCertificate(cert,{name:serverName,nowMs:now()});
+  checkedCertificate(cert,{name:serverName,nowMs:now(),maxLifetimeMs:MAX_PINNED_CERT_LIFETIME_MS});
  }catch{fail();}
  let closed=false,starting,closing,active=0;const sockets=new Set(),lifetime=new AbortController();
  const server=httpsModule.createServer({cert,key,ca:clientCa,requestCert:true,rejectUnauthorized:true,

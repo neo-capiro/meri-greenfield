@@ -47,11 +47,13 @@ export async function createNativeWorkerOwners({configuration,native,owners={},n
  effectTimeoutMs=NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS}={}){
  const p=configuration?.nativeProvisioning;
  if(p?.enabled!==true)return null;
- const deployment=compileNativeDeployment(p.deployment);
- // The browser-only purpose shares the account, region, allocator, authority, issuer, SSM transport and watchdog; only
- // its image, launch and bootstrap differ, so it gets its own launch port and provisioning coordinator.
+ // Each provisioned purpose (native-processing `deployment`, browser-only `browserDeployment`) may stand alone. Together they
+ // share the account, region, allocator, authority, issuer, SSM transport and watchdog; only image, launch and bootstrap
+ // differ, so each gets its own launch port and provisioning coordinator.
+ const deployment=p.deployment===undefined?null:compileNativeDeployment(p.deployment);
  const browserDeployment=p.browserDeployment===undefined?null:compileNativeDeployment(p.browserDeployment);
- if(browserDeployment!==null&&(browserDeployment.accountId!==deployment.accountId||browserDeployment.region!==deployment.region||
+ const shared=deployment??browserDeployment;
+ if(shared===null||deployment!==null&&browserDeployment!==null&&(browserDeployment.accountId!==deployment.accountId||browserDeployment.region!==deployment.region||
   browserDeployment.bootstrapSpec.control.policySha256!==deployment.bootstrapSpec.control.policySha256))throw fault('NATIVE_WORKER_OWNERS_CONFIGURATION');
  if(typeof native?.call!=='function')throw fault('NATIVE_WORKER_OWNERS_CONFIGURATION');
  const createPool=owners.createPool,createEc2Client=owners.createEc2Client,createSsmTransport=owners.createSsmTransport,
@@ -88,17 +90,16 @@ export async function createNativeWorkerOwners({configuration,native,owners={},n
    read(p.issuerCaCertFile),read(p.issuerCaKeyFile)]);
   pool=(createPool??(options=>new Pool(options)))({connectionString:connectionString(database),max:10,
    connectionTimeoutMillis:configuration.limits.requestMs,idleTimeoutMillis:10000,query_timeout:configuration.limits.requestMs});
-  const policySha256=deployment.bootstrapSpec.control.policySha256;
+  const policySha256=shared.bootstrapSpec.control.policySha256;
   const remote=request=>{const {signal,...body}=request;return native.call('execution/native/host-authority',body,{signal});};
   const authority=createNativeWorkerAuthority({pool,remote,now,policySha256,maxFreshMs:configuration.limits.requestMs});
   const writer=createPostgresHostAllocationWriter({pool,now,readCurrentNativeAuthority:authority.verifyInTransaction});
-  const created=createEc2Client===undefined?await defaultEc2Client(deployment.region):createEc2Client({region:deployment.region});
+  const created=createEc2Client===undefined?await defaultEc2Client(shared.region):createEc2Client({region:shared.region});
   ec2=created.client??created;
-  const launch=createEc2NativeHostLaunchPort({ec2,launch:deployment.launch});
   if(createSsmTransport===undefined){
-   const owned=await defaultSsmClient(deployment.region);
+   const owned=await defaultSsmClient(shared.region);
    ownedSsmClient=owned.client;ssm=owned.transport;
-  }else ssm=createSsmTransport({region:deployment.region});
+  }else ssm=createSsmTransport({region:shared.region});
   issuer=createIssuer===undefined?createNativeHostCertificateIssuerFromMaterial({caPem,keyPem,now}):createIssuer({caPem,keyPem,now});
   for(const bytes of [database,caPem,keyPem])try{bytes.fill(0);}catch{}
   material=createMaterial===undefined?await createNativeHostMaterialOwner({writer,issuer,transport:ssm,now}):
@@ -106,14 +107,15 @@ export async function createNativeWorkerOwners({configuration,native,owners={},n
   if(p.watchdog===undefined)throw fault('NATIVE_WORKER_OWNERS_CONFIGURATION');
   if(createSfnClient===undefined){
    const sdk=await import('@aws-sdk/client-sfn');
-   stepFunctions=new sdk.SFNClient({region:deployment.region,maxAttempts:2});
-  }else stepFunctions=createSfnClient({region:deployment.region});
+   stepFunctions=new sdk.SFNClient({region:shared.region,maxAttempts:2});
+  }else stepFunctions=createSfnClient({region:shared.region});
   const readback=createManagedWatchdogReadback({...p.watchdog,now});
   watchdog=Object.freeze({makeIntent:args=>readback.makeIntent(args),arm:args=>readback.arm({...args,stepFunctions}),
    verify:args=>readback.verify({...args,stepFunctions}),readResult:args=>readback.readResult({...args,stepFunctions})});
   const hostAuthority={async verify({binding,generation,signal,deadlineMs}){return authority.preflight({binding,signal,
    deadlineMs:Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:now()+effectTimeoutMs,now()+effectTimeoutMs)});}};
-  const provisioner=createNativeHostProvisioning({writer,launch,material,deployment,watchdog,authority:hostAuthority,
+  const provisioner=deployment===null?undefined:createNativeHostProvisioning({writer,
+   launch:createEc2NativeHostLaunchPort({ec2,launch:deployment.launch}),material,deployment,watchdog,authority:hostAuthority,
    now,effectTimeoutMs,ownerId:owners.ownerId??undefined});
   const browserProvisioner=browserDeployment===null?undefined:createNativeHostProvisioning({writer,
    launch:createEc2NativeHostLaunchPort({ec2,launch:browserDeployment.launch}),material,deployment:browserDeployment,watchdog,
@@ -157,7 +159,7 @@ export async function createNativeWorkerOwners({configuration,native,owners={},n
     runtime:Object.freeze(runtime??{}),managed});
    throw Object.assign(fault('NATIVE_WORKER_HOST_CLEANUP_UNKNOWN'),{receipt:result});
   };
-  return Object.freeze({pool,authority,writer,launch,issuer,material,provisioner,...(browserProvisioner===undefined?{}:{browserProvisioner}),hostTeardown,close,
+  return Object.freeze({pool,authority,writer,issuer,material,...(provisioner===undefined?{}:{provisioner}),...(browserProvisioner===undefined?{}:{browserProvisioner}),hostTeardown,close,
    generationFor:binding=>{if(!binding||!Number.isSafeInteger(binding.writerFence)||binding.writerFence<1||
     !UUID.test(binding.conversationId))throw fault('NATIVE_WORKER_OWNERS_CONFIGURATION');return binding.writerFence;}});
  }catch(error){

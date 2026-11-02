@@ -29,6 +29,7 @@ const PRIVATE_EDGE_KEYS=Object.freeze({ControlPrivateOrigin:'controlPrivateOrigi
  * gateway actually exposes (from `tools/list`), which may be prefixed. Absent inputs keep today's behaviour. */
 export const WEB_SEARCH_OUTPUT_KEYS=Object.freeze(['GatewayUrl','TargetToolName']);
 const GATEWAY_HOST=/^[a-z0-9-]{1,63}\.gateway\.bedrock-agentcore\.us-east-1\.amazonaws\.com$/u,TOOL_NAME=/^[A-Za-z0-9_-]{1,64}$/u;
+const TARGET_GROUP=/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/[A-Za-z0-9_-]{1,32}\/[a-f0-9]{16}$/u;
 
 export const fail=(detail)=>{throw Object.assign(Error(`STAGE3_BINDING_REFUSED: ${detail}`),{code:'STAGE3_BINDING_REFUSED'});};
 const hex64=/^[a-f0-9]{64}$/u,versionId=/^[A-Za-z0-9-]{32,64}$/u;
@@ -104,8 +105,17 @@ export function webSearchBinding(outputs){
  return Object.freeze({gatewayUrl,toolName,region:REGION});
 }
 
+/** The host listener stack's target group (infra/browser-host/host-listener-stack.mjs `HostListenerTargetGroupArn`); the
+ * stack's other outputs are not consumed here. Absent: undefined. */
+export function hostListenerTargetGroup(outputs){
+ if(outputs===undefined||outputs===null)return undefined;
+ if(typeof outputs!=='object'||Array.isArray(outputs)||!TARGET_GROUP.test(outputs.HostListenerTargetGroupArn??''))
+  fail('hostListenerOutputs.HostListenerTargetGroupArn must be a target group ARN in this account and region');
+ return outputs.HostListenerTargetGroupArn;
+}
+
 /** Builds the application binding, then passes it through its renderer (see synthesizeStage3). */
-export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOutputs,renderSummary,renderedExpected,secretVersions,imageScans,liveAppTemplate,webSearchOutputs}){
+export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOutputs,renderSummary,renderedExpected,secretVersions,imageScans,liveAppTemplate,webSearchOutputs,hostListenerOutputs}){
  const d=deployment,f=foundationOutputs,roles=deploymentRoles(d),schedule=roles.includes('schedule-worker');
  checkFoundation(d,f);
  record(privateEdgeOutputs,'privateEdgeOutputs',Object.keys(PRIVATE_EDGE_KEYS));
@@ -132,6 +142,11 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
  for(const role of roles)if(typeof d.secrets[MATERIAL_SECRET_KEYS[role]]!=='string')fail(`deployment.secrets.${MATERIAL_SECRET_KEYS[role]}`);
  const net=stage3Network(d,f);
  const controlWebSearch=webSearchBinding(webSearchOutputs);
+ // The rendered control serves the host-currentness listener exactly when native processing rendered `browserHosts`; its
+ // container port is then attached to the host listener load balancer, and never without the listener.
+ const controlHostListenerTargetGroupArn=hostListenerTargetGroup(hostListenerOutputs);
+ if((s.features?.controlKeys?.includes('browserHosts')===true)!==(controlHostListenerTargetGroupArn!==undefined))
+  fail('the host-currentness listener (rendered browserHosts) and hostListenerOutputs must be supplied together');
 
  // (a) the existing control and Temporal worker services; SDK compute is the separately qualified AgentCore runtime.
  for(const key of ['runtimeArn','runtimeVersion','qualifier'])if(s.agentcore[key]!==d.agentcore?.[key])fail('rendered AgentCore '+key+' differs from deployment');
@@ -151,7 +166,7 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
   // The stacks are live: control keeps the public 8080 target group its live service is attached to, plus the private 8082 one.
   controlTargetGroupArn:liveControlTargetGroup(liveAppTemplate),controlPrivateTargetGroupArn:privateEdgeOutputs.ControlPrivateTargetGroupArn,
   // Control-only public search; absent keeps the app binding byte-identical to today's.
-  ...(controlWebSearch===undefined?{}:{controlWebSearch})};
+  ...(controlWebSearch===undefined?{}:{controlWebSearch}),...(controlHostListenerTargetGroupArn===undefined?{}:{controlHostListenerTargetGroupArn})};
 
  const expectedTaskDefinitions=Object.fromEntries(roles.map(role=>[role,s.roles[role].taskDefinitionArn]));
  return {stacks:{...STAGE3_STACKS},app,expectedTaskDefinitions,

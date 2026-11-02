@@ -2,7 +2,7 @@
  * and credentials come from the existing host owner; no public URL, credential
  * issuer, model listener, replay queue or allocation registry is introduced. */
 import https from 'node:https';
-import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate} from './control/tls.mjs';
+import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate,MAX_PINNED_CERT_LIFETIME_MS} from './control/tls.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {parseBytes} from '../../../../packages/contracts/document-application/boundary.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -42,9 +42,11 @@ export function createBrowserViewerHostClient({binding,ownerInstanceId,hostId,ge
  const source=structuredClone(binding),address=privateAddress(endpoint.address),serverName=dnsName(endpoint.serverName),serverFingerprint=fingerprint(endpoint.serverFingerprintSha256);
  const clientName=dnsName(tls.clientName),cert=tlsBytes(tls.cert),key=tlsBytes(tls.key),ca=tlsBytes(tls.ca),lifetime=new AbortController();
  if(!Number.isSafeInteger(endpoint.port)||endpoint.port<1||endpoint.port>65535||!Number.isSafeInteger(requestMs)||requestMs<1||requestMs>30000)fail();
- checkedCertificate(cert,{name:clientName,nowMs:now()});
+ // The Control client leaf is a rendered, fingerprint-pinned identity (tls.mjs MAX_PINNED_CERT_LIFETIME_MS).
+ const ownLeaf=()=>checkedCertificate(cert,{name:clientName,nowMs:now(),maxLifetimeMs:MAX_PINNED_CERT_LIFETIME_MS});
+ ownLeaf();
  async function send(payload,signal,{path=PATH,deadlineMs=now()+requestMs,requestLimit=REQUEST_LIMIT,responseLimit=BROWSER_VIEWER_LIMITS.responseBytes}={}){
-  lifetime.signal.throwIfAborted();checkedCertificate(cert,{name:clientName,nowMs:now()});
+  lifetime.signal.throwIfAborted();ownLeaf();
   const bytes=encode(payload);if(bytes.length>requestLimit)fail();
   const life=createOperationLifetime({now,deadlineMs,signal:AbortSignal.any([lifetime.signal,...(signal?[signal]:[])]),errorFactory:()=>Object.assign(Error('BROWSER_VIEWER_TRANSPORT_UNAVAILABLE'),{code:'BROWSER_VIEWER_TRANSPORT_UNAVAILABLE'})});
   try{return await life.run(current=>new Promise((resolve,reject)=>{

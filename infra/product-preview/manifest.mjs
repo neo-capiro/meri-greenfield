@@ -3,6 +3,7 @@ import {App, Stack, CfnOutput, CfnDeletionPolicy, BootstraplessSynthesizer, aws_
 import {Template} from 'aws-cdk-lib/assertions';
 import {parseStaticProductMaterialExpected} from '../../apps/runtime/material-init.mjs';
 import {CONTROL_NODE_CA_FILE} from '../../apps/runtime/control-ca-bundle.mjs';
+import {CONTROL_HOST_LISTENER_PORT} from '../../apps/runtime/browser-host-configuration.mjs';
 // Native preparation uses the same preview template entry point. None of these compilers deploys or enables a producer.
 export {compileNativeObserverTemplate,compileNativeWatchdogTemplate,compileNativeRuntimePolicyTemplate} from '../browser-enforcement/native-template.mjs';
 
@@ -72,7 +73,7 @@ function controlWebSearch(value){
 }
 function validate(value){
  const b=record(value,['account','region','enabled','materialDelivery','clusterArn','imageUri','controlTaskRoleArn','runtimeUser','network','sizing'],
-  ['executionRoleArn','executionRoleArns','logGroupName','logGroupNames','controlTargetGroupArn','controlPrivateTargetGroupArn','workerTaskRoleArn','sourceCommit','controlWebSearch']);
+  ['executionRoleArn','executionRoleArns','logGroupName','logGroupNames','controlTargetGroupArn','controlPrivateTargetGroupArn','controlHostListenerTargetGroupArn','workerTaskRoleArn','sourceCommit','controlWebSearch']);
  if(b.account!==ACCOUNT||b.region!==REGION||b.enabled!==false||
     !/^arn:aws:ecs:us-east-1:967807252336:cluster\/[A-Za-z0-9_-]{1,255}$/u.test(b.clusterArn)||
     !new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com\\/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`).test(b.imageUri)||
@@ -82,8 +83,8 @@ function validate(value){
  perRole(b,'executionRoleArn','executionRoleArns',ROLE_ARN,b.controlTaskRoleArn);
  perRole(b,'logGroupName','logGroupNames',LOG_GROUP);
  const targetGroup=/^arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup\/[A-Za-z0-9_-]{1,32}\/[a-f0-9]{16}$/u;
- if([b.controlTargetGroupArn,b.controlPrivateTargetGroupArn].some(arn=>arn!==undefined&&!targetGroup.test(arn))||
-    b.controlTargetGroupArn!==undefined&&b.controlTargetGroupArn===b.controlPrivateTargetGroupArn)fail();
+ const groups=[b.controlTargetGroupArn,b.controlPrivateTargetGroupArn,b.controlHostListenerTargetGroupArn].filter(arn=>arn!==undefined);
+ if(groups.some(arn=>!targetGroup.test(arn))||new Set(groups).size!==groups.length)fail();
  // Each service's awsvpcConfiguration uses these lists verbatim. Control and worker ENIs legitimately differ
  // (e.g. control also carries the db-client marker), so each role has its own set; identical sets refuse.
  const schedule=taskRoles(b).includes('scheduleWorker');
@@ -105,7 +106,9 @@ function health(port){return {command:['CMD','node','-e',`fetch('http://127.0.0.
 function task(stack,b,role,port){
  const name=roleNames[role],databaseTrust=role==='control'||role==='scheduleWorker';
  const delivery=material(b.materialDelivery,b)[role];
- const portMappings=role==='control'?[{containerPort:8080,protocol:'tcp'},{containerPort:8082,protocol:'tcp'}]:[{containerPort:port,protocol:'tcp'}];
+ const portMappings=role==='control'?[{containerPort:8080,protocol:'tcp'},{containerPort:8082,protocol:'tcp'},
+  // The host-currentness listener, mapped only with the host listener load balancer that forwards to it.
+  ...(b.controlHostListenerTargetGroupArn?[{containerPort:CONTROL_HOST_LISTENER_PORT,protocol:'tcp'}]:[])]:[{containerPort:port,protocol:'tcp'}];
  const c={name,image:b.imageUri,essential:true,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,stopTimeout:60,
   entryPoint:['node','apps/runtime/cli.mjs'],command:command[role],
   environment:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
@@ -141,7 +144,9 @@ function service(stack,b,role,definition,securityGroupIds){
  // reach control-private, so control needs no Cloud Map registration. The public 8080 target group is optional
  // and is supplied only at Stage 6 (public exposure); either may be absent independently.
  const targets=role==='control'?[b.controlTargetGroupArn&&{containerName:'control',containerPort:8080,targetGroupArn:b.controlTargetGroupArn},
-  b.controlPrivateTargetGroupArn&&{containerName:'control',containerPort:8082,targetGroupArn:b.controlPrivateTargetGroupArn}].filter(Boolean):[];
+  b.controlPrivateTargetGroupArn&&{containerName:'control',containerPort:8082,targetGroupArn:b.controlPrivateTargetGroupArn},
+  // Provisioned hosts reach the host-currentness listener through the host listener network load balancer (TCP passthrough).
+  b.controlHostListenerTargetGroupArn&&{containerName:'control',containerPort:CONTROL_HOST_LISTENER_PORT,targetGroupArn:b.controlHostListenerTargetGroupArn}].filter(Boolean):[];
  return new ecs.CfnService(stack,`${role}Service`,{serviceName:`meri-product-preview-${name}`,cluster:b.clusterArn,taskDefinition:definition.ref,
   desiredCount:0,launchType:'FARGATE',platformVersion:'1.4.0',enableExecuteCommand:false,
   networkConfiguration:{awsvpcConfiguration:{subnets:[...b.network.privateSubnetIds],securityGroups:[...securityGroupIds],assignPublicIp:'DISABLED'}},

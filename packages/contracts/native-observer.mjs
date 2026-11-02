@@ -45,10 +45,14 @@ export function nativeObserverLaunchTags({allocation,declaration}){
   MeriPlacementSha256:hash(declaration.placement),MeriAllocationSha256:hash(allocation),
   MeriDeclarationSha256:hash(declaration)});
 }
+/** Instance metadata for every provisioned host, set by the launch itself (not an input, not an account default): IMDSv2
+ * only, one hop, so no process behind a network namespace or container hop of the instance reaches the metadata service;
+ * the host nft guard dropping 169.254.169.254 for the proxy uid stays as defence in depth. */
+export const NATIVE_HOST_METADATA_OPTIONS=Object.freeze({HttpEndpoint:'enabled',HttpTokens:'required',HttpPutResponseHopLimit:1,InstanceMetadataTags:'disabled'});
 export function nativeObserverLaunchRequest({allocation,declaration}){
  const tags=nativeObserverLaunchTags({allocation,declaration});
  const sorted=Object.keys(tags).sort().map(Key=>Object.freeze({Key,Value:tags[Key]}));
- return Object.freeze({...declaration.launch,MinCount:1,MaxCount:1,ClientToken:declaration.token,
+ return Object.freeze({...declaration.launch,MetadataOptions:NATIVE_HOST_METADATA_OPTIONS,MinCount:1,MaxCount:1,ClientToken:declaration.token,
   TagSpecifications:Object.freeze(['instance','volume'].map(ResourceType=>Object.freeze({ResourceType,Tags:Object.freeze([...sorted])})))});
 }
 export function assertNativeObserverInput(raw){

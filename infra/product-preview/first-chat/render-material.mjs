@@ -22,7 +22,8 @@ import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifa
 import {compileObjectiveGenerationConfiguration} from '../../../apps/runtime/objective-generation/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {compileRoutinesCoreConfiguration} from '../../../apps/runtime/native-authority/routines-configuration.mjs';
-import {parseNativeProcessing,composeNativeProcessing,readNativeMaterial} from './native-processing-material.mjs';
+import {parseNativeProcessing,composeNativeProcessing,readNativeMaterial,NATIVE_PATHS} from './native-processing-material.mjs';
+import {CONTROL_HOST_LISTENER_PORT} from '../../../apps/runtime/browser-host-configuration.mjs';
 
 export const SOURCE_ROOT=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
 const ACCOUNT='967807252336',REGION='us-east-1',ECS=`arn:aws:ecs:${REGION}:${ACCOUNT}:`;
@@ -41,7 +42,9 @@ export const PATHS=Object.freeze({
  serverCa:'/run/meri/control-ca.pem',
  // Delivered only when the matching feature is rendered (control only).
  readsServiceSecret:'/run/meri/core-service-secret',
- downloadLinkKey:'/run/meri/download-link.key',officeKey:'/run/meri/office-wopi.key'});
+ downloadLinkKey:'/run/meri/download-link.key',officeKey:'/run/meri/office-wopi.key',
+ // The host-currentness listener's server identity: the reviewed control-private leaf and key (control only, native only).
+ controlHostServerCert:'/run/meri/control-host-server.pem',controlHostServerKey:'/run/meri/control-host-server.key'});
 const DAY_MS=86400000;
 /** Defaults for bounded timing values. Each is inside the validator range it is named after. */
 export const DEFAULTS=Object.freeze({validityDays:7,deploymentRevision:'first-chat-preview-1'});
@@ -310,7 +313,7 @@ export function parseDeploymentInputs(raw){
 /** Throwaway-free private reader: only certificate/key PEMs, pins.json and db-logins.json named here are read. */
 const PKI_CERTS=['server-ca','control-private',
  'temporal-frontend-ca','temporal-client-ca','temporal-client-control','temporal-client-worker'];
-const PKI_KEYS=['temporal-client-control','temporal-client-worker'];
+const PKI_KEYS=['control-private','temporal-client-control','temporal-client-worker'];
 export async function readPrivateDirectory(directory,{readBytes=readFile,scheduleWorker=false}={}){
  if(typeof directory!=='string'||!isAbsolute(directory))fail('RENDER_INPUT_REFUSED','private directory must be absolute');
  const certs={},keys={};
@@ -396,9 +399,9 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
   if(sha(browserEvidence)!==features.browserActivation.evidenceSha256)fail('RENDER_INPUT_REFUSED','features.browserActivation.evidenceSha256 does not match the evidence file');
  }else if(browserEvidence!==undefined)fail('RENDER_INPUT_REFUSED','browser evidence bytes without an open features.browserActivation');
  const {pins,notAfterMs}=verifyPki(d,pki);
- const native=composeNativeProcessing({feature:features.nativeProcessing,material:nativeMaterial,deployment:d,pki,nowMs});
  // Certificate validity is independent of each admitted conversation execution.
  const validityMs=Math.round(validityDays*DAY_MS),expiresAtMs=nowMs+validityMs;
+ const native=composeNativeProcessing({feature:features.nativeProcessing,material:nativeMaterial,deployment:d,pki,nowMs,validUntilMs:expiresAtMs});
  if(expiresAtMs>=notAfterMs)fail('RENDER_VALIDITY_REFUSED',`validity ends after the earliest certificate notAfter ${new Date(notAfterMs).toISOString()}`);
  const f=d.foundation,o=d.origins,controlPrivate=origin(d.privateEdge.controlPrivateOrigin,'privateEdge.controlPrivateOrigin');
  if(controlPrivate!==`https://${d.names.control_private}`)fail('RENDER_INPUT_REFUSED','control private origin must be https://names.control_private');
@@ -431,13 +434,20 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  // key at all; `enabled:false` emits the inert declaration and nothing else, so no digest can be declared.
  if(features.uploads!==undefined)featureKeys.uploads={native:features.uploads.enabled?{enabled:true,agentcore:{imageDigest:'sha256:'+nodeDigest}}:{enabled:false}};
  if(native.control!==null){
-  featureKeys.uploads=native.control;
+  const {host,policySha256}=native.control;
+  // A native-processing deployment inspects uploads on its provisioned hosts. Browser-only provisioning keeps upload
+  // inspection on AgentCore: the host block then sits beside the unchanged `agentcore` declaration.
+  if(native.control.inspectsUploads)featureKeys.uploads={native:{enabled:true,host,policySha256}};
+  else featureKeys.uploads={native:{enabled:true,agentcore:{imageDigest:'sha256:'+nodeDigest},host,policySha256}};
   // The browser-host router (browser-host-configuration.mjs) is the SAME control-to-host mTLS identity the native inspection
-  // host already pins: the Control client leaf and the issuer root that signs every host certificate. Only the router is
-  // rendered; the host-currentness listener (`tls.hostServer` + `bind`) needs listener material and a host-to-Control network
-  // path that no deployment input declares yet (docs/handover/20261101/BROWSER-ENABLEMENT-RUNBOOK-20261101.md).
-  const t=native.control.native.host.tls;
-  featureKeys.browserHosts={enabled:true,tls:{privateClient:{clientName:t.clientName,certFile:t.certPath,keyFile:t.keyPath,caFile:t.caPath}}};
+  // host already pins: the Control client leaf and the issuer root that signs every host certificate. The host-currentness
+  // listener every provisioned host calls presents the control-private leaf (the exact certificate each bootstrap spec pins
+  // as `control.serverCertificate`) and accepts only host client leaves the same issuer root signed. It binds every
+  // interface of the control task on CONTROL_HOST_LISTENER_PORT; hosts reach it through the host listener network load balancer (infra/browser-host/host-listener-stack.mjs).
+  const t=host.tls;
+  featureKeys.browserHosts={enabled:true,tls:{privateClient:{clientName:t.clientName,certFile:t.certPath,keyFile:t.keyPath,caFile:t.caPath},
+   hostServer:{serverName:d.names.control_private,certFile:PATHS.controlHostServerCert,keyFile:PATHS.controlHostServerKey,clientCaFile:NATIVE_PATHS.issuerCaCertificate}},
+   bind:{address:'0.0.0.0',port:CONTROL_HOST_LISTENER_PORT}};
  }
  if(features.browserPlatform!==undefined)featureKeys.browserPlatform=structuredClone(features.browserPlatform);
  // The held record renders as exactly `{state:'held'}` (the runtime compiles it back to the same held record); an open one
@@ -491,7 +501,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
    [PATHS.controlCapability,capabilityBytes.control],...temporalFiles('control'),
    // Feature material, control only and only when rendered: the Core service secret for reads and the download-link signing key.
    ...(secretFiles['reads.serviceSecret']?[[PATHS.readsServiceSecret,secretFiles['reads.serviceSecret'].bytes]]:[]),
-   ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[]),...(officeKey?[[PATHS.officeKey,officeKey]]:[]),...native.files.control]),
+   ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[]),...(officeKey?[[PATHS.officeKey,officeKey]]:[]),...native.files.control,
+   ...(featureKeys.browserHosts?[[PATHS.controlHostServerCert,pki.certs['control-private']],[PATHS.controlHostServerKey,pki.keys['control-private']]]:[])]),
   'temporal-worker':new Map([[PATHS.worker,configBytes['temporal-worker']],[PATHS.controlCapability,capabilityBytes.control],...temporalFiles('temporal-worker'),...native.files.worker]),
  };
  if(schedule)files['schedule-worker']=new Map([[PATHS.schedule,configBytes['schedule-worker']],
@@ -509,7 +520,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  const summary=summarize({d,r,s,roles,pins,agentcore,expiresAtMs,nowMs,validityDays,notAfterMs,runWindowMs,deploymentRevision,controlPrivate,workerEnvironment,controlEnvironment,policyRevision});
  if(features.nativeProcessing!==undefined)summary.nativeProcessing={enabled:features.nativeProcessing.enabled,materialSha256:native.pins,
   ...(native.materialNotAfterMs===undefined?{}:{materialNotAfterMs:native.materialNotAfterMs,observerMaterialSha256:sha(native.observerMaterial),
-   observerCaSha256:sha(Buffer.from(features.nativeProcessing.deployment.bootstrapSpec.control.caCertificate))})};
+   observerCaSha256:sha(Buffer.from((features.nativeProcessing.deployment??features.nativeProcessing.browserDeployment).bootstrapSpec.control.caCertificate))})};
  // Non-secret record of what the features rendered (absent without features, so the reviewed summary is unchanged). The secret
  // files are named by path, source ARN, VersionId and sha256 only, so the operator can re-verify the fetched value.
  if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,

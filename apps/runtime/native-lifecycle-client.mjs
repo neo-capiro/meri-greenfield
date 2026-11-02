@@ -2,7 +2,7 @@
  * request, one bounded response. Contract validation here grants no authority; close answers map to
  * {closed:true} only for a validated 'closed' status with exact hashes and a fresh safe-integer time. */
 import https from 'node:https';
-import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate} from '../worker/conversation/host/control/tls.mjs';
+import {privateAddress,dnsName,fingerprint,tlsBytes,checkedCertificate,MAX_PINNED_CERT_LIFETIME_MS} from '../worker/conversation/host/control/tls.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
@@ -52,7 +52,7 @@ export function createNativeLifecycleClient({allocation,binding,hostIdentity,end
  // Credential validity is INDEPENDENT of the workload allocation lease: cleanup must remain possible after
  // that lease expires. The certificate's own not-after is the per-operation cutoff.
  function credential(){if(disposed)throw Error('NATIVE_LIFECYCLE_DISPOSED');
-  const certInfo=checkedCertificate(cert,{name:clientName,nowMs:now()});
+  const certInfo=checkedCertificate(cert,{name:clientName,nowMs:now(),maxLifetimeMs:MAX_PINNED_CERT_LIFETIME_MS});
   if(!Number.isSafeInteger(certInfo?.notAfterMs)||certInfo.notAfterMs<=now())throw Error('NATIVE_LIFECYCLE_CREDENTIAL');
   return certInfo.notAfterMs;}
  function local(){return credential();}

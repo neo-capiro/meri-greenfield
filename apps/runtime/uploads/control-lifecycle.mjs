@@ -96,8 +96,9 @@ export function compileUploadNativeConfiguration(configuration){
  if(native.host!==undefined){
   // Per-operation target: configuration carries ONLY the trusted TLS references, budget and policy digest. The physical
   // allocation/identity/binding/endpoint come from the canonical allocation reader for the saved upload.
-  // EXACT closed shape for a host declaration: enabled/host/policySha256 only; nested host: tls/maxRequestMs only.
-  requireValue(Object.keys(native).length===3);
+  // EXACT closed shape for a host declaration: enabled/host/policySha256, plus `agentcore` when uploads are inspected on
+  // AgentCore while the host block serves only the provisioned browser-only purpose (no native-processing deployment).
+  requireValue(Object.keys(native).length===(native.agentcore===undefined?3:4));
   let h;try{h=own(native.host,['tls'],['maxRequestMs','deployment','observer','browserDeployment']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
   if(h.maxRequestMs!==undefined)requireValue(integer(h.maxRequestMs,1,30000));
   let tlsRefs;try{tlsRefs=own(h.tls,['caPath','certPath','keyPath'],['clientName']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
@@ -105,11 +106,11 @@ export function compileUploadNativeConfiguration(configuration){
   if(tlsRefs.clientName!==undefined)requireValue(typeof tlsRefs.clientName==='string'&&
    /^[A-Za-z0-9](?:[A-Za-z0-9.-]{0,251}[A-Za-z0-9])?$/u.test(tlsRefs.clientName));
   requireValue(native.policySha256!==undefined&&typeof native.policySha256==='string'&&/^[a-f0-9]{64}$/u.test(native.policySha256));
-  // Exact physical facts for the EXISTING Control-owned EC2 teardown port. These are closed and explicit:
-  // no security-group array is accepted, so no arbitrary first member can be chosen.
-  let deployment;
-  if(h.deployment!==undefined){
-   let d;try{d=own(h.deployment,['accountId','region','amiId','vpcId','subnetId','securityGroupId','rootDeviceName']);}
+  // Exact physical facts per provisioned purpose for the EXISTING Control-owned EC2 teardown port (`deployment` the
+  // native-processing host, `browserDeployment` the browser-only host). Closed and explicit: no security-group array
+  // is accepted, so no arbitrary first member can be chosen.
+  const placement=raw=>{
+   let d;try{d=own(raw,['accountId','region','amiId','vpcId','subnetId','securityGroupId','rootDeviceName']);}
    catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
    const AWS_ID=/^(?:ami|vpc|subnet|sg)-(?:[0-9a-f]{8}|[0-9a-f]{17})$/u;
    requireValue(typeof d.accountId==='string'&&/^[0-9]{12}$/u.test(d.accountId)&&
@@ -119,22 +120,27 @@ export function compileUploadNativeConfiguration(configuration){
     typeof d.subnetId==='string'&&d.subnetId.startsWith('subnet-')&&AWS_ID.test(d.subnetId)&&
     typeof d.securityGroupId==='string'&&d.securityGroupId.startsWith('sg-')&&AWS_ID.test(d.securityGroupId)&&
     d.rootDeviceName==='/dev/xvda');
-   deployment=Object.freeze({...d});
-  }
-  // The browser-only purpose shares every placement fact but its AMI (the browser host image).
-  let browserDeployment;
-  if(h.browserDeployment!==undefined){
-   let bd;try{bd=own(h.browserDeployment,['amiId']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
-   requireValue(deployment!==undefined&&typeof bd.amiId==='string'&&bd.amiId.startsWith('ami-')&&/^ami-(?:[0-9a-f]{8}|[0-9a-f]{17})$/u.test(bd.amiId));
-   browserDeployment=Object.freeze({amiId:bd.amiId});
-  }
+   return Object.freeze({...d});
+  };
+  const deployment=h.deployment===undefined?undefined:placement(h.deployment);
+  const browserDeployment=h.browserDeployment===undefined?undefined:placement(h.browserDeployment);
+  // Uploads inspected on AgentCore beside a host block: the block serves the browser-only purpose only.
+  if(native.agentcore!==undefined)requireValue(deployment===undefined&&browserDeployment!==undefined);
+  if(deployment!==undefined&&browserDeployment!==undefined)requireValue(browserDeployment.accountId===deployment.accountId&&
+   browserDeployment.region===deployment.region&&browserDeployment.amiId!==deployment.amiId);
   let observer;
   if(h.observer!==undefined){
    let o;try{o=own(h.observer,['keyId','keyPath']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
    requireValue(typeof o.keyId==='string'&&/^[A-Za-z0-9_-]{1,64}$/u.test(o.keyId));absolute(o.keyPath);
-   requireValue(deployment!==undefined);observer=Object.freeze({...o});
+   requireValue(deployment!==undefined||browserDeployment!==undefined);observer=Object.freeze({...o});
   }
-  return Object.freeze({enabled:true,host:Object.freeze({tls:Object.freeze({...tlsRefs}),
+  let agentcore;
+  if(native.agentcore!==undefined){
+   let remote;try{remote=own(native.agentcore,['imageDigest']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
+   requireValue(typeof remote.imageDigest==='string'&&DIGEST.test(remote.imageDigest));
+   agentcore=Object.freeze({imageDigest:remote.imageDigest});
+  }
+  return Object.freeze({enabled:true,...(agentcore===undefined?{}:{agentcore}),host:Object.freeze({tls:Object.freeze({...tlsRefs}),
    maxRequestMs:h.maxRequestMs??3000,...(deployment===undefined?{}:{deployment}),...(browserDeployment===undefined?{}:{browserDeployment}),...(observer===undefined?{}:{observer}),policySha256:native.policySha256}),
    policySha256:native.policySha256});
  }
@@ -291,8 +297,9 @@ export async function mountUploadNativeControl({configuration,allocations,now=Da
  if(declared===null||typeof declared!=='object'||declared.enabled!==true)return unavailable(['uploads.native.enabled'],null);
  // A DECLARED native host (fixed address/port/SAN/fingerprint + the exact protected allocation/identity/binding) is a
  // pinned authenticated remote inspection. It precedes the AgentCore branch: a declared native host is never silently
- // replaced by another transport, and no local composition of the uploaded bytes is attempted.
- if(declared.host!==undefined){
+ // replaced by another transport, and no local composition of the uploaded bytes is attempted. A host block declared
+ // beside `agentcore` serves only the browser-only purpose; uploads are then inspected on AgentCore.
+ if(declared.host!==undefined&&declared.agentcore===undefined){
   const reader=allocations;
   if(reader===null||typeof reader?.resolve!=='function')return unavailable(['uploads.native.allocations'],null);
   try{
