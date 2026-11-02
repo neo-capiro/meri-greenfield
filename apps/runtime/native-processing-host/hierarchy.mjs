@@ -1,4 +1,4 @@
-/** Guest generation/run cgroup hierarchy owned by the native processing host.
+/** Guest generation/run cgroup hierarchy owned by a provisioned host (native processing or browser-only).
  *
  *  Derived ONLY from protected validated configuration:
  *    /sys/fs/cgroup/meri/hosts/{hostId}-{generation}                      (generation root, protected receipt)
@@ -9,8 +9,9 @@
  *  Only directories THIS invocation created are owned and removable; borrowed parents are validated and never rewritten. */
 import {lstatSync,mkdirSync,readdirSync,rmdirSync,readFileSync,writeFileSync,realpathSync,statfsSync} from 'node:fs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {assertNativeProcessingAllocation,assertHostRunBinding,HOST_ALLOCATION_SCHEMA} from
+import {assertHostAllocation,assertHostRunBinding,HOST_ALLOCATION_SCHEMA} from
  '../../worker/conversation/host/binding.mjs';
+import {PROVISIONED_HOST_MODES} from '../../../packages/contracts/native-lifecycle.mjs';
 
 export const CGROUP_ROOT='/sys/fs/cgroup';
 export const HIERARCHY_BASE=`${CGROUP_ROOT}/meri/hosts`;
@@ -69,9 +70,11 @@ const childDirectories=async(port,path)=>{
 const canonicalAllocation=config=>{
  const a=config?.allocation;
  if(a===null||typeof a!=='object'||typeof config?.image?.digest!=='string')fault('HOST_HIERARCHY_CONFIGURATION');
- return assertNativeProcessingAllocation({schema:HOST_ALLOCATION_SCHEMA,tenantId:a.tenantId,
+ const allocation=assertHostAllocation({schema:HOST_ALLOCATION_SCHEMA,tenantId:a.tenantId,
   conversationId:a.conversationId,generation:a.generation,hostId:a.hostId,imageDigest:config.image.digest,
   leaseDeadlineMs:a.leaseDeadlineMs,hostMode:a.hostMode});
+ if(!PROVISIONED_HOST_MODES.includes(allocation.hostMode))fault('HOST_HIERARCHY_CONFIGURATION');
+ return allocation;
 };
 const canonicalBinding=(allocation,binding)=>{
  if(binding===null||typeof binding!=='object')fault('HOST_HIERARCHY_CONFIGURATION');
@@ -262,6 +265,50 @@ export async function prepareRunParent({config,binding,port=realHierarchyPort,si
   await unwindOwned(owned,port,error);
  }
  return Object.freeze({path,owned:Object.freeze([...owned]),created:owned.length>0,hostPath:host});
+}
+
+const LEAF=/^[a-z][a-z0-9-]{0,31}$/u;
+const rootDirectory=stat=>{if(stat.isSymbolicLink?.()===true||stat.isDirectory?.()!==true||(typeof stat.uid==='number'&&stat.uid!==0))fault('HOST_HIERARCHY_PATH_REFUSED');};
+/** One leaf under the current run parent for a process the supervisor itself places (the browser egress proxy). */
+export async function prepareRunLeaf({config,binding,name,port=realHierarchyPort,signal}={}){
+ if(typeof port?.lstat!=='function'||typeof port?.mkdir!=='function'||typeof name!=='string'||!LEAF.test(name))fault('HOST_HIERARCHY_CONFIGURATION');
+ if(signal?.aborted===true)fault('HOST_HIERARCHY_CANCELLED');
+ const allocation=canonicalAllocation(config),canonical=canonicalBinding(allocation,binding),parent=runParent(config,canonical),path=`${parent}/${name}`;
+ if(await exists(port,parent)!==true)fault('HOST_HIERARCHY_PARENT_MISSING');
+ const owned=[];
+ try{
+  if(await exists(port,path)===false){
+   try{port.mkdir(path);}catch{fault('HOST_HIERARCHY_CREATE_FAILED');}
+   const stat=port.lstat(path);owned.push({path,dev:stat.dev,ino:stat.ino});rootDirectory(stat);
+  }else{rootDirectory(port.lstat(path));if(await hasLiveProcesses(port,path))fault('HOST_HIERARCHY_OCCUPIED');}
+ }catch(error){
+  if(String(error?.code??'').startsWith('HOST_HIERARCHY_')!==true)throw error;
+  if(owned.length===0){error.partialCleanup='not-created';throw error;}
+  await unwindOwned(owned,port,error);
+ }
+ return Object.freeze({path,owned:Object.freeze([...owned]),created:owned.length>0});
+}
+/** Attach one live process to a leaf and read the membership back from the kernel. */
+export async function attachProcess({path,pid,port=realHierarchyPort}={}){
+ if(typeof path!=='string'||!path.startsWith(`${HIERARCHY_BASE}/`)||!Number.isSafeInteger(pid)||pid<2||typeof port?.writeFile!=='function')fault('HOST_HIERARCHY_CONFIGURATION');
+ try{port.writeFile(`${path}/cgroup.procs`,String(pid));}catch{fault('HOST_HIERARCHY_PLACEMENT_FAILED');}
+ if(!names(await read(port,`${path}/cgroup.procs`)).includes(String(pid)))fault('HOST_HIERARCHY_READBACK_UNKNOWN');
+ return Object.freeze({path,pid});
+}
+/** Finite limits on the run parent (memory, pids, cpu), read back exactly as the kernel reports them. */
+export const RUN_LIMIT_FILES=Object.freeze(['memory.max','pids.max','cpu.max']);
+export function runLimitValues({memoryBytes,pidsMax,cpuQuotaUs,periodUs}={}){
+ if(![memoryBytes,pidsMax,cpuQuotaUs,periodUs].every(v=>Number.isSafeInteger(v)&&v>0))fault('HOST_HIERARCHY_CONFIGURATION');
+ return Object.freeze({'memory.max':String(memoryBytes),'pids.max':String(pidsMax),'cpu.max':`${cpuQuotaUs} ${periodUs}`});
+}
+export async function applyRunLimits({path,limits,port=realHierarchyPort}={}){
+ if(typeof path!=='string'||!path.startsWith(`${HIERARCHY_BASE}/`)||typeof port?.writeFile!=='function')fault('HOST_HIERARCHY_CONFIGURATION');
+ const expected=runLimitValues(limits);
+ for(const [file,value] of Object.entries(expected)){
+  try{port.writeFile(`${path}/${file}`,value);}catch{fault('HOST_HIERARCHY_LIMIT_FAILED');}
+  if(String((await read(port,`${path}/${file}`))??'').trim()!==value)fault('HOST_HIERARCHY_READBACK_UNKNOWN');
+ }
+ return Object.freeze({path,...expected});
 }
 
 /** Remove only directories THIS invocation created, deepest first, requiring exact ENOENT readback. */

@@ -4,7 +4,7 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {binding} from '../../browser/test/fixtures.mjs';
 import {HOST_ALLOCATION_SCHEMA,D005_HOST_IDENTITY_SCHEMA} from '../binding.mjs';
 import {hostWideCgroup} from '../host-wide-process-observer.mjs';
-import {createFailClosedNativeVerifier,NATIVE_SDK_READBACK_SCHEMA,readSdkLeaderKernelFacts} from './native-verifier.mjs';
+import {createFailClosedNativeVerifier,LEADER_KERNEL_READBACK_SCHEMA,readLeaderKernelFacts} from './native-verifier.mjs';
 
 const allocation={schema:HOST_ALLOCATION_SCHEMA,tenantId:binding.tenantId,conversationId:binding.conversationId,
  generation:1,hostId:'00000020-b0a1-4000-8000-000000000000',imageDigest:`sha256:${'a'.repeat(64)}`,
@@ -34,13 +34,14 @@ function ports({files={},netns={dev:13,ino:17}}={}){return {
   if(path==='/proc/self/ns/mnt')return {dev:19,ino:21};
   if(path===group.path)return {dev:41,ino:42};throw Error('missing stat');},
 };}
-const input=(over={})=>({allocation,binding,hostIdentity,sdkLeaderPid:1234,networkProof,
+const input=(over={})=>({allocation,binding,hostIdentity,leaderKind:'sdk',leaderPid:1234,networkProof,
  expectedUid:24001,expectedGid:24001,groupIdentity,ports:ports(),now:Date.now,...over});
 const code=value=>error=>error?.code===value;
 
 test('kernel readback pins SDK PID start, cgroup, netns, UID, capabilities, NNP and hidden cgroupfs',async()=>{
- const facts=await readSdkLeaderKernelFacts(input());
- assert.equal(facts.schema,NATIVE_SDK_READBACK_SCHEMA);
+ const facts=await readLeaderKernelFacts(input());
+ assert.equal(facts.schema,LEADER_KERNEL_READBACK_SCHEMA);assert.equal(facts.leaderKind,'sdk');assert.equal(facts.leaderPid,1234);
+ await assert.rejects(readLeaderKernelFacts(input({leaderKind:'browser'})),code('HOST_NATIVE_READBACK_CONFIGURATION'),'the proof kind must match the leader kind');
  assert.equal(facts.cgroupRelative,group.sdkLeaderRelative);
  assert.equal(facts.networkNamespaceIno,'17');
  assert.equal(facts.zeroCapabilities,true);
@@ -63,6 +64,6 @@ test('kernel readback refuses wrong cgroup, netns, capability, privilege and mou
   {files:{'/proc/1234/status':status.replace('NoNewPrivs:\t1','NoNewPrivs:\t0')}},
   {files:{'/proc/1234/mountinfo':mountinfo.replace('tmpfs tmpfs','cgroup2 cgroup2')}},
  ];
- for(const over of bad)await assert.rejects(readSdkLeaderKernelFacts(input({ports:ports(over)})),
+ for(const over of bad)await assert.rejects(readLeaderKernelFacts(input({ports:ports(over)})),
   error=>['HOST_NATIVE_READBACK_REFUSED','HOST_NATIVE_READBACK_UNKNOWN'].includes(error?.code));
 });

@@ -7,6 +7,7 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {binding} from '../../browser/test/fixtures.mjs';
 import {HOST_ALLOCATION_SCHEMA,D005_HOST_IDENTITY_SCHEMA} from '../binding.mjs';
 import {createConversationHostTeardown,HOST_PROCESS_ABSENCE_SCHEMA,HOST_PHYSICAL_ABSENCE_SCHEMA,HOST_TEARDOWN_SCHEMA} from '../teardown.mjs';
+import {browserPaths} from '../../browser/workspace.mjs';
 
 const allocation=Object.freeze({schema:HOST_ALLOCATION_SCHEMA,tenantId:binding.tenantId,conversationId:binding.conversationId,
  generation:1,hostId:'00000020-b0a1-4000-8000-000000000000',imageDigest:`sha256:${'a'.repeat(64)}`,leaseDeadlineMs:Date.now()+600000});
@@ -145,3 +146,42 @@ test('invalid host binding and missing trusted ports refuse before cleanup',()=>
  await assert.rejects(make(cwd,f.ports).settle({reason:'recycle'}),e=>e.code==='HOST_TEARDOWN_CONFIGURATION');
  assert.deepEqual(f.calls,[]);
 }));
+
+// Host-local browser-only settlement is platform-neutral here: a posix workspace path with nothing on disk, so the
+// receipt, call order and refusals are exercised on every host; real profile disposal is covered by the cases above.
+const browserOnly=Object.freeze({...allocation,hostMode:'browser-only'}),localCwd=`/workspace/${binding.conversationId}`;
+const localPorts=(f,processes)=>({browser:f.ports.browser,processes:processes??f.ports.processes});
+test('HOST-LOCAL BROWSER-ONLY: without a host port the provisioned host verifies egress, browser-host descendants and profile disposal only',async()=>{
+ const f=fixture(localCwd,{},browserOnly);
+ const processes={async waitForExit(request){f.calls.push('process-observe');
+  assert.deepEqual(request,{allocation:browserOnly,binding,hostIdentity,profile:browserPaths(localCwd).profile,scope:'browser-host-descendants'});
+  return {...f.processReceipt(),scope:'browser-host-descendants'};}};
+ const teardown=createConversationHostTeardown({allocation:browserOnly,binding,hostIdentity,cwd:localCwd,browserPolicySha256,ports:localPorts(f,processes)});
+ const receipt=await teardown.settle({reason:'conversation-end'});
+ assert.equal(receipt.status,'VERIFIED');assert.equal(receipt.schema,HOST_TEARDOWN_SCHEMA);
+ assert.deepEqual([receipt.browserEgress,receipt.bashEgress,receipt.processScope,receipt.processes,receipt.browserState,receipt.hostDestroy,receipt.hostAbsence],
+  ['closed','not-applicable','browser-host-descendants','exited','disposed','not-applicable','not-applicable']);
+ assert.deepEqual(f.calls,['browser-revoke','browser-close','process-observe']);
+ assert.equal(await teardown.settle({reason:'conversation-end'}),receipt,'settle is idempotent');
+});
+test('HOST-LOCAL BROWSER-ONLY UNKNOWN: a legacy-scoped process proof or a refused egress reports UNKNOWN and attempts disposal only after proven exit',async()=>{
+ const stale=fixture(localCwd,{},browserOnly);
+ const unknown=await createConversationHostTeardown({allocation:browserOnly,binding,hostIdentity,cwd:localCwd,browserPolicySha256,
+  ports:localPorts(stale,{async waitForExit(){return stale.processReceipt();}})})
+  .settle({reason:'failed'}).catch(error=>{assert.equal(error.code,'HOST_TEARDOWN_UNKNOWN');return error.receipt;});
+ assert.equal(unknown.status,'UNKNOWN');assert.equal(unknown.processes,'unknown');assert.equal(unknown.browserState,'not-attempted');assert.equal(unknown.browserEgress,'closed');
+ const refused=fixture(localCwd,{browser:{async revoke(){throw Error('PROXY_UNAVAILABLE');}}},browserOnly);
+ const partial=await createConversationHostTeardown({allocation:browserOnly,binding,hostIdentity,cwd:localCwd,browserPolicySha256,
+  ports:localPorts(refused,{async waitForExit(){return {...refused.processReceipt(),scope:'browser-host-descendants'};}})})
+  .settle({reason:'revoked'}).catch(error=>error.receipt);
+ assert.equal(partial.status,'UNKNOWN');assert.equal(partial.browserEgress,'unknown');assert.equal(partial.processes,'exited');assert.equal(partial.browserState,'disposed');
+});
+test('HOST-LOCAL BROWSER-ONLY: the variant needs exactly browser and processes ports, a browser-only purpose and a bounded local phase',async()=>{
+ const f=fixture(localCwd,{},browserOnly);
+ for(const ports of [{browser:f.ports.browser},{processes:f.ports.processes},{browser:f.ports.browser,processes:f.ports.processes,bash:f.ports.bash}])
+  assert.throws(()=>createConversationHostTeardown({allocation:browserOnly,binding,hostIdentity,cwd:localCwd,browserPolicySha256,ports}),/HOST_TEARDOWN_CONFIGURATION/);
+ assert.throws(()=>createConversationHostTeardown({allocation,binding,hostIdentity,cwd:localCwd,browserPolicySha256,ports:localPorts(f)}),/HOST_TEARDOWN_CONFIGURATION/,'a legacy allocation still needs its host port');
+ assert.throws(()=>createConversationHostTeardown({allocation:browserOnly,binding,hostIdentity,cwd:localCwd,browserPolicySha256,ports:localPorts(f),hostMode:'native-processing'}),/HOST_TEARDOWN_CONFIGURATION/);
+ assert.throws(()=>createConversationHostTeardown({allocation:browserOnly,binding,hostIdentity,cwd:localCwd,browserPolicySha256,ports:localPorts(f),localCleanupMs:1}),/HOST_TEARDOWN_CONFIGURATION/);
+ await assert.rejects(createConversationHostTeardown({allocation:browserOnly,binding,hostIdentity,cwd:localCwd,browserPolicySha256,ports:localPorts(f)}).settle({reason:'because'}),/HOST_TEARDOWN_CONFIGURATION/);
+});

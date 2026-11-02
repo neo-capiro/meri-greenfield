@@ -20,7 +20,10 @@
  *    canonical final teardown, including during startup;
  *  - local settlement is bounded: a stalled start or close becomes explicit UNKNOWN after a finite owned phase, and the
  *    independent instance/root-volume/ENI destroy+readback backstop still runs;
- *  - stop is terminal; late results are disposed without publishing or reviving the listener.
+ *  - stop is terminal; late results are disposed without publishing or reviving the listener;
+ *  - on a PROVISIONED host (no `host` port) the physical instance is destroyed and read back by Control over the
+ *    lifecycle route this listener also serves, so the local teardown verifies egress, descendants and profile only,
+ *    and a Control-driven close keeps the listener alive until the answer has been sent (`retainListener`).
  */
 import {createBrowserOnlyHostLauncher} from '../../worker/conversation/host/launcher/supervisor.mjs';
 import {prepareAdmittedBrowserWorkspace, armBrowserAfterWorkspaceReadback} from '../../worker/conversation/host/composition/run.mjs';
@@ -44,9 +47,11 @@ const FORBIDDEN = ['processClientFactory', 'runnerQuery', 'createPreparedRunnerQ
   'bashRuntimeFacts', 'providerCredentials', 'modelProxy', 'agentcoreClient', 'capabilityPolicy'];
 
 const REQUIRED = ['allocation', 'binding', 'hostIdentity', 'cwd', 'deadlineMs', 'policy', 'installation', 'upstream',
-  'controls', 'current', 'siteWorkflows', 'hold', 'dispose', 'browserClient', 'maxFreshMs', 'workspaceOwnership',
-  'sessionProcesses', 'processes', 'host', 'browser', 'browserNetwork', 'authority', 'helperPath', 'browserUid',
+  'controls', 'current', 'siteWorkflows', 'hold', 'retirement', 'dispose', 'browserClient', 'maxFreshMs', 'workspaceOwnership',
+  'sessionProcesses', 'processes', 'browser', 'browserNetwork', 'authority', 'helperPath', 'browserUid',
   'browserGid', 'readRun', 'viewer'];
+// Optional: `host` (cloud destroy/readback) exists on the legacy self-destroying host only; a provisioned host's instance
+// is destroyed by Control. `lifecycle` is the Control route handler served on the listener.
 
 export const BROWSER_ONLY_REQUIRED_INPUTS = Object.freeze([...REQUIRED]);
 export const BROWSER_ONLY_FORBIDDEN_INPUTS = Object.freeze([...FORBIDDEN]);
@@ -78,6 +83,8 @@ export function assertBrowserOnlyServiceInputs(input) {
   if (!Number.isSafeInteger(allocation.leaseDeadlineMs) || allocation.leaseDeadlineMs <= (v.now ?? Date.now)()) fail('BROWSER_HOST_SERVICE_DEADLINE_EXPIRED');
   // Trusted inputs and owner interfaces.
   if (typeof v.current !== 'function' || typeof v.hold !== 'function' || typeof v.dispose !== 'function') fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
+  if (!['prepare', 'wait', 'retain'].every(name => typeof v.retirement?.[name] === 'function')) fail('BROWSER_HOST_SERVICE_RETIREMENT_UNBOUND');
+  if (v.lifecycle !== undefined && typeof v.lifecycle !== 'function') fail('BROWSER_HOST_SERVICE_CONFIGURATION');
   // Closed authority shape exactly as the real launcher authorities() requires; v.maxFreshMs is not a substitute.
   let authority;
   try { authority = own(v.authority ?? {}, ['policySha256', 'readCurrent', 'maxFreshMs']); }
@@ -95,7 +102,7 @@ export function assertBrowserOnlyServiceInputs(input) {
   if (typeof v.sessionProcesses?.arm !== 'function' || typeof v.sessionProcesses?.waitForExit !== 'function') fail('BROWSER_HOST_SERVICE_BROWSER_OBSERVER_UNBOUND');
   if (typeof v.processes?.arm !== 'function' || typeof v.processes?.waitForExit !== 'function') fail('BROWSER_HOST_SERVICE_PROCESS_OBSERVER_UNBOUND');
   if (typeof v.browser?.revoke !== 'function' || typeof v.browser?.close !== 'function') fail('BROWSER_HOST_SERVICE_EGRESS_UNBOUND');
-  if (typeof v.host?.destroy !== 'function' || typeof v.host?.observeAbsent !== 'function') fail('BROWSER_HOST_SERVICE_HOST_UNBOUND');
+  if (v.host !== undefined && (typeof v.host?.destroy !== 'function' || typeof v.host?.observeAbsent !== 'function')) fail('BROWSER_HOST_SERVICE_HOST_UNBOUND');
   if (typeof v.readRun !== 'function') fail('BROWSER_HOST_SERVICE_READRUN_UNBOUND');
   if (typeof v.authority?.readCurrent !== 'function' || typeof v.authority?.policySha256 !== 'string') fail('BROWSER_HOST_SERVICE_CURRENTNESS_UNBOUND');
   // Policy and context-only installation through their canonical validators.
@@ -142,7 +149,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
   if (!Number.isSafeInteger(localSettleMs) || localSettleMs < 1 || localSettleMs > 120000) fail('BROWSER_HOST_SERVICE_CONFIGURATION');
   const teardown = owners.teardown({
     allocation, binding, hostIdentity, cwd: v.cwd, browserPolicySha256: v.authority.policySha256,
-    ports: {browser: v.browser, processes: v.processes, host: v.host}, now,
+    ports: {browser: v.browser, processes: v.processes, ...(v.host === undefined ? {} : {host: v.host})}, now,
   });
 
   let launch, contextPort, sessionHost, operationHost, viewer, preparedWorkspace;
@@ -156,7 +163,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
    * before the physical resources it borrows are closed. A session host that never opened has nothing to destroy;
    * an unconfirmed destruction is a cleanup problem, never silently physical-only. */
   const SESSION_TRIGGERS = Object.freeze({'conversation-end': 'conversation-end', revoked: 'revocation', 'lease-expired': 'ttl-expiry', failed: 'disconnect'});
-  const closeLocal = async reason => {
+  const closeLocal = async (reason, {retainListener = false} = {}) => {
     const problems = [];
     if (sessionHost) {
       const result = await within(() => sessionHost.destroy({trigger: SESSION_TRIGGERS[reason] ?? 'disconnect'})
@@ -164,7 +171,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
       if (result.timedOut) problems.push(Object.assign(Error('BROWSER_HOST_SERVICE_LOCAL_CLOSE_TIMEOUT'), {code: 'BROWSER_HOST_SERVICE_LOCAL_CLOSE_TIMEOUT'}));
       else if (result.error) problems.push(result.error);
     }
-    for (const resource of [viewer, contextPort, launch]) {
+    for (const resource of [...(retainListener ? [] : [viewer]), contextPort, launch]) {
       if (!resource) continue;
       const result = await within(() => resource.close(), localSettleMs);
       if (result.timedOut) problems.push(Object.assign(Error('BROWSER_HOST_SERVICE_LOCAL_CLOSE_TIMEOUT'), {code: 'BROWSER_HOST_SERVICE_LOCAL_CLOSE_TIMEOUT'}));
@@ -174,8 +181,8 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
   };
 
   /** Canonical owned final path: bounded local stop, one teardown, then retire both observers if obtained. */
-  const finalTeardown = async reason => {
-    const problems = await closeLocal(reason);
+  const finalTeardown = async (reason, options) => {
+    const problems = await closeLocal(reason, options);
     let receipt;
     try { receipt = await teardown.settle({reason}); }
     catch (error) {
@@ -262,7 +269,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
           sessionHost = owners.sessionHost({
             allocation, binding, cwd: v.cwd, installation,
             upstream: v.upstream, contexts: contextPort, modelTransport: 'host-owned',
-            controls: v.controls, current: v.current, siteWorkflows: v.siteWorkflows, hold: v.hold,
+            controls: v.controls, current: v.current, siteWorkflows: v.siteWorkflows, hold: v.hold, retirement: v.retirement,
             processes: v.sessionProcesses, dispose: v.dispose, now,
           });
           if (!live()) fail('BROWSER_HOST_SERVICE_TORN_DOWN');
@@ -279,6 +286,7 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
             bind: viewerConfig.bind, tls: viewerConfig.tls, peer: viewerConfig.peer,
             relay: sessionHost, custodyOwner: sessionHost, operationOwner: operationHost,
             now, ...(v.viewer.requestMs === undefined ? {} : {requestMs: v.viewer.requestMs}),
+            ...(v.lifecycle === undefined ? {} : {lifecycle: v.lifecycle}),
           });
           if (!live()) { await within(() => viewer.close?.(), localSettleMs); fail('BROWSER_HOST_SERVICE_TORN_DOWN'); }
           const address = await viewer.start();
@@ -298,7 +306,9 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
       })();
       return starting;
     },
-    destroy({reason = 'conversation-end'} = {}) {
+    /** `retainListener` is for the Control-driven close over the lifecycle route: everything else settles, the pinned
+     * listener stays up so the answer can be sent, and `closeListener()` retires it afterwards. */
+    destroy({reason = 'conversation-end', retainListener = false} = {}) {
       if (destroyed) return destroyed;
       if (destroying) return destroying;
       tearingDown = true;
@@ -312,13 +322,19 @@ export function composeBrowserOnlyHostService(input, dependencies = {}) {
           if (settled.timedOut) settledProblems.push(Object.assign(Error('BROWSER_HOST_SERVICE_START_SETTLE_TIMEOUT'), {code: 'BROWSER_HOST_SERVICE_START_SETTLE_TIMEOUT'}));
         }
         if (destroyed) return destroyed;
-        const {receipt, problems} = await finalTeardown(reason);
+        const {receipt, problems} = await finalTeardown(reason, {retainListener});
         const all = [...settledProblems, ...problems];
         if (all.length) throw Object.assign(new Error('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN', {cause: all}), {code: 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN'});
         destroyed = Object.freeze({...receipt, sourceSettled: retained});
         return destroyed;
       })();
       return destroying;
+    },
+    async closeListener() {
+      if (!viewer) return Object.freeze({closed: true});
+      const result = await within(() => viewer.close(), localSettleMs);
+      if (result.timedOut || result.error) fail('BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
+      return Object.freeze({closed: true});
     },
   };
 

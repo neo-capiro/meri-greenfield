@@ -23,7 +23,10 @@ export function createBrowserViewerApplication({lifecycle,transport,now=Date.now
   }
   if(route!=='read'&&request.ownerId!==undefined&&request.ownerId!==current.ownerInstanceId)fail('CONFLICT');
   const checkpoint=current.checkpointId?{checkpointId:current.checkpointId,checkpointSha256:current.checkpointSha256}:null;
-  const grant={context,checkpoint,sessionKey:createHash('sha256').update(credential).digest('hex'),expiresAtMs:current.expiresAtMs,custody:current.custody};
+  // The viewer lease belongs to this actor's takeover of this run, not to one bearer token: a rotated token (Clerk)
+  // keeps the lease; another actor, run or takeover never shares it. The credential itself is never carried.
+  const sessionKey=createHash('sha256').update(JSON.stringify([context.tenantId,context.actorId,context.conversationId,context.runId,current.custody.controlId??null])).digest('hex');
+  const grant={context,checkpoint,sessionKey,expiresAtMs:current.expiresAtMs,custody:current.custody};
   const answer=await transport.execute({route,request,grant,signal});signal?.throwIfAborted();
   // Re-read after the host request. Late pixels and replies cannot cross a revoke,
   // successor, changed owner or client selection.

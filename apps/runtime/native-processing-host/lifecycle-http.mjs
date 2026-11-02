@@ -4,6 +4,42 @@
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {NATIVE_LIFECYCLE_PATH,NATIVE_LIFECYCLE_SCHEMA,NATIVE_LIFECYCLE_MAX_MS,NATIVE_LIFECYCLE_BODY_BYTES,
  nativeLifecycleRequest} from './lifecycle-contract.mjs';
+import {checkedCertificate,fingerprint,sha256Der} from '../../worker/conversation/host/control/tls.mjs';
+
+/** ONE Control peer authenticator shared by every route on a provisioned host's listener: the presented leaf must carry
+ *  the protected Control client fingerprint, SAN, lifetime bound and the protected notAfter ceiling. Nothing from JSON. */
+export function createControlPeerAuthenticator({peerSan,peerFingerprint,maxPeerLifetimeMs,peerNotAfterMs,now=Date.now}){
+ if(typeof peerSan!=='string'||typeof peerFingerprint!=='string'||!Number.isSafeInteger(maxPeerLifetimeMs)||
+  !Number.isSafeInteger(peerNotAfterMs)||typeof now!=='function')fault('NATIVE_LIFECYCLE_CONFIGURATION');
+ return async function authenticate({socket}){
+  if(socket?.encrypted!==true)return {verified:false};
+  const raw=socket.getPeerCertificate?.(true);
+  if(!raw||!Buffer.isBuffer(raw.raw))return {verified:false};
+  if(fingerprint(sha256Der(raw.raw))!==peerFingerprint)return {verified:false};
+  const checked=checkedCertificate(raw.raw,{name:peerSan,nowMs:now(),maxLifetimeMs:maxPeerLifetimeMs,notAfterMs:peerNotAfterMs});
+  return {verified:true,fingerprintSha256:checked.fingerprintSha256,notAfterMs:checked.notAfterMs};
+ };
+}
+
+/** ONE bounded body reader shared by the lifecycle and inspection routes: byte limit, absolute deadline, caller signal. */
+export function readBoundedBody(req,limit,deadline,signal){
+ return new Promise((resolve,reject)=>{
+  let total=0,finished=false;const chunks=[];
+  const refuseBody=()=>Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),{code:'UPLOAD_INSPECTION_REQUEST_REFUSED'});
+  const detachBody=()=>{clearTimeout(timer);signal?.removeEventListener('abort',onAbort);
+   req.removeListener?.('data',onData);req.removeListener?.('end',onEnd);req.removeListener?.('error',onError);};
+  const finish=(error,value)=>{if(finished)return;finished=true;detachBody();error?reject(error):resolve(value);};
+  const timer=setTimeout(()=>{req.destroy?.();finish(refuseBody());},Math.max(1,deadline-Date.now()));
+  const onAbort=()=>finish(refuseBody());
+  const onData=chunk=>{if(finished)return;total+=chunk.length;
+   if(total>limit){req.destroy?.();finish(refuseBody());return;}chunks.push(chunk);};
+  const onEnd=()=>finish(null,Buffer.concat(chunks));
+  const onError=error=>finish(error);
+  signal?.addEventListener('abort',onAbort,{once:true});
+  req.on('data',onData);req.on('end',onEnd);req.on('error',onError);
+  if(signal?.aborted){onAbort();return;}
+ });
+}
 
 const fault=code=>{throw Object.assign(new Error(code),{code});};
 const VALIDATION=new Set(['NATIVE_LIFECYCLE_REFUSED','NATIVE_LIFECYCLE_REQUEST_REFUSED','HOST_BINDING_REFUSED',

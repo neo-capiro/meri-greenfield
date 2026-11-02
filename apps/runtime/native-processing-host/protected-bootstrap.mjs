@@ -441,10 +441,13 @@ function validateFiniteConfig(layout){
  return {limits,paths};
 }
 
-/** Complete validated runtime configuration from the installed bundle + fixed protected profile + live physical identity. */
-export function installedRuntimeConfig({store=createBootstrapStateStore(),now=Date.now,identity,readFile=readFileSync}={}){
+/** The validated installed material every provisioned host shares, BEFORE any purpose-specific layout: installed bundle
+ *  and TLS, the pinned reviewed profile bytes, protected source pins, the live physical identity and the Control peer
+ *  certificates. The purpose-specific readers (`installedRuntimeConfig` below, the browser host's installed reader) add
+ *  only their own layout validation on top of this one shared check. */
+export function installedHostMaterial({store=createBootstrapStateStore(),now=Date.now,identity,readFile=readFileSync}={}){
  const installed=readInstalledTls({store,now});
- const bundle=installed.bundle,spec=installed.spec,observation=installed.observation,scope=observation.scope;
+ const spec=installed.spec,observation=installed.observation,scope=observation.scope;
  const profileRaw=store.read('profile.json');
  if(profileRaw===null)fault(REFUSED);
  let profile;try{profile=JSON.parse(profileRaw.toString('utf8'));}catch{fault(REFUSED);}
@@ -456,7 +459,6 @@ export function installedRuntimeConfig({store=createBootstrapStateStore(),now=Da
  if(live.bootId!==observation.bootId||live.instanceId!==scope.instanceId)fault(REFUSED);
  const lease=scope.allocation.leaseDeadlineMs,at=now();
  if(!Number.isSafeInteger(at)||at>=lease)fault(REFUSED);
- const {limits,paths}=validateFiniteConfig(profile.layout);
  const controlServer=new X509Certificate(spec.control.serverCertificate);
  const controlClient=new X509Certificate(spec.control.clientCertificate);
  const serverFingerprint=sha256(Buffer.from(controlServer.raw));
@@ -465,12 +467,13 @@ export function installedRuntimeConfig({store=createBootstrapStateStore(),now=Da
  // Inbound peer is the Control CLIENT; outbound server pin is the Control SERVER. Both use their ACTUAL leaf expiry.
  const peerNotAfterMs=Date.parse(controlClient.validTo),cleanupCeilingMs=nativeBootstrapCleanupCeiling(scope);
  if(!(Date.parse(controlClient.validFrom)<=at&&Date.parse(controlClient.validTo)>at))fault(REFUSED);
- const credentialPaths=[PROTECTED_ROOT+'/prepare.json',PROTECTED_ROOT+'/installed.json',PROTECTED_ROOT+'/profile.json',
+ const credentialPaths=Object.freeze([PROTECTED_ROOT+'/prepare.json',PROTECTED_ROOT+'/installed.json',PROTECTED_ROOT+'/profile.json',
   PROTECTED_ROOT+'/identity.json',PROTECTED_ROOT+'/'+BUNDLE_FILES.serverKey,PROTECTED_ROOT+'/'+BUNDLE_FILES.serverCert,
   PROTECTED_ROOT+'/'+BUNDLE_FILES.clientKey,PROTECTED_ROOT+'/'+BUNDLE_FILES.clientCert,PROTECTED_ROOT+'/'+BUNDLE_FILES.ca,
-  PROTECTED_ROOT+'/'+BUNDLE_FILES.controlCa];
+  PROTECTED_ROOT+'/'+BUNDLE_FILES.controlCa]);
  return Object.freeze({
   installed:true,
+  profile,
   allocation:scope.allocation,
   hostIdentity:Object.freeze({schema:'meri-d005-host-identity/1',hostId:scope.allocation.hostId,
    conversationId:scope.allocation.conversationId,instanceId:live.instanceId,bootId:live.bootId}),
@@ -481,12 +484,23 @@ export function installedRuntimeConfig({store=createBootstrapStateStore(),now=Da
    clientName:spec.control.clientName,policySha256:spec.control.policySha256,serverFingerprintSha256:serverFingerprint,
    peerFingerprintSha256:serverFingerprint,clientKeyPath:PROTECTED_ROOT+'/'+BUNDLE_FILES.clientKey,
    clientCertPath:PROTECTED_ROOT+'/'+BUNDLE_FILES.clientCert,caPath:PROTECTED_ROOT+'/'+BUNDLE_FILES.controlCa},
-  listen:{address:scope.endpoint.address,port:spec.hostEndpoint.port},
+  listen:{address:scope.endpoint.address,port:spec.hostEndpoint.port,serverName:spec.hostEndpoint.serverName},
+  credentialPaths,
+  installedTls:installed});
+}
+
+/** Complete validated native-processing runtime configuration: the shared installed material plus the native layout. */
+export function installedRuntimeConfig(options={}){
+ const m=installedHostMaterial(options);
+ if(m.allocation.hostMode!=='native-processing')fault(REFUSED);   // a browser-only bundle never configures the native host
+ const {limits,paths}=validateFiniteConfig(m.profile.layout);
+ const {profile,credentialPaths,listen,...shared}=m;
+ return Object.freeze({...shared,
+  listen:{address:listen.address,port:listen.port},
   limits,
   paths:Object.freeze({...paths,childSettings:Object.freeze({runtimeUid:1000,runtimeGid:1000,
-   imageDigest:scope.source.imageDigest,definitionsRoot:paths.definitionsRoot,extractorPath:paths.extractorPath,
-   scratchRoot:paths.scratchRoot,credentialPaths:Object.freeze(credentialPaths)})}),
-  installedTls:installed});
+   imageDigest:m.image.digest,definitionsRoot:paths.definitionsRoot,extractorPath:paths.extractorPath,
+   scratchRoot:paths.scratchRoot,credentialPaths})})});
 }
 
 /** Public stdout: the canonical public serializer plus exactly one final LF. */

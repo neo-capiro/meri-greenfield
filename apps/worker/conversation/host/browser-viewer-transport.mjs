@@ -10,6 +10,7 @@ import {assertBrowserReturn,assertBrowserCustody} from '../../../../packages/run
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {BROWSER_VIEWER_LIMITS,receiveBrowserViewerResponse,receiveBrowserViewerRequest} from '../../../../packages/contracts/browser-viewer/receive.mjs';
 import {assertBrowserOperationRequest,assertBrowserOperationResponse,browserOperationName,browserOperationCeilingMs,BROWSER_NATIVE_LIMITS} from '../../../../packages/contracts/runtime-0.2/browser-tools.mjs';
+import {NATIVE_LIFECYCLE_PATH} from '../../../../packages/contracts/native-lifecycle.mjs';
 const PATH='/internal/browser-viewer',REQUEST_LIMIT=BROWSER_VIEWER_LIMITS.requestBytes+8192;
 const TOOL_PATH='/internal/browser-tools',TOOL_REQUEST_LIMIT=BROWSER_NATIVE_LIMITS.requestBytes+8192;
 const fail=()=>{throw Object.assign(Error('BROWSER_VIEWER_TRANSPORT_UNAVAILABLE'),{code:'BROWSER_VIEWER_TRANSPORT_UNAVAILABLE'});};
@@ -82,15 +83,24 @@ export function createBrowserViewerHostClient({binding,ownerInstanceId,hostId,ge
  });
 }
 
-export function createBrowserViewerHostServer({bind,tls,peer,relay,custodyOwner,operationOwner,now=Date.now,requestMs=10000}){
+/** `lifecycle`, when the host is a provisioned browser-only host, is the fixed Control lifecycle route handler
+ * (`native-processing-host/lifecycle-http.mjs`). It shares this one pinned listener, authenticates the Control peer itself
+ * and never joins the viewer admission count, so the host can still answer `close` while viewer work drains. */
+export function createBrowserViewerHostServer({bind,tls,peer,relay,custodyOwner,operationOwner,lifecycle,now=Date.now,requestMs=10000}){
  const address=privateAddress(bind.address),serverName=dnsName(tls.serverName),cert=tlsBytes(tls.cert),key=tlsBytes(tls.key),ca=tlsBytes(tls.clientCa);
  const peerName=dnsName(peer.name),peerFingerprint=fingerprint(peer.fingerprintSha256);
  if(!Number.isSafeInteger(bind.port)||bind.port<0||bind.port>65535||bind.port===0&&address!=='127.0.0.1'||
-  !Number.isSafeInteger(requestMs)||requestMs<1||requestMs>30000||!['execute','readAdmission'].every(k=>typeof relay?.[k]==='function'))fail();
+  !Number.isSafeInteger(requestMs)||requestMs<1||requestMs>30000||!['execute','readAdmission'].every(k=>typeof relay?.[k]==='function')||
+  lifecycle!==undefined&&typeof lifecycle!=='function')fail();
  checkedCertificate(cert,{name:serverName,nowMs:now()});
  const lifetime=new AbortController(),sockets=new Set();let active=0,starting,closing;
  const server=https.createServer({cert,key,ca,requestCert:true,rejectUnauthorized:true,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',
   keepAlive:false,handshakeTimeout:requestMs},async(req,res)=>{
+   if(req.url===NATIVE_LIFECYCLE_PATH){
+    if(typeof lifecycle!=='function'||lifetime.signal.aborted||req.socket.authorized!==true){res.writeHead(503,{'content-length':'0','connection':'close'});res.end();return;}
+    try{await lifecycle(req,res);}catch{if(!res.destroyed&&!res.headersSent){res.writeHead(503,{'content-length':'0','connection':'close'});res.end();}}
+    return;
+   }
    if(active>=4||lifetime.signal.aborted){res.writeHead(503,{'content-length':'0','connection':'close'});res.end();return;}
    active++;const disconnected=new AbortController(),stop=()=>disconnected.abort();req.on('aborted',stop);res.on('close',stop);
    let life=createOperationLifetime({now,deadlineMs:now()+requestMs,signal:AbortSignal.any([lifetime.signal,disconnected.signal]),errorFactory:()=>Error('BROWSER_VIEWER_TRANSPORT_UNAVAILABLE')});

@@ -6,17 +6,6 @@ import {browserHostServiceReadiness, createBrowserHostServiceEntrypoint} from '.
 import {serviceFixture} from './fixture.mjs';
 import {createBrowserOnlyReadRun} from './read-run.mjs';
 
-const env = {
-  MERI_HOST_SERVICE_VIEWER_BIND_ADDRESS: '10.0.0.12',
-  MERI_HOST_SERVICE_VIEWER_BIND_PORT: '9443',
-  MERI_HOST_SERVICE_VIEWER_SERVER_NAME: 'browser.meri.internal',
-  MERI_HOST_SERVICE_VIEWER_CERT_FILE: '/etc/meri/viewer.crt',
-  MERI_HOST_SERVICE_VIEWER_KEY_FILE: '/etc/meri/viewer.key',
-  MERI_HOST_SERVICE_VIEWER_CLIENT_CA_FILE: '/etc/meri/control-ca.crt',
-  MERI_HOST_SERVICE_PEER_NAME: 'control.meri.internal',
-  MERI_HOST_SERVICE_PEER_FINGERPRINT: 'b'.repeat(64),
-};
-
 function fullClient(base) {
   return {
     ...base.browserClient,
@@ -35,7 +24,7 @@ test('the entrypoint constructs readRun from the currentness client when none is
   const inputs = {...withoutReadRun, browserClient: fullClient(base)};
   assert.equal(readRun !== undefined, true);
   assert.equal(typeof createBrowserOnlyReadRun(inputs).readRun,'function');
-  const entrypoint = createBrowserHostServiceEntrypoint({inputs, env});
+  const entrypoint = createBrowserHostServiceEntrypoint({inputs});
   assert.equal(entrypoint.ready, true);
   assert.deepEqual(entrypoint.missing, []);
 });
@@ -47,7 +36,7 @@ test('a client without the closed ingest method yields no readRun and readiness 
   delete client.ingest;
   const inputs = {...withoutReadRun, browserClient: client};
   assert.throws(() => createBrowserOnlyReadRun(inputs), /BROWSER_HOST_SERVICE_READRUN_UNBOUND/u);
-  const readiness = browserHostServiceReadiness({env, inputs});
+  const readiness = browserHostServiceReadiness({inputs});
   assert.equal(readiness.ready, false);
   assert.ok(readiness.missing.includes('readRun'));
 });
