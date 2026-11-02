@@ -17,8 +17,11 @@ export function createScheduledConversationIdentity({native,scheduleOwner,identi
  const currentness=createScheduledConversationCurrentness({scheduleOwner,gate,core:{assertCurrent:refuse},now,maxRequestMs:limits.maxRequestMs});
  const observations=new AsyncLocalStorage();
  async function observe({credential,hints,verified,signal,deadlineMs},body){
-  nativeSignal(signal);const selected=data(own(hints,['conversationId','clientId'],['runId']));
-  if(!uuid(selected.conversationId)||selected.clientId!==null&&!uuid(selected.clientId)||selected.runId!==undefined&&!uuid(selected.runId)||!Number.isSafeInteger(deadlineMs))refuse();
+  // A Research selector (scopeKind, and on internal rechecks its server-derived capture) passes through to the native
+  // owner, which validates the capture against Core; schedules never create a Research conversation.
+  nativeSignal(signal);const selected=data(own(hints,['conversationId','clientId'],['runId','scopeKind','scope'])),research=Object.hasOwn(selected,'scopeKind');
+  if(!uuid(selected.conversationId)||selected.clientId!==null&&!uuid(selected.clientId)||selected.runId!==undefined&&!uuid(selected.runId)||!Number.isSafeInteger(deadlineMs)||
+   research&&(selected.scopeKind!=='research_portfolio'||selected.clientId!==null)||!research&&Object.hasOwn(selected,'scope'))refuse();
   const life=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,now()+limits.maxRequestMs),errorFactory:()=>Object.assign(Error('SCHEDULED_CONVERSATION_IDENTITY_REFUSED'),{code:'SCHEDULED_CONVERSATION_IDENTITY_REFUSED'})});
   try{
    const receipt=assertAuthorityIdentityReceipt(verified??await life.run(signal=>native.verifyIdentity({credential,signal,deadlineMs:life.deadline()})));
@@ -26,6 +29,7 @@ export function createScheduledConversationIdentity({native,scheduleOwner,identi
    const lookup=()=>life.run(()=>scheduleOwner.readOccurrenceForConversation({tenantId:receipt.principal.tenantId,conversationId:selected.conversationId},life.check));
    const first=await lookup();
    if(first===null){const result=await body(null,life);if(await lookup()!==null)refuse();life.check();return result;}
+   if(research)refuse();
    const admitted=await life.run(signal=>gate.admit({credential,signal,deadlineMs:life.deadline()}));
    if(admitted.principal.tenantId!==receipt.principal.tenantId||admitted.principal.actorId!==receipt.principal.actorId)refuse();
    life.limitDeadline(admitted.expiresAtMs);

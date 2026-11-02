@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {createNativeIdentityContext} from '../identity-context.mjs';
+import {createScheduledConversationIdentity} from '../scheduled-conversation-identity.mjs';
 import {createRunCurrentAuthority} from '../run-current-authority.mjs';
 import {createCoreConversationCurrentness} from '../conversation-currentness.mjs';
 import {createActionSessionOwner,borrowedRunSession} from '../../../control/action-host/session/owner.mjs';
@@ -17,17 +18,23 @@ const capture=(name='Captured research',revision=2)=>{
  return {...fields,scopeVersion:createHash('sha256').update(JSON.stringify(fields)).digest('hex')};
 };
 const scope=capture(),subject={scopeKind:'research_portfolio',scope};
-function fixture(t){
+function fixture(t,{scheduled=false}={}){
  const at=1800000000000,now=()=>at,binding={tenantId,actorId,conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
- const state={calls:[],status:200,subject:scope,local:0},limits={maxRequestMs:3000,maxFactBytes:65536};
+ const state={calls:[],status:200,subject:scope,local:0,identityCalls:0,occurrence:null,lookups:[]},limits={maxRequestMs:3000,maxFactBytes:65536};
  const receipt=()=>({principal:{tenantId,actorId},role:'standard_user',permissions:[],clientIds:[id(5)],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:id(1),selectedClientId:null,checkedAtMs:at,expiresAtMs:at+120000,
   researchPortfolio:{...state.subject,currentResearchPortfolioName:'Current research',currentResearchPortfolioRevision:4,stale:true,resourceRevision:'d'.repeat(64)}});
- const fetchImpl=async(url,init)=>{const body=JSON.parse(init.body);state.calls.push(body);assert.ok(url.endsWith('/current'));assert.equal(body.scopeKind,'research_portfolio');
+ const fetchImpl=async(url,init)=>{
+  if(scheduled&&url.endsWith('/identity')){state.identityCalls++;return Response.json({principal:{tenantId,actorId},identityRevision:'a'.repeat(64),checkedAtMs:at,expiresAtMs:at+120000});}
+  const body=JSON.parse(init.body);state.calls.push(body);assert.ok(url.endsWith('/current'));assert.equal(body.scopeKind,'research_portfolio');
   if(state.status!==200)return Response.json({}, {status:state.status});return Response.json(receipt());};
  const run=()=>JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000});
- const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits,enabled:true,
+ const native=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits,enabled:true,
   admitInitialConversation:async input=>{await state.beforeAdmit?.();await input.recheckActive();return run();},
   currentOwner:{async currentRun(){state.local++;return run();}}});
+ // Production (conversation-identity.mjs) wraps the native owner in schedule custody whenever a schedule owner is configured.
+ const identity=scheduled?createScheduledConversationIdentity({native,identity:{origin:'https://core.synthetic.invalid',fetchImpl},now,limits,factWindowMs:60000,
+  scheduleOwner:{async readOccurrenceForConversation(query){state.lookups.push(query);return state.occurrence;}},
+  selectExisting:async()=>assert.fail('A Research conversation is never a schedule occurrence')}):native;
  const sessions=createActionSessionOwner({mode:'process-local',now,verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,
   withAuthority:identity.withAuthority,limits:{...limits,maxSessions:10,maxTtlMs:100000},refusals:()=>{}});t.after(()=>sessions.close());
  const hints={conversationId:binding.conversationId,clientId:null,scopeKind:'research_portfolio'};
@@ -101,4 +108,17 @@ test('Research summary release rejects capture replacement after the initial obs
   management:{metadata:async()=>({...row,scope:capture('Replacement',3)})},publish(){published=true;}};
  await assert.rejects(service.recheckRelease(value));assert.equal(published,false);
  value.management.metadata=async()=>({...row,scope:{...scope}});await service.recheckRelease(value);assert.equal(published,true);
+});
+test('a brand-new Research conversation is issued a session through the production schedule-custody wrapper',async t=>{
+ const f=fixture(t,{scheduled:true}),app=createActionSessionApplication({owner:f.sessions,now:f.now,maxRequestBytes:65536,maxRequestMs:3000});
+ const response=await app.handle(new Request('https://control.synthetic.invalid/api/action-followthrough/session',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:JSON.stringify(f.hints)}));
+ assert.equal(response.status,200);const session=await response.json();
+ assert.deepEqual(session.context.scope,scope);assert.equal(session.context.scopeKind,'research_portfolio');assert.equal(session.context.selectedClientId,null);
+ assert.ok(f.state.calls.length>=1,'Research current came from Core');assert.ok(f.state.lookups.length>0);
+ assert.ok(f.state.lookups.every(query=>query.conversationId===f.binding.conversationId));
+ const authentication=await f.sessions.authenticateSession({credential:session.credential});assert.deepEqual((await f.sessions.readCurrentState({authentication})).scope,scope);
+});
+test('schedule custody never adopts a Research selector for an occurrence conversation',async t=>{
+ const f=fixture(t,{scheduled:true});f.state.occurrence={occurrence:{projection:{scopes:[]}}};
+ await assert.rejects(f.issue());assert.equal(f.sessions.status().sessions,0);
 });
