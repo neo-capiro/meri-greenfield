@@ -303,7 +303,7 @@ test(`${label} the adapter's own 30 s ceiling is TIMEOUT and closes the socket`,
   await quiesce(baseline);
 });
 test(`${label} named browser calls retain separate execution (plus a held submission approval), approval and hook ceilings`, async t => {
- for(const [route,ceiling] of [['browser-call',130000+900000],['browser-approve',900000],['browser-hook',10000]]){
+ for(const [route,ceiling] of [['browser-call',130000+900000],['browser-approve',900000],['browser-hook',10000],['browser-prepare',130000+90000]]){
   mode='hang';seen=[];const baseline=await snapshot(),fetchImpl=await fetchFor();
   t.mock.timers.enable({apis:['setTimeout']});
   const pending=outcome(fetchImpl(origin+'/v1/runner/'+route,request()));

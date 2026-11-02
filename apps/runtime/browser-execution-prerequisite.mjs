@@ -3,12 +3,20 @@
  * Need: control's compiled browser activation record must be open AND the run's resolved browser policy (platform
  * record, tenant settings, the actor's current role: the same `readBrowserPolicy` the host facts use) must be enabled.
  * A tenant or role with the browser off gets no host and never waits for one; a held activation is an explicit none.
+ *
+ * Provisioning on first use: an enabled run's need is `deferred` until its first browser use. `demand` (the runner's
+ * `browser-prepare`, routed through control's browser operations) records that use and waits for the host to be ready;
+ * from then on the need is `browser-only`, which the worker's broker answers by provisioning the host. Ordinary chats
+ * never provision. The enabled verdict is read once per run and kept for the run's own deadline; demand is
+ * control-process state (one control task): a lost demand is raised again by the runner's next preparation.
+ *
  * Readiness is the browser allocation reader's read-only answer for this run (`createPostgresHostAllocationReader.ready`):
  * absent, not-ready, or ready with the canonical run's browserAdmitted currentness. Every dependency await is raced
  * against one owned operation lifetime bounded by the original execution deadline and the provisioning effect
  * allowance; polling never holds a transaction.
  */
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {activationOpen} from '../worker/conversation/browser/activation.mjs';
 import {validateBrowserPolicy} from '../worker/conversation/browser/policy.mjs';
 
@@ -16,10 +24,16 @@ const CODE='EXECUTION_BROWSER_PREREQUISITE_REFUSED';
 const fail=()=>{throw Object.assign(Error(CODE),{code:CODE});};
 const finite=value=>Number.isSafeInteger(value)&&value>0;
 export const BROWSER_NEED=Object.freeze({kind:'browser-only',hostMode:'browser-only'});
+export const BROWSER_DEFERRED=Object.freeze({kind:'deferred'});
+const MAX_TRACKED=4096;
 
 export function createBrowserExecutionPrerequisite({allocations,activation,policy,now=Date.now,requestTimeoutMs,effectTimeoutMs}){
  if(typeof allocations?.ready!=='function'||typeof policy?.read!=='function'||typeof now!=='function'||!finite(requestTimeoutMs)||!finite(effectTimeoutMs))fail();
  const open=activationOpen(activation);
+ // Per run (binding digest): the enabled verdict and the first-use demand, each kept until the run's own deadline.
+ const verdicts=new Map(),demands=new Map();
+ const prune=()=>{const at=now();for(const map of [verdicts,demands])for(const [key,entry] of map)if(entry.untilMs<=at)map.delete(key);};
+ const remember=(map,key,entry)=>{prune();if(map.size>=MAX_TRACKED)map.delete(map.keys().next().value);map.set(key,entry);};
  const lifeFor=(deadlineMs,outerSignal,allowance)=>{
   const limit=Math.min(finite(deadlineMs)?deadlineMs:now()+allowance,now()+allowance);
   if(limit<=now())fail();
@@ -28,19 +42,23 @@ export function createBrowserExecutionPrerequisite({allocations,activation,polic
  /** The run's resolved browser policy, read within one request budget; a failed or malformed read refuses (never "none"). */
  async function enabled({binding,signal,deadlineMs}){
   if(!open)return false;
+  const key=canonicalSha256(binding),known=verdicts.get(key);
+  if(known!==undefined&&known.untilMs>now())return known.enabled;
   const life=lifeFor(deadlineMs,signal,requestTimeoutMs);
   try{
    let resolved;
    try{resolved=validateBrowserPolicy(await life.run(s=>policy.read({binding,signal:s,deadlineMs:life.deadline()})));}catch{fail();}
+   if(finite(deadlineMs))remember(verdicts,key,{enabled:resolved.enabled===true,untilMs:deadlineMs});
    return resolved.enabled===true;
   }finally{life.close();}
  }
  async function need({binding,signal,deadlineMs}={}){
   signal?.throwIfAborted();
-  return await enabled({binding,signal,deadlineMs})?BROWSER_NEED:Object.freeze({kind:'none'});
+  if(!await enabled({binding,signal,deadlineMs}))return Object.freeze({kind:'none'});
+  const demand=demands.get(canonicalSha256(binding));
+  return demand!==undefined&&demand.untilMs>now()?BROWSER_NEED:BROWSER_DEFERRED;
  }
  async function ready({binding,signal,deadlineMs}){
-  if(!await enabled({binding,signal,deadlineMs}))return Object.freeze({status:'none'});
   const life=lifeFor(deadlineMs,signal,effectTimeoutMs);
   try{
    for(;;){
@@ -66,5 +84,11 @@ export function createBrowserExecutionPrerequisite({allocations,activation,polic
    }
   }finally{life.close();}
  }
- return Object.freeze({need,ready});
+ /** The run's first browser use: record the demand (the broker provisions on its next poll) and wait for the host. */
+ async function demand({binding,signal,deadlineMs,executionDeadlineMs}){
+  if(!await enabled({binding,signal,deadlineMs:executionDeadlineMs}))fail();
+  if(finite(executionDeadlineMs))remember(demands,canonicalSha256(binding),{untilMs:executionDeadlineMs});else fail();
+  return ready({binding,signal,deadlineMs});
+ }
+ return Object.freeze({need,demand});
 }

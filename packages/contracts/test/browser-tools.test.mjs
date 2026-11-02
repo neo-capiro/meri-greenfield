@@ -15,7 +15,7 @@ test('only named browser operations get selected policy bounds; approval is a se
  // A call adds the selected approval window: a request its page sends may wait for the user (session/submission-gate.mjs).
  const policy={timeouts:{actionMs:5000,navigationMs:60000}};assert.equal(browserOperationBudgetMs('browser-call',{policy}),65000+120000);assert.equal(browserOperationBudgetMs('browser-tools',{policy}),65000);
  assert.equal(browserOperationBudgetMs('browser-call',{policy:{timeouts:{actionMs:60000,navigationMs:120000}},approvalDeadlineMs:300000}),130000+300000);
- assert.equal(browserOperationCeilingMs('browser-call'),130000+900000);assert.equal(browserOperationCeilingMs('browser-tools'),130000);
+ assert.equal(browserOperationCeilingMs('browser-call'),130000+900000);assert.equal(browserOperationCeilingMs('browser-prepare'),130000+90000);assert.equal(browserOperationBudgetMs('browser-prepare',{}),130000+90000,'preparation may wait for the first-use host');assert.equal(browserOperationCeilingMs('browser-tools'),130000);
  assert.throws(()=>browserOperationBudgetMs('browser-call',{policy,approvalDeadlineMs:900001}));
  assert.equal(browserOperationBudgetMs('browser-approve',{policy}),120000);assert.equal(browserOperationBudgetMs('browser-hook',{policy}),10000);assert.equal(browserOperationCeilingMs('runner/load'),null);
  assert.throws(()=>browserOperationBudgetMs('browser-call',{policy:{timeouts:{actionMs:1,navigationMs:999999}}}));assert.throws(()=>browserOperationBudgetMs('browser-approve',{approvalDeadlineMs:900001}));

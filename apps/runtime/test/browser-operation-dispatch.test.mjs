@@ -57,7 +57,7 @@ function harness({poolOptions={},clock={now:NOW}}={}){
  const effects=[];
  const hosts={async executeBrowserOperation(operation,input,options){effects.push({operation,input,options});return {ok:true,tool:input.tool};}};
  let policyNow=policy;
- const operations=createBrowserOperations({hosts,custody,now:()=>clock.now,
+ const operations=createBrowserOperations({ensureHost:async()=>{},hosts,custody,now:()=>clock.now,
   readCapabilityRole:async()=>({actorRole:'standard_user',checkedAtMs:clock.now,expiresAtMs:clock.now+60000}),
   readBrowserPolicy:async()=>policyNow});
  const call={operation:'browser-call',request:{binding,requestId,tool:'browser_click',args:{selector:'#go'}},
@@ -123,7 +123,7 @@ test('a cancelled signal releases no replay and reaches no effect',async()=>{
 test('an unavailable custody dependency refuses the browser-call effect',async()=>{
  const effects=[];
  const hosts={async executeBrowserOperation(){effects.push(1);return {ok:true};}};
- const operations=createBrowserOperations({hosts,now:()=>NOW,custody:null,
+ const operations=createBrowserOperations({ensureHost:async()=>{},hosts,now:()=>NOW,custody:null,
   readCapabilityRole:async()=>({actorRole:'standard_user',checkedAtMs:NOW,expiresAtMs:NOW+60000}),
   readBrowserPolicy:async()=>policy});
  const prepared=await operations.prepare({operation:'browser-call',

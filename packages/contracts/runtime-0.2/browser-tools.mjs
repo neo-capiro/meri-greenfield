@@ -7,7 +7,8 @@ export const BROWSER_RUN_OPERATIONS=Object.freeze({
  'browser-hook':'browserHook','browser-approve':'approveBrowserTool','browser-settle':'settleBrowser',
  'browser-prepare-takeover':'prepareBrowserTakeover','browser-capture-takeover':'captureBrowserTakeover','browser-retain-takeover':'retainBrowserTakeover',
 });
-export const BROWSER_NATIVE_LIMITS=Object.freeze({requestBytes:262144,responseBytes:270336,metadataMs:10000,executionMs:130000,approvalMs:900000,defaultApprovalMs:120000});
+/** `provisionMs`: the browser host is provisioned on the run's first browser use; preparation may wait this long for it. */
+export const BROWSER_NATIVE_LIMITS=Object.freeze({requestBytes:262144,responseBytes:270336,metadataMs:10000,executionMs:130000,approvalMs:900000,defaultApprovalMs:120000,provisionMs:90000});
 const fail=()=>{throw Object.assign(Error('BROWSER_OPERATION_REFUSED'),{code:'BROWSER_OPERATION_REFUSED'});};
 const tool=value=>typeof value==='string'&&/^browser_[a-z_]{1,80}$/u.test(value);
 const toolUse=value=>typeof value==='string'&&/^[A-Za-z0-9_-]{1,128}$/u.test(value);
@@ -57,6 +58,7 @@ export function browserOperationCeilingMs(operation){
  if(name==='browser-approve')return BROWSER_NATIVE_LIMITS.approvalMs;
  if(name==='browser-call')return BROWSER_NATIVE_LIMITS.executionMs+BROWSER_NATIVE_LIMITS.approvalMs;
  if(name==='browser-hook')return BROWSER_NATIVE_LIMITS.metadataMs;
+ if(name==='browser-prepare')return BROWSER_NATIVE_LIMITS.executionMs+BROWSER_NATIVE_LIMITS.provisionMs;
  return BROWSER_NATIVE_LIMITS.executionMs;
 }
 export function browserOperationBudgetMs(operation,{policy,approvalDeadlineMs=BROWSER_NATIVE_LIMITS.defaultApprovalMs}={}){
@@ -72,5 +74,6 @@ export function browserOperationBudgetMs(operation,{policy,approvalDeadlineMs=BR
   if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<1000||approvalDeadlineMs>BROWSER_NATIVE_LIMITS.approvalMs)fail();
   return Math.min(a+n,BROWSER_NATIVE_LIMITS.executionMs)+approvalDeadlineMs;
  }
+ if(name==='browser-prepare')return BROWSER_NATIVE_LIMITS.executionMs+BROWSER_NATIVE_LIMITS.provisionMs;
  return name==='browser-hook'?BROWSER_NATIVE_LIMITS.metadataMs:BROWSER_NATIVE_LIMITS.executionMs;
 }

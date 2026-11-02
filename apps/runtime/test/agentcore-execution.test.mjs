@@ -4,7 +4,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {binding,versions} from '../../control/conversations/test/store-fixture.mjs';
 import {createAgentCoreExecutionOwner} from '../agentcore-execution.mjs';
 
-function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation,browserNeed,browserReady,reconcileEnded,stop,now=()=>1000}={}){
+function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation,browserNeed,settings,reconcileEnded,stop,now=()=>1000}={}){
  const run={binding:targetBinding,versions,scopes:[],policyRevision:'policy-v1',state:'queued'};
  let record=null,invocations=0,admissions=0,call;
  const response=Promise.withResolvers(),entered=Promise.withResolvers();
@@ -14,8 +14,8 @@ function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation
   async record(value){record={...record,phase:value.phase,native:value.native};return {run,record};}},
   nextRuns:{async readTarget(){return predecessor?{source:predecessor.run.binding,facts:{execution:{recordSha256:hash(predecessor.record)}}}:null;}}};
  const owner=createAgentCoreExecutionOwner({store,versions,plan:{runtimeVersion:'qualified-v1'},credentialSecret:'synthetic-control-secret-'.repeat(3),
-  now,newId:()=> 'c'.repeat(64),contextFor:async()=>({selectedClientId:null}),...(beforeInvocation?{beforeInvocation}:{}),...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),
-  admit:async()=>{admissions++;return {run,expiresAtMs:61000};},...(reconcileEnded?{reconcileEnded}:{}),
+ now,newId:()=> 'c'.repeat(64),contextFor:async()=>({selectedClientId:null}),...(beforeInvocation?{beforeInvocation}:{}),...(browserNeed?{browserNeed}:{}),
+  admit:async()=>{admissions++;return {run,expiresAtMs:61000,...(settings?{settings}:{})};},...(reconcileEnded?{reconcileEnded}:{}),
   provider:{async invoke(input){invocations++;call=input;entered.resolve();if(invokeError)throw invokeError;return response.promise;},stop:stop??(async()=>{throw Error('Stop should not run in these controls');})}});
  return {owner,run,store,response,entered:entered.promise,call:()=>call,counts:()=>({invocations,admissions}),record:()=>record,
   reorderRecord:()=>{record=Object.fromEntries(Object.entries(record).reverse());}};
@@ -84,29 +84,31 @@ test('successor reuses only an ordinary settled session of the same scope and ru
  }
 });
 
-test('the browser prerequisite reports none without a producer, the browser-only need with one, and refuses foreign answers',async()=>{
+test('the browser prerequisite reports none without a producer, deferred or the browser-only need with one, and refuses foreign answers',async()=>{
  const none=fixture();const ack=await none.owner.kickoff({binding,executionKey:hash(binding)});
  assert.deepEqual(await none.owner.browserPrerequisite({binding,executionId:ack.executionId}),{kind:'none'});
  await assert.rejects(none.owner.browserPrerequisite({binding,executionId:'d'.repeat(64)}),{code:'EXECUTION_NOT_FOUND'});
  let answer={kind:'browser-only',hostMode:'browser-only'};
- const f=fixture({browserNeed:async()=>answer,browserReady:async()=>({status:'none'})});
+ const f=fixture({browserNeed:async()=>answer});
  const started=await f.owner.kickoff({binding,executionKey:hash(binding)});
  assert.deepEqual(await f.owner.browserPrerequisite({binding,executionId:started.executionId}),{kind:'browser-only',hostMode:'browser-only'});
  for(const bad of [{kind:'browser'},{kind:'browser-only',hostMode:'native-processing'},{kind:'browser-only',hostMode:'browser-only',extra:1}]){
   answer=bad;await assert.rejects(f.owner.browserPrerequisite({binding,executionId:started.executionId}),/EXECUTION_BROWSER_PREREQUISITE_REFUSED|EXECUTION_REFUSED|INVALID/u,JSON.stringify(bad));
  }
+ answer={kind:'deferred'};assert.deepEqual(await f.owner.browserPrerequisite({binding,executionId:started.executionId}),{kind:'deferred'});
  answer={kind:'none'};assert.deepEqual(await f.owner.browserPrerequisite({binding,executionId:started.executionId}),{kind:'none'});
  await f.response.resolve({execution:f.call()?.execution,state:'completed',settled:true});
 });
-test('an unready browser host withholds the invocation exactly like an unready native host',async()=>{
- const absent=fixture({browserReady:async()=>({status:'absent'})});
- await absent.owner.kickoff({binding,executionKey:hash(binding)});
- await new Promise(r=>setTimeout(r,20));
- assert.equal(absent.counts().invocations,0,'no model turn before the browser host is ready');assert.equal(absent.record().phase,'unknown');
- const ready=fixture({browserReady:async()=>({status:'ready',currentUntilMs:5000,leaseDeadlineMs:6000,generation:1})});
- await ready.owner.kickoff({binding,executionKey:hash(binding)});await ready.entered;
- assert.equal(ready.counts().invocations,1);
- ready.response.resolve({execution:ready.call().execution,state:'completed',settled:true});
+test('the model turn never waits for the browser host; the browser mounts only when the run browser need is not none',async()=>{
+ for(const [kind,enabled] of [['deferred',true],['browser-only',true],['none',false]]){
+  const f=fixture({settings:{browser:{enabled:true}},browserNeed:async()=>({kind,...(kind==='browser-only'?{hostMode:'browser-only'}:{})})});
+  await f.owner.kickoff({binding,executionKey:hash(binding)});await f.entered;
+  assert.equal(f.counts().invocations,1,'no host readiness wait before the model turn');assert.deepEqual(f.call().browser,{enabled},kind);
+  f.response.resolve({execution:f.call().execution,state:'completed',settled:true});
+ }
+ const held=fixture({settings:{browser:{enabled:false}},browserNeed:async()=>({kind:'deferred'})});
+ await held.owner.kickoff({binding,executionKey:hash(binding)});await held.entered;assert.deepEqual(held.call().browser,{enabled:false},'a held activation never mounts');
+ held.response.resolve({execution:held.call().execution,state:'completed',settled:true});
 });
 
 test('a session AgentCore no longer holds counts as stopped only once the run lease has passed',async()=>{

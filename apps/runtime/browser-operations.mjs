@@ -6,8 +6,10 @@ import {validateBrowserPolicy} from '../worker/conversation/browser/policy.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {projectCapabilityRole} from './product-ports/capability-policy.mjs';
 const fail=()=>{throw Object.assign(Error('BROWSER_OPERATION_UNAVAILABLE'),{code:'BROWSER_OPERATION_UNAVAILABLE'});};
-export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPolicy,custody,now=Date.now}){
- if(typeof hosts?.executeBrowserOperation!=='function'||typeof readCapabilityRole!=='function'||typeof readBrowserPolicy!=='function'||typeof now!=='function')fail();
+/** `ensureHost({binding,signal,deadlineMs,executionDeadlineMs})` is the run's first-use demand for its browser host
+ * (browser-execution-prerequisite.mjs `demand`): `browser-prepare` waits on it before it reaches the host. */
+export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPolicy,custody,ensureHost,now=Date.now}){
+ if(typeof hosts?.executeBrowserOperation!=='function'||typeof readCapabilityRole!=='function'||typeof readBrowserPolicy!=='function'||typeof ensureHost!=='function'||typeof now!=='function')fail();
  return Object.freeze({async prepare({operation,request,execution,scopes,signal,deadlineMs}){
   const input=assertBrowserOperationRequest(operation,request);let policy;
   // Cleanup never authorizes new browsing and must still be attempted after a
@@ -17,7 +19,7 @@ export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPol
    const started=now(),role=await readCapabilityRole({binding:input.binding,signal,deadlineMs});
    const current=projectCapabilityRole({role:role.actorRole,checkedAtMs:role.checkedAtMs,expiresAtMs:role.expiresAtMs},{started,now:now()});
    policy=validateBrowserPolicy(await readBrowserPolicy({binding:input.binding,scopes,actorRole:current.actorRole,signal,deadlineMs}));
-   if(!policy.enabled&&operation!=='browser-prepare')fail();
+   if(!policy.enabled)fail();
   }
   signal?.throwIfAborted();
   // A browser CALL is durable: its descriptor is derived here from the authenticated request and the
@@ -36,6 +38,8 @@ export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPol
     // Cancellation or elapsed budget immediately after the acknowledged claim never forwards the call.
    signal?.throwIfAborted();
    if(now()>=until)fail();
+   // The run's first browser use provisions its host; preparation waits for it inside its own budget.
+   if(operation==='browser-prepare')await ensureHost({binding:input.binding,signal,deadlineMs:until,executionDeadlineMs:execution.expiresAtMs});
    const result=await hosts.executeBrowserOperation(operation,input,{signal,deadlineMs:until});
     const response={binding:input.binding,result};assertBrowserOperationResponse(response,input.binding);return response;
    }

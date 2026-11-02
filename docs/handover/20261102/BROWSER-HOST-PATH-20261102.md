@@ -17,13 +17,16 @@ is the second purpose of that same lifecycle, never a second coordinator: `hostM
 `host_allocations` table, the same reservation writer, the same provisioning coordinator, the same watchdog, the same
 bootstrap protocol and the same teardown owner, with its own image, AMI, instance type and bootstrap document.
 
-**Need and readiness.** The browser need (`browser-execution-prerequisite.mjs`, read by the Temporal broker right after
-the native need over `execution/browser/prerequisite`) requires control's `browserActivation` record to be open AND the
-run's resolved browser policy (platform record, tenant settings, the actor's current role) to be enabled: a tenant or
-role with the browser off gets no host and never waits. When needed, the model turn waits until the browser host is
-`ready`: active row, bootstrap custody retained, and the canonical run says `browserAdmitted`. Known cost, accepted for
-this release: every browser-enabled run boots one host before its first turn (tens of seconds); provisioning on first
-browser tool use is the follow-up that removes it.
+**Need and readiness (provision on first use, 2 November).** The browser need (`browser-execution-prerequisite.mjs`, read
+over `execution/browser/prerequisite`) is `none` unless control's `browserActivation` record is open AND the run's resolved
+browser policy (platform record, tenant settings, the actor's current role) is enabled; an enabled run is `deferred` until its
+first browser use. The model turn never waits for a browser host: the runner mounts the browser tools (only
+`browser_navigate` is listed until the host exists), and the first browser call's PreToolUse gate prepares the browser; the
+conversation shows "Starting a browser…". Control's `browser-prepare` records the run's demand and waits (up to
+`BROWSER_NATIVE_LIMITS.provisionMs`, 90 s) for the host to be `ready`: active row, bootstrap custody retained, canonical run
+`browserAdmitted`. The worker's broker polls the need with each status poll while it is `deferred` and provisions the host
+once it is `browser-only`; then the runner lists the host's own tools (`tools/list_changed`). A run that never browses
+provisions nothing; a failed browser provision leaves the run going without a browser. Takeover handoffs prepare at once.
 
 **Generation and identity.** Generation is the run's writer fence, as for native. The host id is deterministic per
 purpose (`meri-browser-host-provision/1` versus `meri-native-host-provision/1`), so the two hosts of one run never share

@@ -114,7 +114,7 @@ Keep `features.browserPlatform` as decided in section 1 (add denied hosts there 
 5c. Verify the deployed behaviour, in this order, before declaring the capability on:
 
 1. Control telemetry for a new run shows the AgentCore invocation with `browser.enabled: true` (the admission settings; see `agentcore-candidate.mjs`).
-2. The run's browser-only host is allocated, its currentness read returns `browserAdmitted: true`, and the runtime's `browser-prepare` succeeds (the frontend browser panel appears for that run).
+2. A chat that never browses allocates no browser host. On the first browser call the conversation shows "Starting a browser…", the run's browser-only host is allocated, its currentness read returns `browserAdmitted: true`, and the runtime's `browser-prepare` succeeds within the 90 s provisioning allowance (the frontend browser panel appears for that run).
 3. `browser_navigate` to an ordinary public origin loads; to `https://app.capiro.ai/` refuses with `BROWSER_HOST_DENIED`; to a private address refuses with `BROWSER_URL_NOT_PUBLIC`; a click on a link runs without a prompt; a form submission waits for the Core approval round trip; a `type=button` that posts with script (fetch POST or requestSubmit) also waits, and a refused one never reaches the site; typing into a password field refuses with `BROWSER_CREDENTIAL_INPUT_REFUSED`.
 4. The run ends; the host is destroyed with a verified teardown receipt; no browser state remains.
 5. A tenant admin narrows `browserPolicy` in tenant settings (a list, or an added denied host) and the next run refuses accordingly (revocation path).

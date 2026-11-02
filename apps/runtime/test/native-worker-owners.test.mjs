@@ -101,6 +101,39 @@ test('a browser-only need provisions through the browser coordinator after the n
  assert.deepEqual(calls.slice(0,5),['execution/kickoff','execution/native/prerequisite','provision','execution/browser/prerequisite','browser-provision']);
  assert.deepEqual(torn.sort(),[nativeHostId({binding,generation:1}),nativeHostId({binding,generation:1,hostMode:'browser-only'})].sort(),'both original hosts are torn down');
 });
+test('a deferred browser is provisioned on the run first use, polled with the status; a failed browser provision leaves the run going',async()=>{
+ const {nativeHostId}=await import('../native-host-provisioning.mjs');
+ for(const failing of [false,true]){
+  const calls=[],torn=[];let polls=0;
+  const native={async call(method,input){calls.push(method);
+   if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
+   if(method==='execution/native/prerequisite')return {kind:'none'};
+   // Enabled but unused until the second status poll (the runner's first browser call demanded the host).
+   if(method==='execution/browser/prerequisite')return polls>=2?{kind:'browser-only',hostMode:'browser-only'}:{kind:'deferred'};
+   if(method==='execution/kickoff/status'){polls++;return {binding:input.binding,executionId:input.executionId,state:polls>4?'completed':'executing',expiresAtMs:100000};}
+   throw Error(method);}};
+  const browserProvisioner={async provision({binding:b,generation}){calls.push('browser-provision');if(failing)throw Object.assign(Error('NATIVE_HOST_PROVISION_REFUSED'),{code:'NATIVE_HOST_PROVISION_REFUSED'});
+   return {state:'created',hostId:nativeHostId({binding:b,generation,hostMode:'browser-only'}),generation};}};
+  const hostTeardown=async({hostId,generation})=>{torn.push(hostId);return {closed:true,verified:true,hostId,generation};};
+  const activity=createBrokerActivity({native,browserProvisioner,hostTeardown,now:()=>1000,pollMs:10,context:()=>({cancellationSignal:new AbortController().signal,heartbeat(){}})});
+  assert.deepEqual(await activity({binding}),{state:'completed'},failing?'a browser failure never fails the run':'completed');
+  assert.equal(calls.indexOf('browser-provision'),calls.lastIndexOf('browser-provision'),'provisioned once');
+  assert.ok(calls.indexOf('browser-provision')>calls.indexOf('execution/kickoff/status'),'not before the model turn started');
+  assert.equal(calls.slice(calls.indexOf('browser-provision')).includes('execution/browser/prerequisite'),false,'no more need reads after provisioning');
+  assert.deepEqual(torn,[nativeHostId({binding,generation:1,hostMode:'browser-only'})],'the browser host is torn down at the end, even after a failed provision');
+ }
+ // A run whose browser is never used provisions nothing and tears nothing down.
+ const calls=[];let polls=0;
+ const idle={async call(method,input){calls.push(method);
+  if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
+  if(method==='execution/native/prerequisite')return {kind:'none'};
+  if(method==='execution/browser/prerequisite')return {kind:'deferred'};
+  if(method==='execution/kickoff/status'){polls++;return {binding:input.binding,executionId:input.executionId,state:polls>2?'completed':'executing',expiresAtMs:100000};}
+  throw Error(method);}};
+ const teardown=async()=>{throw Error('nothing to tear down');};
+ assert.deepEqual(await createBrokerActivity({native:idle,browserProvisioner:{provision:async()=>{throw Error('not used');}},hostTeardown:teardown,now:()=>1000,pollMs:10,
+  context:()=>({cancellationSignal:new AbortController().signal,heartbeat(){}})})({binding}),{state:'completed'});
+});
 test('a browser-only need without a browser coordinator, or an unknown browser answer, is a refusal',async()=>{
  const make=answer=>({async call(method,input){
   if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
