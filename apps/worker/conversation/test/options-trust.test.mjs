@@ -1,6 +1,7 @@
 /** Public pinned SDK options are built directly from trusted run configuration. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {buildConversationOptions,RESPONSE_STYLE,RESPONSE_VOICE} from '../options.mjs';
+import {PRODUCT_DEFINITIONS} from '../product-definitions.mjs';
 import {binding,versions} from '../../../control/conversations/test/application-fixture.mjs';
 import {BEDROCK_MODEL} from '../provider.mjs';
 const runtime=extra=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:20,maxCostMicroUSD:2000000,maxOutputBytes:1024,...extra});
@@ -32,6 +33,10 @@ test('quality adjustment is one short native append, without a validation loop',
  assert.ok(append.includes('Never print internal identifiers (UUIDs, record, client, run or session ids) to the user; name clients, documents, schedules and records by their titles.'));
  // A trivial instruction is followed literally, never answered with a canned self-introduction.
  assert.ok(append.includes('Follow a simple instruction literally (asked to say hello in one sentence, say hello in one sentence) with no self-introduction or capability list.'));
+ // Product definitions come from the page that shows the metric; an unreadable definition is said to be unavailable, never invented.
+ assert.ok(append.includes(PRODUCT_DEFINITIONS));
+ assert.ok(PRODUCT_DEFINITIONS.includes('the share of active clients with at least one saved bill watch'));
+ assert.ok(PRODUCT_DEFINITIONS.includes('when neither defines it, say its definition is not available to you rather than guessing'));
  assert.ok(RESPONSE_STYLE.length<1600,`${RESPONSE_STYLE.length} characters`);
  assert.ok(append.startsWith(RESPONSE_STYLE+'\n\n'+RESPONSE_VOICE+'\n\n'));
  assert.equal(append.split(RESPONSE_STYLE).length-1,1);assert.equal(append.split(RESPONSE_VOICE).length-1,1);
