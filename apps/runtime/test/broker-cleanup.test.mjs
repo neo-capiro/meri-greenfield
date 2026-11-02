@@ -5,6 +5,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {binding} from '../../control/conversations/test/store-fixture.mjs';
 import {createBrokerActivity} from '../temporal-worker.mjs';
 
+const prerequisites=['execution/native/prerequisite','execution/browser/prerequisite'];
 function fixture({state='completed',kickoffError,statusError,stopError,heartbeat=()=>{},now=Date.now}={}){
  const controller=new AbortController(),calls=[],executionId=hash(binding),expiresAtMs=now()+30000;
  const ack={binding,executionId,expiresAtMs};let stoppedWithLiveSignal=false;
@@ -12,6 +13,8 @@ function fixture({state='completed',kickoffError,statusError,stopError,heartbeat
   calls.push(operation);assert.deepEqual(input.binding,binding);
   if(operation==='execution/kickoff'){assert.equal(input.executionKey,executionId);if(kickoffError)throw kickoffError;return ack;}
   assert.equal(input.executionId,executionId);
+  // An ordinary conversation needs neither provisioned host.
+  if(operation==='execution/native/prerequisite'||operation==='execution/browser/prerequisite')return {kind:'none'};
   if(operation==='execution/kickoff/stop'){stoppedWithLiveSignal=!signal.aborted;if(stopError)throw stopError;return ack;}
   assert.equal(operation,'execution/kickoff/status');if(statusError)throw statusError;
   return {...ack,state};
@@ -24,7 +27,7 @@ function fixture({state='completed',kickoffError,statusError,stopError,heartbeat
 test('settled outcomes retain the warm runtime instead of issuing Stop',async()=>{
  for(const state of ['completed','failed','cancelled','paused','waiting-for-approval']){
   const f=fixture({state});assert.deepEqual(await f.run({binding}),{state});
-  assert.deepEqual(f.calls,['execution/kickoff','execution/kickoff/status']);
+  assert.deepEqual(f.calls,['execution/kickoff',...prerequisites,'execution/kickoff/status']);
  }
 });
 test('a lost invocation acknowledgement stops the claimed execution without redispatch',async()=>{
@@ -34,7 +37,7 @@ test('a lost invocation acknowledgement stops the claimed execution without redi
 test('cancellation during observation uses a fresh cleanup signal',async()=>{
  const f=fixture({state:'executing',heartbeat:controller=>controller.abort(Error('USER_STOP'))});
  await assert.rejects(f.run({binding}),/USER_STOP/u);assert(f.stoppedWithLiveSignal());
- assert.deepEqual(f.calls,['execution/kickoff','execution/kickoff/status','execution/kickoff/stop']);
+ assert.deepEqual(f.calls,['execution/kickoff',...prerequisites,'execution/kickoff/status','execution/kickoff/stop']);
 });
 test('an unreadable status or refused receipt cannot masquerade as completion',async()=>{
  for(const options of [{statusError:Error('STATUS_LOST')},{state:'not-a-terminal-state'}]){
