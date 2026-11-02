@@ -32,7 +32,7 @@ Meri before this change: `search_congress_bills` / `read_bill_text` (bill-text f
 
 ## What changed
 
-Core: three fixed read-only receivers on `/api/clio/tools/<id>` (`semantic_search_bills`, `semantic_search_grants`, `semantic_search_contract_opportunities`), guarded like the connected-app reads (actor Core credential, service secret, allowlist, deadline, in-transaction membership recheck). Query embedded with the stored model, nearest 200 vectors by cosine distance under the family's partial HNSW index, best chunk per record above a 0.35 floor, family filters, at most 25 canonical records with score, snippet and a stable reference. One additive SQL-only migration adds the two missing partial HNSW indexes.
+Core: three fixed read-only receivers on `/api/clio/tools/<id>` (`semantic_search_bills`, `semantic_search_grants`, `semantic_search_contract_opportunities`), guarded like the connected-app reads (actor Core credential, service secret, allowlist, deadline, in-transaction membership recheck). Query embedded with the stored model, nearest 200 vectors by cosine distance under the family's partial HNSW index, best chunk per record above a 0.35 floor, family filters, at most 25 canonical records with score, snippet and a stable reference. Two additive SQL-only migrations add the missing partial HNSW indexes, one `CREATE INDEX CONCURRENTLY` statement each.
 
 Meri (catalog 0.2.33): family `semantic-search` with one shared schema (`retrieval-0.2/semantic-search.schema.json`), validator, three catalog rows and originals, gateway source and family module, native-family registration, 165 µUSD embedding tariffs, worker mount, family guidance, a routing sentence in the `meri_reads` prompt, rosters in `infra/product-preview/first-chat/deployment-inputs.json` (all six lists), regenerated `docs/RETRIEVAL-AUDIT.md` and tariff proposal, and the catalog digest pins.
 
@@ -48,7 +48,7 @@ Routing the model is given:
 
 - Preview ALB rules (host-scoped, before the preview catch-all): `POST /api/clio/tools/semantic_search_bills`, `/api/clio/tools/semantic_search_grants`, `/api/clio/tools/semantic_search_contract_opportunities`.
 - Preview Core task `MERI_TOOL_ALLOWLIST`: add the three ids (the rosters in `deployment-inputs.json` carry them for approval).
-- Core migration `20281102100000_funding_chunk_embedding_hnsw`: snapshot the clone, `prisma migrate deploy`, then `SELECT indexrelid::regclass FROM pg_index WHERE NOT indisvalid;` must be empty.
+- Core migrations `20281102100000_funding_grant_chunk_embedding_hnsw` and `20281102100001_funding_notice_chunk_embedding_hnsw` (one `CREATE INDEX CONCURRENTLY` each): snapshot the clone, `prisma migrate deploy`, then `SELECT indexrelid::regclass FROM pg_index WHERE NOT indisvalid;` must be empty and one `EXPLAIN` per family must show the partial index. The preview Core task must run with `EMBEDDING_MODEL=amazon.titan-embed-text-v2:0` and Titan invoke on its task role, matching the stored model, or every search is empty. No new ALB rule is expected: `first-chat-core-routes.json` already matches `/api/clio/tools/<id>` (confirm live).
 
 ## Live-only
 
