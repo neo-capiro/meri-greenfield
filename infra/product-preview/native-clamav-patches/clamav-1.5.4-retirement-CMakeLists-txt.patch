@@ -1,0 +1,34 @@
+ClamAV 1.5.4 check_clamd-only retirement synchronization
+Target: unit_tests/CMakeLists.txt
+Before SHA256: f3551b2595d5902dde127d44a6f411b9989cc091e5e5b6616c5b3c9383245b12
+After SHA256: 87848f0fee2b5135370c6beb70bda07d9145dda1b65ea28aadd200c20e669883
+No test skip, retry, timeout increase or installed daemon behavior change.
+--- a/unit_tests/CMakeLists.txt
++++ b/unit_tests/CMakeLists.txt
+@@ -86,25 +86,25 @@
+     else()
+         if (ENABLE_UNRAR)
+             target_link_libraries(check_clamd
+                 PRIVATE
+                     ClamAV::libunrar_iface_static)
+         endif()
+     endif()
+     if(LLVM_FOUND)
+         target_link_directories( check_clamd PUBLIC ${LLVM_LIBRARY_DIRS} )
+         target_link_libraries( check_clamd PUBLIC ${LLVM_LIBRARIES} )
+     endif()
+     target_include_directories(check_clamd PRIVATE ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/libclamav ${CMAKE_BINARY_DIR})
+-    target_compile_definitions(check_clamd PUBLIC OBJDIR="${OBJDIR}" SRCDIR="${SRCDIR}")
++    target_compile_definitions(check_clamd PUBLIC OBJDIR="${OBJDIR}" SRCDIR="${SRCDIR}" PRIVATE THRMGR_TEST_RETIREMENT_SYNC)
+ endif()
+ 
+ #
+ # Test executables
+ #
+ add_executable(check_clamav)
+ target_sources(check_clamav
+     PRIVATE
+         checks.h
+         check_bytecode.c
+         check_clamav.c
+         check_disasm.c
