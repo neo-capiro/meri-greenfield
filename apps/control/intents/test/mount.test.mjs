@@ -65,7 +65,7 @@ test('cross-tenant denial: foreign preparers are refused, journal entries never 
  assert.equal(mine.proposal.command.binding.tenantId,'tenant');assert.equal(theirs.proposal.command.binding.tenantId,'other');
  assert.equal(foreign.metadataCalls.prepare,1,'same delivery ID in another tenant is not a replay');assert.equal(store.rows.size,2);
  for(const key of ['binding','tenantId','scopes','requiredApprover','proposalId','commandId']){
-  const t=setup();await assert.rejects(t.m.prepare({operation:CREATE,arguments:{...ARGS,[key]:'model'},deliveryId:delivery(9)}),code('INVALID_ARGUMENTS'),key);assert.equal(t.c.metadataCalls.prepare,0,key);
+  const t=setup();await assert.rejects(t.m.prepare({operation:CREATE,arguments:{...ARGS,[key]:'model'},deliveryId:delivery(9)}),e=>e.code==='INVALID_ARGUMENTS'&&e.detail==='data must NOT have additional properties',key);assert.equal(t.c.metadataCalls.prepare,0,key);
  }
 });
 
