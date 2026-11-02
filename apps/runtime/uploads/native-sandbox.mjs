@@ -13,7 +13,7 @@ import {mkdtemp,rm,realpath,lstat,readFile} from 'node:fs/promises';
 import {join,dirname,basename,isAbsolute,normalize} from 'node:path';
 import {runArtifactProcess} from '../../artifacts/process.mjs';
 import {RENDERER_SANDBOX_REQUIREMENTS} from '../../artifacts/renderer.mjs';
-import {RENDERER_PROBE_PATH,RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../artifacts/renderer-qualification.mjs';
+import {RENDERER_PROBE_PATH,RENDERER_PROBE_SCHEMA,BWRAP_CHILD_ENV} from '../../artifacts/renderer-qualification.mjs';
 import {CGROUP_MOUNT,CGROUP_FILES,cgroupLevels,cgroupRelativePath,parseCgroupPath,parseCgroupMount,parseCgroupMountRoot,
  resolveEffectiveCgroup,combineCgroupBounds,platformBoundedCgroup} from '../../artifacts/renderer-probe-observation.mjs';
 export {resolveEffectiveCgroup,combineCgroupBounds,cgroupRelativePath,parseCgroupPath,parseCgroupMount,parseCgroupMountRoot};
@@ -47,12 +47,9 @@ export const UPLOAD_IMAGE_PATHS=Object.freeze({bwrap:'/usr/bin/bwrap',prlimit:'/
  pythonExecutable:'/usr/bin/python3.13',scanner:'/usr/bin/clamscan',tesseract:'/usr/bin/tesseract',pdftoppm:'/usr/bin/pdftoppm',
  definitionsRoot:UPLOAD_DEFINITIONS_ROOT,extractorPath:UPLOAD_EXTRACTOR_PATH,tempRoot:UPLOAD_NATIVE_SCRATCH});
 export const UPLOAD_SANDBOX_REQUIREMENTS=RENDERER_SANDBOX_REQUIREMENTS;
-/** The upload child's environment: the renderer's reviewed allowlist plus `PWD`. The upload role is the one that runs its
- * child under `bwrap` (the renderer port spawns its converter directly), and `bwrap` unconditionally sets `PWD` to the
- * child's working directory before exec (`xsetenv("PWD", new_cwd, 1)`, bubblewrap.c). Without this the probe would always
- * report one environment name the allowlist did not anticipate and `noCredentials` could never be attested. `PWD` is the
- * already-attested private workspace path, not a credential, so no additional reach is admitted. */
-export const UPLOAD_CHILD_ENV=Object.freeze([...RENDERER_CHILD_ENV,'PWD']);
+/** The upload child's environment: the shared bubblewrap child allowlist (the renderer's reviewed list plus the `PWD`
+ * that `bwrap` always sets; see `BWRAP_CHILD_ENV`). */
+export const UPLOAD_CHILD_ENV=BWRAP_CHILD_ENV;
 export const UPLOAD_ROLE_PREFIX=Object.freeze({probe:'meri-upload-probe-',scan:'meri-upload-scan-',extract:'meri-upload-extract-'});
 export const UPLOAD_EXTRACT_FORMATS=Object.freeze(['txt','md','pdf','docx','xlsx','pptx','png','jpg','jpeg']);
 /** The single scan target name a scanner child may read; the scanner port writes exactly this file into the workspace. */

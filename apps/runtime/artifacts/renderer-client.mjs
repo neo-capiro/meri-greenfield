@@ -6,7 +6,16 @@ import {own,data} from '../../../packages/contracts/commands-0.2/execution-bound
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createRendererPort} from '../../artifacts/renderer.mjs';
 import {rendererInput,rendererSessionId,rendererFault,rendererSha,RENDERER_WIRE_BYTES} from './renderer-contract.mjs';
-export async function createAgentCoreRenderer({region,agentRuntimeArn,qualifier,imageDigest,now=Date.now,client}={}){
+/** Control's one-shot startup qualification is never silent: a refusal writes one content-free event naming the closed
+ * fault code (this transport's own code, else the AWS SDK error name) and the HTTP status AgentCore answered with. */
+export const RENDERER_QUALIFICATION_UNAVAILABLE_EVENT='runtime.renderer.qualification.unavailable';
+export function rendererQualificationFailure(error){
+ const code=[error?.code,error?.name].find(value=>typeof value==='string'&&/^[A-Za-z][A-Za-z0-9_]{0,63}$/u.test(value))??'RENDERER_QUALIFICATION_FAILED';
+ const httpStatus=error?.$metadata?.httpStatusCode;
+ return Object.freeze({event:RENDERER_QUALIFICATION_UNAVAILABLE_EVENT,code,httpStatus:Number.isSafeInteger(httpStatus)?httpStatus:null});
+}
+export const writeRendererEvent=event=>{try{process.stderr.write(JSON.stringify(event)+'\n');}catch{}};
+export async function createAgentCoreRenderer({region,agentRuntimeArn,qualifier,imageDigest,now=Date.now,client,report=writeRendererEvent}={}){
  if(typeof region!=='string'||!/^arn:aws:bedrock-agentcore:[a-z0-9-]+:\d{12}:runtime\/[A-Za-z0-9_-]+$/u.test(agentRuntimeArn??'')||agentRuntimeArn.split(':')[3]!==region||! /^[A-Za-z][A-Za-z0-9_-]{0,47}$/u.test(qualifier??'')||!/^sha256:[a-f0-9]{64}$/u.test(imageDigest??''))throw rendererFault('RENDERER_CONFIGURATION');
  async function invoke(action,call={}){
   const {signal,...fields}=call,requestId=randomBytes(32).toString('hex'),input=rendererInput({kind:'artifact-renderer',action,requestId,imageDigest,...fields,deadlineMs:Math.min(fields.deadlineMs??now()+30000,now()+60000)});
@@ -33,7 +42,7 @@ export async function createAgentCoreRenderer({region,agentRuntimeArn,qualifier,
    if(client===undefined)sdk.destroy();if(stopFailure)throw stopFailure;
   }
  }
- let qualified;try{qualified=await invoke('qualify');}catch{return createRendererPort({admission:null});}
+ let qualified;try{qualified=await invoke('qualify');}catch(error){report(rendererQualificationFailure(error));return createRendererPort({admission:null});}
  const admission=qualified.admission;
  return createRendererPort({admission,transformer:{async transform({bytes,format,target,deadlineMs,maxBytes,signal}){
   const result=await invoke('transform',{bytesBase64:bytes.toString('base64'),inputSha256:rendererSha(bytes),format,target,deadlineMs,maxBytes,signal});

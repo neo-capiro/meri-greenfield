@@ -1,6 +1,6 @@
 /** Synthetic AWS transport and native observer. Actual entrypoint isolation/client integrity run; no cloud/model/process. */
 import test from 'node:test';import assert from 'node:assert/strict';import {Readable} from 'node:stream';
-import {createAgentCoreRenderer} from '../renderer-client.mjs';import {createRuntimeRendererApplication} from '../renderer-http.mjs';
+import {createAgentCoreRenderer,RENDERER_QUALIFICATION_UNAVAILABLE_EVENT} from '../renderer-client.mjs';import {createRuntimeRendererApplication} from '../renderer-http.mjs';
 import {createAgentCoreApplication} from '../../agentcore-http.mjs';import {rendererInput,rendererSessionId,rendererSha} from '../renderer-contract.mjs';
 import {rendererSandboxArguments,RENDERER_IMAGE_PATHS} from '../renderer-sandbox.mjs';
 import {RENDERER_PROBE_PATH} from '../../../artifacts/renderer-qualification.mjs';import {officeTransformArguments} from '../../../artifacts/office-transform.mjs';
@@ -31,6 +31,20 @@ test('failed native qualification leaves the port unavailable; wrong-image respo
  for(const options of [{available:false},{tamper:x=>({...x,admission:{...x.admission,imageDigest:'sha256:'+'a'.repeat(64)}})},{stopFails:true}]){
   const f=fixture(options),port=await createAgentCoreRenderer({...base,client:f.client});assert.equal(port.state,'unavailable');assert.equal(f.calls.length,2);assert.equal(f.native.filter(x=>x[0]==='transform').length,0);
  }
+});
+test('control names every refused startup qualification in one event: transport status, runtime refusal or result fault',async()=>{
+ const reported=async(options,override)=>{const f=fixture(options),events=[];if(override){const original=f.client.send;f.client.send=command=>override(command,original);}
+  const port=await createAgentCoreRenderer({...base,client:f.client,report:event=>events.push(event)});assert.equal(port.state,'unavailable');return events;};
+ // AgentCore relays a runtime 503 as a 424 RuntimeClientError: the SDK error name and the status are what control sees.
+ const runtimeError=Object.assign(Error('Received error (503) from runtime.'),{name:'RuntimeClientError',$metadata:{httpStatusCode:424}});
+ assert.deepEqual(await reported({},async(command,original)=>{if(command.constructor.name==='InvokeAgentRuntimeCommand')throw runtimeError;return original(command);}),
+  [{event:RENDERER_QUALIFICATION_UNAVAILABLE_EVENT,code:'RuntimeClientError',httpStatus:424}]);
+ assert.deepEqual(await reported({available:false}),[{event:RENDERER_QUALIFICATION_UNAVAILABLE_EVENT,code:'ARTIFACT_RENDERER_UNAVAILABLE',httpStatus:null}]);
+ assert.deepEqual(await reported({tamper:x=>({...x,admission:{...x.admission,imageDigest:'sha256:'+'a'.repeat(64)}})}),[{event:RENDERER_QUALIFICATION_UNAVAILABLE_EVENT,code:'RENDERER_RESULT_REFUSED',httpStatus:null}]);
+ assert.deepEqual(await reported({stopFails:true}),[{event:RENDERER_QUALIFICATION_UNAVAILABLE_EVENT,code:'ARTIFACT_RENDERER_CLEANUP_UNKNOWN',httpStatus:null}]);
+ assert.deepEqual(await reported({},async(command,original)=>{if(command.constructor.name==='InvokeAgentRuntimeCommand')throw Object.assign(Error('x'),{name:'not a code!'});return original(command);}),
+  [{event:RENDERER_QUALIFICATION_UNAVAILABLE_EVENT,code:'RENDERER_QUALIFICATION_FAILED',httpStatus:null}]);
+ const f=fixture(),events=[];assert.equal((await createAgentCoreRenderer({...base,client:f.client,report:event=>events.push(event)})).state,'available');assert.deepEqual(events,[],'a qualified renderer reports nothing here');
 });
 test('unknown transport is not retried and cleanup uses the same owned session',async()=>{
  const f=fixture(),port=await createAgentCoreRenderer({...base,client:f.client});const original=f.client.send;
