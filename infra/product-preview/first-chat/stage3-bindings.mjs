@@ -160,6 +160,7 @@ export function buildStage3Bindings({deployment,foundationOutputs,privateEdgeOut
   executionRoleArns:{control:f.ControlExecutionRoleArn,temporalWorker:f.WorkerExecutionRoleArn,...(schedule?{scheduleWorker:f.ScheduleExecutionRoleArn}:{})},
   logGroupNames:{control:f.ControlLogGroupName,temporalWorker:f.WorkerLogGroupName,...(schedule?{scheduleWorker:f.ScheduleLogGroupName}:{})},
   controlTaskRoleArn:f.ControlTaskRoleArn,runtimeUser:'1000:1000',
+  ...(d.features?.nativeProcessing?.enabled===true?{workerTaskRoleArn:f.WorkerTaskRoleArn}:{}),
   network:{privateSubnetIds:[...d.privateSubnetIds],controlSecurityGroupIds:[...net.control.securityGroups],
    workerSecurityGroupIds:[...net['temporal-worker'].securityGroups],...(schedule?{scheduleSecurityGroupIds:[...net['schedule-worker'].securityGroups]}:{})},
   sizing:{...structuredClone(STAGE3_SIZING),...(schedule?{scheduleWorker:{...STAGE3_SIZING.temporalWorker}}:{})},
