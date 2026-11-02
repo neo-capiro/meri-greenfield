@@ -24,12 +24,22 @@ import {ROUTINES_OCCURRENCE_OPERATIONS} from './native-authority/routines-occurr
 import {runOwnerOperations} from '../../packages/contracts/runtime-0.2/validate.mjs';
 import {BROWSER_RUN_OPERATIONS} from '../../packages/contracts/runtime-0.2/browser-tools.mjs';
 import {BROWSER_VIEWER_ROUTES} from '../../packages/contracts/browser-viewer/receive.mjs';
+import {sdkSessionOperations} from '../../packages/contracts/runtime-0.2/session.mjs';
+import {NATIVE_READ_OPERATIONS} from './reads-http.mjs';
+import {SELECTED_OPERATIONS} from '../../packages/contracts/runtime-0.2/selected.mjs';
+import {NATIVE_FILE_PATHS} from './artifacts/native-files-http.mjs';
+import {CONTROL_HTTP_PATHS} from './agentcore-control-http.mjs';
+import {RUNNER_INTENT_PATHS} from './native-authority/intents-client.mjs';
 const SOURCE_EVENT_PATHS=Object.freeze([SOURCE_EVENT_PATH,SOURCE_EVENT_BINDING_PATH]);
 /** The closed set of route patterns each listener answers, for the per-route response counters (telemetry/route-counters.mjs).
  * `:id` stands for exactly one identifier segment; a path matching none of these is counted as `other`, never as itself, so the
- * `Route` metric dimension can only take these values. Route tables are reused where a module exports one; the conversation,
- * document, upload, runner and native-task families list the literal operations their own route matchers accept. */
+ * `Route` metric dimension can only take these values. Every family is derived from the table its own route matcher uses; the
+ * conversation, document and upload families list the literal operations their matchers accept. */
 const RUN_OWNER_OPERATIONS=[...Object.keys(runOwnerOperations),'child-dispatch','child-settle',...Object.keys(BROWSER_RUN_OPERATIONS)];
+// The AgentCore candidate answers `/v1/runner/<operation>` by rewriting it to `/internal/conversations/<operation>` (worker-http
+// and the selected-task application), and `/v1/runner/runtime|outreach/*`, reads, SDK sessions (`snapshot` when a snapshot
+// reader is composed), intents and native files directly (agentcore-candidate.mjs).
+const RUNNER_OPERATIONS=[...RUN_OWNER_OPERATIONS,...SELECTED_OPERATIONS.map(operation=>'selected/'+operation)];
 export const CONTROL_ROUTE_PATTERNS=Object.freeze({
  public:Object.freeze([
   ...OFFICE_ROUTES.map(route=>'/api/meri/office/'+route),'/api/outreach-generation/start',OBJECTIVE_GENERATION_START_PATH,'/api/conversations',
@@ -45,13 +55,10 @@ export const CONTROL_ROUTE_PATTERNS=Object.freeze({
   '/api/meri/office/wopi/files/:id','/api/meri/office/wopi/files/:id/contents',NATIVE_OBSERVER_ROUTE,RETENTION_WITNESS_PATH,APPROVAL_METADATA_READ_PATH,...Object.values(workspaceGenerationPaths),
   ...['acceptance/read','completion/read','retained-result/read'].map(route=>OBJECTIVE_READER_PREFIX+route),
   ...Object.values(OBJECTIVE_ACTIVITY_OPERATIONS).map(operation=>'/v1/'+operation),...Object.values(ROUTINES_OCCURRENCE_OPERATIONS).map(operation=>'/v1/'+operation),...SOURCE_EVENT_PATHS,
-  ...RUN_OWNER_OPERATIONS.map(operation=>'/internal/conversations/'+operation),...RUN_OWNER_OPERATIONS.map(operation=>'/v1/runner/'+operation),
-  ...['runtime','execution','execution/settle','checkpoint/capture','checkpoint/complete','checkpoint/read','files/capture','files/complete','files/restore','reads/execute','intents/availability','intents/prepare',
-   'native/bootstrap','native/admitted','native/start','session/load','session/snapshot','outreach/complete','outreach/fail'].map(route=>'/v1/runner/'+route),
-  ...['inspect','prepare','probe','release','release-readiness'].map(route=>'/v1/native-task/'+route),'/v1/runner-poststart/challenge','/v1/runner-poststart/redeem',
-  '/v1/checkpoint/read','/v1/context/resolve','/v1/identity/verify','/v1/worker/authorize','/v1/readiness','/v1/retention/sweep','/v1/native-processing/lifecycle',
-  '/v1/execution/kickoff','/v1/execution/kickoff/status','/v1/execution/kickoff/stop','/v1/execution/poll','/v1/execution/native/host-authority','/v1/execution/native/host-teardown','/v1/execution/native/prerequisite',
-  '/v1/selected/read','/v1/selected/publish','/v1/selected/finish',
+  ...RUNNER_OPERATIONS.map(operation=>'/internal/conversations/'+operation),...RUNNER_OPERATIONS.map(operation=>'/v1/runner/'+operation),
+  '/v1/runner/runtime','/v1/runner/outreach/complete','/v1/runner/outreach/fail',
+  ...NATIVE_READ_OPERATIONS.map(operation=>'/v1/runner/reads/'+operation),...[...sdkSessionOperations,'snapshot'].map(operation=>'/v1/runner/session/'+operation),
+  ...Object.values(RUNNER_INTENT_PATHS),...Object.keys(NATIVE_FILE_PATHS),...CONTROL_HTTP_PATHS,
  ]),
 });
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
