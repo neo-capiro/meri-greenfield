@@ -827,6 +827,28 @@ RUN --mount=type=bind,source=infra/product-preview/runtime-packages/wheels,targe
       --find-links=/tmp/runtime-wheels -r /opt/meri/infra/product-preview/runtime-packages/requirements.lock.txt && \
     python3.13 -I -m pip check
 RUN addgroup -g 1000 node && adduser -D -u 1000 -G node -h /home/node -s /bin/bash node
+# Signed ClamAV definitions are BAKED into this image. The AgentCore upload-inspection purpose runs in a cold one-use
+# microVM invoked seconds after boot under a 60 s wire deadline, so the task-local /run/meri/upload-definitions root
+# (empty on every boot) could never be provisioned in time, every scan reported UPLOAD_DEFINITIONS_UNAVAILABLE, and
+# every cold session was one more full signed-CVD download from the vendor CDN through the VPC's single NAT address.
+# This step runs the SAME updater and store the hosts use (apps/runtime/uploads/native-definitions.mjs): freshclam
+# fetches the full signed containers from database.clamav.net (the one network use of this stage), sigtool verifies
+# every container against the publisher signature, the verified set is published as an immutable content-addressed
+# snapshot, and the publication is re-resolved through the read-only store exactly as a scan resolves it. The root is
+# root-owned and read-only for the UID 1000 process (apps/runtime/uploads/native-sandbox.mjs
+# UPLOAD_BAKED_DEFINITIONS_ROOT), the runtime resolves it PINNED (no updater, no refresh), and a snapshot older than
+# UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS (7 days) makes every scan honestly unavailable until the image is rebuilt. The
+# provenance (snapshot hash, publication time, container names) is kept in the image and reported by the runtime's
+# startup event, so a container's own log says which definitions it scans with.
+RUN mkdir -p /usr/share/meri && \
+    node apps/runtime/uploads/definitions-bake-cli.mjs /opt/meri/upload-definitions > /usr/share/meri/upload-definitions-provenance.json && \
+    grep -q '"sha256":"[0-9a-f]\{64\}"' /usr/share/meri/upload-definitions-provenance.json && \
+    test "$(cat /opt/meri/upload-definitions/current)" = "$(grep -o '"sha256":"[0-9a-f]\{64\}"' /usr/share/meri/upload-definitions-provenance.json | head -1 | cut -d'"' -f4)" && \
+    rmdir /opt/meri/upload-definitions/staging && \
+    chown -R 0:0 /opt/meri/upload-definitions && chmod 0555 /opt/meri/upload-definitions && \
+    chmod 0444 /usr/share/meri/upload-definitions-provenance.json && \
+    ls -l /opt/meri/upload-definitions/snapshots/"$(cat /opt/meri/upload-definitions/current)"/database && \
+    cat /usr/share/meri/upload-definitions-provenance.json
 # Amazon RDS global CA bundle, pinned by apps/runtime/certs/rds-global-bundle.lock.json.
 # node-postgres sslmode=verify-full on retained service connections uses
 # Node's default trust store, which this extends; Node reads it once at start.
