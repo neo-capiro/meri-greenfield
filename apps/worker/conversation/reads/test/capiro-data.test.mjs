@@ -5,16 +5,18 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {selectSkill} from '../../../../../packages/skills/index.mjs';
 import {fixture} from '../../../../runtime/test/reads-native-fixture.mjs';
 import {capiroDataCase,ids,sqlRefusal} from '../../../../gateway/sources/capiro-data/test/fixture.mjs';
-import {connect} from './native-mcp-fixture.mjs';
+import {connect,recordingPort,modelText} from './native-mcp-fixture.mjs';
 import {advertisedArguments} from '../schema.mjs';
 import {assertNativeReadResponse} from '../../../../../packages/contracts/runtime-0.2/reads.mjs';
+import {sqlQueryView} from '../results.mjs';
 
 for(const id of ids){
   test(`${id}: actual MCP carries exact authored input, bounded typed output and correlated receipt`,async t=>{
-    const scene=capiroDataCase(id),f=await fixture('capiro-data',id,{scene,privateUser:true}),m=await connect(t,f);
+    const scene=capiroDataCase(id),f=await fixture('capiro-data',id,{scene,privateUser:true}),recorded=recordingPort(f),m=await connect(t,f,{port:recorded.port});
     assert.ok(m);assert.deepEqual((await m.client.listTools()).tools.map(tool=>tool.name),[id]);
     const out=await m.call();assert.equal(out.isError,undefined,JSON.stringify(out));
-    const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.page);assert.deepEqual(scene.wire[0].body,scene.arguments);
+    const envelope=JSON.parse(recorded.results[0]);assert.deepEqual(envelope.result,scene.page);assert.deepEqual(scene.wire[0].body,scene.arguments);
+    assert.equal(out.content[0].text,modelText(id,recorded.results[0]));
     assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));assert.equal(scene.wire.length,1);
   });
   test(`${id}: exposed schema accepts raw request and refuses model authority`,()=>{
@@ -28,8 +30,8 @@ test('row and byte truncation remain independent through the mounted receiving b
     const scene=capiroDataCase();scene.page.rowLimitReached=rowLimitReached;scene.page.byteTruncated=byteTruncated;
     if(byteTruncated){scene.page.rows.pop();scene.page.rowCount=1;}
     const f=await fixture('capiro-data','query_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
-    assert.equal(out.isError,undefined,JSON.stringify(out));const result=JSON.parse(out.content[0].text).result;
-    assert.equal(result.rowLimitReached,rowLimitReached);assert.equal(result.byteTruncated,byteTruncated);assert.equal(result.rowCount,result.rows.length);
+    assert.equal(out.isError,undefined,JSON.stringify(out));const result=JSON.parse(out.content[0].text);
+    assert.equal(result.rowLimitReached,rowLimitReached);assert.equal(result.byteTruncated,byteTruncated);assert.equal(result.rowCount,result.rows.length);assert.equal(result.shownRows,undefined);
   }
 });
 test('a Core SQL refusal reaches the model with its code and message plus fixed correction guidance, and is still receipted',async t=>{
@@ -50,11 +52,11 @@ test('a Core 362 refusal reaches the model with PostgreSQL diagnostics rendered 
 });
 test('a successful query carries a separate count line that names truncation without touching the canonical bytes',async t=>{
   const scene=capiroDataCase();scene.page.rowLimitReached=true;
-  const f=await fixture('capiro-data','query_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
+  const f=await fixture('capiro-data','query_capiro_data',{scene}),recorded=recordingPort(f),m=await connect(t,f,{port:recorded.port}),out=await m.call();
   assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
-  assert.deepEqual(JSON.parse(out.content[0].text).result,scene.page);
-  assert.equal(out.content[1].text,'Notice: 2 row(s) returned of rowLimit 2 from program_elements. rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');
-  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(JSON.parse(out.content[0].text)));
+  assert.deepEqual(JSON.parse(recorded.results[0]).result,scene.page);assert.equal(out.content[0].text,JSON.stringify(sqlQueryView(scene.page)));
+  assert.equal(out.content[1].text,'Notice: 2 row(s) returned of rowLimit 2 from program_elements; each row lists its values in the order of columns. rowLimitReached: more rows matched; to say how many, count them (count(*) OVER () AS total_matching in the same query), or narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');
+  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(JSON.parse(recorded.results[0])));
 });
 test('current revocation and Core denial publish no result receipt',async t=>{
   for(const action of ['revoke','deny']){
@@ -86,10 +88,11 @@ test('existing selected PE skill remains narrowed and disabled policy exposes no
 for(const id of ids)test(`${id}: private wire uses one existing SDK tool name and preserves exact scope and cells`,async t=>{
   const request=id==='describe_capiro_data'?{source:'client_records',relations:['client_objectives']}:
     {source:'client_records',sql:'SELECT COUNT(*) AS total FROM client_objectives',parameters:[],rowLimit:2};
-  const scene=capiroDataCase(id,{request}),f=await fixture('capiro-data',id,{scene,privateUser:true}),m=await connect(t,f);
+  const scene=capiroDataCase(id,{request}),f=await fixture('capiro-data',id,{scene,privateUser:true}),recorded=recordingPort(f),m=await connect(t,f,{port:recorded.port});
   assert.ok(m);assert.deepEqual((await m.client.listTools()).tools.map(tool=>tool.name),[id]);
   const out=await m.call();assert.equal(out.isError,undefined,JSON.stringify(out));
-  const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.page);assert.equal(envelope.operation.version,'0.2.0');
+  const envelope=JSON.parse(recorded.results[0]);assert.deepEqual(envelope.result,scene.page);assert.equal(envelope.operation.version,'0.2.0');
+  assert.equal(out.content[0].text,modelText(id,recorded.results[0]));
   assert.equal(m.runtime.receipts().length,1);assert.equal(scene.wire.length,1);
   assert.ok(scene.wire[0].options.headers['x-meri-read-correlation']);
 });

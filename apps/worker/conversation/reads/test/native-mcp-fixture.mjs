@@ -3,6 +3,15 @@ import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
 import {createGeneralReadRuntime} from '../runtime.mjs';
 import {assertCapabilityPolicy} from '../../capabilities/policy.mjs';
+import {sqlQueryView} from '../results.mjs';
+/** The fixture's port, recording the canonical result text each execute returned: the model reads a query result as
+ * `sqlQueryView` while the receipt binds this canonical envelope. */
+export function recordingPort(f){
+ const results=[];
+ return {results,port:{...f.port,async execute(call){const result=await f.port.execute.call(f.port,call);results.push(result);return result;}}};
+}
+/** What the model receives for a canonical envelope text. @param {string} id @param {string} canonical */
+export const modelText=(id,canonical)=>id==='query_capiro_data'&&JSON.parse(canonical).result?.ok===true?JSON.stringify(sqlQueryView(JSON.parse(canonical).result)):canonical;
 export async function connect(t,f,{skill,policy={generalReads:true},port=f.port,...options}={}){
  const runtime=await createGeneralReadRuntime({binding:f.binding,scopes:f.scopes,policy:assertCapabilityPolicy(policy),port,now:f.now,deadlineMs:f.deadlineMs,...(skill?{skill}:{}),...options});
  if(runtime===null)return null;
