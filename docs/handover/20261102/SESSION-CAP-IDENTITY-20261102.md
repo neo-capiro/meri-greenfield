@@ -69,3 +69,39 @@ Deploy Core `895d35ad95` (PR 408) and re-read the X14 idle window: `action-follo
 255 s per tab. If it still recurs every ~71 s with that Core, the receipt's `expiresAtMs - now` on one issuance says which
 input binds (about 120 s: the Core receipt; about 60 s: the token mint fell back to the cookie token; check the frontend
 task's Clerk secret).
+
+## Separate item: 403 on the event-stream reconnect (coordinator's live note, ~06:09Z, control :101, frontend :76)
+
+Control never ends an open stream because a renewal issued a newer session: sessions coexist until each one's own cap
+(`owner.mjs:156-158`; the new cadence test holds two). A renewal only replaces the session on the client, which disposes the
+old port and aborts its stream (`opaque-session-controller.ts:88-97` -> `conversation-network.ts:249-260`). What control
+does do:
+
+- A stream is a chain of <=30 s observation windows (`apps/control/conversations/events.mjs:5`, `maxSubscriptionMs`), each
+  opened with a fresh session observation (`service.mjs:178` observe -> `operation()` -> `fresh()` at `:70-76`) and
+  re-observed every 10 s idle and after every delivered page (`events.mjs:5` `idleRecheckMs`; `service.mjs:182-186`). The
+  client resumes the next window with `GET /api/conversations/events/<id>/stream` and `x-meri-resume-sequence`
+  (`packages/meri-client/src/guarded-transport.ts:285-290`, `useRunObservation.ts:85`).
+- If the session expires or is refused inside a window, the recheck fails and the window body errors without a status
+  (`events.mjs:14`, `SUBSCRIPTION_UNAVAILABLE`); the next reconnect GET is then refused at open: `valid()` (`owner.mjs:76`)
+  or a context mismatch (`owner.mjs:135,152`) -> `fail('SESSION_REFUSED')` -> `http.mjs:60` answers
+  `conversationErrorStatuses.SESSION_REFUSED.at(-1)` = **403** (`packages/contracts/conversation-application/protocol.mjs:4`,
+  `[401,403]`). The same 403 covers an expired session, a revoked user and a session pinned to a run that a reservation has
+  since superseded (`owner.mjs:79` pins the run; `apps/control/conversations/next-run.mjs:26` returns the RESERVED successor
+  before the exact-run check, so the recheck's binding differs).
+- The client treats any 401/403 on that route as a revocation (`conversation-network.ts:323-327` -> `revoke()` :241-248 ->
+  `onAccessLost`); the controller reports "expiry" only if the browser clock is already past `session.expiresAtMs`, else
+  "access-lost" (`opaque-session-controller.ts:168-169`), and an access-lost hides the conversation
+  (`useConversationConnection.ts:64-76`). So a 403 reaches the UI as a denial whenever control refuses an old credential
+  before the browser's own expiry timer (`conversation-network.ts:221-224`) has fired: a session held past its cap while
+  `busy()` deferred the renewal (`host-controller.ts:42-51`: submit/cancel pending, history/lifecycle in flight, feedback,
+  artifacts or uploads pending) with control's clock ahead of the browser's, or a run superseded under a still-open session.
+
+Not fixed in this lane: which trigger it was needs the 403 body code and the refused session's `expiresAtMs` against the
+time of the 403 (`CONTROL_SESSION_REFUSED step=... code=...` lines on control, `owner.mjs:41-48`, say whether it was
+`identity`, `context` or an expired record). A candidate fix is client-side: on a port-level denial, reopen through a fresh
+issuance and let that issuance's own 401/403 decide access loss (it re-verifies at Core, `opaque-session-controller.ts:197-200`),
+instead of deciding from the browser clock; that is a conversation-lifecycle change for its owner, not a cap change.
+On "the client renews every ~15 s": frontend 99270c9b carries the 300 s token mint (`identity-token.server.ts:7`), so a
+15 s cadence means 60 s receipts, i.e. the mint fell back to the cookie token on that build; one receipt's
+`expiresAtMs - now` on the serving build settles it.
