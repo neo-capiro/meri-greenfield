@@ -29,7 +29,8 @@ retained, canonical run `browserAdmitted`. The worker's broker polls the need wi
 and provisions the host once it is `browser-only`; then the runner lists the host's own tools (`tools/list_changed`, which
 the actual CLI honours: `sdk-server.cli.test.mjs`). A run that never browses provisions nothing and settles locally. A
 failed browser provision leaves the run going without a browser: the denied first use does not stop the turn, and the
-run's browser settlement is answered by control as not-applicable when no browser host was ever allocated for it.
+run's browser settlement is answered by control as not-applicable when its host never went active (no allocation, or one
+still reserved or dispatching); a host that went active settles itself.
 Takeover handoffs prepare at once, without the "Starting a browser…" line (their browser already runs).
 
 **Generation and identity.** Generation is the run's writer fence, as for native. The host id is deterministic per

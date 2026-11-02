@@ -10,6 +10,8 @@ import {createWorkerRunApplication} from '../worker-http.mjs';
 import {createExecutionBinding} from '../../control/conversations/execution-boundary.mjs';
 import {binding,versions,scopes} from '../../control/conversations/test/store-fixture.mjs';
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
+import {createBrowserExecutionPrerequisite} from '../browser-execution-prerequisite.mjs';
+import {compileBrowserActivation,EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION} from '../../worker/conversation/browser/activation.mjs';
 const policy=validateBrowserPolicy({enabled:true,tools:['browser_snapshot'],timeouts:{actionMs:5000,navigationMs:60000}});
 function fixture({ensureHost,reached=true}={}){
  let at=1000,checks=0,roleReads=0,policyReads=0,dispatches=0,revoked=false,replyBinding=binding,authFailure=false,advance=0;
@@ -29,7 +31,7 @@ function fixture({ensureHost,reached=true}={}){
   if(operation==='browser-tools')return {tools:[{name:'browser_snapshot',inputSchema:{type:'object'}}]};
   if(operation==='browser-settle')return {schema:'meri-browser-cleanup/1',binding,outcome:request.outcome,activation:'open',egress:'done',process:'done',profile:'done'};
  }};
- const browserOperations=createBrowserOperations({ensureHost:async input=>{ensured.push({...input,dispatchesBefore:dispatches});await ensureHost?.(input);},hostReached:async()=>reached,hosts,now,custody,readCapabilityRole:async()=>{roleReads++;if(revoked)throw Error('REVOKED');return {actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000};},readBrowserPolicy:async input=>{policyReads++;assert.deepEqual(input.scopes,scopes);return policy;}});
+ const browserOperations=createBrowserOperations({ensureHost:async input=>{ensured.push({...input,dispatchesBefore:dispatches});await ensureHost?.(input);},hostReached:typeof reached==='function'?reached:async()=>reached,hosts,now,custody,readCapabilityRole:async()=>{roleReads++;if(revoked)throw Error('REVOKED');return {actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000};},readBrowserPolicy:async input=>{policyReads++;assert.deepEqual(input.scopes,scopes);return policy;}});
  const app=createWorkerRunApplication({now,browserOperations,configuration:{limits:{requestMs:3000,requestBytes:1048576}},createService(){throw Error('browser must not invent a run-owner method');},
   execution:{async authenticate(input){checks++;assert.equal(input.credential,'synthetic-execution');assert.deepEqual(input.binding,binding);if(authFailure||at>=identity.expiresAtMs)throw Error('EXECUTION_AUTHORITY_REFUSED');return {execution:identity,scopes,selectedClientId:scopes[0].resourceId,policyRevision:scopes[0].policyRevision};}}});
  const transport=async(url,init)=>{requests.push(url);return app.handle(new Request(url.replace('/v1/runner/','/internal/conversations/'),init));};
@@ -83,4 +85,19 @@ test('a preparation that never got a browser host settles as not-applicable at c
  const g=fixture();await g.port.prepare();assert.equal((await g.port.settle({outcome:'ended'})).activation,'open');
  assert.deepEqual(g.calls.map(c=>c.operation),['browser-prepare','browser-settle']);
  assert.deepEqual(g.ensured[0].scopes,scopes,'the demand carries the run scopes for its durable record');
+});
+test('a start that created an allocation but never got the host active also settles at control, over the real reached read',async()=>{
+ const activation=compileBrowserActivation({state:'open',evidence:'docs/qualification/browser-egress/EVIDENCE.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,
+  renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}});
+ const refused=async()=>{throw Object.assign(Error('EXECUTION_BROWSER_PREREQUISITE_REFUSED'),{code:'EXECUTION_BROWSER_PREREQUISITE_REFUSED'});};
+ for(const [answer,reachedHost] of [[{status:'not-ready',binding,state:'dispatching',generation:1,leaseDeadlineMs:Date.now()+60000},false],
+  [{status:'not-ready',binding,state:'reserved',generation:1,leaseDeadlineMs:Date.now()+60000},false],[{status:'not-ready',binding,state:'expired'},true]]){
+  const prerequisite=createBrowserExecutionPrerequisite({allocations:{ready:async()=>answer},activation,policy:{read:async()=>policy},
+   demands:{record:async()=>{},read:async()=>true},now:Date.now,requestTimeoutMs:1000,effectTimeoutMs:2000});
+  const f=fixture({ensureHost:refused,reached:input=>prerequisite.reached({...input,deadlineMs:Date.now()+5000})});
+  await assert.rejects(f.port.prepare());
+  const receipt=await f.port.settle({outcome:'failed'});
+  assert.equal(receipt.activation,reachedHost?'open':'not-applicable',answer.state);
+  assert.equal(f.counts().dispatches,reachedHost?1:0,answer.state);
+ }
 });

@@ -83,8 +83,12 @@ test('the demand is durable: another control task (or a restarted one) answers b
  await assert.rejects(flaky.p.demand({binding,scopes,deadlineMs:Date.now()+5000,executionDeadlineMs:until}),{code:'EXECUTION_BROWSER_PREREQUISITE_REFUSED'});
  assert.equal(flaky.reads(),0,'nothing waits for a host whose demand was not recorded');
 });
-test('reached says whether any browser host was ever allocated for the run; a failed read refuses',async()=>{
- assert.equal(await owner({answers:[{status:'absent',binding}]}).p.reached({binding,deadlineMs:Date.now()+5000}),false);
- for(const answer of [{status:'not-ready',state:'dispatching'},ready()])assert.equal(await owner({answers:[answer]}).p.reached({binding,deadlineMs:Date.now()+5000}),true);
+test('reached says whether the run host could ever have received its preparation; a failed read refuses',async()=>{
+ const reached=answer=>owner({answers:[answer]}).p.reached({binding,deadlineMs:Date.now()+5000});
+ // No allocation, or one created by a start that then failed before the host went active: no host ever saw the run.
+ for(const state of ['reserved','dispatching'])assert.equal(await reached({status:'not-ready',binding,state,generation:1,leaseDeadlineMs:Date.now()+60000}),false,state);
+ assert.equal(await reached({status:'absent',binding}),false);
+ // Active (ready), or a lease that expired after the host may have gone active: the host settles itself.
+ for(const answer of [ready(),{status:'not-ready',binding,state:'expired'}])assert.equal(await reached(answer),true,JSON.stringify(answer.state??answer.status));
  await assert.rejects(owner({answers:[()=>{throw Error('BROWSER_HOST_ALLOCATION_REFUSED');}]}).p.reached({binding,deadlineMs:Date.now()+5000}),{code:'EXECUTION_BROWSER_PREREQUISITE_REFUSED'});
 });

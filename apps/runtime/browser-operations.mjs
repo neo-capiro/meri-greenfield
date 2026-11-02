@@ -9,9 +9,10 @@ import {projectCapabilityRole} from './product-ports/capability-policy.mjs';
 const fail=()=>{throw Object.assign(Error('BROWSER_OPERATION_UNAVAILABLE'),{code:'BROWSER_OPERATION_UNAVAILABLE'});};
 /** `ensureHost({binding,scopes,signal,deadlineMs,executionDeadlineMs})` is the run's first-use demand for its browser host
  * (browser-execution-prerequisite.mjs `demand`): `browser-prepare` waits on it before it reaches the host.
- * `hostReached({binding,signal,deadlineMs})` (`reached`) says whether any browser host was ever allocated for the run: a
- * run whose preparation failed before that has no browser anywhere, so its `browser-settle` is answered here as
- * not-applicable instead of being routed to a host that does not exist. */
+ * `hostReached({binding,signal,deadlineMs})` (`reached`) says whether the run's browser host could ever have received its
+ * preparation (an allocation that went active): a run whose start failed before that (no allocation, or one still
+ * reserved or dispatching) has no browser anywhere, so its `browser-settle` is answered here as not-applicable instead of
+ * being routed to a host that never ran. */
 export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPolicy,custody,ensureHost,hostReached,now=Date.now}){
  if(typeof hosts?.executeBrowserOperation!=='function'||typeof readCapabilityRole!=='function'||typeof readBrowserPolicy!=='function'||typeof ensureHost!=='function'||
   typeof hostReached!=='function'||typeof now!=='function')fail();

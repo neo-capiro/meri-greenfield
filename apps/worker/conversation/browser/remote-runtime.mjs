@@ -5,7 +5,7 @@
  * call reaches the PreToolUse gate, which prepares the browser once (`starting()` is told, so the conversation can show
  * that a browser is starting) and then forwards to the host as before. A run that never asked for a browser settles with
  * a local not-applicable receipt; once a preparation was sent, settlement goes through the port, whose control answers
- * not-applicable itself when no browser host was ever allocated for the run. A takeover handoff prepares at once and
+ * not-applicable itself when the run's browser host never went active. A takeover handoff prepares at once and
  * quietly: its browser already exists and holds custody. Before the browser is prepared no browser effect exists, so the
  * post-use hooks have nothing to record: a refused first use never stops the turn. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';

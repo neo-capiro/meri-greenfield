@@ -14,8 +14,11 @@
  * Readiness is the browser allocation reader's read-only answer for this run (`createPostgresHostAllocationReader.ready`):
  * absent, not-ready, or ready with the canonical run's browserAdmitted currentness. Every dependency await is raced
  * against one owned operation lifetime bounded by the original execution deadline and the provisioning effect
- * allowance; polling never holds a transaction. `reached` tells browser settlement whether any browser host was ever
- * allocated for the run: with none, no browser, egress grant, process or profile can exist.
+ * allowance; polling never holds a transaction. `reached` tells browser settlement whether the run's browser host could
+ * ever have received its preparation: `browser-prepare` is forwarded only after this reader answered `ready`, and an
+ * allocation moves forward only (reserved, dispatching, active), so a run with no allocation, or one still reserved or
+ * dispatching, has no browser, egress grant, process or profile anywhere. An expired lease or any other answer counts as
+ * reached (the host settles itself).
  */
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
@@ -101,10 +104,11 @@ export function createBrowserExecutionPrerequisite({allocations,activation,polic
   remember(demanded,canonicalSha256(binding),{untilMs:executionDeadlineMs});
   return ready({binding,signal,deadlineMs});
  }
- /** Whether a browser host was ever allocated for this run (any allocation state); a failed read refuses. */
+ /** Whether the run's browser host could ever have received its preparation; a failed read refuses. */
  async function reached({binding,signal,deadlineMs}){
   const life=lifeFor(deadlineMs,signal,requestTimeoutMs);
-  try{let result;try{result=await life.run(s=>allocations.ready({binding,signal:s}));}catch{fail();}return result?.status!=='absent';}
+  try{let result;try{result=await life.run(s=>allocations.ready({binding,signal:s}));}catch{fail();}
+   return !(result?.status==='absent'||result?.status==='not-ready'&&['reserved','dispatching'].includes(result.state));}
   finally{life.close();}
  }
  return Object.freeze({need,demand,reached});
