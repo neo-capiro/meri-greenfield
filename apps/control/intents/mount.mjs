@@ -41,7 +41,6 @@ const closed=code=>CODES.has(code)?code:'UNKNOWN';
  * tells the model what to correct; undefined when the schema validates it (the owner refused on its own terms) or is not
  * registered with the canonical validator. */
 const explain=(operation,value)=>{try{return describeInputProblem(resolveOperationContract(operation).descriptor.inputSchema.id,value)?.slice(0,INTENT_DETAIL_MAX);}catch{return undefined;}};
-const detailOf=error=>{const d=error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined;return typeof d==='string'?d:undefined;};
 /** A document preparer may declare the formats its owner admits for this composition (`formats`), so the offer tells the
  * worker exactly what the tool may advertise (PDF only when the document application admits it). Lowercase tokens only. */
 const declaredFormats=p=>{if(p.formats===undefined)return undefined;if(!isDeclaredFormats(p.formats))throw intentFault('INTENT_CONFIGURATION');return Object.freeze([...p.formats]);};
