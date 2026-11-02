@@ -24,7 +24,7 @@ test('text-to-SQL: the statement rules, parameters, result shape, refusal codes 
   /rowLimit default 200, max 1000, applied as an outer LIMIT/,/byteTruncated \(256 KiB cap\)/,/Page by keyset: ORDER BY the full key and WHERE key > \$n/,/Filter value_kind, position_cycle and asserted_fy before summing budget positions/])assert.match(query.description,rule);
  // The sql argument states the gate's rules in the schema the model fills in.
  const sql=JSON.stringify(query.arguments);
- assert.match(sql,/One read-only PostgreSQL statement \(SELECT or WITH \.\.\. SELECT\) over the relations describe_capiro_data returns; bind values as \$1\.\.\$n/);
+ assert.match(sql,/One read-only PostgreSQL statement \(SELECT or WITH \.\.\. SELECT\) over the tables describe_capiro_data returns; bind values as \$1\.\.\$n/);
  assert.doesNotMatch(sql,/Not allowed|blocked|outer LIMIT wrapper|Core /,'the schema does not restate the gate or name Core');
  assert.match(sql,/A refusal carries PostgreSQL's own message, character position, hint, SQLSTATE and nearest published names: fix the SQL and run it again/);
  assert.match(sql,/cast it \(\$1::date\) when the context does not fix the type/);

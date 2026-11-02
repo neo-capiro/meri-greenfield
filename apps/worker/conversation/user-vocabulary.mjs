@@ -9,7 +9,9 @@
 /** @type {readonly (readonly [RegExp,string])[]} */
 const PHRASES=Object.freeze([
  [/\brelation(s?)\b(?!:)/gu,'table$1'],
+ [/\bRelation(s?)\b(?!:)/gu,'Table$1'],
  [/\bgoverned memory\b/giu,'saved memory'],
+ [/\bISO-8601 acceptance\b/gu,'ISO-8601 support'],
  [/\bProvider acceptance\b/gu,'Provider acknowledgement'],
  [/\bprovider acceptance\b/gu,'provider acknowledgement'],
  [/\bdelivery from acceptance\b/gu,'delivery from the provider\'s acknowledgement'],

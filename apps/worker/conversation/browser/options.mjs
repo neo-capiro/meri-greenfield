@@ -20,7 +20,7 @@ const BROWSER_EVENTS=Object.freeze(['PreToolUse','PostToolUse','PostToolUseFailu
 /** @returns {never} */
 const fail=()=>{throw Object.assign(Error('BROWSER_COMPOSITION_REFUSED'),{code:'BROWSER_COMPOSITION_REFUSED'});};
 /** @type {import('@anthropic-ai/claude-agent-sdk').PermissionResult} */
-const DENY=Object.freeze({behavior:'deny',message:'Tool unavailable'});
+const DENY=Object.freeze({behavior:'deny',message:'Not available in this conversation'});
 /** @param {unknown} name */
 const browserName=name=>typeof name==='string'&&(name===BROWSER_SERVER_NAME||name.includes(`mcp__${BROWSER_SERVER_NAME}`));
 /** Routes each permission request to the one decider that owns the tool.

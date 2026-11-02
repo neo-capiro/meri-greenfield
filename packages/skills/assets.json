@@ -260,8 +260,8 @@
       "skillVersion": "1.0.2",
       "manifestPath": "./originals/mail_history/1.0.2/manifest.json",
       "prosePath": "./originals/mail_history/1.0.2/SKILL.md",
-      "manifestSha256": "c424f5492807788ecef5ca074d4b7589236760da522de6931977526d9030c62a",
-      "proseSha256": "bfb8b9cbe8fa7f81adfee3457bfb0beaeef88301384d2388e83a900b2b7d3b07"
+      "manifestSha256": "42a9cf67e0d1f35311e8e5636fcd3029011a75d9c33a518f926d618dfb09981f",
+      "proseSha256": "57aa454e47e3b8dbb2f43927ff3a3c416f97c44e454ba04ba9cb0934cdbf55ef"
     },
     {
       "skillId": "quick_skill.pe_deep_dive",

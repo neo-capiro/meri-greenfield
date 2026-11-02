@@ -12,7 +12,7 @@ import {assertSkillInstallation} from '../../contracts/selected-skills/validate.
 const currentHash='24f03dec8d86033a2344fc60de70e525c7ce37f8f83502fc9984c094bbceb9bc';
 
 test('all thirty-six original asset identities survive the exact additive installation without added grants',()=>{
- assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'b5de28280262c23bb828bf36c76265651b5b26781e02b0594698f425336634fb');
+ assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'5db943066d128af85ca1a2a4a8899c1e5137d338df9b37809590ca799aeec1a5');
  assert.equal(hash(historical),assets.installationCatalogSha256);assert.equal(hash(current),currentHash);
  assert.equal(current.sourceRegistryCommit,historical.sourceRegistryCommit);
  assert.equal(historical.operations.length,142);assert.equal(current.operations.length,161);

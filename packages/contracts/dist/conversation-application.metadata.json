@@ -79,13 +79,13 @@
     },
     {
       "path": "../skills/./originals/mail_history/1.0.2/manifest.json",
-      "sha256": "6453a42f2209f56e84fb52a185c23aa2aa098545ea4e6a16c6ab83f2733d2a82",
+      "sha256": "3c75e6db911f2ff6c695621d3abab789f617ec3c3382a36d4621d7f51a3d7979",
       "bytes": 2697
     },
     {
       "path": "../skills/./originals/mail_history/1.0.2/SKILL.md",
-      "sha256": "bfb8b9cbe8fa7f81adfee3457bfb0beaeef88301384d2388e83a900b2b7d3b07",
-      "bytes": 3658
+      "sha256": "57aa454e47e3b8dbb2f43927ff3a3c416f97c44e454ba04ba9cb0934cdbf55ef",
+      "bytes": 3651
     },
     {
       "path": "../skills/./originals/meeting_prep/1.0.2/manifest.json",
@@ -169,7 +169,7 @@
     },
     {
       "path": "../skills/assets.json",
-      "sha256": "b5de28280262c23bb828bf36c76265651b5b26781e02b0594698f425336634fb",
+      "sha256": "5db943066d128af85ca1a2a4a8899c1e5137d338df9b37809590ca799aeec1a5",
       "bytes": 16904
     },
     {

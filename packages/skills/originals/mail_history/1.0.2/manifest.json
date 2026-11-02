@@ -4,7 +4,7 @@
   "skillVersion": "1.0.2",
   "prose": {
     "id": "urn:meri:original:mail-history:1.0.2",
-    "sha256": "bfb8b9cbe8fa7f81adfee3457bfb0beaeef88301384d2388e83a900b2b7d3b07"
+    "sha256": "57aa454e47e3b8dbb2f43927ff3a3c416f97c44e454ba04ba9cb0934cdbf55ef"
   },
   "requiredSources": [
     {

@@ -48,7 +48,7 @@ test('a more permissive decider cannot short-circuit a browser decision, and the
  assert.equal(r.approvalRequests.length,1);
  for(const name of ['mcp__meri_reads__search_bills','mcp__meri_intents__propose_task','Read'])assert.equal((await o.canUseTool(name,{},{toolUseID:'toolu_83'})).behavior,'allow',`${name} stays with its own chain`);
  const routed=routeBrowserPermissions(async()=>undefined,allowAll);
- assert.deepEqual(await routed(T('browser_click'),{},{}),{behavior:'deny',message:'Tool unavailable'},'a browser gate that does not answer still denies');
+ assert.deepEqual(await routed(T('browser_click'),{},{}),{behavior:'deny',message:'Not available in this conversation'},'a browser gate that does not answer still denies');
 });
 test('composition refuses foreign ownership of browser names, another permission mode and a malformed fragment',()=>{
  const {cap}=openFragment({cwd});

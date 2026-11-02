@@ -82,7 +82,7 @@ export function createGeneralReadServer(c){
  const sqlPrimary=['describe_capiro_data','query_capiro_data'].every(id=>c.available.some(row=>row.operation.id===id));
  const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=registered.map(row=>defineReadTool(row,handler(row),alwaysLoad&&availableNames.has(readToolName(row)),{sqlPrimary}));
  for(const t of tools)assertConvertible(t.shape);
- const instructions=['Read-only Capiro data sources for this conversation. Preserve exact source IDs, versions, hashes and client selections; separate inference; disclose partial or unavailable evidence. An error result establishes no evidence, absence or completeness. Nothing here writes, acts externally or creates a document.',
+ const instructions=['Read-only Capiro data sources for this conversation. Preserve exact source IDs, versions, hashes, permissions and client selection; separate inference; disclose partial or unavailable evidence. An error result establishes no evidence, absence or completeness. Nothing here writes, acts externally or creates a document.',
   RESULT_STATE_GUIDANCE,
   'In General, client profile, documents, meeting sources, knowledge search and tracked bills require one explicit client UUID. Resolve a named client with lookup_client_registry first and use its returned UUID; ask the user to disambiguate multiple matches. A registry result does not grant access and these reads do not search across all clients. In a selected-client conversation, keep that selected client.',
   ...(profile?[c.available.length?`Available now: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`:'No Capiro data source can be read in this conversation right now.',
