@@ -1,8 +1,10 @@
 /** Public pinned SDK options are built directly from trusted run configuration. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {buildConversationOptions,RESPONSE_STYLE,RESPONSE_VOICE} from '../options.mjs';
+import {PRODUCT_DEFINITIONS} from '../product-definitions.mjs';
 import {binding,versions} from '../../../control/conversations/test/application-fixture.mjs';
 import {BEDROCK_MODEL} from '../provider.mjs';
+import {MAX_RUN_TURNS} from '../../../../packages/contracts/run-limits.mjs';
 const runtime=extra=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:20,maxCostMicroUSD:2000000,maxOutputBytes:1024,...extra});
 test('full native preset, supported task tools and owned 5m cache basis reach the SDK directly',()=>{
  const o=buildConversationOptions(runtime(),new AbortController());
@@ -17,19 +19,26 @@ test('canonical native limits and output schema remain intact without a model pr
  const r=runtime(),format={type:'json_schema',schema:{type:'object',properties:{answer:{type:'string'}},required:['answer'],additionalProperties:false}};
  const o=buildConversationOptions(r,new AbortController(),undefined,undefined,undefined,undefined,undefined,undefined,format);
  assert.equal(o.model,BEDROCK_MODEL);assert.equal(o.maxBudgetUsd,2);assert.equal(o.maxTurns,20);assert.deepEqual(o.outputFormat,format);
+ assert.equal(buildConversationOptions(runtime({maxTurns:MAX_RUN_TURNS}),new AbortController()).maxTurns,1000,'the shared platform ceiling itself reaches the SDK');
 });
 test('old proxy/CA/hash controls and malformed native limits refuse before querying',()=>{
- for(const extra of [{proxyUrl:'https://synthetic.invalid'},{proxyCredential:'synthetic-only'},{sdkCaFile:'/tmp/ca'},{sdkOptionsSha256:'a'.repeat(64)},{model:'other'},{region:'eu-west-1'},{maxTurns:101},{maxCostMicroUSD:0},{maxOutputTokens:0}])assert.throws(()=>buildConversationOptions(runtime(extra),new AbortController()));
+ for(const extra of [{proxyUrl:'https://synthetic.invalid'},{proxyCredential:'synthetic-only'},{sdkCaFile:'/tmp/ca'},{sdkOptionsSha256:'a'.repeat(64)},{model:'other'},{region:'eu-west-1'},{maxTurns:MAX_RUN_TURNS+1},{maxCostMicroUSD:0},{maxOutputTokens:0}])assert.throws(()=>buildConversationOptions(runtime(extra),new AbortController()));
 });
 test('quality adjustment is one short native append, without a validation loop',()=>{
  const o=buildConversationOptions(runtime(),new AbortController());const append=o.systemPrompt.append;
  for(const sentence of ['Preserve the supplied as-of date','Distinguish source deadlines from proposed dates','Uncorroborated completion is not a contradiction','an unknown owner is not unassigned','only after actually invoking one'])assert.ok(append.includes(sentence));
  assert.ok(append.startsWith('You are Meri'));assert.ok(append.includes('keep responses short does not apply'));assert.ok(append.includes('Finish every section you start'));
  // Voice rules bind every answer: no narrated tool use or internal identifiers, and a requested length is honoured.
- assert.ok(append.includes('never name tools, internal source identifiers or pages you are about to scrape, never narrate intent ("let me"), and never mention hooks, run state, token or cost budgets or other internal mechanics.'));
+ assert.ok(append.includes('never name tools, internal source identifiers or pages you are about to scrape, never narrate steps or intent ("let me", "I\'ll search"), and never mention hooks, run state, token or cost budgets or other internal mechanics.'));
  assert.ok(append.includes('When the user asks for a length, stay within about ten percent of it, and say so when the material does not fill it.'));
  // Internal identifiers never reach the user: a routine spec names the client, never its record id.
  assert.ok(append.includes('Never print internal identifiers (UUIDs, record, client, run or session ids) to the user; name clients, documents, schedules and records by their titles.'));
+ // A trivial instruction is followed literally, never answered with a canned self-introduction.
+ assert.ok(append.includes('Follow a simple instruction literally (asked to say hello in one sentence, say hello in one sentence) with no self-introduction or capability list.'));
+ // Product definitions come from the page that shows the metric; an unreadable definition is said to be unavailable, never invented.
+ assert.ok(append.includes(PRODUCT_DEFINITIONS));
+ assert.ok(PRODUCT_DEFINITIONS.includes('the share of active clients with at least one saved bill watch'));
+ assert.ok(PRODUCT_DEFINITIONS.includes('when neither defines it, say its definition is not available to you rather than guessing'));
  assert.ok(RESPONSE_STYLE.length<1600,`${RESPONSE_STYLE.length} characters`);
  assert.ok(append.startsWith(RESPONSE_STYLE+'\n\n'+RESPONSE_VOICE+'\n\n'));
  assert.equal(append.split(RESPONSE_STYLE).length-1,1);assert.equal(append.split(RESPONSE_VOICE).length-1,1);

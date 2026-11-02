@@ -160,3 +160,11 @@ read a valid proposal as a mismatch. The decide answer's `proposalStatus` is one
 same artifact and parent), `rejected` (durable: the same answer from any tab afterwards), `conflict`, `refused`, `expired`,
 `unknown`; a `rejected` request answered `applied` is a contradiction the receiver refuses. Validation grants no authority:
 the office access owner and the artifact publisher decide every read and write.
+
+## Run limits — package 0.1.50
+
+The usage overview `/2` response admits `policy.maxTurns` up to the platform ceiling `MAX_RUN_TURNS` (1000, `run-limits.mjs`) instead of
+the former literal 100, so a tenant that raises its per-run turns above 100 still receives its Usage page. `run-limits.mjs` also names the
+run's wall-clock ceiling (`MAX_RUN_WALL_CLOCK_MS`, four hours) and the derived Temporal activity timeout; both are source-only (not
+packaged) and consumed by the control plane, the runtime and the worker. The `/1` document keeps its published bytes. Validation grants
+no authority: tenant settings, run admission and the database CHECK decide every value.

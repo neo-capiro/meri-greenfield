@@ -4,6 +4,7 @@
  */
 import {assertSdkUsageSnapshot,projectSdkUsage} from '../../../packages/contracts/runtime-0.2/usage.mjs';
 import {assertModelSelection,HISTORICAL_MODEL_SELECTION,MODEL_PROVIDERS} from '../../../packages/contracts/model-selection.mjs';
+import {MAX_RUN_TURNS} from '../../../packages/contracts/run-limits.mjs';
 
 const COUNTERS=Object.freeze(['inputTokens','outputTokens','cacheReadInputTokens','cacheCreationInputTokens']);
 const uuid=value=>typeof value==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/iu.test(value);
@@ -30,7 +31,7 @@ export const SDK_MODEL_CONFIGURATION=Object.freeze({model:HISTORICAL_MODEL_SELEC
 /** Selection was validated against the deployment catalog at admission and load. No key/ARN crosses this port. */
 export function resolveSdkModelConfiguration(selection,modelPolicy){
  try{selection=assertModelSelection(selection);}catch{throw Error('SDK_MODEL_CONFIGURATION_REFUSED');}
- if(!object(modelPolicy)||!Number.isSafeInteger(modelPolicy.maxTurns)||modelPolicy.maxTurns<1||modelPolicy.maxTurns>100||!Number.isSafeInteger(modelPolicy.maxBudgetMicroUsd)||modelPolicy.maxBudgetMicroUsd<1)throw Error('SDK_MODEL_CONFIGURATION_REFUSED');
+ if(!object(modelPolicy)||!Number.isSafeInteger(modelPolicy.maxTurns)||modelPolicy.maxTurns<1||modelPolicy.maxTurns>MAX_RUN_TURNS||!Number.isSafeInteger(modelPolicy.maxBudgetMicroUsd)||modelPolicy.maxBudgetMicroUsd<1)throw Error('SDK_MODEL_CONFIGURATION_REFUSED');
  return {provider:selection.provider,model:selection.modelId,effort:selection.effort,region:'us-east-1',maxOutputTokens:SDK_MAX_OUTPUT_TOKENS,usageBasis:{...SDK_USAGE_BASIS,provider:selection.provider},maxTurns:modelPolicy.maxTurns,maxCostMicroUSD:modelPolicy.maxBudgetMicroUsd};
 }
 

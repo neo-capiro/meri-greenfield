@@ -162,7 +162,9 @@ export const PLAN=Object.freeze([
  ['migration','apps/control/browser-hosts/migrations/0007_native_cleanup_certificate_window.sql','c8f189b48d0114aca710c5224e155a65a814c27a5f9dfcb4f214e05406f50546','integration'],
  // Ordinal 83: I4 actor-wide approval inbox read index on the unchanged intent journal (neo-capiro/meri-greenfield#504).
  ['migration','apps/control/intents/migrations/0005_actor_inbox_index.sql','fd04b221c7ec9a7d058d709d806e4b9f113182b98803e12420a968ddcbdf9ad3','integration'],
- // Ordinal 84: browser-only hosts join the provisioned lifecycle (reserve/dispatch/bootstrap/admit) on the unchanged table.
+ // Ordinal 84: per-run turn ceiling 1000 and the 100-turn / USD 10 never-configured defaults on the unchanged settings row (0021 immutable).
+ ['migration',conversation('0032_sdk_run_turns_ceiling.sql'),'94219ab4dc92a2bdd28b37739254b674dd89226be043e73a7de0840701049ce8','integration'],
+ // Ordinal 85: browser-only hosts join the provisioned lifecycle (reserve/dispatch/bootstrap/admit) on the unchanged table.
  ['migration','apps/control/browser-hosts/migrations/0008_browser_only_provisioning.sql','cde425c83f49eec6455a511d43daede77306fc8a8db28e5643df0a1ed5016825','integration'],
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,

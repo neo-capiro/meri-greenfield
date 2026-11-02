@@ -70,3 +70,35 @@ test('public-web failures carry a precise next step between the closed head and 
  assert.equal(readGuidance('search_public_web'),READ_GUIDANCE.search_public_web);
  assert.equal(readGuidance('mcp__other_server__search_public_web'),READ_GUIDANCE.search_public_web,'guidance is keyed by the read, not the server');
 });
+
+test('a debrief refusal names the conversation to switch to instead of a bare "not permitted"',()=>{
+ const text=failureResult('ACCESS_DENIED','mcp__meri_reads__meeting_query_debriefs').content[0].text;
+ assert.match(text,/^This read is not permitted for this user, client or conversation now/u);assert.doesNotMatch(text,/ACCESS_DENIED/u);
+ assert.match(text,/open a conversation for that client \(choose the client in Meri\) and ask there/u);
+ assert.match(text,/do not say no debriefs exist/u);
+ assert.match(describe('meeting.query_debriefs'),/read only in the conversation of that client, with clientId set to the selected client/u);
+});
+
+test('a General contacts refusal says to search without the client filter or switch to that client',()=>{
+ const text=failureResult('ACCESS_DENIED','mcp__meri_reads__find_contacts').content[0].text;
+ assert.match(text,/In General, search again without clientId/u);
+ assert.match(text,/open a conversation for that client \(choose the client in Meri\) and ask there/u);
+ assert.match(describe('find_contacts'),/In General, omit clientId and find people by name, email or email domain/u);
+});
+
+test('a stored-mail read Core could not complete is a budget or refusal, never a connection fault',()=>{
+ // 2 November 2026: "summarize emails from yesterday" spent Core's 10 s mail budget on a 37k-message mailbox, Core answered 503,
+ // the gateway reported SOURCE_UNAVAILABLE and Meri told the user the mail source "didn't respond" and to reconnect it.
+ for(const [tool,narrower] of [['mail_list_messages',/smaller withinDays, one folder, or a from\/participant filter/u],['mail_search_messages',/smaller withinDays, one folder, or a from\/participant filter/u],['mail_read_thread',/smaller limit or maxCharacters/u]]){
+  for(const code of ['SOURCE_UNAVAILABLE','DEADLINE']){
+   const hint=READ_GUIDANCE[tool].failures[code],text=failureResult(code,`mcp__meri_reads__${tool}`).content[0].text;
+   assert.ok(text.includes(hint),`${tool} ${code} carries its mail hint`);
+   assert.match(hint,/time budget|time limit/u);assert.match(hint,narrower);assert.match(hint,/not what failed/u);
+   assert.match(hint,/do not call this an outage or a connectivity problem/u);assert.match(hint,/do not tell the user to reconnect or resync/u);
+   assert.doesNotMatch(hint,/Integrations|Sync now|Retry sync/u);
+   assert.match(hint,/could not be (searched|read) right now/u);
+  }
+  // The connection advice stays with UNAVAILABLE (no mailbox served), where it is true.
+  assert.match(READ_GUIDANCE[tool].failures.UNAVAILABLE,/connect their mailbox/u);
+ }
+});

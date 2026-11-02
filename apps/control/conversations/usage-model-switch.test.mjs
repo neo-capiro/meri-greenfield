@@ -3,6 +3,7 @@ import {accountSdkUsage,sdkUsageSnapshot,SDK_USAGE_BASIS,resolveSdkModelConfigur
 import {readFile} from 'node:fs/promises';
 import {availableModelSelection,MODEL_EFFORTS} from '../../../packages/contracts/model-selection.mjs';
 import {storedModelSettings} from '../settings/documents.mjs';
+import {MAX_RUN_TURNS} from '../../../packages/contracts/run-limits.mjs';
 const session='10000000-0000-4000-8000-000000000001',fork='10000000-0000-4000-8000-000000000002';
 const bedrock='us.anthropic.claude-sonnet-4-6',api='claude-opus-4-6';
 const row=(provider,costUSD,n=10)=>({provider,costBasis:'list',costUSD,inputTokens:n,outputTokens:n,cacheReadInputTokens:n,cacheCreationInputTokens:n,webSearchRequests:1});
@@ -105,4 +106,11 @@ test('resume retains unchanged former-provider history but refuses its new costs
  // Zero-price native work still has provider identity; it is not an exemption.
  const value=accountSdkUsage({mode:'new',result:result({[api]:row('firstParty',0)},0)});
  assert.equal(value.reason,'configuration_mismatch');assert.equal(value.chargeMicroUsd,null);
+});
+
+test('run admission hands the SDK up to the shared 1000-turn ceiling and refuses one more',()=>{
+ const opus='us.anthropic.claude-opus-4-6',limits={maxBudgetMicroUsd:10000000,monthlyCapMicroUsd:5000000};
+ assert.equal(resolveSdkModelConfiguration({provider:'bedrock',modelId:opus,effort:'high'},{...limits,maxTurns:MAX_RUN_TURNS}).maxTurns,1000);
+ assert.throws(()=>resolveSdkModelConfiguration({provider:'bedrock',modelId:opus,effort:'high'},{...limits,maxTurns:MAX_RUN_TURNS+1}),/SDK_MODEL_CONFIGURATION_REFUSED/);
+ assert.equal(resolveSdkModelConfiguration({provider:'bedrock',modelId:opus,effort:null},{...limits,maxTurns:1}).maxCostMicroUSD,10000000,'the per-run budget has no platform ceiling');
 });

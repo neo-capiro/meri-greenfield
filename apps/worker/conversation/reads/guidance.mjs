@@ -18,11 +18,11 @@ import {bareReadToolName} from './vocabulary.mjs';
 export const SQL_REFUSAL_GUIDANCE=Object.freeze({
  INVALID_QUERY:'rowLimit must be an integer 1-1000 and sql 1-16384 UTF-8 bytes; a PostgreSQL syntax or type error names the character position to fix. Correct the SQL or the request and run it again.',
  UNSUPPORTED_SQL:'Send exactly one statement that starts with SELECT or WITH ... SELECT: no second statement, no SET, SHOW, EXPLAIN, COPY or transaction control, no INSERT, UPDATE, DELETE, MERGE, SELECT INTO or data-modifying CTE, and no administrative, sleep, lock, file or dblink function. Rewrite the statement and run it again.',
- UNKNOWN_RELATION:'Use a table name exactly as describe_capiro_data lists it (lowercase, unqualified); one query reads one source. Use the same source on describe and query and never mix tables from different sources.',
- UNKNOWN_FIELD:'Use column names exactly as describe_capiro_data lists them, qualified by the table alias when two tables share a name. Re-read the table with describe_capiro_data relations:[...] when unsure.',
+ UNKNOWN_RELATION:'Use a data set name exactly as describe_capiro_data lists it (lowercase, unqualified); one query reads one source. Use the same source on describe and query and never mix data sets from different sources. When no listed data set holds the subject asked about, tell the user in plain words that this data is not available for structured queries yet and offer what is (for example a search by topic), without naming data sets, statements or methods.',
+ UNKNOWN_FIELD:'Use column names exactly as describe_capiro_data lists them, qualified by the alias when two data sets share a column name. Re-read the data set with describe_capiro_data relations:[...] when unsure.',
  PARAMETER_MISMATCH:'parameters must bind $1..$n contiguously with every entry referenced; use strings for exact decimals, large integers, dates and UUIDs and numbers only for safe integers, and cast a parameter ($1::date) when PostgreSQL cannot infer its type.',
  SOURCE_UNAVAILABLE:'The data source is unavailable now; this is not an empty result and must not trigger broader or unscoped retrieval.',
- QUERY_TIMEOUT:'The query exceeded its time budget; add selective WHERE filters, join fewer tables, aggregate instead of listing or lower LIMIT, then run it again.',
+ QUERY_TIMEOUT:'The query exceeded its time budget; add selective WHERE filters, join fewer data sets, aggregate instead of listing or lower LIMIT, then run it again.',
  OUTPUT_LIMIT:'The result exceeded the 256 KiB output budget; select fewer columns, aggregate, or lower rowLimit and page by keyset.',
 });
 const SEARCH_FAILURES=Object.freeze({
@@ -67,6 +67,19 @@ const MAIL_FAILURES=Object.freeze({
  UNAVAILABLE:'No connected Microsoft 365 or Google Workspace mailbox is available for this user, or stored mail is not served in this conversation. Tell the user to connect their mailbox, or run Sync now (or Retry sync) for it, under Capiro Settings > Integrations, or to try again in a minute if the mailbox is already connected; do not say that no email exists.',
  ACCESS_DENIED:'This mailbox or client subject is not authorized for this conversation: use {kind:"personal"} in General and {kind:"client", entityId} only for the selected client. Do not retry with another client.',
 });
+// Core answers a stored-mail read that ran out of its own 10 s query budget (a large mailbox, a cold database) with the same
+// 5xx as a refusal, which the gateway reports as SOURCE_UNAVAILABLE; neither is a mailbox connection or network fault
+// (2 November 2026: "summarize yesterday's email" spent the budget on a 37k-message mailbox and Meri told the user the mail
+// source did not respond and to reconnect). The user is never sent to reconnect or resync for a slow or refused read.
+const MAIL_NOT_CONNECTION='The mailbox connection and the network are not what failed, so do not call this an outage or a connectivity problem and do not tell the user to reconnect or resync.';
+const MAIL_CANDIDATE_FAILURES=Object.freeze({...MAIL_FAILURES,
+ SOURCE_UNAVAILABLE:`The stored-mail store did not complete this read: most often the search ran out of its time budget on a large mailbox, otherwise Core refused it. ${MAIL_NOT_CONNECTION} Retry once with a narrower read (a smaller withinDays, one folder, or a from/participant filter); if that fails too, tell the user stored mail could not be searched right now and that no email was found or ruled out.`,
+ DEADLINE:`The stored-mail read did not finish within Meri's time limit. ${MAIL_NOT_CONNECTION} Retry once with a narrower read (a smaller withinDays, one folder, or a from/participant filter); if that fails too, tell the user stored mail could not be searched right now and that no email was found or ruled out.`,
+});
+const MAIL_THREAD_FAILURES=Object.freeze({...MAIL_FAILURES,
+ SOURCE_UNAVAILABLE:`The stored-mail store did not complete this thread read (its time budget, or a Core refusal). ${MAIL_NOT_CONNECTION} Retry once with a smaller limit or maxCharacters; if that fails too, tell the user this thread could not be read right now.`,
+ DEADLINE:`The thread read did not finish within Meri's time limit. ${MAIL_NOT_CONNECTION} Retry once with a smaller limit or maxCharacters; if that fails too, tell the user this thread could not be read right now.`,
+});
 /** @type {Readonly<Record<string,ReadGuidance>>} */
 export const READ_GUIDANCE=Object.freeze({
  search_public_web:Object.freeze({
@@ -95,6 +108,16 @@ export const READ_GUIDANCE=Object.freeze({
  meeting_read_client_meetings:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart.',
  })}),
+ find_contacts:Object.freeze({usage:Object.freeze([
+  'In General, omit clientId and find people by name, email or email domain (query or domain). clientId narrows to one client only in the conversation of that client, with clientId set to the selected client.',
+ ]),limitations:Object.freeze([]),failures:Object.freeze({
+  ACCESS_DENIED:'A client filter is allowed only in the conversation of that client. In General, search again without clientId by name, email or domain; to list the contacts of one client, tell the user to open a conversation for that client (choose the client in Meri) and ask there. Do not retry with another client.',
+ })}),
+ meeting_query_debriefs:Object.freeze({usage:Object.freeze([
+  'Debriefs belong to one client and are read only in the conversation of that client, with clientId set to the selected client. A General conversation has no client to read debriefs for: do not call this there; tell the user to open a conversation for that client (choose the client in Meri) and ask again.',
+ ]),limitations:Object.freeze([]),failures:Object.freeze({
+  ACCESS_DENIED:'Debriefs are readable only in the conversation of the client they belong to. In General, or for a client other than the selected one, tell the user to open a conversation for that client (choose the client in Meri) and ask there; do not retry with another client and do not say no debriefs exist.',
+ })}),
  search_memory:Object.freeze({
   usage:Object.freeze([
    'Recall of approved saved memory: what the user, the firm or Meri previously saved and a reviewer approved (facts, preferences, playbooks, client notes). Arguments: query (required text naming the topic or client to recall), clientId (in a selected-client conversation the selected client\'s UUID, which returns that client\'s items and the firm-wide items the user may recall; null in General, which returns tenant-neutral personal and firm memory; never another client), k (requested page size 1-15, default 8; pages are small, effectivePageSize in the result says how many, and nextCursor continues), cursor (continue a search), memoryItemId with contentCursor (read one item\'s complete content, taken from content.nextRead).',
@@ -117,7 +140,7 @@ export const READ_GUIDANCE=Object.freeze({
    MAIL_CANDIDATES,
   ]),
   limitations:Object.freeze([MAIL_STORED]),
-  failures:Object.freeze({...MAIL_FAILURES,INVALID_ARGUMENTS:'mail_list_messages takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), folder (all, inbox or sent), withinDays (1-3650 or null), limit (1-50), offset (0-10000) and asOf (ISO date-time).'}),
+  failures:Object.freeze({...MAIL_CANDIDATE_FAILURES,INVALID_ARGUMENTS:'mail_list_messages takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), folder (all, inbox or sent), withinDays (1-3650 or null), limit (1-50), offset (0-10000) and asOf (ISO date-time).'}),
  }),
  mail_search_messages:Object.freeze({
   usage:Object.freeze([
@@ -126,7 +149,7 @@ export const READ_GUIDANCE=Object.freeze({
    MAIL_CANDIDATES,
   ]),
   limitations:Object.freeze([MAIL_STORED]),
-  failures:Object.freeze({...MAIL_FAILURES,INVALID_ARGUMENTS:'mail_search_messages takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), at least one filter among query (1-200 characters), from, participant, withinDays (1-3650) or folder (inbox or sent), plus limit (1-50), offset (0-10000) and asOf (ISO date-time).'}),
+  failures:Object.freeze({...MAIL_CANDIDATE_FAILURES,INVALID_ARGUMENTS:'mail_search_messages takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), at least one filter among query (1-200 characters), from, participant, withinDays (1-3650) or folder (inbox or sent), plus limit (1-50), offset (0-10000) and asOf (ISO date-time).'}),
  }),
  mail_read_thread:Object.freeze({
   usage:Object.freeze([
@@ -135,10 +158,10 @@ export const READ_GUIDANCE=Object.freeze({
    'Result: messages[] oldest first, each with from, to, cc, sentAt or receivedAt, bodyCompleteness (full, preview, truncated, missing or unknown) and section {start, endExclusive, totalCodeUnits, text, hasMore}; nextMessageOffset and nextBodyOffsets continue a bounded read and coverage.truncated declares one. Quote or summarize only text that was returned; a missing or truncated body is reported, never inferred.',
   ]),
   limitations:Object.freeze([MAIL_STORED]),
-  failures:Object.freeze({...MAIL_FAILURES,INVALID_ARGUMENTS:'mail_read_thread takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), threadId (UUID), optional messageId (UUID), messageOffset (0-10000), limit (1-10), bodyOffset (0-10000000) and maxCharacters (1-6000).'}),
+  failures:Object.freeze({...MAIL_THREAD_FAILURES,INVALID_ARGUMENTS:'mail_read_thread takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), threadId (UUID), optional messageId (UUID), messageOffset (0-10000), limit (1-10), bodyOffset (0-10000000) and maxCharacters (1-6000).'}),
  }),
  describe_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
-  INVALID_ARGUMENTS:'describe_capiro_data takes optional relations: 1-15 unique lowercase table names, plus source (one of the listed sources) and clientId (UUID, client_records only).',
+  INVALID_ARGUMENTS:'describe_capiro_data takes optional relations: 1-15 unique lowercase data set names, plus source (one of the listed sources) and clientId (UUID, client_records only).',
  }),refusals:SQL_REFUSAL_GUIDANCE}),
  query_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source (one of the listed sources) and clientId (UUID, client_records only).',

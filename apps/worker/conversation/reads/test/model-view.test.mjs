@@ -68,9 +68,9 @@ test('mail: the subject, filters, paging, candidate and thread fields, stale mai
  assert.match(texts['mail_search_messages: ACCESS_DENIED'][0],/use \{kind:"personal"\} in General and \{kind:"client", entityId\} only for the selected client/);
 });
 
-test('the describe orientation line names the tables and the retired contract envelope is never mentioned',()=>{
+test('the describe orientation line names the data sets and the retired contract envelope is never mentioned',()=>{
  const texts=Object.fromEntries(view.notices.map(n=>[n.scenario,n.texts]));
- assert.match(texts['describe_capiro_data: Core 362 describe envelope'][0],/^Notice: 1 public table\(s\) described: program_elements\./);
+ assert.match(texts['describe_capiro_data: Core 362 describe envelope'][0],/^Notice: 1 public data set\(s\) described: program_elements\./);
  assert.match(texts['query_capiro_data: gate refusal UNSUPPORTED_SQL'][0],/Send exactly one statement that starts with SELECT or WITH \.\.\. SELECT/);
  for(const {texts} of view.notices)for(const text of texts)assert.doesNotMatch(text,/contract/);
 });
