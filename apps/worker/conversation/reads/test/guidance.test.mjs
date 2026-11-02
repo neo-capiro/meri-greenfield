@@ -70,3 +70,20 @@ test('public-web failures carry a precise next step between the closed head and 
  assert.equal(readGuidance('search_public_web'),READ_GUIDANCE.search_public_web);
  assert.equal(readGuidance('mcp__other_server__search_public_web'),READ_GUIDANCE.search_public_web,'guidance is keyed by the read, not the server');
 });
+
+test('a stored-mail read Core could not complete is a budget or refusal, never a connection fault',()=>{
+ // 2 November 2026: "summarize emails from yesterday" spent Core's 10 s mail budget on a 37k-message mailbox, Core answered 503,
+ // the gateway reported SOURCE_UNAVAILABLE and Meri told the user the mail source "didn't respond" and to reconnect it.
+ for(const [tool,narrower] of [['mail_list_messages',/smaller withinDays, one folder, or a from\/participant filter/u],['mail_search_messages',/smaller withinDays, one folder, or a from\/participant filter/u],['mail_read_thread',/smaller limit or maxCharacters/u]]){
+  for(const code of ['SOURCE_UNAVAILABLE','DEADLINE']){
+   const hint=READ_GUIDANCE[tool].failures[code],text=failureResult(code,`mcp__meri_reads__${tool}`).content[0].text;
+   assert.ok(text.includes(hint),`${tool} ${code} carries its mail hint`);
+   assert.match(hint,/time budget|time limit/u);assert.match(hint,narrower);assert.match(hint,/not what failed/u);
+   assert.match(hint,/do not call this an outage or a connectivity problem/u);assert.match(hint,/do not tell the user to reconnect or resync/u);
+   assert.doesNotMatch(hint,/Integrations|Sync now|Retry sync/u);
+   assert.match(hint,/could not be (searched|read) right now/u);
+  }
+  // The connection advice stays with UNAVAILABLE (no mailbox served), where it is true.
+  assert.match(READ_GUIDANCE[tool].failures.UNAVAILABLE,/connect their mailbox/u);
+ }
+});
