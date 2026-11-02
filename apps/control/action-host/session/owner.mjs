@@ -35,7 +35,7 @@ export const issuedCurrentState=owner=>currentIssuers.get(owner);
 export class ActionSessionError extends Error{constructor(code){super(code);this.name='ActionSessionError';this.code=code;errors.add(this);}}
 const deny=(code='SESSION_REFUSED')=>{throw new ActionSessionError(code);};
 const REFUSAL_STEPS=new Set(['input','identity','membership-admit','context-preflight','initial-binding','run-select','current-run','context','membership-recheck','capacity','release']);
-const REFUSAL_CODE=/^(?:SESSION|APPLICATION_CONTEXT|NATIVE_AUTHORITY|INITIAL_BINDING|INITIAL_RUN_BINDING|NEXT_RUN|NEXT_TURN|PREPARED_NEXT_RUN|PREPARED_CANDIDATE)_[A-Z0-9_]{1,48}$/u;
+const REFUSAL_CODE=/^(?:SESSION|SCHEDULED_CONVERSATION|APPLICATION_CONTEXT|NATIVE_AUTHORITY|INITIAL_BINDING|INITIAL_RUN_BINDING|NEXT_RUN|NEXT_TURN|PREPARED_NEXT_RUN|PREPARED_CANDIDATE)_[A-Z0-9_]{1,48}$/u;
 /** One line per refused issuance or recheck: the step it reached and an owned constant code. Never an identifier, credential or
  * message. At most `burst` lines per window; the first suppressed line in a window says so once. */
 export function createSessionRefusalDiagnostics({write=line=>process.stderr.write(line),now=Date.now,burst=20,windowMs=60000}={}){
@@ -125,6 +125,7 @@ export function createActionSessionOwner(configuration){
   }catch(error){if(t.isRequestCancellation(error)||isAuthorityUnavailable(error))throw error;if(record&&!t.signal.aborted)remove(record);deny();}
  }
  async function resolve(nativeCredential,selected,t,record,ceiling=Infinity,progress={},fresh=false,browser=false){
+  progress.step='identity';
   const observe=()=>resolveFacts(nativeCredential,selected,t,record,ceiling,progress,browser);
   return withAuthority?t.run(signal=>withAuthority({credential:nativeCredential,hints:selected,...(record?{binding:record.context.binding,sessionFence:record.sessionId+':'+record.sessionRevision}:{}),fresh:!record||fresh,signal,deadlineMs:t.deadline()},observe)):observe();
  }

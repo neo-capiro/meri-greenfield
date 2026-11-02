@@ -25,7 +25,10 @@ function fixture(t,{scheduled=false}={}){
   researchPortfolio:{...state.subject,currentResearchPortfolioName:'Current research',currentResearchPortfolioRevision:4,stale:true,resourceRevision:'d'.repeat(64)}});
  const fetchImpl=async(url,init)=>{
   if(scheduled&&url.endsWith('/identity')){state.identityCalls++;return Response.json({principal:{tenantId,actorId},identityRevision:'a'.repeat(64),checkedAtMs:at,expiresAtMs:at+120000});}
-  const body=JSON.parse(init.body);state.calls.push(body);assert.ok(url.endsWith('/current'));assert.equal(body.scopeKind,'research_portfolio');
+  const body=JSON.parse(init.body);state.calls.push(body);assert.ok(url.endsWith('/current'));
+  // Core explicitly refuses a General selector for this Research conversation; a thrown stub assertion is a transport failure.
+  if(body.scopeKind!=='research_portfolio')return Response.json({}, {status:403});
+  if(state.transportFailure)throw Error('synthetic transport unavailable');
   if(state.status!==200)return Response.json({}, {status:state.status});return Response.json(receipt());};
  const run=()=>JSON.stringify({binding,policyRevision:'policy',checkedAtMs:at,deadlineMs:at+100000});
  const native=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits,enabled:true,
@@ -76,6 +79,18 @@ test('Research HTTP accepts only the public selector and derives the capture fro
  assert.equal((await post({...f.hints,clientId:id(5)})).status,401);
  const reconnect=await post({...f.hints,runId:f.binding.runId});assert.equal(reconnect.status,200);
  assert.deepEqual((await reconnect.json()).context.scope,scope);
+});
+test('Research HTTP distinguishes explicit Core refusals from unavailable authority through schedule custody',async t=>{
+ for(const failure of [401,403,503,'transport'])await t.test(String(failure),async t=>{
+  const f=fixture(t,{scheduled:true}),app=createActionSessionApplication({owner:f.sessions,now:f.now,maxRequestBytes:65536,maxRequestMs:3000});
+  const post=()=>app.handle(new Request('https://control.synthetic.invalid/api/action-followthrough/session',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body:JSON.stringify(f.hints)}));
+  if(failure==='transport')f.state.transportFailure=true;else f.state.status=failure;
+  const response=await post(),unavailable=failure===503||failure==='transport';
+  assert.equal(response.status,unavailable?503:401);assert.deepEqual(await response.json(),{error:{code:unavailable?'SESSION_AUTHORITY_UNAVAILABLE':'SESSION_REFUSED'}});
+  assert.equal(f.sessions.status().sessions,0);
+  f.state.transportFailure=false;f.state.status=200;
+  const recovered=await post();assert.equal(recovered.status,200);assert.deepEqual((await recovered.json()).context.scope,scope);
+ });
 });
 test('Research cache entries are isolated from General and from another exact capture',async t=>{
  const f=fixture(t),calls=[];const owner=createRunCurrentAuthority({now:f.now,monotonic:()=>0,client:{
