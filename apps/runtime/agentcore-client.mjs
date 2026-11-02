@@ -21,6 +21,19 @@ async function readSettlement(stream,contentType,life){
  * as "Session not found or already terminated" (an idle-terminated, ended or never-started session). It does not say the
  * session was never running, so only the execution owner, which knows the run's lease, may treat it as stopped. */
 const sessionNotFound=error=>error?.name==='ResourceNotFoundException'&&error?.$metadata?.httpStatusCode===404;
+// Bounded diagnostic categories only. Never retain provider messages, request IDs, headers or bodies.
+function stopFailureReason(error){
+ const status=error?.$metadata?.httpStatusCode;
+ const known={AccessDeniedException:[403,'STOP_ACCESS_DENIED'],UnauthorizedException:[401,'STOP_UNAUTHORIZED'],
+  ThrottlingException:[429,'STOP_THROTTLED'],ConflictException:[409,'STOP_CONFLICT'],RetryableConflictException:[409,'STOP_CONFLICT'],
+  InternalServerException:[500,'STOP_SERVICE_ERROR'],RuntimeClientError:[424,'STOP_RUNTIME_ERROR'],
+  ServiceQuotaExceededException:[402,'STOP_QUOTA_EXCEEDED'],ValidationException:[400,'STOP_VALIDATION_ERROR']};
+ const match=Object.hasOwn(known,error?.name)?known[error.name]:null;
+ if(match&&status===match[0])return match[1];
+ if(error?.code==='AGENTCORE_STOP_REFUSED')return 'STOP_RESPONSE_REFUSED';
+ if(error?.code==='DEADLINE'||error?.code==='CANCELLED')return 'STOP_INTERRUPTED';
+ return Number.isInteger(status)&&status>=100&&status<=599?'STOP_PROVIDER_OTHER':'STOP_TRANSPORT_UNKNOWN';
+}
 export function createAgentCoreClient(configuration){
  const c=own(configuration,['region','agentRuntimeArn','qualifier'],['client','now']),now=c.now??Date.now;
  if(typeof c.region!=='string'||! /^[a-z]{2}(?:-[a-z]+)+-\d$/u.test(c.region)||typeof c.agentRuntimeArn!=='string'||! /^arn:aws:bedrock-agentcore:[a-z0-9-]+:\d{12}:runtime\/[A-Za-z0-9_-]+$/u.test(c.agentRuntimeArn)||c.agentRuntimeArn.split(':')[3]!==c.region||typeof c.qualifier!=='string'||! /^[A-Za-z][A-Za-z0-9_-]{0,47}$/u.test(c.qualifier)||typeof now!=='function')throw agentcoreFault('AGENTCORE_CONFIGURATION');
@@ -41,7 +54,8 @@ export function createAgentCoreClient(configuration){
    const life=createOperationLifetime({now,signal:v.signal,deadlineMs:now()+23000,errorFactory:agentcoreFault});let dispatched=false;
    try{life.check();const result=await life.run(abortSignal=>{dispatched=true;return client.send(new StopRuntimeSessionCommand({agentRuntimeArn:c.agentRuntimeArn,qualifier:c.qualifier,runtimeSessionId:v.runtimeSessionId,clientToken:v.executionId}),{abortSignal});});
     life.check();if(result.statusCode!==200||result.$metadata?.httpStatusCode!==200||result.runtimeSessionId!==v.runtimeSessionId)throw agentcoreFault('AGENTCORE_STOP_REFUSED');return {binding,executionId:v.executionId,runtimeSessionId:v.runtimeSessionId,stopped:true};
-   }catch(error){if(dispatched)throw agentcoreFault(sessionNotFound(error)?'AGENTCORE_SESSION_NOT_FOUND':'AGENTCORE_STOP_UNKNOWN');throw error;}finally{life.close();}
+   }catch(error){if(dispatched)throw Object.assign(agentcoreFault(sessionNotFound(error)?'AGENTCORE_SESSION_NOT_FOUND':'AGENTCORE_STOP_UNKNOWN'),
+    {reasonCode:sessionNotFound(error)?'STOP_SESSION_NOT_FOUND':stopFailureReason(error)});throw error;}finally{life.close();}
   },
   close(){if(c.client===undefined)client.destroy();},
  });

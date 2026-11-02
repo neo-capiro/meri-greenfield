@@ -94,7 +94,8 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
   catch(error){
    if(error?.code!=='AGENTCORE_SESSION_NOT_FOUND')throw error;
    const record=(await existing(input.binding,input.signal)).record;
-   if(!record||record.executionId!==input.executionId||record.runtimeSessionId!==input.runtimeSessionId||!Number.isSafeInteger(record.expiresAtMs)||record.expiresAtMs>now())refuse('AGENTCORE_STOP_UNKNOWN');
+   if(!record||record.executionId!==input.executionId||record.runtimeSessionId!==input.runtimeSessionId||!Number.isSafeInteger(record.expiresAtMs)||record.expiresAtMs>now())
+    throw Object.assign(Error('AGENTCORE_STOP_UNKNOWN'),{code:'AGENTCORE_STOP_UNKNOWN',reasonCode:'STOP_NOT_FOUND_UNCONFIRMED'});
    return {binding:input.binding,executionId:input.executionId,runtimeSessionId:input.runtimeSessionId,stopped:true};
   }
  }

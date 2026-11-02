@@ -119,7 +119,7 @@ test('a session AgentCore no longer holds counts as stopped only once the run le
  await f.owner.kickoff({binding,executionKey:hash(binding)});await new Promise(resolve=>setTimeout(resolve,20));
  const record=f.record(),stop={binding,executionId:record.executionId,runtimeSessionId:record.runtimeSessionId};
  // Inside the lease the session may still be serving this run: the answer stays unknown.
- await assert.rejects(f.owner.stopExecution(stop),{code:'AGENTCORE_STOP_UNKNOWN'});
+ await assert.rejects(f.owner.stopExecution(stop),{code:'AGENTCORE_STOP_UNKNOWN',reasonCode:'STOP_NOT_FOUND_UNCONFIRMED'});
  clock.now=record.expiresAtMs;
  assert.deepEqual(await f.owner.stopExecution(stop),{...stop,stopped:true});
  // Never for another session of the record, and never for any other stop failure.

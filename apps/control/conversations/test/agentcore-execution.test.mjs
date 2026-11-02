@@ -47,7 +47,7 @@ test('Stop requires the canonical run fence and ordinary SDK completion cannot c
  const x=await fixture();try{await x.first();await x.running(binding);await assert.rejects(x.f.store.executions.requestStop(binding,check),/EXECUTION_STOP_UNFENCED/);
   await x.f.service.cancel({credential:x.f.credential});const requested=await x.f.store.executions.requestStop(binding,check);assert.equal(requested.dispatch,true);assert.equal(phase(x),'stopping');
   await assert.rejects(x.settle(binding),/EXECUTION_STOPPING/);await assert.rejects(x.select(),/NEXT_RUN_EXECUTION_UNSETTLED/);
-  const repeat=await x.f.store.executions.requestStop(binding,check);assert.equal(repeat.record.executionId,requested.record.executionId);assert.equal(repeat.record.runtimeSessionId,requested.record.runtimeSessionId);
+  const repeat=await x.f.store.executions.requestStop(binding,check);assert.equal(repeat.dispatch,true);assert.equal(repeat.record.executionId,requested.record.executionId);assert.equal(repeat.record.runtimeSessionId,requested.record.runtimeSessionId);
   await assert.rejects(x.f.store.executions.settleStopped({binding,executionId:hash(binding),runtimeSessionId:'foreign-'+hash('foreign'),state:'cancelled'},check),/EXECUTION_STOP_REFUSED/);
   await x.f.store.executions.settleStopped({binding,executionId:hash(binding),runtimeSessionId:requested.record.runtimeSessionId,state:'cancelled'},check);assert.equal((await x.select()).reserved,true);
  }finally{x.f.close();}
@@ -56,7 +56,7 @@ test('Stop requires the canonical run fence and ordinary SDK completion cannot c
 for(const result of ['lost','wrong-session','false'])test(`Stop ${result} remains uncertain and fenced; exact retry settles the same invocation`,async()=>{
  const x=await fixture();try{await x.first();await x.running(binding);let mode=result,calls=[];
   const reconciler=createRunReconciler({store:x.f.store,stopExecution:async input=>{calls.push({...input,signal:undefined});assert.equal(await x.state(),'failed','run is fenced before external Stop');if(mode==='lost')throw Error('lost Stop acknowledgement');const reply=stopped(input);return mode==='wrong-session'?{...reply,runtimeSessionId:'foreign-'+hash('foreign')}:mode==='false'?{...reply,stopped:false}:reply;}});
-  assert.deepEqual(await reconciler.reconcile({binding}),{outcome:'unknown',state:'failed'});assert.equal(phase(x),'stopping');await assert.rejects(x.select(),/NEXT_RUN_EXECUTION_UNSETTLED/);await assert.rejects(x.settle(binding),/EXECUTION_STOPPING/);
+  assert.deepEqual(await reconciler.reconcile({binding}),{outcome:'unknown',state:'failed',reasonCode:result==='lost'?'STOP_CALL_FAILED':'STOP_RECEIPT_REFUSED'});assert.equal(phase(x),'stopping');await assert.rejects(x.select(),/NEXT_RUN_EXECUTION_UNSETTLED/);await assert.rejects(x.settle(binding),/EXECUTION_STOPPING/);
   mode='valid';assert.deepEqual(await reconciler.reconcile({binding}),{outcome:'settled',state:'failed'});assert.deepEqual(calls[0],calls[1]);assert.equal((await x.select()).reserved,true);
  }finally{x.f.close();}
 });
