@@ -189,7 +189,8 @@ test('the document tool routes a PDF request to the Word operation exactly when 
  assert.match(without,/Formats: docx, txt, xml\. PDF is not available right now; offer a Word document instead\./u);
  assert.doesNotMatch(without,/format "pdf"/u);
  for(const text of [withPdf,without]){
-  assert.match(text,/Every Word, PDF, Excel or PowerPoint file Meri produces comes from this tool\. There is no command line, shell or script in Meri: never try one or mention one to the user\./u);
+  // True whether or not the run admits sandboxed Bash: files for the user never come from a command line.
+  assert.match(text,/Word, PDF, Excel and PowerPoint files for the user come only from this tool; never create them with a command line\./u);
   // The routing line follows its own operation's header, before the next operation.
   assert.ok(text.indexOf('operation "create_word"')<text.indexOf('Formats: ')&&text.indexOf('Formats: ')<text.indexOf('operation "create_excel"'));
  }

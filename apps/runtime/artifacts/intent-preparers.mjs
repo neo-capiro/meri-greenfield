@@ -94,8 +94,11 @@ export function createRuntimeDocumentIntentPreparers(configuration){
       const authentication=await life.run(signal=>authenticate({credential:session.credential,signal,deadlineMs}));
       const state=data(await life.run(signal=>read({authentication,signal,deadlineMs})));
       own(state,['authenticationSha256','binding','scopes','selectedClientId','checkedAtMs','expiresAtMs']);
-      if(state.authenticationSha256!==hash(authentication)||!same(state.binding,binding)||state.selectedClientId!==c.selectedClientId||
-       !Array.isArray(state.scopes)||state.scopes.length<1||state.scopes.length>100||!Number.isSafeInteger(state.checkedAtMs)||state.checkedAtMs>c.now())throw intentFault('ACCESS_DENIED','none',undefined,'DOCUMENT_CURRENT_STATE');
+      const refuse=reason=>{throw intentFault('ACCESS_DENIED','none',undefined,reason);};
+      if(state.authenticationSha256!==hash(authentication))refuse('DOCUMENT_CURRENT_AUTHENTICATION');
+      if(!same(state.binding,binding))refuse('DOCUMENT_CURRENT_BINDING');
+      if(state.selectedClientId!==c.selectedClientId)refuse('DOCUMENT_CURRENT_CLIENT');
+      if(!Array.isArray(state.scopes)||state.scopes.length<1||state.scopes.length>100||!Number.isSafeInteger(state.checkedAtMs)||state.checkedAtMs>c.now())refuse('DOCUMENT_CURRENT_STATE');
       try{assertNativeConversationScope(state);}catch{throw intentFault('ACCESS_DENIED','none',undefined,'DOCUMENT_CURRENT_SCOPE');}
       clip(state.expiresAtMs);if(native()!==credential)throw intentFault('ACCESS_DENIED','none',undefined,'DOCUMENT_CREDENTIAL_REPLACED');life.check();
      }

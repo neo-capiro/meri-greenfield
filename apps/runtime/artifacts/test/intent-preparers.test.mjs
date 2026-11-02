@@ -110,9 +110,9 @@ test('unavailable and expired native credentials stop before any derived session
 
 test('the complete run binding and selected-client receipt are checked before runtime dispatch',async t=>{
  const h=await fixture(t);
- for(const change of [value=>({...value,binding:{...value.binding,attemptId:'00000000-0000-4000-8000-000000000099'}}),value=>({...value,selectedClientId:'00000000-0000-4000-8000-000000000099'}),value=>({...value,scopes:[]})]){
-  // The refusing step is named for control's log line, never for the model.
-  h.state.onCurrent=change;await assert.rejects(h.prepare(),code('ACCESS_DENIED','none','DOCUMENT_CURRENT_STATE'));
+ for(const [change,reason] of [[value=>({...value,binding:{...value.binding,attemptId:'00000000-0000-4000-8000-000000000099'}}),'DOCUMENT_CURRENT_BINDING'],[value=>({...value,selectedClientId:'00000000-0000-4000-8000-000000000099'}),'DOCUMENT_CURRENT_CLIENT'],[value=>({...value,scopes:[]}),'DOCUMENT_CURRENT_STATE']]){
+  // The refusing check is named for control's log line, never for the model.
+  h.state.onCurrent=change;await assert.rejects(h.prepare(),code('ACCESS_DENIED','none',reason));
  }
  assert.equal(h.state.resolved.length,0);assert.equal(h.f.stats().generations,0);assert.equal(h.f.sessions.status().sessions,1);
 });

@@ -31,7 +31,7 @@ function description(rows,formats){
    lines.push('  Give only: taskInstruction (what to do on each run, in full, including which client, portfolio, committee or topic), cadence ("daily", "weekdays", "weekly" or "monthly"), day (weekly: the weekday name; monthly: the day of the month, 1 to 28; omit otherwise), time (24-hour "HH:MM") and timezone (IANA name such as "America/New_York"; UTC when omitted). Each run\'s result goes to the user\'s Meri inbox; the trusted run sets the schedule policy and run limits.');
    lines.push(`  the trusted run completes these into canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}; the owner validates the completed request.`);
   }else lines.push(`  arguments follow canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}; the owner validates them.`);}
- if(rows.some(r=>r.owner==='document'))lines.push('Every Word, PDF, Excel or PowerPoint file Meri produces comes from this tool. There is no command line, shell or script in Meri: never try one or mention one to the user.');
+ if(rows.some(r=>r.owner==='document'))lines.push('Word, PDF, Excel and PowerPoint files for the user come only from this tool; never create them with a command line.');
  lines.push('Supply literal arguments only; identity, tenant, approval, permissions and client selection come from the trusted run, never from arguments. Where a schema names conversationId, the trusted run binds this conversation\'s id; you may omit it, and any value you supply is replaced.');
  // Catalog bytes stay frozen; the model-facing text is projected into the user's vocabulary (`user-vocabulary.mjs`).
  const text=userVocabulary(lines.join('\n'));return text.length>MAX_DESCRIPTION?text.slice(0,MAX_DESCRIPTION):text;
