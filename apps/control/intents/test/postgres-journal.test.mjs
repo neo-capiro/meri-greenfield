@@ -36,6 +36,29 @@ test('canonical claim, PREPARED custody and same-conversation replay use only th
  assert.equal(f.state.rows.size,1);await assert.rejects(f.journal.begin({...key,record:{...record,argumentsSha256:'c'.repeat(64)}}),e=>e.code==='CONFLICT');
  assert.equal(f.state.commands.filter(c=>c.sql.startsWith('UPDATE')).length,1);
 });
+test('a FAILED INVALID_ARGUMENTS outcome retains its bounded field-path detail: stored, read back and replayed; anything else refuses',async()=>{
+ const f=fixture(),detail="data must have required property 'title'";
+ assert.deepEqual(await f.journal.begin(key),{claimed:true});
+ await f.journal.settle({...key,state:'FAILED',outcome:{code:'INVALID_ARGUMENTS',detail}});
+ assert.deepEqual([...f.state.rows.values()][0].outcome,{code:'INVALID_ARGUMENTS',detail},'the detail is in the row');
+ assert.deepEqual((await f.store.read({key:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId}})).outcome,{code:'INVALID_ARGUMENTS',detail});
+ await assert.rejects(f.journal.begin(key),e=>e.code==='INVALID_ARGUMENTS'&&e.replayed===true&&e.detail===detail,'the replay answers the same explained refusal');
+ // A refusal without a detail is unchanged, and a detail that is not one bounded string never settles.
+ const plain={...key,deliveryId:'sdk:'+'c'.repeat(64)};await f.journal.begin(plain);await f.journal.settle({...plain,state:'FAILED',outcome:{code:'REFUSED'}});
+ await assert.rejects(f.journal.begin(plain),e=>e.code==='REFUSED'&&!Object.hasOwn(e,'detail'));
+ // The store refuses them before any SQL, and the refusal passes the journal boundary unchanged.
+ for(const [n,bad] of [[1,''],[2,'x'.repeat(401)],[3,7],[4,null]]){
+  const other={...key,deliveryId:'sdk:'+String(n).padStart(64,'0')},storeKey={tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId:other.deliveryId};
+  await f.journal.begin(other);const commands=f.state.commands.length;
+  await assert.rejects(f.store.settle({key:storeKey,record,state:'FAILED',outcome:{code:'INVALID_ARGUMENTS',detail:bad}}),e=>e.message==='INTENT_JOURNAL_STATE',JSON.stringify(bad));
+  await assert.rejects(f.store.settle({key:storeKey,record,state:'PREPARED',outcome:{...outcome,detail:'never on PREPARED'}}),e=>e.message==='INVALID_COMMAND','a detail is not a PREPARED key');
+  assert.equal(f.state.commands.length,commands,'refused before any SQL');
+  await assert.rejects(f.journal.settle({...other,state:'FAILED',outcome:{code:'INVALID_ARGUMENTS',detail:bad}}),e=>e.message==='INTENT_JOURNAL_STATE');
+ }
+ // A stored detail outside the bound is an unreadable row: withheld as UNKNOWN inside the transaction, never served.
+ const row=[...f.state.rows.values()][0];row.outcome={code:'INVALID_ARGUMENTS',detail:'x'.repeat(401)};
+ await assert.rejects(f.store.read({key:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId}}),e=>e.message==='UNKNOWN');
+});
 test('claim COMMIT loss leaves PENDING and replay UNKNOWN; no replacement claim or inferred absence',async()=>{
  const f=fixture();f.state.loseCommit=true;await assert.rejects(f.journal.begin(key),e=>e.code==='UNAVAILABLE');
  await assert.rejects(f.journal.begin(key),e=>e.code==='UNKNOWN');assert.equal(f.state.rows.size,1);assert.equal([...f.state.rows.values()][0].state,'PENDING');

@@ -13,7 +13,7 @@ import {canonicalSha256,validateShape} from '../../../packages/contracts/validat
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createIntentJournal} from './journal.mjs';
-import {intentFault,INTENT_FAILURE_CODES} from './faults.mjs';
+import {intentFault,INTENT_FAILURE_CODES,INTENT_DETAIL_MAX} from './faults.mjs';
 import {createIntentResultRelease} from './result-release.mjs';
 import {COMMAND_INTENT_OPERATIONS} from './command-preparer.mjs';
 import {SCHEDULE_INTENT_OPERATIONS,scheduleOperationDeclared} from './schedule-preparer.mjs';
@@ -21,7 +21,7 @@ import {DOCUMENT_INTENT_OPERATIONS} from './document-preparer.mjs';
 import {ANALYSIS_INTENT_OPERATIONS} from './analysis-preparer.mjs';
 import {MEMORY_COMMAND_OPERATION} from '../memory/command-options.mjs';
 import {RESEARCH_ACTION_INTENTS} from '../../../packages/contracts/retrieval-0.2/research-portfolio-action-validation.mjs';
-import {researchActionValidators,officeEditValidators} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {researchActionValidators,officeEditValidators,resolveOperationContract,describeInputProblem} from '../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {OFFICE_EDIT_ACTION} from '../../../packages/contracts/retrieval-0.2/office-edit-action-validation.mjs';
 // A composed preparer advertises its own operation version and the caller must ask for exactly that
 // version. The mount does not pin one version: a canonical owner may publish a successor (the catalog
@@ -36,6 +36,11 @@ const VERSION=/^\d+\.\d+\.\d+$/u,DELIVERY=/^sdk:[a-f0-9]{64}$/u,AVAILABILITY_MS=
 export const OWNER_OPERATIONS=Object.freeze({note:['save_note'],office:[OFFICE_EDIT_ACTION],watch:['watch_action'],'legislative-document':['prepare_legiwatch_briefing','save_legislative_research'],bizdev:['save_business_development_brief'],'client-record':['create_client','update_client_profile'],legiwatch:['apply_legiwatch_suggestion','save_legiwatch_relevance'],'research-sharing':['publish_research_portfolio_share_link','revoke_research_portfolio_share_link'],'research-action':RESEARCH_ACTION_INTENTS,command:Object.keys(COMMAND_INTENT_OPERATIONS),schedule:SCHEDULE_INTENT_OPERATIONS,document:DOCUMENT_INTENT_OPERATIONS,artifact:ANALYSIS_INTENT_OPERATIONS,memory:[MEMORY_COMMAND_OPERATION.id]});
 const CODES=new Set(INTENT_FAILURE_CODES);
 const closed=code=>CODES.has(code)?code:'UNKNOWN';
+/** Why the operation's canonical input schema refuses `value` (field paths, never values), so an INVALID_ARGUMENTS answer
+ * tells the model what to correct; undefined when the schema validates it (the owner refused on its own terms) or is not
+ * registered with the canonical validator. */
+const explain=(operation,value)=>{try{return describeInputProblem(resolveOperationContract(operation).descriptor.inputSchema.id,value)?.slice(0,INTENT_DETAIL_MAX);}catch{return undefined;}};
+const detailOf=error=>{const d=error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined;return typeof d==='string'?d:undefined;};
 /** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */
 export function createIntentMount(configuration){
  const c=own(configuration,['binding','preparers','journalStore','now','limits'],['enabled','resultRelease']),binding=data(c.binding),limits=data(c.limits);
@@ -86,15 +91,16 @@ export function createIntentMount(configuration){
     try{result=data(await life.run(s=>preparer.prepare({arguments:v.arguments,deliveryId:v.deliveryId,signal:s})));}
     catch(error){
      // A failure with no owner effect settles FAILED and replays the same refusal; anything else stays UNKNOWN.
-     const none=error?.effect==='none',code=none?closed(error.code):'UNKNOWN';
-     try{await life.run(s=>journal.settle({...key,state:none?'FAILED':'UNKNOWN',outcome:none?{code}:null,signal:s}));}catch{}
-     throw intentFault(code);
+     // An INVALID_ARGUMENTS refusal is settled with the canonical schema's field-path detail, so its replay explains itself too.
+     const none=error?.effect==='none',code=none?closed(error.code):'UNKNOWN',detail=code==='INVALID_ARGUMENTS'?explain(preparer.operation,v.arguments):undefined;
+     try{await life.run(s=>journal.settle({...key,state:none?'FAILED':'UNKNOWN',outcome:none?{code,...(detail===undefined?{}:{detail})}:null,signal:s}));}catch{}
+     throw intentFault(code,undefined,detail);
     }
     // A lost settlement acknowledgement leaves the delivery PENDING: the result is withheld as UNKNOWN, never retried.
     // Custody is durable, but release still requires fresh authority and the original expiry. A refused release never redispatches.
     try{await life.run(s=>journal.settle({...key,state:'PREPARED',outcome:{result,release:original},signal:s}));}catch{throw intentFault('UNKNOWN');}
     return await release.release({...selected,owner:preparer.owner,result,original});
-   }catch(error){throw intentFault(closed(error?.code));}finally{life.close();}
+   }catch(error){const code=closed(error?.code);throw intentFault(code,undefined,code==='INVALID_ARGUMENTS'?detailOf(error):undefined);}finally{life.close();}
   },
  });
 }

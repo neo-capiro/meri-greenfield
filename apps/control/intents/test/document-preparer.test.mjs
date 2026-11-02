@@ -66,7 +66,9 @@ test('a model-supplied operation that conflicts with the selected capability is 
  const s=stub();
  await assert.rejects(s.mount.prepare({operation:WORD,arguments:{...BODY,operation:'create_excel'},deliveryId:delivery(21)}),code('INVALID_ARGUMENTS'));
  assert.equal(s.calls.length,0);
- assert.deepEqual(s.row().outcome,{code:'INVALID_ARGUMENTS'});
+ // The refusal is settled with the canonical schema's field-path detail (bounded, never the model's values).
+ assert.equal(s.row().outcome.code,'INVALID_ARGUMENTS');assert.match(s.row().outcome.detail,/^data\/operation must be equal to constant/u);assert.ok(s.row().outcome.detail.length<=400);
+ assert.deepEqual(Object.keys(s.row().outcome).sort(),['code','detail']);
  assert.equal(s.row().state,'FAILED');
 });
 test('the canonical request that repeats the selected operation is unchanged, and unadmitted or foreign shapes still refuse before the owner',async()=>{

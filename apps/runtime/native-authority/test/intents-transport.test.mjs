@@ -86,6 +86,21 @@ test('client: transport loss is UNAVAILABLE before a prepare is sent and UNKNOWN
  const refused=setup({mount:()=>({readAvailability:async()=>{throw runnerIntentFault('UNAVAILABLE');},prepare:async()=>{throw Object.assign(Error('REFUSED'),{code:'REFUSED'});}})});
  await assert.rejects(refused.client.prepare({operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(6)}),failed('REFUSED'),'an owner-closed refusal passes through');
 });
+test('an INVALID_ARGUMENTS answer carries the mount\'s field-path detail across the wire; the client drops anything else',async()=>{
+ const s=setup(),detail="data must have required property 'title'";
+ const r=await s.post(RUNNER_INTENT_PATHS.prepare,{binding:s.f.binding,operation:CREATE,arguments:{},deliveryId:delivery(7)});
+ assert.equal(r.status,400);assert.deepEqual(await r.json(),{error:{code:'INVALID_ARGUMENTS',detail}});
+ const refusal=await s.client.prepare({operation:CREATE,arguments:{},deliveryId:delivery(7)}).catch(error=>error);
+ assert.equal(refusal.code,'INVALID_ARGUMENTS');assert.equal(refusal.layer,'control');assert.equal(refusal.detail,detail);assert.equal(s.f.metadataCalls.prepare,0);
+ for(const odd of ['','x\n','y'.repeat(401),7,{path:'/title'}]){
+  const o=setup({responseHook:async()=>Response.json({error:{code:'INVALID_ARGUMENTS',detail:odd}},{status:400})});
+  const e=await o.client.prepare({operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(8)}).catch(error=>error);
+  assert.equal(e.code,'INVALID_ARGUMENTS');assert.equal(Object.hasOwn(e,'detail'),false,JSON.stringify(odd));
+ }
+ const other=setup({responseHook:async()=>Response.json({error:{code:'REFUSED',detail:'ignored'}},{status:409})});
+ const e=await other.client.prepare({operation:CREATE,arguments:{title:'Task'},deliveryId:delivery(9)}).catch(error=>error);
+ assert.equal(e.code,'REFUSED');assert.equal(Object.hasOwn(e,'detail'),false,'a detail never crosses on another code');
+});
 test('control: a prepare cancelled after it reached the mount answers UNKNOWN, never a retryable refusal',async()=>{
  let entered;const reached=new Promise(r=>{entered=r;});
  const s=setup({mount:f=>({readAvailability:v=>f.port.readAvailability(v),prepare:()=>{entered();return new Promise(()=>{});}})});
