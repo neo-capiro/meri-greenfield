@@ -17,7 +17,9 @@ export function assertBrowserOperationRequest(operation,raw){
  const name=browserOperationName(operation);if(!name)fail();const value=data(raw);
  if(['browser-prepare','browser-tools'].includes(name))own(value,['binding']);
  else if(name==='browser-call'){
-  own(value,['binding','requestId','tool','args']);if(!/^[a-f0-9]{64}$/u.test(value.requestId)||!tool(value.tool)||!value.args||Array.isArray(value.args)||typeof value.args!=='object')fail();
+  // `toolUseId` (optional): the SDK tool use the call belongs to, so the host can match it to that use's approval.
+  own(value,['binding','requestId','tool','args'],['toolUseId']);if(!/^[a-f0-9]{64}$/u.test(value.requestId)||!tool(value.tool)||!value.args||Array.isArray(value.args)||typeof value.args!=='object'||
+   value.toolUseId!==undefined&&!toolUse(value.toolUseId))fail();
  }else if(name==='browser-hook'){
   own(value,['binding','event','toolUseId','input']);const input=own(value.input,['hook_event_name','session_id','tool_name','tool_input','tool_use_id'],['tool_response']);
   if(!['PreToolUse','PostToolUse','PostToolUseFailure'].includes(value.event)||input.hook_event_name!==value.event||!toolUse(value.toolUseId)||input.tool_use_id!==value.toolUseId||!uuid(input.session_id)||!tool(input.tool_name?.replace(/^mcp__meri_browser__/u,''))||!input.tool_name.startsWith('mcp__meri_browser__')||value.event!=='PostToolUse'&&Object.hasOwn(input,'tool_response'))fail();
@@ -48,10 +50,12 @@ export function assertBrowserApprovalResult(raw,{input,toolUseId}){
  if(value.behavior==='allow'&&canonicalSha256(value.updatedInput)!==canonicalSha256(input))fail();return value;
 }
 /** Only a ceiling for named routes. The current-policy owner clamps again to its
- * selected policy and remaining canonical run time before executing an effect. */
+ * selected policy and remaining canonical run time before executing an effect. A browser call may hold a request the
+ * page sends until the user decides (session/submission-gate.mjs), so its ceiling includes the longest approval window. */
 export function browserOperationCeilingMs(operation){
  const name=browserOperationName(operation);if(!name)return null;
  if(name==='browser-approve')return BROWSER_NATIVE_LIMITS.approvalMs;
+ if(name==='browser-call')return BROWSER_NATIVE_LIMITS.executionMs+BROWSER_NATIVE_LIMITS.approvalMs;
  if(name==='browser-hook')return BROWSER_NATIVE_LIMITS.metadataMs;
  return BROWSER_NATIVE_LIMITS.executionMs;
 }
@@ -62,7 +66,11 @@ export function browserOperationBudgetMs(operation,{policy,approvalDeadlineMs=BR
  }
  if(['browser-call','browser-tools'].includes(name)){
   const a=policy?.timeouts?.actionMs,n=policy?.timeouts?.navigationMs;
-  if(!Number.isSafeInteger(a)||a<1000||a>60000||!Number.isSafeInteger(n)||n<1000||n>120000)fail();return Math.min(a+n,BROWSER_NATIVE_LIMITS.executionMs);
+  if(!Number.isSafeInteger(a)||a<1000||a>60000||!Number.isSafeInteger(n)||n<1000||n>120000)fail();
+  if(name==='browser-tools')return Math.min(a+n,BROWSER_NATIVE_LIMITS.executionMs);
+  // The page effect plus the selected approval window for a request the page sends during it.
+  if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<1000||approvalDeadlineMs>BROWSER_NATIVE_LIMITS.approvalMs)fail();
+  return Math.min(a+n,BROWSER_NATIVE_LIMITS.executionMs)+approvalDeadlineMs;
  }
  return name==='browser-hook'?BROWSER_NATIVE_LIMITS.metadataMs:BROWSER_NATIVE_LIMITS.executionMs;
 }

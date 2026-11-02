@@ -71,7 +71,7 @@ export async function prepareBrowserRun({port,binding,cwd,deadlineMs,now,signal,
    if(typeof port.sessions?.open!=='function')throw fault('BROWSER_SESSION_OWNER_REQUIRED');
    if(browserHandoff!==undefined&&typeof port.sessions.adopt!=='function')throw fault('BROWSER_CUSTODY_UNAVAILABLE');
    await grantBrowserEgress({fragment,egress:port.egress,binding,deadlineMs,lifecycle,signal});
-   const options={binding:structuredClone(binding),policy:fragment.policy,deadlineMs,manifest:workflow?.configured.manifest??null};
+   const options={binding:structuredClone(binding),policy:fragment.policy,deadlineMs,manifest:workflow?.configured.manifest??null,submissions:fragment.submissions};
    if(browserHandoff!==undefined){if(typeof port.sessions.adopt!=='function')throw fault('BROWSER_CUSTODY_UNAVAILABLE');
     session=await port.sessions.adopt({...options,handoff:browserHandoff,signal});}
    else session=await port.sessions.open(options);

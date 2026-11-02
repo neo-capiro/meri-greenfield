@@ -40,7 +40,7 @@ function fixture(){
 test('only the canonical browser routes receive policy-derived time beyond the ordinary HTTP cap',async()=>{
  const f=fixture();await f.port.prepare();f.advance(4000);
  assert.deepEqual(await f.port.call({requestId:'a'.repeat(64),tool:'browser_snapshot',args:{}}),{content:[{type:'text',text:'filtered snapshot'}]});
- assert.equal(f.calls[1].deadlineMs,66000);assert.equal(f.clock(),5000);
+ assert.equal(f.calls[1].deadlineMs,301000,'control bounds a call by the execution only; the host clamps it to the page effect plus the selected approval window');assert.equal(f.clock(),5000);
  assert.deepEqual(f.counts(),{checks:4,roleReads:2,policyReads:2,dispatches:2});
  assert.deepEqual(Object.keys(f.calls[1].request).sort(),['args','binding','requestId','tool']);
 });

@@ -7,7 +7,7 @@ import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {createPinnedBrowserSession} from '../session/connection.mjs';
 import {createBrowserSessionHost} from '../../host/browser-session-host.mjs';
 import {createBrowserViewerRelay} from '../../host/browser-viewer-relay.mjs';
-import {enabledPolicy,binding,installation,installationFor} from './fixtures.mjs';
+import {enabledPolicy,binding,installation,installationFor,submissions,scriptedBrowser} from './fixtures.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 const cwd='/workspace/'+binding.conversationId;
 import {validateBrowserPolicy} from '../policy.mjs';
@@ -20,7 +20,7 @@ test('authority refusal before context attachment closes the already prepared na
   relay:{bind:async()=>{throw Error('not reached');}},controls:{bind:async()=>{throw Error('not reached');}},
   current:async()=>{throw Error('authority refused');},hold:async()=>{throw Error('not reached');},
   processes:{waitForExit:async()=>{calls.push('absence');}},dispose:async()=>{calls.push('dispose');}});
- await assert.rejects(host.open({binding,policy:enabledPolicy(),deadlineMs:Date.now()+10000,manifest:null}),/authority refused/);
+ await assert.rejects(host.open({binding,policy:enabledPolicy(),deadlineMs:Date.now()+10000,manifest:null,submissions}),/authority refused/);
  assert.deepEqual(calls,['close']);
 });
 import {browserPaths} from '../workspace.mjs';
@@ -33,8 +33,8 @@ function fixture(t,options={}){
   on:(...args)=>lifecycle.on(...args),off:(...args)=>lifecycle.off(...args),
   keyboard:{async insertText(text){await state.onInput?.(text);},async down(key){await state.onInput?.(key);},async up(){}},
   async screenshot(){const png=Buffer.alloc(33);Buffer.from([137,80,78,71,13,10,26,10]).copy(png);png.write('IHDR',12);png.writeUInt32BE(800,16);png.writeUInt32BE(600,20);return png;},
-  async ariaSnapshot(){await options.capture?.(state);return state.text;}};
- const context={pages:()=>[page],async close(){state.events.push('context');}};
+  async ariaSnapshot(){await options.capture?.(state);return state.text;},async waitForLoadState(){state.events.push('load');}};
+ const context={pages:()=>[page],browser:()=>scriptedBrowser,async route(){},async unroute(){},async close(){state.events.push('context');}};
  const upstream={version:'0.0.83',async createConnection(config,getContext){
   assert.equal(await getContext(),context);assert.equal(config.webmcp,false);assert.equal(config.imageResponses,'omit');
   let transport;return {async connect(value){transport=value;transport.onmessage=async message=>{
@@ -47,7 +47,7 @@ function fixture(t,options={}){
  const now=options.now??Date.now;
  const args={context,upstream,policy:validateBrowserPolicy(enabledPolicy()),manifest:null,now,deadlineMs:now()+60000,
   current:async()=>{if(state.refused)throw Error('revoked');},hold:async()=>({outcome:state.hold}),
-  ports:{async waitForExit(){state.events.push('exit');return {exited:options.exited!==false};},async dispose(){state.events.push('dispose');return {disposed:true};}}};
+  ports:{async waitForExit(){state.events.push('exit');return {exited:options.exited!==false};},async dispose(){state.events.push('dispose');return {disposed:true};}},submissions};
  return {state,args,context,upstream,page};
 }
 const secret=value=>({kind:'field',label:'Password',type:'password',autocomplete:'current-password',selectorMatch:false,value});
@@ -60,7 +60,7 @@ test('host native stdio is actually routed through current snapshot masking and 
   contexts:{create:async()=>x.context},current:x.args.current,hold:x.args.hold,
   processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
   modelTransport:{readable:incoming,writable:outgoing},controls:{bind:async()=>({close:async()=>{}})}});
- const session=await host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+60000,manifest:null});
+ const session=await host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+60000,manifest:null,submissions});
  const client=new Client({name:'synthetic-model',version:'1'});
  t.after(async()=>{await session.destroy({trigger:'conversation-end'});await client.close();incoming.destroy();outgoing.destroy();});
  await client.connect(new StdioServerTransport(outgoing,incoming));
@@ -80,7 +80,7 @@ test('disconnect while the viewer relay is attaching cannot return a closed sess
    incoming.end();for(let n=0;n<50&&!x.state.events.includes('dispose');n++)await new Promise(resolve=>setTimeout(resolve,5));
    return {async close(){closed++;}};
   }}});
- await assert.rejects(host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+60000,manifest:null}),/BROWSER_SESSION_CLOSED/);
+ await assert.rejects(host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+60000,manifest:null,submissions}),/BROWSER_SESSION_CLOSED/);
  assert.equal(closed,1);assert.deepEqual(x.state.events,['context','exit','dispose']);
 });
 
@@ -206,7 +206,7 @@ function hostedWorkflow(t,{resolver=true,widen=false}={}){
   processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
   relay:{async bind(port){state.model=port;return {mcpServers:{meri_browser:playwrightServerConfig(policy,installation,browserPaths(cwd))},async close(){}};}},
   controls:{async bind(port){state.user=port.controls;return {async close(){}};}}});
- return {...x,native:x.state,state,host,open:()=>host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:workflowManifest})};
+ return {...x,native:x.state,state,host,open:()=>host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:workflowManifest,submissions})};
 }
 
 test('the first current workflow read is cancellable: closing the host during it ends the read and the open',async t=>{
@@ -216,7 +216,7 @@ test('the first current workflow read is cancellable: closing the host during it
   siteWorkflows:{resolve:({signal})=>{seen=signal;entered.resolve();return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(signal.reason),{once:true}));}},
   processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
   relay:{async bind(){return {mcpServers:{},async close(){}};}},controls:{async bind(){return {async close(){}};}}});
- const opening=host.open({binding,policy:siteWorkflowPolicy(x.args.policy,workflowManifest),deadlineMs:Date.now()+60000,manifest:workflowManifest});
+ const opening=host.open({binding,policy:siteWorkflowPolicy(x.args.policy,workflowManifest),deadlineMs:Date.now()+60000,manifest:workflowManifest,submissions});
  await entered.promise;assert.ok(seen instanceof AbortSignal);assert.equal(seen.aborted,false);
  void host.destroy({trigger:'test'}).catch(()=>{});
  await assert.rejects(opening);assert.equal(seen.aborted,true);assert.equal(x.state.created,0);
@@ -274,10 +274,10 @@ test('host composition binds separate model/control relays to the existing exact
   processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
   relay:{async bind(port){assert.equal(typeof port.call,'function');assert.equal(typeof port.tools,'function');events.push('model');return {mcpServers:expected,async close(){events.push('model-close');}};}},
   controls:{async bind(port){assert.equal(typeof port.controls.takeover,'function');assert.equal(port.controls.call,undefined);events.push('user');return {async close(){events.push('user-close');}};}}});
- const session=await host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:null});
+ const session=await host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:null,submissions});
  assert.deepEqual(session.mcpServers,expected);await session.destroy({trigger:'conversation-end'});
  assert.deepEqual(events,['create','model','user','model-close','user-close']);assert.deepEqual(x.state.events,['context','exit','dispose']);
- await assert.rejects(host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:null}),/BINDING_REFUSED/);
+ await assert.rejects(host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:null,submissions}),/BINDING_REFUSED/);
 });
 
 test('resume stays fenced until the exact fresh snapshot is committed once under current authority',async t=>{
@@ -303,7 +303,7 @@ test('host grants native user lease only after SDK absence and exact canonical A
   relay:{bind:async()=>({mcpServers:{meri_browser:playwrightServerConfig(x.args.policy,installation,browserPaths(cwd))},close:async()=>{events.push('model-closed');}})},
   controls:{bind:async value=>{user=value.controls;return {close:async()=>{events.push('viewer-closed');}};}},
   retirement:{prepare:async()=>{events.push('retirement-prepared');},wait:async()=>{events.push('sdk-absent');},retain:async()=>{events.push('custody-retained');}}});
- const session=await host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+50000,manifest:null});t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const session=await host.open({binding,policy:x.args.policy,deadlineMs:Date.now()+50000,manifest:null,submissions});t.after(()=>session.destroy({trigger:'conversation-end'}));
  await session.prepareTakeover({controlId});assert.equal((await user.readState()).state,'drained');
  const custody=await session.captureTakeover({controlId});assert.deepEqual(events,['retirement-prepared','sdk-absent']);
  assert.equal(custody.ownerInstanceId,ownerInstanceId);assert.equal((await user.readState()).state,'drained');
@@ -330,7 +330,7 @@ test('canonical successive handoffs retain one context and filter while replacin
   contexts:{async create(){creations++;return x.context;}},current:async()=>{await x.args.current();return {browserHandoff:canonical};},
   processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose});
  t.after(()=>host.destroy({trigger:'conversation-end'}));
- let currentBinding=binding,run=await host.open({binding,policy:x.args.policy,deadlineMs:allocation.leaseDeadlineMs,manifest:null});
+ let currentBinding=binding,run=await host.open({binding,policy:x.args.policy,deadlineMs:allocation.leaseDeadlineMs,manifest:null,submissions});
  x.state.fields=[secret('RETAINED-CREDENTIAL')];x.state.text='Public page RETAINED-CREDENTIAL';
  for(let n=0;n<2;n++){
   const sourceModel=models.at(-1),sourceViewer=viewers.at(-1),sourceRun=run,controlId=uuid(110+n*10);
@@ -341,7 +341,7 @@ test('canonical successive handoffs retain one context and filter while replacin
   const returned=await host.prepareResume({binding:currentBinding,custody});
   const target={...binding,runId:uuid(111+n*10),attemptId:uuid(112+n*10),workerId:uuid(113+n*10),writerFence:currentBinding.writerFence+1};
   canonical={custody,returned,targetBinding:target,controlId:uuid(114+n*10)};
-  const request={binding:target,policy:x.args.policy,deadlineMs:custody.expiresAtMs,manifest:null,handoff:canonical};
+  const request={binding:target,policy:x.args.policy,deadlineMs:custody.expiresAtMs,manifest:null,handoff:canonical,submissions};
   await assert.rejects(host.adopt({...request,handoff:{...canonical,returned:{...returned,snapshotSha256:'f'.repeat(64)}}},native(target)),/BROWSER_CUSTODY_REFUSED/);
   assert.equal((await sourceViewer.controls.readState()).state,'returning');
   run=await host.adopt(request,native(target));
@@ -370,4 +370,23 @@ test('a site workflow sign-in expires after the manifest TTL of inactivity, not 
  await call(session,'second');
  await sleep(260);assert.deepEqual(x.state.events,['context','exit','dispose'],'idle for the TTL destroys the state');
  await assert.rejects(call(session,'third'),/BROWSER_SESSION_ENDING/);
+});
+
+test('a request the page sends during an agent action waits for the user; a declined one is aborted and reported to the model',async t=>{
+ let handler;const outcomes=[],asked=[];
+ const x=fixture(t,{invoke:()=>new Promise(resolve=>handler({fallback:async()=>{outcomes.push('sent');resolve();},abort:async()=>{outcomes.push('aborted');resolve();}},
+  {method:()=>'POST',url:()=>'https://records.example/api/submit',resourceType:()=>'fetch',frame:()=>({page:()=>x.page})}))});
+ x.context.route=async(_pattern,fn)=>{handler=fn;};x.context.unroute=async()=>{handler=undefined;};
+ const claims=[];x.args.submissions={approve:async q=>{asked.push(q);return false;},claim:input=>{claims.push(input);return null;},windowMs:120000};
+ const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
+ const result=await session.call({requestId:'one',tool:'browser_snapshot',args:{},toolUseId:'toolu_01A'});
+ assert.deepEqual(claims,[{toolUseId:'toolu_01A',tool:'browser_snapshot',args:{}}],'the click approval is looked up by the call tool use');
+ assert.deepEqual(outcomes,['aborted']);assert.deepEqual(asked.map(q=>[q.method,q.host,q.pageOrigin,q.tool]),[['POST','records.example','https://records.example','browser_snapshot']]);
+ assert.ok(x.state.events.includes('load'),'the page settles before its state is read');
+ assert.equal(result.content.at(-1).text,'### Not sent'+String.fromCharCode(10)+'- POST records.example: the page tried to send this request; the user did not approve it, so it was not sent.');
+ // An approved request continues and adds nothing to the result.
+ x.args.submissions.approve=async()=>true;
+ const approved=await createPinnedBrowserSession({...x.args,submissions:{...x.args.submissions,approve:async()=>true}});t.after(()=>approved.destroy({trigger:'conversation-end'}));
+ const second=await call(approved,'two');
+ assert.equal(outcomes.at(-1),'sent');assert.doesNotMatch(JSON.stringify(second),/Not sent/u);
 });

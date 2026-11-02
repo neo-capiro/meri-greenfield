@@ -32,12 +32,17 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
   async adopt(input,native){if(!adopt)fail('BROWSER_CUSTODY_UNAVAILABLE');return adopt(input,native);},
   async destroy(input){if(!closeOwner)fail('BROWSER_CUSTODY_UNAVAILABLE');return closeOwner(input);},
   async open(raw){
-  const q=data(own(raw,['binding','policy','deadlineMs','manifest']));
+  // `submissions` is the run's network submission approval port (permissions.mjs); it is a live owner, not data.
+  const {submissions:openSubmissions,...openRequest}=own(raw,['binding','policy','deadlineMs','manifest','submissions']);
+  const q=data(openRequest);
+  if(typeof openSubmissions?.approve!=='function'||typeof openSubmissions.claim!=='function'||!Number.isSafeInteger(openSubmissions.windowMs))fail('BROWSER_CONFIGURATION');
   if(opened||canonicalSha256(q.binding)!==bound||!Number.isSafeInteger(q.deadlineMs)||q.deadlineMs<=now())fail('BROWSER_HOST_BINDING_REFUSED');
   opened=true;const policy=validateBrowserPolicy(q.policy),manifest=q.manifest===null?null:validateSiteWorkflowManifest(q.manifest,{platform:policy});
   if(manifest?.logoutUrl&&typeof contexts.logout!=='function')fail('BROWSER_CONFIGURATION');
   let context,session,modelRelay,userRelay,closing,workflow,custody,retained=false,captured=false,pendingResume,preparingResume;
   let run=q,runInstallation=installed,runPorts={relay,modelTransport,controls,retirement,hold},adopting=false,retiringRelays=false,resume,activation;
+  // The run whose approval owner the network gate asks: a successor run (adopt) brings its own.
+  let runSubmissions=openSubmissions;
   const assertCurrent=async signal=>{
    const receipt=await current({binding:q.binding,signal});
    if(run!==q){const handoff=assertBrowserHandoff(receipt?.browserHandoff);
@@ -71,11 +76,11 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
   };
   const bindRelays=async()=>{
    const ownerRun=run,assertRun=()=>{if(closing||ownerRun!==run)fail('BROWSER_CUSTODY_REFUSED');};
-   const modelInput={binding:run.binding,installation:runInstallation,
+   const modelInput={binding:run.binding,installation:runInstallation,approvalWindowMs:openSubmissions.windowMs,
     async call(input){assertRun();await activate(ownerRun);assertRun();return session.call({...input,requestId:canonicalSha256({binding:ownerRun.binding,requestId:input.requestId})});},
     async tools({signal}={}){assertRun();await activate(ownerRun);assertRun();await assertCurrent(signal);return session.tools({signal});}};
    if(hostOwned){
-    const model=createBoundBrowserModelPort({binding:run.binding,policy,deadlineMs:run.deadlineMs,now,call:modelInput.call,tools:modelInput.tools});
+    const model=createBoundBrowserModelPort({binding:run.binding,policy,deadlineMs:run.deadlineMs,approvalWindowMs:modelInput.approvalWindowMs,now,call:modelInput.call,tools:modelInput.tools});
     modelRelay=Object.freeze({mcpServers:{},readModelTools:model.tools,callModelTool:model.call,close:model.close});
    }else{
     const model=runPorts.relay??(await import('./browser-model-relay.mjs')).createNativeBrowserModelRelay({binding:run.binding,policy,installation:runInstallation,paths,
@@ -107,6 +112,7 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
    }
    context=await contexts.create({binding:q.binding,policy,paths,installation:installed,deadlineMs:q.deadlineMs});
    session=await createPinnedBrowserSession({upstream,context,policy,manifest,now,deadlineMs:q.deadlineMs,
+    submissions:Object.freeze({approve:input=>runSubmissions.approve(input),claim:input=>runSubmissions.claim(input),windowMs:openSubmissions.windowMs}),
     current:assertCurrent,hold:signal=>runPorts.hold({binding:run.binding,signal}),
     ports:{async waitForExit({signal}){return processes.waitForExit({binding:q.binding,profile:paths.profile},{signal});},
      dispose:({signal})=>dispose({paths,signal}),...(manifest?.logoutUrl?{logout:(input,{signal})=>contexts.logout({context,...input,signal})}:{})}});
@@ -164,7 +170,8 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
     },
    });};
    adopt=async(raw,native)=>{
-    const {signal,...input}=own(raw,['binding','policy','deadlineMs','manifest','handoff'],['signal']);
+    const {signal,submissions:nextSubmissions,...input}=own(raw,['binding','policy','deadlineMs','manifest','handoff','submissions'],['signal']);
+    if(typeof nextSubmissions?.approve!=='function'||typeof nextSubmissions.claim!=='function'||nextSubmissions.windowMs!==openSubmissions.windowMs)fail('BROWSER_CONFIGURATION');
     const next=data(input),handoff=assertBrowserHandoff(next.handoff,{targetBinding:next.binding});
     if(closing||adopting||!retained||!pendingResume||!custody||resume||
      canonicalSha256(handoff.custody)!==canonicalSha256(custody)||canonicalSha256(handoff.returned)!==canonicalSha256(pendingResume.returned)||
@@ -191,7 +198,7 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
      // retiring this expected old relay.
      retiringRelays=true;await modelRelay.close();await userRelay.close();retiringRelays=false;signal?.throwIfAborted();
      const snapshot=pendingResume.snapshot;
-     run=next;runInstallation=nextInstallation;runPorts=ports;workflow=nextWorkflow;
+     run=next;runInstallation=nextInstallation;runPorts=ports;workflow=nextWorkflow;runSubmissions=nextSubmissions;
      resume={snapshot,handoff};activation=undefined;custody=undefined;retained=false;captured=false;pendingResume=undefined;preparingResume=undefined;
      const expected=await bindRelays();await assertCurrent(signal);
      if(closing)fail('BROWSER_SESSION_CLOSED');activeRelay=ports.controls;active=handle(expected,snapshot);return active;

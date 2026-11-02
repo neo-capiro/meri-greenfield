@@ -29,7 +29,7 @@ export function createNativeBrowserPort({native,binding:raw,deadlineMs,now=Date.
  }
  return Object.freeze({transport:'native-control',prepare,
   tools:({signal}={})=>invoke('browser-tools',{},signal).then(result=>own(result,['tools']).tools),
-  call:({requestId,tool,args,signal})=>invoke('browser-call',{requestId,tool,args},signal),
+  call:({requestId,tool,args,toolUseId,signal})=>invoke('browser-call',{requestId,tool,args,...(toolUseId===undefined?{}:{toolUseId})},signal),
   hook:({event,toolUseId,input,signal})=>invoke('browser-hook',{event,toolUseId,input},signal),
   approve:({tool,toolUseId,input,signal})=>invoke('browser-approve',{tool,toolUseId,input},signal),
   settle:({outcome,signal})=>invoke('browser-settle',{outcome},signal),

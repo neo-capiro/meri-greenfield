@@ -220,3 +220,46 @@ test('page binding: an interaction needs a known, allowlisted starting page; unk
  assert.equal((await n.canUseTool(T('browser_click'),click,{toolUseID:'toolu_73'})).message,'BROWSER_APPROVAL_PAGE_UNKNOWN','about:blank has no origin to approve');
  assert.equal(narrowed.approvalRequests.length,0);
 });
+
+test('a request the page sends is approved through the same canonical owner, bound to method, host, path and page; a structural approval covers its page host once',async()=>{
+ const approving=recorders(),{cap}=openFragment({cwd,policy:interactive(),r:approving,approvals:approving.approvals('approve')}),sdk=scriptedSdk(cap,{extraAllowed:INTERACTION_TOOLS.map(T)});
+ const ask=(over={})=>cap.submissions.approve({method:'POST',host:'records.example',path:'/api/order',pageOrigin:APPROVED[0],tool:'browser_click',requestKey:`${'a'.repeat(64)}:1`,signal:new AbortController().signal,...over});
+ assert.equal(await ask(),true);
+ const [request]=approving.approvalRequests,policySha256=canonicalSha256(validateBrowserPolicy(interactive()));
+ const input={method:'POST',host:'records.example',path:'/api/order',initiator:'browser_click'};
+ assert.deepEqual(request.subject,{schema:APPROVAL_SUBJECT_SCHEMA,binding,server:'meri_browser',tool:'Send data to records.example (POST)',
+  toolUseId:`network:${'a'.repeat(64)}:1`,inputSha256:canonicalSha256(input),pageOrigin:APPROVED[0],policySha256});
+ assert.deepEqual(request.input,input);
+ assert.equal(await ask(),false,'one consumed approval authorizes one request: a replayed subject is refused');
+ assert.equal(await ask({requestKey:`${'a'.repeat(64)}:2`,pageOrigin:'http://10.0.0.1'}),false,'never asked on a page outside the policy');
+ assert.equal(approving.approvalRequests.length,2);
+ const refusing=recorders(),{cap:no}=openFragment({cwd,policy:interactive(),r:refusing,approvals:refusing.approvals('deny')});
+ assert.equal(await no.submissions.approve({method:'DELETE',host:'records.example',path:'/x',pageOrigin:APPROVED[0],tool:'browser_click',requestKey:'k:1',signal:new AbortController().signal}),false);
+ assert.equal(await openFragment({cwd,policy:interactive()}).cap.submissions.approve({method:'POST',host:'records.example',path:'/',pageOrigin:APPROVED[0],tool:'browser_click',requestKey:'k:1',signal:new AbortController().signal}),false,'no owner, no send');
+ assert.equal(cap.submissions.windowMs,APPROVAL_DEADLINE_MS.default);
+ // The approved structural submission of exactly this call covers its page host for the network gate, once.
+ await sdk.call('browser_navigate',{url:PAGE},'toolu_n0');
+ assert.equal(await sdk.call('browser_click',{element:'Place order',target:'e7'},'toolu_n1'),'executed');
+ const click={element:'Place order',target:'e7'};
+ assert.equal(cap.submissions.claim({tool:'browser_click',args:click}),null,'no tool-use id, no coverage');
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_other',tool:'browser_click',args:click}),null,'another tool use is not covered');
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_n1',tool:'browser_click',args:click}),'records.example');
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_n1',tool:'browser_click',args:click}),null,'consumed once');
+ assert.equal(await sdk.call('browser_click',{element:'Place order',target:'e9'},'toolu_n2'),'executed');
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_n2',tool:'browser_click',args:{element:'Other',target:'e8'}}),null,'a different input is not covered');
+});
+test('a click approval covers its page host only until that approval expires',async()=>{
+ let at=clock();const approving=recorders();
+ const {cap}=openFragment({cwd,policy:interactive(),r:approving,approvals:approving.approvals('approve'),now:()=>at});
+ const sdk=scriptedSdk(cap,{extraAllowed:INTERACTION_TOOLS.map(T)});
+ await sdk.call('browser_navigate',{url:PAGE},'toolu_e0');
+ assert.equal(await sdk.call('browser_click',{element:'Place order',target:'e7'},'toolu_e1'),'executed');
+ at=clock()+60001; // the fixture decision expires 60 s after it was made
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_e1',tool:'browser_click',args:{element:'Place order',target:'e7'}}),null);
+});
+test('the approval card action stays a plain sentence inside the display limit',async()=>{
+ const {networkAction}=await import('../permissions.mjs');
+ assert.equal(networkAction('PUT','api.example.com'),'Send data to api.example.com (PUT)');
+ const long=networkAction('POST',`${'a'.repeat(60)}.${'b'.repeat(60)}.${'c'.repeat(60)}.example`);
+ assert.ok(long.length<=128&&long.startsWith('Send data to …')&&long.endsWith('.example (POST)'),long);
+});

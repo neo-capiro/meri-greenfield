@@ -22,7 +22,7 @@ export async function prepareRemoteBrowserRun({port,binding,deadlineMs,now,signa
   let fragment;
   if(!open)fragment=Object.freeze({enabled:false,activation:metadata.activation,policy,status,mcpServers:{},allowedTools:[],disallowedTools:[],hooks:{}});
   else{
-   sdk=createBrowserSdkServer({binding,policy,tools:port.tools,call:port.call,deadlineMs,now});
+   sdk=createBrowserSdkServer({binding,policy,tools:port.tools,call:port.call,deadlineMs,approvalDeadlineMs:metadata.approvalDeadlineMs,now});
    const hook=event=>async(raw,toolUseId,options)=>{
     try{
      const input={hook_event_name:raw.hook_event_name,session_id:raw.session_id,tool_name:raw.tool_name,tool_input:raw.tool_input,tool_use_id:raw.tool_use_id,...(event==='PostToolUse'?{tool_response:raw.tool_response}:{})};

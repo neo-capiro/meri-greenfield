@@ -13,15 +13,25 @@ import {browserRefusalCode} from '../refusals.mjs';
 import {siteSessionExpired} from '../site-workflows/manifest.mjs';
 import {classifyInteraction} from './interaction-classifier.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
-export function createBrowserSessionOwner({context,invoke,policy,manifest=null,current,hold,ports,now=Date.now,deadlineMs}){
+/** The model learns which sends did not happen and why (method and destination host only), beside the page state: the
+ * user declined it, or the browser policy refused it without asking the user. */
+const withNotSent=(result,{declined,refused})=>Object.freeze({...result,content:Object.freeze([...result.content,Object.freeze({type:'text',
+ text:['### Not sent',...declined.map(key=>`- ${key}: the page tried to send this request; the user did not approve it, so it was not sent.`),
+  ...refused.map(key=>`- ${key}: the page tried to send this request; it was refused by policy without asking the user, so it was not sent.`)].join('\n')})])});
+/** `gate` is the context's network submission gate (submission-gate.mjs), `claimSubmission({tool,args})` the page host an
+ * approved structural submission of this exact call covers, and `approvalWindowMs` the longest a held request may wait
+ * for the user inside one call. */
+export function createBrowserSessionOwner({context,invoke,policy,manifest=null,current,hold,ports,gate,claimSubmission,approvalWindowMs,now=Date.now,deadlineMs}){
  if(typeof invoke!=='function'||typeof current!=='function'||typeof hold!=='function'||!context||
+  typeof gate?.begin!=='function'||typeof gate.interrupt!=='function'||typeof claimSubmission!=='function'||
+  !Number.isSafeInteger(approvalWindowMs)||approvalWindowMs<1||
   !Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail('BROWSER_CONFIGURATION');
  const fence=createControlFence({now}),snapshot=createPinnedSnapshot({context,manifest}),viewer=createViewerFrameOwner(context);
  const pending=new Set();let closed=false,timer,busy=false,taking=false,inputLimiter,preparedResume;
  const drain=async({signal})=>{while(pending.size){signal.throwIfAborted();await Promise.race(pending);}return fence.state();};
  const destruction=createStateDestruction({fence,now,manifest,ports:{...ports,waitForDrain:drain,
   async closeContext(){try{await context.close();return {closed:true};}finally{snapshot.clear();}}}});
- const destroy=async trigger=>{closed=true;preparedResume=undefined;viewer.clear();clearTimeout(timer);return destruction.destroy({trigger});};
+ const destroy=async trigger=>{closed=true;preparedResume=undefined;viewer.clear();clearTimeout(timer);gate.interrupt();return destruction.destroy({trigger});};
  async function assertCurrent(signal){
   if(closed)fail('BROWSER_SESSION_ENDING');
   try{await current(signal);signal?.throwIfAborted();}
@@ -32,6 +42,7 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
   const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+130000),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});
   try{await life.run(assertCurrent);const state=fence.state();
    if(!(['drained','fencing'].includes(state.state)&&state.reason==='takeover'))fence.fence({reason:'takeover'});
+   gate.interrupt(); // the user takes the browser: no held request of the agent's action is sent
    await life.run(signal=>drain({signal}));await life.run(assertCurrent);
    const drained=fence.state();if(drained.state!=='drained'||drained.reason!=='takeover')fail('TAKEOVER_DRAIN_UNKNOWN');return drained;
   }finally{life.close();}
@@ -51,31 +62,37 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
   },Math.max(1,idleUntilMs-now()));timer.unref?.();
  };
  arm();
- async function call({requestId,tool,args,signal}){
+ async function call({requestId,tool,args,toolUseId,signal}){
   if(closed)fail('BROWSER_SESSION_ENDING');if(!policy.tools.includes(tool))fail('BROWSER_TOOL_REFUSED');
   if(tool==='browser_take_screenshot')fail('BROWSER_IMAGES_WITHHELD');
   // Serialize page effects with capture: no second call can change the page while a result is being filtered.
   if(busy)fail('BROWSER_SESSION_BUSY');
   const timeoutMs=Math.min(policy.timeouts.actionMs+policy.timeouts.navigationMs,130000);
-  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+timeoutMs),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});
-  let admitted=false,settled=false,dispatched=false;busy=true;
+  // The page effect keeps its own bound; a request the page sends during it may additionally wait for the user.
+  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+timeoutMs+approvalWindowMs),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});
+  let admitted=false,settled=false,dispatched=false,action;busy=true;
   const operation=(async()=>{try{
    await life.run(assertCurrent);fence.admit({requestId,tool,timeoutMs});admitted=true;
    // Read before dispatch too: values removed by navigation remain confidential.
    await life.run(()=>snapshot.capture());
    await life.run(assertCurrent);
+   // Every mutating request the page sends during this action is held at the network until the user decides.
+   action=gate.begin({requestId,tool,coveredHost:claimSubmission({toolUseId,tool,args}),signal:life.signal});
    dispatched=true;await life.run(signal=>invoke({tool,args,signal})); // discard all upstream prose, dialogs, error text, metadata and images
+   const outcome=await life.run(()=>action.settled()),{asked}=outcome;action.end();
+   // A released submission may navigate: let the page load before its state is read.
+   if(asked)await life.run(()=>Promise.allSettled(context.pages().map(page=>page.waitForLoadState('domcontentloaded',{timeout:policy.timeouts.navigationMs}))));
    if(fence.state().state!=='agent'){fence.settle(requestId,{outcome:'result'});settled=true;fail('BROWSER_STALE_RESULT');}
    const result=await life.run(()=>snapshot.capture({fenceState:fence.state().state,tool}));
    await life.run(assertCurrent);const receipt=fence.settle(requestId,{outcome:'result'});settled=true;
    if(receipt.deliver!=='result'||fence.state().state!=='agent')fail('BROWSER_STALE_RESULT');
-   touch();return result;
+   touch();return outcome.declined.length||outcome.refused.length?withNotSent(result,outcome):result;
   }catch(error){
    if(admitted&&!settled){fence.settle(requestId,{outcome:dispatched?(life.signal.aborted?'timeout':'transport-error'):'result'});
     if(dispatched){void destroy('disconnect').catch(()=>{});fail('BROWSER_ACTION_OUTCOME_UNKNOWN');}}
    // Only the closed model-visible code survives this point; upstream prose, dialogs and host detail never do.
    fail(browserRefusalCode(error,{dispatched}));
-  }finally{life.close();busy=false;}})();
+  }finally{action?.end();life.close();busy=false;}})();
   const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);try{return await operation;}finally{pending.delete(tracked);}
  }
  /** Permission-gate classification of one interaction against the live pages; no page effect. */

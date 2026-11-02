@@ -13,10 +13,12 @@ const MAX_BYTES=262144;
 const fail=()=>{throw Object.assign(Error('BROWSER_CALL_REFUSED'),{code:'BROWSER_CALL_REFUSED'});};
 const refused=()=>browserRefusalResult('BROWSER_CALL_REFUSED');
 export function createBrowserSdkServer(configuration){
- const c=own(configuration,['binding','policy','tools','call','deadlineMs'],['now','signal']),binding=data(c.binding),policy=validateBrowserPolicy(c.policy),now=c.now??Date.now;
+ const c=own(configuration,['binding','policy','tools','call','deadlineMs','approvalDeadlineMs'],['now','signal']),binding=data(c.binding),policy=validateBrowserPolicy(c.policy),now=c.now??Date.now;
  validateShape('RunBinding',binding);
- if(!policy.enabled||typeof c.tools!=='function'||typeof c.call!=='function'||typeof now!=='function'||!Number.isSafeInteger(c.deadlineMs)||c.deadlineMs<=now())fail();
- const owner=new AbortController(),timeout=Math.min(policy.timeouts.actionMs+policy.timeouts.navigationMs,130000);
+ if(!policy.enabled||typeof c.tools!=='function'||typeof c.call!=='function'||typeof now!=='function'||!Number.isSafeInteger(c.deadlineMs)||c.deadlineMs<=now()||
+  !Number.isSafeInteger(c.approvalDeadlineMs)||c.approvalDeadlineMs<1)fail();
+ // A call may wait for the user on a request its page sends (the host's submission gate) within the run's approval window.
+ const owner=new AbortController(),timeout=Math.min(policy.timeouts.actionMs+policy.timeouts.navigationMs,130000)+c.approvalDeadlineMs;
  const sdk=createSdkMcpServer({name:BROWSER_SERVER_NAME,version:'1.0.0',tools:[]});
  // McpServer's public protocol server preserves the pinned upstream JSON Schema
  // exactly. It avoids a second tool-schema vocabulary or a lossy conversion.
@@ -41,7 +43,9 @@ export function createBrowserSdkServer(configuration){
    // Preserve the MCP request identity through the run binding. No call is
    // retried here; replay and uncertain effects remain with the host fence.
    const requestId=canonicalSha256({binding,type:typeof extra.requestId,id:extra.requestId});
-   const result=data(await c.call({binding,requestId,tool,args,signal}));own(result,['content'],['isError']);
+   // The CLI names the SDK tool use in the call's metadata; the host matches it to that use's approval.
+   const toolUseId=request.params._meta?.['claudecode/toolUseId'];
+   const result=data(await c.call({binding,requestId,tool,args,...(typeof toolUseId==='string'&&/^[A-Za-z0-9_-]{1,128}$/u.test(toolUseId)?{toolUseId}:{}),signal}));own(result,['content'],['isError']);
    // The host's closed refusal texts are the only `isError` results admitted; they carry no page content.
    if(Object.hasOwn(result,'isError')&&!isBrowserRefusalResult(result))fail();
    if(!Array.isArray(result.content)||!result.content.length||Buffer.byteLength(JSON.stringify(result))>MAX_BYTES)fail();
