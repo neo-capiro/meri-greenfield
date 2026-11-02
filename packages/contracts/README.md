@@ -176,3 +176,11 @@ finds this month's recorded spend at or above the tenant's `monthly_cap_micro_us
 `TENANT_MONTHLY_CAP_REACHED` on submit and admit (and on allocate, with outcome `NOT_DISPATCHED`) instead of collapsing to `502`
 `CONVERSATION_UNAVAILABLE`, so the UI can say the limit was reached rather than that Capiro is unreachable. Nothing is queued or
 dispatched. Validation grants no authority: tenant settings and control-plane admission decide every value.
+
+## Office launch TTL sentinel — package 0.1.52
+
+`office-application` launch and renew forms now carry `access_token_ttl: "0"`, the WOPI sentinel for no client expiry, instead
+of the token's expiry. The token never outlives the current native session (about a minute), and CODE warns whenever fewer than
+15 minutes remain, so a real TTL showed its "session will end" warning on every load and renewal. `expiresAtMs` is unchanged: it
+is the token's real expiry, enforced by the host frame and the WOPI handler, and the host renews before it. The receiver refuses
+any other TTL value.

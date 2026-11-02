@@ -174,7 +174,11 @@ The locally authorized CODE 26.04.5.2 exercise found that CODE forwards
 must be a single bounded integer equal to the signed claim, or the WOPI zero
 sentinel for unknown client expiry. CODE used the zero sentinel in native
 requests; server-side signed expiry is always enforced. The hint cannot extend
-token life or replace current session, editor epoch or retention checks.
+token life or replace current session, editor epoch or retention checks. The
+launch form itself sends the zero sentinel: the token never outlives the current
+native session (about a minute), so a real TTL would make CODE show its expiry
+warning on every load and renewal. The host frame enforces `expiresAtMs` and
+renews before it.
 See [WOPI token concepts](https://learn.microsoft.com/en-us/microsoft-365/cloud-storage-partner-program/rest/concepts).
 
 The initial launch checkpoint had nine source tests. The later canonical Core,

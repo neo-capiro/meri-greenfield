@@ -186,7 +186,7 @@ test('receiver rejects leaked private bytes/tokens, substituted selectors, unbra
  }
  await assert.rejects(receiveOfficeResponse('read',200,read.body,{...read.selected}));
  const wrong=structuredClone(launch.received);wrong.editor.epoch++;await assert.rejects(receiveOfficeResponse('launch',200,encode(wrong),launch.selected));
- for(const change of [r=>{r.launch.actionUrl='https://attacker.example.test/browser/x/cool.html';},r=>{r.launch.fields.access_token_ttl='0';},r=>{r.launch.expiresAtMs=Date.parse(r.editor.expiresAt)+1;}]){
+ for(const change of [r=>{r.launch.actionUrl='https://attacker.example.test/browser/x/cool.html';},r=>{r.launch.fields.access_token_ttl=String(r.launch.expiresAtMs);},r=>{r.launch.expiresAtMs=Date.parse(r.editor.expiresAt)+1;}]){
   const r=structuredClone(launch.received);change(r);await assert.rejects(receiveOfficeResponse('launch',200,encode(r),launch.selected));
  }
 });

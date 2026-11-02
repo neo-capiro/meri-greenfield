@@ -53,7 +53,7 @@ function launch(value,q,lease){
   [...action.searchParams.keys()].some(k=>['access_token','access_token_ttl'].includes(k.toLowerCase())||k.toLowerCase()==='wopisrc'&&k!=='WOPISrc')||
   source.protocol!=='https:'||source.origin===origin.origin||source.username||source.password||source.hash||source.search||source.pathname!==`/api/meri/office/wopi/files/${q.draftId}`||
   typeof value.fields.access_token!=='string'||!/^[A-Za-z0-9_-]{1,4096}\.[A-Za-z0-9_-]{43}$/u.test(value.fields.access_token)||
-  !Number.isSafeInteger(value.expiresAtMs)||value.expiresAtMs<1||value.expiresAtMs>Date.parse(lease.expiresAt)||value.fields.access_token_ttl!==String(value.expiresAtMs))fail('INVALID_LAUNCH');
+  !Number.isSafeInteger(value.expiresAtMs)||value.expiresAtMs<1||value.expiresAtMs>Date.parse(lease.expiresAt)||value.fields.access_token_ttl!=='0')fail('INVALID_LAUNCH');
 }
 async function document(value,versionId){
  closed(value,['version','inspection']);
