@@ -27,13 +27,13 @@ const edits={docx:{unit:'p:1',before:'Quarterly report — Ω',after:'Quarterly 
 const withoutRetention=({retention,...options})=>options;
 async function fixture(t,format='docx'){
  const baseBytes=retained[format](),f=await wopiFixture(t,{format,baseBytes}),now=f.options.now;
- const state=Object.assign(f.state,{observations:[],modeDenied:null,selection:null});
+ const state=Object.assign(f.state,{observations:[],modeDenied:null,selection:null,revokedAt:null});
  const limits={maxRequestMs:5000,maxRequestBytes:2097152,maxResponseBytes:16777216};
  const optionsOwner={async resolve(call){
   const required={'office-edit':'artifact.revise',inspect:'artifact.inspect',download:'artifact.download'}[call.intent];
   const authorize=async x=>{if(x.action!==required||state.modeDenied===call.intent)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return f.artifactOptions.authorize(x);};
   return {documentOptions:{sessions:f.sessions,selectedClientId:f.claims.selectedClientId,artifactOptions:{...withoutRetention(f.artifactOptions),now,authorize,ids:()=>({artifactId:id(960),versionId:id(961),objectId:id(962)})},now,limits,enabled:true},
-   async recheck({phase}){state.observations.push({intent:call.intent,phase});if(state.modeDenied===call.intent)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}};
+   async recheck({phase}){state.observations.push({intent:call.intent,phase});if(state.modeDenied===call.intent||state.revokedAt===phase)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}};
  }};
  const discoveryBytes=Buffer.from(`<wopi-discovery><net-zone name="external-https"><app><action ext="${format}" name="edit" urlsrc="https://office.example.test/browser/synthetic/cool.html?"/></app></net-zone></wopi-discovery>`);
  const launch=createCollaboraCodeLaunch({editorOrigin:'https://office.example.test',wopiOrigin:'https://wopi.example.test',discoveryBytes,codec:f.codec,now});
@@ -126,6 +126,16 @@ test('reject settles the proposal durably: a reload and another tab read it as r
   await assert.rejects(m.prepare({operation:OP,arguments:{action:'propose',summary:'s',operations:[operation]},deliveryId:delivery(n)}),e=>e.code===code);
  assert.equal((await other.decide({principal,request:decision(f,7,q,'approved')})).result.proposalStatus,'applied');assert.equal(f.state.puts,2);
  assert.equal((await tab().decide({principal,request:decision(f,6,p,'approved')})).result.proposalStatus,'rejected','the rejected row outlives the head change');
+});
+test('Apply and Reject observe Core at the effect boundary: revoked after admission, with the session and receipt still valid, nothing is written',async t=>{
+ const f=await fixture(t),selection=f.selectionFor(f.first.version),{store,mount:m}=mount({binding:f.binding,preparers:[f.preparerFor(selection)],now:f.now,scopes:f.scopes});
+ const p=(await m.prepare({operation:OP,arguments:propose(f,12),deliveryId:delivery(12)})).proposal;
+ const owner=createIntentApprovalOwner({journal:store.port,office:f.office,now:f.now,limits:{maxRequestMs:5000},enabled:true}),principal=principalOf(f);
+ f.state.revokedAt='effect';f.state.observations.length=0;
+ for(const choice of ['approved','rejected'])await assert.rejects(owner.decide({principal,request:decision(f,12,p,choice)}));
+ assert.ok(f.state.observations.some(o=>o.phase==='effect'),'Core is observed before the write');
+ assert.equal(f.state.puts,1,'nothing was published');assert.equal(f.sql.state.versions.size,1);
+ assert.equal((await owner.list({principal,request:{conversationId:f.binding.conversationId}})).intents[0].result.proposalStatus,'proposed','the refused Reject settled nothing');
 });
 test('the composed owner: a preparer only for a selected document, propose under revise authority, a named principal bound to the attended session, cross-conversation and revoked-authority refusals, expiry',async t=>{
  const f=await fixture(t),principal=principalOf(f),runArguments={binding:f.binding,scopes:f.scopes,selectedClientId:f.selectedClientId,deadlineMs:f.now()+30000,...f.rights};
