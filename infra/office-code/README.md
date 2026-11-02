@@ -23,3 +23,20 @@ docker build --platform linux/arm64 --progress=plain \
 ```
 
 Run only on an actual ARM64 builder; emulation is not qualification. The [dated recipe handoff](../../docs/handover/20261028/OFFICE-NATIVE-SOURCE-RECIPE-20261030.txt) records the bounded capacity estimate, existing builder/operator and still-unrun checks. This source recipe neither changes the existing default overlay-only image nor submits a build, pushes an image or deploys the editor.
+
+## Deployed runtime configuration
+
+The preview editor runs as ECS service `capiro-preview-office` (cluster `capiro-dev`) with an entrypoint that writes the Meri control CA (`OFFICE_CONTROL_CA_PEM`, a public certificate) to `/tmp/control-ca.pem` and then sets `extra_params` for the vendor startup script:
+
+```text
+--o:ssl.enable=false --o:ssl.termination=true
+--o:server_name=office-preview.app-dev.capiro.ai:443
+--o:storage.ssl.ca_file_path=/tmp/control-ca.pem
+--o:net.frame_ancestors=https://app.capiro.ai
+--o:storage.wopi.host[0]=control[.]meri-preview[.]internal --o:storage.wopi.host[0][@allow]=true
+--o:admin_console.enable=false --o:security.capabilities=false --o:mount_jail_tree=false
+--o:security.enable_macros_execution=false --o:security.macro_security_level=3
+--o:logging.level=warning
+```
+
+The CA path must be `storage.ssl.ca_file_path`. With `ssl.enable=false` and `ssl.termination=true`, CODE ignores `ssl.ca_file_path`, so its WOPI calls to Meri control fail with "self-signed certificate in certificate chain" and "No answer to CheckFileInfo". Keep certificate verification on; do not set `ssl_verification` to false. Task definition revision 3 carries this value; revision 2 had `ssl.ca_file_path`.
