@@ -19,6 +19,7 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {INTENT_AVAILABILITY_WORKER_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
+import {availabilityFailure} from '../capabilities/availability-failure.mjs';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {INTENT_ROWS,INTENT_SERVER_NAME,assertIntentCatalog} from './catalog.mjs';
@@ -38,13 +39,8 @@ const declaredOriginals=new Set(catalog.originals.filter(o=>o.disposition==='def
 const admissible=(/** @type {{id:string,version:string}} */operation)=>registered(operation)||declaredOriginals.has(operation.id);
 const OPERATION=/^[a-z][a-z_]{0,62}$/u;
 const key=(/** @type {{id:string,version:string}} */o)=>canonicalSha256({id:o.id,version:o.version});
-/** The closed fact of a failed offer: an own string `code` (else UNAVAILABLE), the layer that decided it (the runner client marks
- * its own and control's answers; anything else was decided here) and the elapsed time. Never a message or stack.
- * @param {unknown} error @param {number} elapsedMs @returns {{code:string,layer:'worker'|'runner'|'control',elapsedMs:number}} */
-const offerFailure=(error,elapsedMs)=>{
- const ownValue=(/** @type {string} */name)=>error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,name)?.value:undefined,code=ownValue('code'),layer=ownValue('layer');
- return Object.freeze({code:typeof code==='string'?code:'UNAVAILABLE',layer:layer==='runner'||layer==='control'?layer:'worker',elapsedMs});
-};
+/** The closed fact of a failed offer, shared with the general-read snapshot (`capabilities/availability-failure.mjs`). */
+const offerFailure=availabilityFailure;
 /** A failure that says the offer was not answered rather than refused: a deadline or cancellation at any layer, or the runner
  * client's own UNAVAILABLE (transport loss before control answered). Control's UNAVAILABLE is an answer (intents off, nothing
  * composed), and an absent port, ACCESS_DENIED or a malformed offer is decided: those keep the plain "not available" wording and

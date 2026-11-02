@@ -61,7 +61,7 @@ export function createNativeToolAuthorityClient(configuration={}){
  /** Ordinary actor-owned integration inventory, including disconnected stored mail. Core's `listIntegrations` already selects
   * the caller's tenant and the connections the caller created, and its Settings projection carries neither identifier, so
   * ownership is Core's statement and is not re-derived from the rows. These IDs only select data; every mail read still
-  * rechecks the Core connection owner. */
+  * rechecks the Core connection owner. `accountEmail` (lower-cased) is the address a connected mailbox sends from. */
  async function readMailboxes(raw){let life,acquired;try{
   if(!available)refuse('UNAVAILABLE');const v=own(raw,['credential','deadlineMs'],['signal']);nativeSignal(v.signal);
   if(typeof v.credential!=='string'||!/^\S{1,8192}$/u.test(v.credential)||!Number.isSafeInteger(v.deadlineMs))refuse('INVALID_ARGUMENTS');
@@ -80,7 +80,8 @@ export function createNativeToolAuthorityClient(configuration={}){
    seen.add(row.id);
    if(!['microsoft_365','google_workspace'].includes(row.provider))continue;
    if(!['needs_configuration','connected','error','disabled'].includes(row.status))refuse('INVALID_RESULT');
-   result.push({id:row.id,provider:row.provider,status:row.status});
+   if(row.accountEmail!==null&&row.accountEmail!==undefined&&typeof row.accountEmail!=='string')refuse('INVALID_RESULT');
+   result.push({id:row.id,provider:row.provider,status:row.status,accountEmail:row.accountEmail?row.accountEmail.trim().toLowerCase():null});
   }
   life.check();return result.sort((a,b)=>a.id.localeCompare(b.id));
  }catch(error){throw failure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}

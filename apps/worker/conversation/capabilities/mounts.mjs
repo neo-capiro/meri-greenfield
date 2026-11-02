@@ -12,13 +12,16 @@ export const UNAVAILABLE_INTENT_PORT=Object.freeze({async readAvailability(){thr
  * @param {{policy:import('./policy.mjs').CapabilityPolicy|undefined,binding:unknown,scopes:any[],now:()=>number,deadlineMs:number,
  *  generalReads?:{readAvailability:Function,execute:Function},governedIntents?:{readAvailability:Function,prepare:Function},
  *  expectedSessionId?:string,skill?:any,procedure?:{allowedTools:string[]},exclude?:{id:string,version:string}[],runBudgets?:{maxToolCalls:number,maxOutputBytes?:number,maxAggregateOutputBytes?:number},signal?:AbortSignal,
- *  diagnostic?:(failure:{code:string,layer:'worker'|'runner'|'control',elapsedMs:number})=>void}} c `diagnostic` receives a failed intent offer (`intents/runtime.mjs`)
+ *  diagnostic?:(failure:{code:string,layer:'worker'|'runner'|'control',elapsedMs:number})=>void,
+ *  readDiagnostic?:(failure:{code:string,layer:'worker'|'runner'|'control',elapsedMs:number})=>void}} c `diagnostic` receives a failed intent offer (`intents/runtime.mjs`), `readDiagnostic` a failed read snapshot (`reads/runtime.mjs`)
  * @returns {Promise<{reads:any,intents:any}>} each runtime, or null when the profile does not enable it (or mounts no tool)
  */
 export async function createProfileMounts(c){
  const shared={binding:c.binding,scopes:c.scopes,policy:c.policy,now:c.now,deadlineMs:c.deadlineMs,mount:/** @type {const} */('profile'),...(c.expectedSessionId===undefined?{}:{expectedSessionId:c.expectedSessionId}),...(c.signal===undefined?{}:{signal:c.signal})};
  // The run's admitted budgets bound only the early read ledger (never the SDK options), so the measured template is unchanged.
- const reads=c.policy?.generalReads===true?await createGeneralReadRuntime({...shared,port:c.generalReads??UNAVAILABLE_READ_PORT,...(c.skill===undefined?{}:{skill:c.skill}),...(c.procedure===undefined?{}:{procedure:c.procedure}),exclude:c.exclude??[],...(c.runBudgets===undefined?{}:{runBudgets:c.runBudgets})}):null;
+ // The read snapshot and the intent offer are read concurrently: each has its own bound (runner-load-budget.mjs, 10 s and 12 s)
+ // inside the one setup stage (23 s), so in sequence two unanswered reads would leave the later setup steps a second.
+ const reads=c.policy?.generalReads===true?createGeneralReadRuntime({...shared,port:c.generalReads??UNAVAILABLE_READ_PORT,...(c.skill===undefined?{}:{skill:c.skill}),...(c.procedure===undefined?{}:{procedure:c.procedure}),exclude:c.exclude??[],...(c.runBudgets===undefined?{}:{runBudgets:c.runBudgets}),...(c.readDiagnostic===undefined?{}:{diagnostic:c.readDiagnostic})}):Promise.resolve(null);
  // Wave5 MO01/ST16: Core's canonical read-only procedure policy (native-procedures/selected-procedure.ts
  // READ_ONLY_PROHIBITED) forbids exactly the external effects a governed intent prepares — sending or drafting an
  // external message, creating or updating a task or record, and writing memory — and every admission Meri accepts is
@@ -26,8 +29,13 @@ export async function createProfileMounts(c){
  // governed-intent server, whatever the run's general profile enables: the intent port's availability is not even read,
  // nothing can be prepared and no `meri_intents` tool exists to call. A run with no procedure is unchanged.
  const readOnlyProcedure=c.procedure!==undefined&&c.procedure.effectMode==='read_only';
- let intents=null;
- try{intents=c.policy?.governedIntents===true&&!readOnlyProcedure?await createIntentRuntime({...shared,port:c.governedIntents??UNAVAILABLE_INTENT_PORT,...(c.diagnostic===undefined?{}:{diagnostic:c.diagnostic})}):null;}
- catch(error){await reads?.close();throw error;}
- return {reads,intents};
+ const intents=c.policy?.governedIntents===true&&!readOnlyProcedure?createIntentRuntime({...shared,port:c.governedIntents??UNAVAILABLE_INTENT_PORT,...(c.diagnostic===undefined?{}:{diagnostic:c.diagnostic})}):Promise.resolve(null);
+ const [readsOutcome,intentsOutcome]=await Promise.allSettled([reads,intents]);
+ if(readsOutcome.status==='rejected'||intentsOutcome.status==='rejected'){
+  // Neither runtime outlives the other's failure: the one that mounted is closed before the failure propagates.
+  if(readsOutcome.status==='fulfilled')await readsOutcome.value?.close();
+  if(intentsOutcome.status==='fulfilled')await intentsOutcome.value?.close();
+  throw readsOutcome.status==='rejected'?readsOutcome.reason:intentsOutcome.reason;
+ }
+ return {reads:readsOutcome.value,intents:intentsOutcome.value};
 }

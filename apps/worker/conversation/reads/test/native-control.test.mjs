@@ -27,7 +27,7 @@ for(const [family,id] of CASES){
 }
 test('native MCP skill scope and explicit call limit narrow the actual server without financial reservations',async t=>{
  const f=await fixture('bill-text','read_bill_text'),skill={allowedOperations:[f.operation],budgets:{maxToolCalls:1,maxOutputBytes:1048576}},m=await connect(t,f,{skill});assert.ok(m);
- assert.equal((await m.call()).isError,undefined);assert.match((await m.call()).denied,/RESOURCE_LIMIT/u);
+ assert.equal((await m.call()).isError,undefined);assert.match((await m.call()).denied,/^The Capiro data read limit for this run is reached; /u);
  assert.equal(f.calls.filter(p=>p==='/api/clio/tools/read_bill_text').length,1);assert.equal(m.runtime.receipts().length,1);
  const disabled=await fixture('bill-text','read_bill_text');assert.equal(await connect(t,disabled,{policy:{generalReads:false}}),null);assert.deepEqual(disabled.calls,[]);
  const excluded=await fixture('bill-text','read_bill_text');assert.equal(await connect(t,excluded,{skill:{...skill,allowedOperations:[]}}),null);assert.deepEqual(excluded.calls,[]);

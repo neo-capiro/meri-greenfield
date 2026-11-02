@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {runnerStartupBudget} from '../runner-load-budget.mjs';
+import {runnerStartupBudget,RUNNER_LOAD_CONTROL_MARGIN_MS,READ_AVAILABILITY_CONTROL_MS,READ_AVAILABILITY_RUNNER_MS,READ_AVAILABILITY_WORKER_MS,INTENT_AVAILABILITY_WORKER_MS} from '../runner-load-budget.mjs';
 
 test('direct SDK startup keeps independent caps and one completion allowance, not cumulative stage reservations',()=>{
  const expiry=1_000_000,budget=runnerStartupBudget({requestMs:25_000,shutdownMs:10_000,originalExpiresAtMs:expiry});
@@ -12,6 +12,14 @@ test('direct SDK startup keeps independent caps and one completion allowance, no
  for(const stage of Object.values(budget.stages)){assert.equal(stage.expiresAtMs,expiry-23_000);assert.ok(Object.isFrozen(stage));}
  assert.equal(budget.originalExpiresAtMs,expiry);
  assert.ok(Object.isFrozen(budget)&&Object.isFrozen(budget.stages));
+});
+
+test('read availability keeps one control margin per hop and, beside the intent offer, fits the setup stage',()=>{
+ assert.ok(READ_AVAILABILITY_CONTROL_MS>3_000,'wider than the 3 s bound the live chain (execution authentication, two snapshots with a Core role read each) outran');
+ assert.equal(READ_AVAILABILITY_RUNNER_MS,READ_AVAILABILITY_CONTROL_MS+RUNNER_LOAD_CONTROL_MARGIN_MS);
+ assert.equal(READ_AVAILABILITY_WORKER_MS,READ_AVAILABILITY_RUNNER_MS+RUNNER_LOAD_CONTROL_MARGIN_MS);
+ const budget=runnerStartupBudget({requestMs:25_000,shutdownMs:10_000,originalExpiresAtMs:1_000_000});
+ assert.ok(READ_AVAILABILITY_WORKER_MS+INTENT_AVAILABILITY_WORKER_MS<budget.stages.setup.maxMs,'two unanswered offers leave the run its setup allowance');
 });
 
 test('idle time and local cleanup do not consume imaginary future stages or extend original expiry',()=>{

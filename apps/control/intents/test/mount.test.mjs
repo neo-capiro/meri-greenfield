@@ -4,6 +4,7 @@ import catalog from '../../../../packages/contracts/retrieval-0.2/catalog.json' 
 import {CommandError} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createCommandIntentPreparer} from '../command-preparer.mjs';
 import {createIntentMount} from '../mount.mjs';
+import {intentFault} from '../faults.mjs';
 import {commandComposition,mount,delivery,createMemoryJournalStore,NOW} from './fixture.mjs';
 const CREATE={id:'create_task',version:'0.2.0'},ARGS={title:'Task'},DEFERRED=catalog.originals.filter(o=>o.disposition==='deferred').map(o=>o.id);
 const call=(m,extra={})=>m.prepare({operation:CREATE,arguments:ARGS,deliveryId:delivery(1),...extra});
@@ -83,4 +84,11 @@ test('only owner-backed operations mount; disabled, unknown and malformed calls 
  await assert.rejects(m.prepare({operation:CREATE,arguments:[ARGS],deliveryId:delivery(1)}),code('INVALID_ARGUMENTS'));
  assert.equal(c.metadataCalls.prepare,0);
  const availability=await m.readAvailability();assert.deepEqual(availability.operations,[CREATE]);assert.ok(availability.expiresAtMs>availability.checkedAtMs);
+});
+
+test('an owner that completed the request from the trusted run explains its own INVALID_ARGUMENTS refusal, and the replay keeps it',async()=>{
+ const c=commandComposition(),detail='senderEmail: several mailboxes are connected; ask the user which address to send from and supply it';
+ let calls=0;const {mount:m}=mount({binding:c.binding,preparers:[{binding:c.binding,operation:CREATE,owner:'command',async prepare(){calls++;throw intentFault('INVALID_ARGUMENTS','none',detail);}}]});
+ for(let i=0;i<2;i++)await assert.rejects(call(m),e=>e.code==='INVALID_ARGUMENTS'&&e.detail===detail);
+ assert.equal(calls,1,'the refused delivery is answered from the journal');
 });

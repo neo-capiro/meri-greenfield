@@ -136,8 +136,12 @@ export function reportRuntimeStartupFailure(role,stage,error,{write=line=>proces
 /** A governed-intent offer that failed (worker `intents/runtime.mjs`): the run keeps its write tools mounted and prepares nothing,
  * which is not a terminal failure, so the closed code, the layer whose bound answered and the elapsed time are printed here or the
  * cause stays invisible. The schema admits nothing else. */
-export function reportIntentAvailability(failure){
- const active=context.getStore();if(active?.binding)try{active.telemetry.emit('meri.intent.availability',{...active.binding,layer:failure.layer,code:failure.code,elapsedMs:failure.elapsedMs});}catch{}
+export function reportIntentAvailability(failure){availability('meri.intent.availability',failure);}
+/** A general-read availability snapshot that failed (worker `reads/runtime.mjs`): the run keeps its read tools mounted with nothing
+ * available, which is not a terminal failure either, so the same closed fact is printed under its own event. */
+export function reportReadAvailability(failure){availability('meri.read.availability',failure);}
+function availability(event,failure){
+ const active=context.getStore();if(active?.binding)try{active.telemetry.emit(event,{...active.binding,layer:failure.layer,code:failure.code,elapsedMs:failure.elapsedMs});}catch{}
 }
 /** Called only after SDK cleanup and the canonical settlement receipt validate. This is not physical runtime retirement. */
 export function reportRunnerSettlement(state){

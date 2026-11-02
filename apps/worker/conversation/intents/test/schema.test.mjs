@@ -1,5 +1,5 @@
 /** The model-facing `arguments` contract of the intent tools: the canonical owner schema, the declared
- * narrowings (memory and the document rows), and the rows that still advertise none (SYNTHETIC source evidence;
+ * narrowings (memory, mail and the document rows), and the rows that still advertise none (SYNTHETIC source evidence;
  * no model, SDK query, provider, database or network call). The registered document tool's contract over the real
  * MCP transport is asserted in `native-document.test.mjs`. */
 import test from 'node:test';import assert from 'node:assert/strict';
@@ -16,7 +16,7 @@ const parses=(schema,value)=>schema.safeParse(value).success;
 
 test('every intent row advertises its canonical schema, a declared narrowing, or none at all',()=>{
  assert.deepEqual(Object.fromEntries(INTENT_ROWS.map(r=>[r.operation.id,intentRowArguments(r).mode])),{
-  save_note:'record',watch_action:'declared',create_client:'canonical',update_client_profile:'record',save_legiwatch_relevance:'canonical',mail_send:'canonical',
+  save_note:'record',watch_action:'declared',create_client:'canonical',update_client_profile:'record',save_legiwatch_relevance:'canonical',mail_send:'declared',
   apply_legiwatch_suggestion:'record',save_business_development_brief:'record',prepare_legiwatch_briefing:'record',save_legislative_research:'record',
   publish_research_portfolio_share_link:'canonical',revoke_research_portfolio_share_link:'canonical',
   manage_research_portfolio:'canonical',create_research_portfolio_snapshot:'canonical',request_research_portfolio_output:'canonical',save_research_portfolio_output_to_client:'canonical',
@@ -52,6 +52,17 @@ test('the open record is what a row advertises only while its canonical schema c
  assert.equal(advertised('run_analysis').properties,undefined);
  assert.equal(parses(z.fromJSONSchema(advertised('run_analysis')),{anything:'at all'}),true);
  assert.equal(advertised('schedule_task').properties,undefined);
+});
+
+test('the mail tool asks only for the message: client and sending mailbox come from the trusted run',()=>{
+ const resolved=intentRowArguments(row('mail_send')),schema=advertised('mail_send');
+ assert.equal(resolved.mode,'declared');
+ assert.deepEqual(Object.keys(schema.properties).sort(),['bcc','bodyHtml','cc','files','mode','original','senderEmail','subject','to']);
+ assert.deepEqual([...schema.required].sort(),['bcc','bodyHtml','cc','files','mode','original','subject','to']);
+ const message={mode:'send',to:['reader@example.test'],cc:[],bcc:[],subject:'Hello',bodyHtml:'<p>Hello</p>',files:[],original:null};
+ assert.equal(parses(resolved.arguments,message),true);
+ assert.equal(parses(resolved.arguments,{...message,senderEmail:'owner@example.test'}),true);
+ for(const trusted of [{clientId:null},{senderConnectionId:'00000000-0000-4000-8000-000000000001'}])assert.equal(parses(resolved.arguments,{...message,...trusted}),false);
 });
 
 test('management advertises closed disjoint reads and confirmed writes from its canonical input',()=>{

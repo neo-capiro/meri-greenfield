@@ -12,13 +12,15 @@ import {fixture,uuid} from '../../../../runtime/test/reads-native-fixture.mjs';
 import {connectedAppScene,CAPABILITY,PROVIDER_EXCHANGES,READ_OUTCOMES,LIST_OUTCOMES} from '../../../../gateway/general-reads/test/connected-apps-fixture.mjs';
 import {canonicalInputSchema,isNarrowerOrEqual} from '../schema.mjs';
 import {connect} from './native-mcp-fixture.mjs';
+import {failureResult} from '../results.mjs';
 const SECRETS=['SYNTHETIC_NATIVE','SYNTHETIC_SERVICE','SYNTHETIC_EXECUTION','core.example.invalid','control.example.invalid','https://'];
 const CLOSED=['UNAVAILABLE','ACCESS_DENIED','DEADLINE','CANCELLED','INVALID_ARGUMENTS'];
 const text=r=>r.content[0].text;
 const clean=r=>{for(const s of SECRETS)for(const part of r.content)assert.equal(part.text.includes(s),false,`model text leaks ${s}`);};
+const head=code=>failureResult(code,'mcp__meri_reads__x').content[0].text.replace(/ No evidence, absence or completeness is established\.$/u,'');
 const closed=(r,name,codes)=>{assert.equal(r.isError,true,JSON.stringify(r));assert.equal(r.content.length,1);
- const code=text(r).split(':')[0];assert.ok(codes.includes(code),`${code} is not one of ${codes}`);
- assert.match(text(r),new RegExp(`^${code}: mcp__meri_reads__${name} `,'u'));assert.match(text(r),/No evidence, absence or completeness is established\.$/u);clean(r);};
+ assert.ok(codes.some(code=>text(r).startsWith(head(code))),`${text(r)} is not one of ${codes}`);assert.equal(text(r).includes(name),false,'the tool name never reaches the model text');
+ assert.match(text(r),/No evidence, absence or completeness is established\.$/u);assert.doesNotMatch(text(r),/mcp__|\bUNAVAILABLE\b|\bACCESS_DENIED\b|\bDEADLINE\b/u,'no tool name or code reaches the model');clean(r);};
 async function mount(t,id,options={},fixtureOptions={}){const s=connectedAppScene(id,options),f=await fixture('connected-apps',id,{scene:s,...fixtureOptions}),m=await connect(t,f);assert.ok(m);return {s,f,m};}
 const sourceCalls=(f,id)=>f.calls.filter(p=>p===`/api/clio/tools/${id}`).length;
 
@@ -131,7 +133,7 @@ test('a run bound to another actor mounts nothing against this execution identit
 test('the explicit call limit closes the server after one connected read',async t=>{
  const {s,f,m}=await mount(t,'read_connected_app',{},{});
  const limited=await connect(t,f,{skill:{allowedOperations:[f.operation],budgets:{maxToolCalls:1,maxOutputBytes:1048576}}});assert.ok(limited);
- assert.equal((await limited.call()).isError,undefined);assert.match((await limited.call()).denied,/RESOURCE_LIMIT/u);
+ assert.equal((await limited.call()).isError,undefined);assert.match((await limited.call()).denied,/^The Capiro data read limit for this run is reached; /u);
  assert.equal(s.wire.length,1);assert.equal(limited.runtime.receipts().length,1);assert.deepEqual(m.runtime.receipts(),[]);
  assert.equal(CAPABILITY.connectionId,s.arguments.connectionId);
 });

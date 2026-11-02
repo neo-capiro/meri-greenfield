@@ -5,6 +5,7 @@ import {assertNativeReadConfiguration,nativeReadFault,nativeReadFailureCode} fro
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {jsonBody,response,ApplicationError} from '../control/action-application/http.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {READ_AVAILABILITY_CONTROL_MS} from '../../packages/runtime/runner-load-budget.mjs';
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const status={CONFIGURATION:503,INVALID_ARGUMENTS:400,ACCESS_DENIED:403,UNAVAILABLE:503,SOURCE_UNAVAILABLE:503,DEADLINE:408,CANCELLED:408,INVALID_RESULT:502,RESOURCE_LIMIT:413,BUDGET_UNCERTAIN:409,SOURCE_PUBLICATION_UNKNOWN:503,SOURCE_PUBLICATION_CONFLICT:409};
 export function createReadsApplication(configuration){
@@ -17,7 +18,7 @@ export function createReadsApplication(configuration){
   if(!/^Bearer [\x21-\x2b\x2d-\x7e]{1,8192}$/u.test(credential??''))return response({error:{code:'ACCESS_DENIED'}},401);
   if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding')))throw nativeReadFault('INVALID_ARGUMENTS');
   const length=header('content-length');if(length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||!Number.isSafeInteger(Number(length))))throw nativeReadFault('INVALID_ARGUMENTS');if(length!==null&&Number(length)>config.maxRequestBytes)throw nativeReadFault('RESOURCE_LIMIT');
-  const deadlineMs=now()+(route[1]==='execute'?config.maxExecuteMs:3000);life=createOperationLifetime({now,deadlineMs,signal:info.signal,errorFactory:nativeReadFault});
+  const deadlineMs=now()+(route[1]==='execute'?config.maxExecuteMs:READ_AVAILABILITY_CONTROL_MS);life=createOperationLifetime({now,deadlineMs,signal:info.signal,errorFactory:nativeReadFault});
   let input;try{input=await jsonBody({...info,length:length===null?null:Number(length)},config.maxRequestBytes,life,life.check);}catch(error){if(nativeReadFailureCode(error))throw error;const tooLarge=error&&!types.isProxy(error)&&error instanceof ApplicationError&&error.message==='REQUEST_TOO_LARGE';throw nativeReadFault(tooLarge?'RESOURCE_LIMIT':'INVALID_ARGUMENTS');}
   const result=await life.run(signal=>handle(route[1],input,credential.slice(7),signal,deadlineMs,()=>{publicationStarted=true;}));life.check();if(Buffer.byteLength(JSON.stringify(result),'utf8')>config.maxResponseBytes)throw nativeReadFault('RESOURCE_LIMIT');return response(result);
  }catch(error){const code=publicationStarted&&life?.signal.aborted?'SOURCE_PUBLICATION_UNKNOWN':nativeReadFailureCode(error)??'UNAVAILABLE';

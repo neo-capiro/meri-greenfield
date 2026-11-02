@@ -61,13 +61,31 @@ test('profile mounts only exact active reads, with a stable list across changing
      assert.equal(decision.hookSpecificOutput.permissionDecision,undefined,'correlated, not denied');return await client.callTool({name,arguments:decision.hookSpecificOutput.updatedInput});}
     finally{await client.close();}};
    const toolOf=index=>a.reads.sdkOptions.allowedTools[index].slice('mcp__meri_reads__'.length);
-   for(const [runtime,index] of [[b.reads,0],[a.reads,2]]){const result=await call(runtime,'meri_reads',toolOf(index),{arguments:{}},`toolu_r_${index}`);assert.equal(result.isError,true);assert.match(result.content[0].text,/^UNAVAILABLE:/u);}
+   for(const [runtime,index] of [[b.reads,0],[a.reads,2]]){const result=await call(runtime,'meri_reads',toolOf(index),{arguments:{}},`toolu_r_${index}`);assert.equal(result.isError,true);assert.match(result.content[0].text,/^This source cannot be read in this conversation right now/u);}
    const intent=await call(b.intents,'meri_intents','request_document',{operation:'create_word',arguments:{format:'txt',title:'Draft',content:{text:'Draft'}}},'toolu_i_1');assert.equal(intent.isError,true);assert.match(intent.content[0].text,/UNAVAILABLE/u);
    const notOffered=await call(a.intents,'meri_intents','request_document',{operation:'create_excel',arguments:{format:'xlsx',title:'Book',content:{sheets:[{name:'Sheet1',rows:[[{value:'a'}]]}]}}},'toolu_i_2');assert.equal(notOffered.isError,true);assert.match(notOffered.content[0].text,/UNAVAILABLE/u);
   }finally{for(const x of [a,b,c]){await x.reads?.close();await x.intents?.close();}}
  }finally{restore();}
 });
 
+
+test('the read snapshot and the intent offer are read concurrently: both start before either resolves',async()=>{
+ const restore=quiet();try{
+  const policy=assertCapabilityPolicy(PORTABLE),started=[];let release;
+  const both=new Promise((resolve,reject)=>{release=resolve;setTimeout(()=>reject(Error('the second availability read never started: the mounts read in sequence')),2000).unref();});
+  const gate=async(name,answer)=>{started.push(name);if(started.length===2)release();await both;return answer();};
+  const reads=readPort(ACTIVE),intents=intentPort([{id:'create_word',version:'0.2.0'}]);
+  const m=await createProfileMounts({policy,binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,
+   generalReads:{readAvailability:()=>gate('reads',()=>reads.readAvailability()),execute:reads.execute},
+   governedIntents:{readAvailability:()=>gate('intents',()=>intents.readAvailability()),prepare:intents.prepare}});
+  try{assert.deepEqual([...started].sort(),['intents','reads'],'both availability reads started before either answered');assert.ok(m.reads&&m.intents,'both profile servers mount');}
+  finally{await m.reads.close();await m.intents.close();}
+  // A failed read snapshot reaches the read diagnostic once with its closed fact; the model-facing server still mounts.
+  const reported=[],failed=await createProfileMounts({policy,binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,generalReads:readPort([],{fail:true}),readDiagnostic:failure=>reported.push(failure)});
+  try{assert.equal(reported.length,1);assert.equal(reported[0].code,'UNAVAILABLE');assert.equal(reported[0].layer,'worker');assert.ok(Number.isSafeInteger(reported[0].elapsedMs));assert.deepEqual(failed.reads.available,[]);}
+  finally{await failed.reads.close();await failed.intents?.close();}
+ }finally{restore();}
+});
 
 test('profile availability is capped by exact active operations; disabled or empty active profiles mount nothing',async()=>{
  const policy=assertCapabilityPolicy(PORTABLE),rows=profileReads({policy}),all=familyReads().map(r=>r.operation),keys=new Set(rows.map(r=>canonicalSha256(r.operation)));
