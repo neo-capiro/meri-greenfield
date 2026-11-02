@@ -14,8 +14,13 @@
       "similarityFloor": 0.35,
       "candidateLimit": 200,
       "total": 1,
+      "coverage": {
+        "indexedRecords": 43424,
+        "totalRecords": 48497
+      },
       "notes": [
-        "Nearest-meaning congress bill records by embedding similarity: the 200 closest vectors, then congress filters; similarity is not relevance and an empty result is not proof of absence. Date filters apply to the latest action date.",
+        "Nearest-meaning congress bill records by embedding similarity: the 200 closest vectors, then congress filters; similarity is not relevance. Date filters apply to the latest action date.",
+        "43424 of 48497 stored congress bill records are indexed for this read; a record without an index entry cannot be found here, so an empty page means no close match among the indexed records, never that none exists (5073 records are not indexed yet).",
         "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
       ],
       "results": [
@@ -61,8 +66,13 @@
       "similarityFloor": 0.35,
       "candidateLimit": 200,
       "total": 1,
+      "coverage": {
+        "indexedRecords": 20595,
+        "totalRecords": 84115
+      },
       "notes": [
-        "Nearest-meaning federal grant records by embedding similarity: the 200 closest vectors, then agency, status filters; similarity is not relevance and an empty result is not proof of absence. Date filters apply to the close date.",
+        "Nearest-meaning federal grant records by embedding similarity: the 200 closest vectors, then agency, status filters; similarity is not relevance. Date filters apply to the close date.",
+        "20595 of 84115 stored federal grant records are indexed for this read; a record without an index entry cannot be found here, so an empty page means no close match among the indexed records, never that none exists (63520 records are not indexed yet).",
         "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
       ],
       "results": [
@@ -104,8 +114,13 @@
       "similarityFloor": 0.35,
       "candidateLimit": 200,
       "total": 1,
+      "coverage": {
+        "indexedRecords": 24165,
+        "totalRecords": 141350
+      },
       "notes": [
-        "Nearest-meaning sam opportunity records by embedding similarity: the 200 closest vectors, then naics, dateFrom filters; similarity is not relevance and an empty result is not proof of absence. Date filters apply to the response deadline.",
+        "Nearest-meaning sam opportunity records by embedding similarity: the 200 closest vectors, then naics, dateFrom filters; similarity is not relevance. Date filters apply to the response deadline.",
+        "24165 of 141350 stored sam opportunity records are indexed for this read; a record without an index entry cannot be found here, so an empty page means no close match among the indexed records, never that none exists (117185 records are not indexed yet).",
         "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
       ],
       "results": [
@@ -146,8 +161,14 @@
       "similarityFloor": 0.35,
       "candidateLimit": 200,
       "total": 0,
+      "coverage": {
+        "indexedRecords": 43424,
+        "totalRecords": 48497
+      },
       "notes": [
-        "Nearest-meaning congress bill records by embedding similarity: the 200 closest vectors; similarity is not relevance and an empty result is not proof of absence. Date filters apply to the latest action date.",
+        "Nearest-meaning congress bill records by embedding similarity: the 200 closest vectors; similarity is not relevance. Date filters apply to the latest action date.",
+        "43424 of 48497 stored congress bill records are indexed for this read; a record without an index entry cannot be found here, so an empty page means no close match among the indexed records, never that none exists (5073 records are not indexed yet).",
+        "No close match among the indexed congress bill records for this query; say that the indexed records held no close match and that 5073 records are not indexed yet, not that no such record exists.",
         "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
       ],
       "results": []

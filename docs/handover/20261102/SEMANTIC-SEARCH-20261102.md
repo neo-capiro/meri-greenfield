@@ -15,6 +15,19 @@ Core PR: `neo-capiro/capiro-backend`, branch `fable/semantic-search-core-2026110
 | Opportunity attachments | `funding_attachment_chunk` | Titan v2 | same worker | public | none; not exposed |
 | Defense research (program elements) | `source_type='pe'` | Titan v2 | `embed-program-elements` | public | `defense-research-semantic.ts` (pattern reused) |
 
+Coverage on the preview clone (orchestrator's read-only inventory, 2 November 2026; `DATA-POPULATION-INVENTORY-20261102.json`):
+
+| Family | Records with vectors | Stored records | Not indexed |
+| --- | --- | --- | --- |
+| Bills (`context_embeddings` `source_type='bill'`) | 43,424 | 48,497 | 5,073 |
+| Grants (`federal_grant.embedded_at`) | 20,595 | 84,115 | 63,520 |
+| SAM contract opportunities (`sam_opportunity.embedded_at`) | 24,165 | 141,350 | 117,185 |
+| Program elements (`source_type='pe'`) | 2,380 | 2,407 | 27 |
+| Contract awards (`federal_award`) | 0 | 170,039 | all |
+| Assistance awards | 0 | – | all |
+
+Each semantic read returns `coverage {indexedRecords, totalRecords}` read in the same transaction as the page, and its notes say how many records are indexed, that only indexed records can be found, and on an empty page that the indexed records held no close match and how many are not indexed yet, never that none exists. The family guidance and the gateway contract carry the same rule.
+
 Meri before this change: `search_congress_bills` / `read_bill_text` (bill-text family), `search_sam_opportunities` (sam-opportunities family), `search_federal_grants` (public-data family), the SQL pair (`describe_capiro_data` / `query_capiro_data` 0.5), and the legacy `search_capiro_data` cross-domain candidate search whose domains include `legiwatch_bills`, `grants`, `contracts_opportunities` and `federal_awards`. None ranked by vector.
 
 ## What changed
@@ -39,7 +52,11 @@ Routing the model is given:
 
 ## Live-only
 
-- Backfill status per family on the preview clone: bills under `source_type='bill'`; `federal_grant.embedded_at` and `sam_opportunity.embedded_at` coverage (the funding worker is bounded and prioritizes open records, so older or closed records may have no vectors). Not measured here: no read-only clone path is recorded in the receipts for this session, so the inventory is inferred from code.
+- Backfill per family, for the shipping executor after the PRs merge:
+  - Grants and SAM notices are embedded only by `apps/api/scripts/embed-funding-catalog.ts` (ingestion-schedule job `EmbedFundingCatalog`, `embed-funding-catalog --commit --limit=300 --max-chunks=3000`, cron 04:20, 10:20, 16:20 and 22:20 UTC, currently `enabled: false` in `infra/cdk/lib/ingestion-schedule.ts`). Its selection covers only active notices with a live response deadline and posted or forecasted grants with an open close date, so most of the 117,185 unindexed notices and 63,520 unindexed grants are historical records the worker never embeds by design; indexing them needs a widened selection or a one-off run, not just enabling the schedule. Cost: Titan v2 at 0.02 USD per million input tokens, one call per chunk of at most 6,000 characters, roughly 1,500 tokens, so a full notice backfill is on the order of 140,000 calls and about 4 to 5 USD; the worker embeds chunks sequentially under a 6-hour advisory lock, so a full pass is hours, bounded per pass by `--max-chunks`.
+  - Bills are embedded by `embed-backfill --source all` (one-shot Fargate task, EventBridge daily 13:00 UTC, enabled) and inline by `sync-congress`; 5,073 bills had no row on the clone.
+  - Contract awards: no embedding writer exists in Core (no `embedded_*` columns on `federal_award`, no script); semantic search over awards needs a new embedder first and is not part of these PRs.
+- Coverage figures above are the orchestrator's clone inventory; this session had no read-only clone path and inferred the rest from code.
 - The Core task role's Bedrock `InvokeModel` for Titan v2 (already exercised by tracked bills).
 - The HNSW builds themselves and the index-validity check.
 - Hermes acceptance of the ten questions below.

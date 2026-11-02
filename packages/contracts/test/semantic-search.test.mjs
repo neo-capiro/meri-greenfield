@@ -11,9 +11,10 @@ for(const [id,vector] of CASES)test(`${id} admits the Core result shape bound to
  assert.doesNotThrow(()=>c.assertOutput(vector.response,{request:vector.request}));
  assert.deepEqual(c.normalizeInput(vector.request).input,{limit:10,...vector.request});
 });
-test('an empty page is admitted and carries its notes',()=>{
+test('an empty page is admitted and says the indexed records held no close match, with the unindexed count',()=>{
  assert.doesNotThrow(()=>contract('semantic_search_bills').assertOutput(wire.empty.response,{request:wire.empty.request}));
- assert.equal(wire.empty.response.total,0);assert.ok(wire.empty.response.notes[0].includes('not proof of absence'));
+ assert.equal(wire.empty.response.total,0);assert.deepEqual(wire.empty.response.coverage,{indexedRecords:43424,totalRecords:48497});
+ assert.match(wire.empty.response.notes[2],/No close match among the indexed congress bill records .* 5073 records are not indexed yet, not that no such record exists/);
 });
 test('the three reads share one input shape but refuse filters their family does not apply',()=>{
  assert.throws(()=>contract('semantic_search_bills').normalizeInput({query:'water',agency:'EPA'}));
@@ -46,6 +47,9 @@ mutate('inactive notice without includeInactive','semantic_search_contract_oppor
 mutate('notice outside the NAICS prefix','semantic_search_contract_opportunities',wire.contractOpportunities,r=>{r.results[0].record.naicsCode='541511';});
 mutate('a record of another family','semantic_search_grants',wire.grants,r=>{r.results[0].record=wire.bills.response.results[0].record;r.results[0].reference='federal_grant:119-hr-1';});
 mutate('unexpected authority material','semantic_search_bills',wire.bills,r=>{r.credentials='forged';});
+mutate('coverage missing','semantic_search_bills',wire.bills,r=>{delete r.coverage;});
+mutate('more indexed than stored records','semantic_search_bills',wire.bills,r=>{r.coverage.indexedRecords=r.coverage.totalRecords+1;});
+mutate('negative coverage','semantic_search_bills',wire.bills,r=>{r.coverage.totalRecords=-1;});
 mutate('record with an extra field','semantic_search_bills',wire.bills,r=>{r.results[0].record.tenantId='forged';});
 test('inactive notices are admitted only when the request asked for them',()=>{
  const {request,response}=structuredClone(wire.contractOpportunities);response.results[0].record.active=false;

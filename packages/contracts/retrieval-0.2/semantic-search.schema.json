@@ -398,6 +398,24 @@
           "minimum": 0,
           "maximum": 25
         },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "indexedRecords": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "totalRecords": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "indexedRecords",
+            "totalRecords"
+          ],
+          "additionalProperties": false
+        },
         "notes": {
           "type": "array",
           "items": {
@@ -424,6 +442,7 @@
         "similarityFloor",
         "candidateLimit",
         "total",
+        "coverage",
         "notes",
         "results"
       ],

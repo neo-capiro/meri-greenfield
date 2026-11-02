@@ -24,6 +24,8 @@ export function createSemanticSearchValidators({validateShape}){
  function assertOutput(id,value,request){
   const {input}=normalizeInput(id,request),family=SEMANTIC_SEARCH_FAMILIES[id],out=snapshotOperationData(value);validateShape('SemanticSearchOutput',out);
   if(out.tool!==id||out.query!==input.query||out.total!==out.results.length||out.results.length>input.limit||!Number.isFinite(Date.parse(out.generatedAt)))fail();
+  // Only indexed records are reachable: the page can never claim more indexed records than stored ones.
+  if(out.coverage.indexedRecords>out.coverage.totalRecords)fail();
   const seen=new Set();
   for(let i=0;i<out.results.length;i++){
    const row=out.results[i],record=row.record;
