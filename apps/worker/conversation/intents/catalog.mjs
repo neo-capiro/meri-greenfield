@@ -25,16 +25,17 @@ export const INTENT_TOOL_PREFIX=`mcp__${INTENT_SERVER_NAME}__`;
 /** The version each advertised intent resolves at. `create_client` crossed to the 0.3 client-record input;
  * an id not listed here keeps the original 0.2.0 owner, and a stored 0.2.0 reference still resolves to it.
  *
- * The schedule conversational family names the exact canonical 0.3 successor too, beside the four retained 0.2.0
- * schedule descriptors the current catalog keeps: the advertised row is the exact operation id@version the catalog
- * registers, so the worker lists that family's tool and its own input schema. A stored 0.2.0 reference still resolves
- * to the retained 0.2.0 descriptor, and a composition that only prepares the legacy pin answers UNAVAILABLE for the
- * successor — a successor is never downgraded to the retained family because the retained family could also express
- * the content. Each pin below is exact and per operation: never a version shape and never "the current family". */
+ * The three schedule rows stay at the retained 0.2.0 family on purpose: it is the exact pin the SDK composition prepares
+ * and records (`apps/runtime/routines.mjs` composes `createRoutineIntentPreparers` under the legacy pin) and the only
+ * pin the public conversation intents list admits for a schedule item (`packages/contracts/intents-application/schema.mjs`,
+ * `IntentsScheduleReviewItem`). A row is listed only when the port offers exactly its id@version, so advertising the 0.3
+ * successor here while the composition offered 0.2.0 left every schedule tool UNAVAILABLE in every scope (2 Nov 2026:
+ * "the scheduling function is not available in this conversation"). Crossing the schedule family to 0.3 is one change
+ * across the composition, this table and the wire schema, never this table alone. Each pin below is exact and per
+ * operation: never a version shape and never "the current family". */
 /** @type {Readonly<Record<string,string|undefined>>} */
 const ADVERTISED_VERSION=Object.freeze({
  create_client:'0.3.0',
- schedule_task:'0.3.0',update_scheduled_task:'0.3.0',cancel_scheduled_task:'0.3.0',
 });
 const op=(/** @type {string} */id)=>Object.freeze({id,version:ADVERTISED_VERSION[id]??'0.2.0'});
 const row=(/** @type {string} */id,/** @type {string} */tool,/** @type {OwnerKind} */owner,/** @type {string|null} */unavailable=null)=>Object.freeze({operation:op(id),tool,owner,unavailable});

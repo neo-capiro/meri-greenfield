@@ -22,7 +22,7 @@ export function createIntentJournal(store){
   if(!STATES.has(entry.state))throw fault('UNKNOWN');
   if(canonicalSha256(entry.record)!==canonicalSha256(record))throw fault('CONFLICT');
   if(entry.state==='PREPARED'&&entry.outcome!==null&&typeof entry.outcome==='object'&&Object.hasOwn(entry.outcome,'result'))return {replayed:true,result:entry.outcome.result,release:entry.outcome.release??null};
-  if(entry.state==='FAILED'&&typeof entry.outcome?.code==='string')throw fault(entry.outcome.code,{replayed:true});
+  if(entry.state==='FAILED'&&typeof entry.outcome?.code==='string')throw fault(entry.outcome.code,{replayed:true,...(typeof entry.outcome.detail==='string'?{detail:entry.outcome.detail}:{})});
   throw fault('UNKNOWN',{replayed:true});
  }
  return Object.freeze({

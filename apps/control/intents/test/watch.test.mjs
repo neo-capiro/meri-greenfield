@@ -125,5 +125,11 @@ test('pre-call refusals settle FAILED and replay the same refusal without a Core
   await assert.rejects(f.prepareWith(args,n),{code});await assert.rejects(f.prepareWith(args,n),{code});
   assert.equal([...f.store.rows.values()].filter(r=>r.state==='FAILED').length,n-6);
  }
+ // The canonical WatchInput explains an INVALID_ARGUMENTS refusal by field path and keyword, never by value, so the model
+ // can correct the call; an access refusal carries no detail.
+ const empty=await f.prepareWith({},7).catch(error=>error);assert.match(empty.detail,/must have required property 'family'/u);
+ const kind=await f.prepareWith({...f.request,targetKind:'prospect'},9).catch(error=>error);
+ assert.equal(kind.code,'INVALID_ARGUMENTS');assert.match(kind.detail,/^data\/targetKind must be equal to one of the allowed values/u);assert.doesNotMatch(kind.detail,/prospect|rule-1/u);
+ const denied=await f.prepareWith({...f.request,clientId:id(6)},8).catch(error=>error);assert.equal(denied.code,'ACCESS_DENIED');assert.equal(Object.hasOwn(denied,'detail'),false);
  assert.equal(f.state.prepares,0);
 });

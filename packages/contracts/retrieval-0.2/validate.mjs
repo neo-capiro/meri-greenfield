@@ -111,6 +111,15 @@ export function validateShape(name, value) {
   if (!check(value)) throw new Error(`${name}: ${ajv.errorsText(check.errors)}`);
   return value;
 }
+/** The canonical schema's own account of why `value` is not a valid request for `inputSchemaId` (ajv's error text, which
+ *  names the failing instance paths and keywords, never the values), or null when that schema is not registered here or
+ *  the value validates. Advisory: an owner's refusal stands on its own; this only tells a caller which field to correct. */
+export function describeInputProblem(inputSchemaId, value) {
+  let check;
+  try { check = typeof inputSchemaId === 'string' ? ajv.getSchema(inputSchemaId) : undefined; } catch { return null; }
+  if (typeof check !== 'function') return null;
+  return check(value) ? null : ajv.errorsText(check.errors);
+}
 function executionShape(group,name,value) {
   const schema = schemas[groups.indexOf(group)], check = schema && ajv.getSchema(`${schema.$id}#/$defs/${name}`);
   if (!check || !check(value)) throw new Error(`Invalid private execution contract ${group}:${name}`);

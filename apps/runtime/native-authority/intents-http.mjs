@@ -24,7 +24,7 @@ import {INTENT_AVAILABILITY_CONTROL_MS} from '../../../packages/runtime/runner-l
 import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {jsonBody,response,ApplicationError} from '../../control/action-application/http.mjs';
 import {matchesCapability} from './task-verifier.mjs';
-import {RUNNER_INTENT_FAILURES,RUNNER_INTENT_PATHS,runnerIntentFault,runnerIntentCode as closed,runnerIntentRequest,runnerIntentAvailability} from './intents-client.mjs';
+import {RUNNER_INTENT_FAILURES,RUNNER_INTENT_PATHS,runnerIntentFault,runnerIntentCode as closed,runnerIntentDetail,runnerIntentRequest,runnerIntentAvailability} from './intents-client.mjs';
 export {RUNNER_INTENT_FAILURES,RUNNER_INTENT_PATHS,runnerIntentFault};
 const get=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const integer=(n,min,max)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
@@ -69,6 +69,8 @@ export function createRunnerIntentsApplication(configuration){
  }catch(error){let code=closed(error)??(dispatched?'UNKNOWN':'UNAVAILABLE');if(dispatched&&(code==='DEADLINE'||code==='CANCELLED'||code==='RESOURCE_LIMIT'))code='UNKNOWN';
   // A failed offer for a named run is explained once here; the runner's answer carries only the closed code.
   if(route==='availability'&&named&&emit)try{emit('meri.intent.availability',{...named,layer:'control',code,elapsedMs:now()-started});}catch{}
-  return response({error:{code}},RUNNER_INTENT_FAILURES[code]);}
+  // An INVALID_ARGUMENTS answer also carries the mount's bounded field-path detail (never values), so the model can correct the call.
+  const detail=code==='INVALID_ARGUMENTS'&&error!==null&&typeof error==='object'&&!types.isProxy(error)?runnerIntentDetail(Object.getOwnPropertyDescriptor(error,'detail')?.value):undefined;
+  return response({error:{code,...(detail===undefined?{}:{detail})}},RUNNER_INTENT_FAILURES[code]);}
  finally{life?.close();try{if(info?.body&&!info.body.locked)void info.body.cancel().catch(()=>{});}catch{}}}});
 }

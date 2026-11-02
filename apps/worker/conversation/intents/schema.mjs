@@ -8,7 +8,7 @@
  * advertised as the SDK tool input, so the model is told the fields instead of an opaque schema identity.
  *
  * Where an owner admits less than its canonical request schema, that owner lane declares the projection here and it
- * is proved the same way, so a declaration can narrow the owner's contract but never widen it. Two such projections
+ * is proved the same way, so a declaration can narrow the owner's contract but never widen it. Three such projections
  * exist today:
  *
  * - `save_memory`: no `clientId` (the native memory owner refuses any model-supplied value,
@@ -23,6 +23,12 @@
  *   the canonical branch it was narrowed from, and a row's branches stay disjoint on `format`, so no accepted body
  *   falls outside the canonical request. Default admission is advertised; a composition that additionally admits
  *   PDF is narrower here than its owner, never wider.
+ * - `watch_action`: the canonical `WatchInput` couples its fields with `if/then` conditionals (the operations and target
+ *   kinds each family admits, and the delivery flag only with `set_delivery`), which the conversion cannot express, so
+ *   the row used to advertise an open record and the model guessed the fields. The watch owner's own tables
+ *   (`WATCH_SUPPORTED`, `WATCH_TARGET_KINDS`) select the branches: one per family and operation group, each the
+ *   canonical request with its conditionals resolved for that selection, so every branch is contained in the canonical
+ *   request and the tables are proved against the canonical conditionals in the same step.
  *
  * A row whose canonical schema cannot be proved keeps the open record rather than advertising a contract that has
  * not been shown to match; `intentToolArguments` reports which rows those are.
@@ -35,6 +41,7 @@ import {executionSchemaDependencies,executionSchemaSources} from '../../../../pa
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {WORK_SELECTION_SCHEMA_ID,workSelectionSchema} from '../../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {admitDocumentDescriptor} from '../../../control/document-application/format-admission.mjs';
+import {WATCH_SUPPORTED,WATCH_TARGET_KINDS} from '../../../../packages/contracts/retrieval-0.2/watch-action-validation.mjs';
 import {isNarrowerOrEqual} from '../reads/schema.mjs';
 import {intentDescriptor} from './catalog.mjs';
 const fail=()=>{throw Object.assign(Error('INTENT_SCHEMA_CONFIGURATION'),{code:'INTENT_SCHEMA_CONFIGURATION'});};
@@ -156,9 +163,63 @@ function documentInput(operation,canonical){
  if(!declarations.length||new Set(declarations.map(declaration=>declaration.advertised.properties.format.const)).size!==declarations.length)fail();
  return declarations;
 }
+/** One property narrowed by a conditional's consequent. An `enum` restricts a base `enum` to values it already admits, or
+ * replaces a free-text base (bounds and pattern) with fixed values that each satisfy it, since the conversion keeps an
+ * enum and drops the bounds; a bare `type` selects that branch of a base `anyOf`. @param {any} base @param {any} sub */
+function narrowProperty(base,sub){
+ if(!base||typeof sub!=='object'||sub===null||Object.keys(sub).length!==1)fail();
+ if(Array.isArray(sub.enum)&&sub.enum.length&&sub.enum.every(value=>typeof value==='string')){
+  if(Array.isArray(base.enum)){if(!sub.enum.every(value=>base.enum.includes(value)))fail();return {...base,enum:[...sub.enum]};}
+  const fits=value=>value.length>=(base.minLength??0)&&value.length<=(base.maxLength??Infinity)&&(base.pattern===undefined||new RegExp(base.pattern,'u').test(value));
+  if(base.type!=='string'||Object.keys(base).some(key=>!['type','minLength','maxLength','pattern'].includes(key))||!sub.enum.every(fits))fail();
+  return {type:'string',enum:[...sub.enum]};
+ }
+ if(typeof sub.type==='string'&&Array.isArray(base.anyOf)&&Object.keys(base).length===1){const chosen=base.anyOf.find(branch=>branch?.type===sub.type&&Object.keys(branch).length===1);if(!chosen)fail();return chosen;}
+ fail();
+}
+/** A canonical object request whose `allOf` is a list of `if/then(/else)` conditionals on constant properties, restricted to
+ * one `selection` (the values each tested property may take) with the conditionals folded into `properties`: the result
+ * has no conditional left and is exactly the canonical request on that selection, so it is contained in the canonical
+ * request. A selection a conditional cannot decide (some of its values satisfy the test, others not) is refused.
+ * @param {any} canonical @param {Record<string,readonly string[]>} selection */
+function resolveConditionals(canonical,selection){
+ if(canonical?.type!=='object'||canonical.additionalProperties!==false||!Array.isArray(canonical.allOf)||!canonical.allOf.length||!canonical.properties)fail();
+ const {allOf,...branch}=canonical,properties={...branch.properties};
+ for(const conditional of allOf){
+  const {if:when,then,else:otherwise,...rest}=conditional,tests=Object.entries(when?.properties??{});
+  if(Object.keys(rest).length||Object.keys(when??{}).length!==1||!tests.length||!then)fail();
+  const holds=tests.map(([name,test])=>{
+   if(Object.keys(test).length!==1||typeof test.const!=='string'||!Array.isArray(selection[name])||!selection[name].length)fail();
+   const hits=selection[name].filter(value=>value===test.const).length;if(hits&&hits!==selection[name].length)fail();return hits>0;
+  }).every(Boolean);
+  for(const [name,sub] of Object.entries((holds?then:otherwise)?.properties??{}))properties[name]=narrowProperty(properties[name],sub);
+ }
+ for(const [name,values] of Object.entries(selection))properties[name]=narrowProperty(properties[name],{enum:values});
+ return {...branch,properties};
+}
+/** The watch owner's model-facing branches: the canonical `WatchInput` resolved per family and per operation group of the
+ * owner's own tables. An operation the canonical request conditions on by itself (`set_delivery`, which couples the
+ * delivery flag) is its own group; the others of a family share one. Each branch's target kinds must be exactly the
+ * owner's table for that family, so a table that drifts from the canonical conditionals fails here, never silently.
+ * @param {any} _operation @param {any} canonical @returns {Declaration[]} */
+function watchInput(_operation,canonical){
+ if(!Array.isArray(canonical?.allOf))fail();
+ const conditioned=new Set(canonical.allOf.flatMap(c=>typeof c?.if?.properties?.operation?.const==='string'?[c.if.properties.operation.const]:[]));
+ const declarations=[];
+ for(const [family,operations] of Object.entries(WATCH_SUPPORTED)){
+  const groups=[operations.filter(o=>!conditioned.has(o)),...operations.filter(o=>conditioned.has(o)).map(o=>[o])].filter(group=>group.length);
+  for(const group of groups){
+   const resolved=resolveConditionals(canonical,{family:[family],operation:group});
+   if(canonicalSha256(resolved.properties.targetKind?.enum)!==canonicalSha256(WATCH_TARGET_KINDS[family]))fail();
+   declarations.push({advertised:resolved,canonical:resolved,rebound:null});
+  }
+ }
+ if(!declarations.length)fail();
+ return declarations;
+}
 /** Owner-lane declarations, by operation: the model-facing branches of that operation's canonical request.
  * @type {Readonly<Record<string,(operation:{id:string,version:string},canonical:any)=>Declaration[]>>} */
-const DECLARED=Object.freeze({save_memory:memoryInput,create_word:documentInput,create_excel:documentInput,create_powerpoint:documentInput});
+const DECLARED=Object.freeze({save_memory:memoryInput,create_word:documentInput,create_excel:documentInput,create_powerpoint:documentInput,watch_action:watchInput});
 /** @param {{operation:{id:string,version:string}}} row */
 function operationOf(row){
  const operation=row?.operation;
