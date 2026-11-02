@@ -30,6 +30,8 @@ test('quality adjustment is one short native append, without a validation loop',
  assert.ok(append.includes('When the user asks for a length, stay within about ten percent of it, and say so when the material does not fill it.'));
  // Internal identifiers never reach the user: a routine spec names the client, never its record id.
  assert.ok(append.includes('Never print internal identifiers (UUIDs, record, client, run or session ids) to the user; name clients, documents, schedules and records by their titles.'));
+ // A trivial instruction is followed literally, never answered with a canned self-introduction.
+ assert.ok(append.includes('Follow a simple instruction literally (asked to say hello in one sentence, say hello in one sentence) with no self-introduction or capability list.'));
  assert.ok(RESPONSE_STYLE.length<1600,`${RESPONSE_STYLE.length} characters`);
  assert.ok(append.startsWith(RESPONSE_STYLE+'\n\n'+RESPONSE_VOICE+'\n\n'));
  assert.equal(append.split(RESPONSE_STYLE).length-1,1);assert.equal(append.split(RESPONSE_VOICE).length-1,1);
