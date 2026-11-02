@@ -10,7 +10,7 @@ import {generalReadFixture,mountReads} from '../../reads/test/fixture.mjs';
 import {intentFixture,mountIntents,SESSION} from './fixture.mjs';
 import {INTENT_ROWS,intentToolName} from '../catalog.mjs';
 import {DEFERRED_ORIGINALS} from '../../reads/availability.mjs';
-const cwd=preparedWorkspace(binding.conversationId).replaceAll(String.fromCharCode(92),'/'),SENTENCE=/Write requests may only be prepared with the listed write-request tools/u;
+const cwd=preparedWorkspace(binding.conversationId).replaceAll(String.fromCharCode(92),'/'),SENTENCE=/Changes may only be prepared as requests the user approves in Meri/u;
 const runtime=()=>({binding,versions,cwd,model:'us.anthropic.claude-sonnet-4-6',region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024});
 const PROFILE_TOOLS=[...new Set(INTENT_ROWS.filter(row=>row.unavailable===null).map(row=>intentToolName(row.tool)))];
 

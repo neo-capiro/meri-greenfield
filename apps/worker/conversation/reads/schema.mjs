@@ -12,6 +12,7 @@ import {createHash} from 'node:crypto';
 import {z} from 'zod';
 import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {userVocabulary} from '../user-vocabulary.mjs';
 const fail=()=>{throw Object.assign(Error('READ_SCHEMA_CONFIGURATION'),{code:'READ_SCHEMA_CONFIGURATION'});};
 const RETRIEVAL=/^urn:meri:retrieval:([a-z0-9-]+):(0\.2\.0|0\.3\.0|0\.4\.0|0\.5\.0)$/u;
 const ANNOTATIONS=new Set(['$schema','$id','title','description','default','examples','$comment']);
@@ -130,7 +131,14 @@ export function isNarrowerOrEqual(advertised,canonical){
 /** @typedef {{mode:'canonical',arguments:z.ZodType}} AdvertisedArguments */
 /** @param {{id:string,sha256:string}} inputSchema @returns {AdvertisedArguments} */
 export function advertisedArguments(inputSchema){
- return convertCanonicalArguments(canonicalInputSchema(inputSchema));
+ return convertCanonicalArguments(userTermDescriptions(canonicalInputSchema(inputSchema)));
+}
+/** The model reads `description` annotations and repeats them to the user: they are projected into the user's vocabulary
+ * (`user-vocabulary.mjs`); every constraint and the pinned schema bytes stay exactly as canonical. @param {any} node @returns {any} */
+export function userTermDescriptions(node){
+ if(Array.isArray(node))return node.map(userTermDescriptions);
+ if(node===null||typeof node!=='object')return node;
+ return Object.fromEntries(Object.entries(node).map(([k,v])=>[k,k==='description'&&typeof v==='string'?userVocabulary(v):userTermDescriptions(v)]));
 }
 /** A conversion that widens or loses a constraint is a configuration failure. @param {Record<string,unknown>} canonical @returns {AdvertisedArguments} */
 export function convertCanonicalArguments(canonical){

@@ -14,8 +14,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "e08705afe928b71d2eaef8fa94f4aa0a12857ffbdd0a498e4bff12760d6fe543",
-      "bytes": 40825
+      "sha256": "ac62671105e6a01a5e6b4785a480f7f627283fb57547211495a8617a78b0a9bd",
+      "bytes": 40838
     },
     {
       "path": "../skills/./originals/bill_watch/1.1.1/manifest.json",
@@ -78,14 +78,14 @@
       "bytes": 3404
     },
     {
-      "path": "../skills/./originals/mail_history/1.0.1/manifest.json",
-      "sha256": "f17235bc73364ac6b260a484333f362e1f02bbb390690f45d1b664fdd6a2a6b4",
+      "path": "../skills/./originals/mail_history/1.0.2/manifest.json",
+      "sha256": "3c75e6db911f2ff6c695621d3abab789f617ec3c3382a36d4621d7f51a3d7979",
       "bytes": 2697
     },
     {
-      "path": "../skills/./originals/mail_history/1.0.1/SKILL.md",
-      "sha256": "c4b1409c0cf66843f198429d43eb67a56284a9195de214f6320c5d7c66e6677d",
-      "bytes": 3433
+      "path": "../skills/./originals/mail_history/1.0.2/SKILL.md",
+      "sha256": "57aa454e47e3b8dbb2f43927ff3a3c416f97c44e454ba04ba9cb0934cdbf55ef",
+      "bytes": 3651
     },
     {
       "path": "../skills/./originals/meeting_prep/1.0.2/manifest.json",
@@ -169,8 +169,8 @@
     },
     {
       "path": "../skills/assets.json",
-      "sha256": "6a2349e3b6828fa49bdf672633db7ba4db85b1b9fb904557ee55a7f11fa4eab8",
-      "bytes": 16503
+      "sha256": "5db943066d128af85ca1a2a4a8899c1e5137d338df9b37809590ca799aeec1a5",
+      "bytes": 16904
     },
     {
       "path": "../skills/index.mjs",

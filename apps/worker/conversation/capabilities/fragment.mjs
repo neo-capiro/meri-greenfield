@@ -60,7 +60,7 @@ export function mergeHookSets(sets){
 export function chainPermissions(deciders){
  return async(name,input,options)=>{
   /** @type {import('@anthropic-ai/claude-agent-sdk').PermissionResult} */
-  let decision={behavior:'deny',message:'Tool unavailable'};
+  let decision={behavior:'deny',message:'Not available in this conversation'};
   for(const decide of deciders){const next=await decide(name,input,options);if(next)decision=next;if(decision.behavior==='allow')break;}
   return decision;
  };

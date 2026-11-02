@@ -77,7 +77,7 @@ test('contacts canonical bytes and receipt hashes are preserved with a separate 
   const result=await client.callTool({name:'find_contacts',arguments:decision.hookSpecificOutput.updatedInput});
   assert.equal(result.isError,undefined);assert.equal(result.content.length,2);
   const source=result.content[0].text;assert.match(source,/update_client_profile people\[\]/);
-  assert.equal(result.content[1].text,'Notice: update_client_profile is not available in Meri. Do not propose or claim a client profile change. You may offer a governed task proposal instead.');
+  assert.equal(result.content[1].text,'Notice: update_client_profile is not available in Meri. Do not propose or claim a client profile change. You may offer to prepare a task request for the user\'s approval instead.');
   assert.equal(runtime.receipts()[0].resultSha256,canonicalSha256(JSON.parse(source)));
   assert.deepEqual(JSON.parse(source).result.contacts[0].name,'Example correspondent');
   assert.deepEqual((await client.listTools()).tools.map(t=>t.name),['find_contacts']);

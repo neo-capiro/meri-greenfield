@@ -82,19 +82,19 @@ export function createGeneralReadServer(c){
  const sqlPrimary=['describe_capiro_data','query_capiro_data'].every(id=>c.available.some(row=>row.operation.id===id));
  const alwaysLoad=c.available.length<=ALWAYS_LOAD_MAX,tools=registered.map(row=>defineReadTool(row,handler(row),alwaysLoad&&availableNames.has(readToolName(row)),{sqlPrimary}));
  for(const t of tools)assertConvertible(t.shape);
- const instructions=['Read-only Meri institutional sources for this conversation. Preserve exact source IDs, versions, hashes and scopes; separate inference; disclose partial or unavailable evidence. An error result establishes no evidence, absence or completeness. No write, external action or artifact is exposed here.',
+ const instructions=['Read-only Capiro data sources for this conversation. Preserve exact source IDs, versions, hashes, permissions and client selection; separate inference; disclose partial or unavailable evidence. An error result establishes no evidence, absence or completeness. Nothing here writes, acts externally or creates a document.',
   RESULT_STATE_GUIDANCE,
   'In General, client profile, documents, meeting sources, knowledge search and tracked bills require one explicit client UUID. Resolve a named client with lookup_client_registry first and use its returned UUID; ask the user to disambiguate multiple matches. A registry result does not grant access and these reads do not search across all clients. In a selected-client conversation, keep that selected client.',
-  ...(profile?[c.available.length?`Available now: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`:'No institutional source tool is available in this conversation right now.',
-   'Every other tool of this server answers UNAVAILABLE in this conversation.']
+  ...(profile?[c.available.length?`Available now: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`:'No Capiro data source can be read in this conversation right now.',
+   'Any other read listed here is not connected in this conversation and will say so.']
    :[`Available: ${c.available.map(row=>row.descriptor.displayName).join('; ')}.`,...(c.unavailable.length?[`Not available in this conversation: ${c.unavailable.join('; ')}.`]:[])]),
-  'Other institutional sources are not available in this conversation.'].join('\n');
+  'Other Capiro data sources are not connected in this conversation.'].join('\n');
  const server=createSdkMcpServer({name:READ_SERVER_NAME,version:'1.0.0',instructions,tools:tools.map(t=>t.definition),alwaysLoad:!profile&&alwaysLoad,timeout:c.timeoutMs});
  const allowedTools=Object.freeze([...byName.keys()]),allowed=new Set(allowedTools);
  return Object.freeze({server,allowedTools,modes:Object.freeze(Object.fromEntries(tools.map((t,i)=>[allowedTools[i],t.mode]))),
   hooks:Object.freeze({PreToolUse:[{matcher:`${READ_TOOL_PREFIX}.*`,hooks:[hook]}]}),
   /** @type {import('@anthropic-ai/claude-agent-sdk').CanUseTool} */
-  canUseTool:async name=>allowed.has(name)?{behavior:'allow'}:{behavior:'deny',message:'Tool unavailable'},
+  canUseTool:async name=>allowed.has(name)?{behavior:'allow'}:{behavior:'deny',message:'Not available in this conversation'},
   receipts:()=>Object.freeze([...receipts]),
   async close(){if(!closed){closed=true;correlations.clear();await server.instance.close();}}});
 }

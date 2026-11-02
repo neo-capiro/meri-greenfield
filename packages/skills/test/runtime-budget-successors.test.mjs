@@ -30,6 +30,8 @@ const SUCCESSORS=[
  ['quick_skill.bill_watch','2.0.0','2.0.1','7e00e11aa4606a5f5277dfd58913c11fe87ef6f069d5d1ad22911de69c83593b','8767442316ed7c1a318ba091026eff84ad0ad0a575beab22c1800bac5fa24d3a'],
  ['quick_skill.cited_report','1.0.0','1.0.1','ed25117407946264ef62a916377ffeec0ceca30ca54a97ab0983c797fb6a685a','6637bc1bd277ad758a2f3c301480b5756a931e09ec2fab7408092ebf475771cd'],
 ];
+/** A later successor issued for another reason: the runtime-budget successor stays installed and frozen, the current offer moves on. */
+const LATER=Object.freeze({'quick_skill.mail_history':'1.0.2'});
 const versionStatements=[from=>`immutable version \`${from}\``,from=>`version ${from}.`,from=>`at exactly version ${from}`];
 
 for(const [skillId,from,to,manifestSha256,proseSha256] of SUCCESSORS)test(`${skillId}: ${from} stays frozen and ${to} changes only the whole-run budget and its version statement`,()=>{
@@ -52,14 +54,15 @@ test('new selections are offered every successor; persisted predecessor pins sti
  const offered=describeSkillPlugin().skills;
  for(const [skillId,from,to] of SUCCESSORS){
   if(skillId==='quick_skill.bill_watch'&&to==='2.0.1')continue; // The sourced cited report is reached by explicit selection, never offered as the Bill Watch default.
-  assert.equal(offered.find(row=>row.skillId===skillId).skillVersion,to,`${skillId} offers ${to}`);
-  assert.equal(assets.sdkDefaults[skillId],to);
+  const current=LATER[skillId]??to;
+  assert.equal(offered.find(row=>row.skillId===skillId).skillVersion,current,`${skillId} offers ${current}`);
+  assert.equal(assets.sdkDefaults[skillId],current);
   const previous=selectSkill(skillId,from).pin;
   assert.equal(describeSkillPlugin({selection:previous}).skills.find(row=>row.skillId===skillId).skillVersion,from,`${skillId}@${from} launches as itself when persisted`);
  }
- assert.equal(offered.length,15);assert.equal(listSkills().length,35);
+ assert.equal(offered.length,15);assert.equal(listSkills().length,36);
  assert.throws(()=>selectSkill('quick_skill.mail_history','latest'),/SKILL_VERSION_UNAVAILABLE/u);
- assert.throws(()=>selectSkill('quick_skill.mail_history','1.0.2'),/SKILL_VERSION_UNAVAILABLE/u,'no version beyond the issued successor exists');
+ assert.throws(()=>selectSkill('quick_skill.mail_history','1.0.3'),/SKILL_VERSION_UNAVAILABLE/u,'no version beyond the issued successors exists');
 });
 
 test('the document-compiler registry is explicit per version and agrees with the revision contract',()=>{

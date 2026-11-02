@@ -102,14 +102,14 @@ export function createIntentServer(c){
   }finally{life?.close();}
  };
  const tools=[...byTool].map(([name,rows])=>defineIntentTool(rows[0].tool,rows,handler(name)));
- const instructions=['Governed write requests for this conversation. Tools return an immutable proposal awaiting approval or an immutable draft. Memory preparation creates no candidate and publishes nothing. Approved memory submission creates a pending candidate; historical review_pending receipts describe a candidate submitted for Core review, not active memory.',
-  ...(profile?[c.available.length?`Available now: ${c.available.map(r=>r.operation.id).join(', ')}.`:unchecked?'Whether a request can be prepared for the user\'s approval could not be checked right now, so no request can be prepared in this message. This is temporary, not a disabled capability; ask the user to try again in a new message.':'No write request can be prepared in this conversation right now.','Every other operation of these tools answers UNAVAILABLE in this conversation.']:[`Available: ${c.available.map(r=>r.operation.id).join(', ')}.`]),'Any other write, external action or memory change is not available in this conversation.'].join('\n');
+ const instructions=['Requests prepared for the user\'s approval in this conversation. Each call returns an immutable proposal awaiting the user\'s approval or an immutable draft; nothing here applies a change. Memory preparation creates no candidate and publishes nothing. Approved memory submission creates a pending candidate; historical review_pending receipts describe a candidate submitted for review, not active memory.',
+  ...(profile?[c.available.length?`Available now: ${c.available.map(r=>r.operation.id).join(', ')}.`:unchecked?'Whether a request can be prepared for the user\'s approval could not be checked right now, so no request can be prepared in this message. This is temporary, not a disabled capability; ask the user to try again in a new message.':'No write request can be prepared in this conversation right now.','Any other request listed here cannot be prepared in this conversation and will say so.']:[`Available: ${c.available.map(r=>r.operation.id).join(', ')}.`]),'Any other write, external action or memory change is not available in this conversation.'].join('\n');
  const server=createSdkMcpServer({name:INTENT_SERVER_NAME,version:'1.0.0',instructions,tools:tools.map(t=>t.definition),alwaysLoad:true,timeout:c.timeoutMs});
  const allowedTools=Object.freeze(tools.map(t=>t.name)),allowed=new Set(allowedTools);
  return Object.freeze({server,allowedTools,
   hooks:Object.freeze({PreToolUse:[{matcher:`${INTENT_TOOL_PREFIX}.*`,hooks:[hook]}]}),
   /** @type {import('@anthropic-ai/claude-agent-sdk').CanUseTool} */
-  canUseTool:async name=>allowed.has(name)?{behavior:'allow'}:{behavior:'deny',message:'Tool unavailable'},
+  canUseTool:async name=>allowed.has(name)?{behavior:'allow'}:{behavior:'deny',message:'Not available in this conversation'},
   receipts:()=>Object.freeze([...receipts]),
   async close(){if(!closed){closed=true;correlations.clear();await server.instance.close();}}});
 }

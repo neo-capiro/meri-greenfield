@@ -14,7 +14,7 @@ import {buildContinuationOptions} from '../../../apps/worker/conversation/contin
 const oldCatalog='41aed2fc63dc40cafe987ee3059a13b605b7d3796c31f60ed6ca26939954bfcc';
 
 test('every immutable identity keeps its explicit pin under the additive catalog',()=>{
-  const rows=listSkills();assert.equal(rows.length,35);assert.equal(new Set(rows.map(row=>row.skillId)).size,15);
+  const rows=listSkills();assert.equal(rows.length,36);assert.equal(new Set(rows.map(row=>row.skillId)).size,15);
   for(const row of rows){
     const selected=selectSkill(row.skillId,row.skillVersion),asset=assets.assets.find(item=>item.skillId===row.skillId&&item.skillVersion===row.skillVersion);
     // Every persisted pin remains the asset's exact historical selection identity.
