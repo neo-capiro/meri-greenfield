@@ -86,3 +86,12 @@ test('REFUSALS: instance/source/lease mismatch and a reconcile claim refuse with
  await assert.rejects(()=>reconcileOwner.forHost(base),e=>e.code==='NATIVE_HOST_MATERIAL_UNKNOWN');
  assert.equal(calls.send,0,'no SSM send for refused or reconciled steps');
 });
+
+test('run through a symlink, as the SSM document runs it, the program still executes and refuses without its payload',async t=>{
+ const {symlinkSync,mkdtempSync:temp,rmSync:remove}=await import('node:fs'),{spawnSync}=await import('node:child_process');
+ const dir=temp(join(tmpdir(),'meri-bootstrap-link-'));t.after(()=>remove(dir,{recursive:true,force:true}));
+ const link=join(dir,'native-bootstrap.mjs');
+ try{symlinkSync(new URL('./protected-bootstrap.mjs',import.meta.url),link);}catch(error){t.skip(`symlinks unavailable here: ${error.code}`);return;}
+ const run=spawnSync(process.execPath,[link],{env:{},encoding:'utf8',timeout:30000});
+ assert.equal(run.status,1);assert.equal(run.stderr,'NATIVE_PROTECTED_BOOTSTRAP_REFUSED\n');assert.equal(run.stdout,'');
+});
