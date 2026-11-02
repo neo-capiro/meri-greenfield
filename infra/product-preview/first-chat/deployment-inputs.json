@@ -125,16 +125,14 @@
         "enabled": true,
         "destinations": "public-web",
         "deniedHosts": [
-          "app.capiro.ai",
-          "meri-preview.capiro.ai"
+          "capiro.ai"
         ]
       },
       "defaults": {
         "enabled": true,
         "destinations": "public-web",
         "deniedHosts": [
-          "app.capiro.ai",
-          "meri-preview.capiro.ai"
+          "capiro.ai"
         ]
       },
       "roleCeilings": {
@@ -142,24 +140,21 @@
           "enabled": true,
           "destinations": "public-web",
           "deniedHosts": [
-            "app.capiro.ai",
-            "meri-preview.capiro.ai"
+            "capiro.ai"
           ]
         },
         "user_admin": {
           "enabled": true,
           "destinations": "public-web",
           "deniedHosts": [
-            "app.capiro.ai",
-            "meri-preview.capiro.ai"
+            "capiro.ai"
           ]
         },
         "capiro_admin": {
           "enabled": true,
           "destinations": "public-web",
           "deniedHosts": [
-            "app.capiro.ai",
-            "meri-preview.capiro.ai"
+            "capiro.ai"
           ]
         }
       }
