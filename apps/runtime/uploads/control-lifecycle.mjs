@@ -54,7 +54,8 @@ const absolute=value=>{requireValue(typeof value==='string'&&isAbsolute(value)&&
 export const UPLOAD_NATIVE_MOUNT_MS=10000;
 /** The bounded default budget for the one post-listen provisioning attempt, overridable by the declaration. */
 export const UPLOAD_NATIVE_DEFAULT_PROVISION_MS=120000;
-/** One content-free stderr event, carrying only the unsatisfied declarations. It never carries stderr, paths or text. */
+/** One content-free stderr event, carrying only the unsatisfied declarations and the qualifier's diagnostic. It never
+ * carries stderr, contents or text; the only paths it may name are the host-owned inventory entries a child could read. */
 export const UPLOAD_NATIVE_UNAVAILABLE_EVENT='runtime.uploads.native.unavailable';
 /** The matching content-free event for an ADMITTED local host: which layer attested `boundedResources` and the
  * observed cgroup facts, so a deployed container's log says whether the platform or a finite cgroup bounded it. */

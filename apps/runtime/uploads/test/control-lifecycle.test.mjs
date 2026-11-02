@@ -73,7 +73,7 @@ test('the mount forwards the host credential inventory to the probe; an empty on
  const named=await mountUploadNativeControl({configuration,run,credentialPaths:inventory});
  assert.equal(named.reason,'UPLOAD_SANDBOX_UNQUALIFIED');
  assert.deepEqual(named.requirements,['noNewPrivileges'],'an inventory the child could not read attests noCredentials');
- assert.deepEqual(named.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:true,checked:2,readable:0});
+ assert.deepEqual(named.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:true,checked:2,readable:0,readablePaths:[]});
  // A host that names an EMPTY inventory still cannot attest the credential requirement: the empty list is refused,
  // never treated as "nothing to check".
  const unnamed=await mountUploadNativeControl({configuration,run,credentialPaths:[]});

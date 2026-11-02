@@ -40,6 +40,22 @@ Prepare a new private input copy outside the repository. Keep exact before/after
 
 The old `neomart-kits` and dated Stage3 prep remain historical. Do not recreate their removed generators or use copied outputs as current readbacks. Active observability retirement and the final integrated AgentCore/native/cloud qualification remain separately tracked in the migration plan.
 
+For Office activation, declare `features.office` beside enabled `features.reads` (the mount reuses the reads Core service secret file). The operator sets only the self-hosted editor origin and, when the editor reaches control's private WOPI listener through another name, that origin; the renderer fills the browser origin (the frontend origin), the Core origin, the generated WOPI signing key (`/run/meri/office-wopi.key`, fresh per render, control bundle only) and the secret file path. Discovery is always `GET <editorOrigin>/hosting/discovery`, so no discovery path, frame-ancestor list or secret is declarable. Example (not enabled in the committed inputs):
+
+```jsonc
+"features": {
+  "sourceEnabled": true,
+  "reads": { "enabled": true, "serviceSecretArn": "arn:aws:secretsmanager:us-east-1:967807252336:secret:<reads secret>" },
+  "office": {
+    "enabled": true,
+    "editorOrigin": "https://<collabora-code-host>",
+    "wopiOrigin": "https://<control private name>"   // optional; default: privateEdge.controlPrivateOrigin
+  }
+}
+```
+
+An unreachable or malformed editor no longer blocks control startup: the Office routes answer `503 UNAVAILABLE`, control logs one `runtime.office.unavailable` event and retries discovery on a doubling backoff (5 s to 5 min) until it mounts (`runtime.office.available`). An unreadable signing key still refuses startup. A deployed re-render rotates the WOPI key and access tokens live at most 10 minutes, so open editor sessions must be relaunched after a control restart.
+
 For schedule activation, supply the existing `features.routines` task identity and workflow target, enabled source/reads, and Core unattended-firing trust. The task ID/version must come from the canonical approved task manifest; the renderer never creates that identity. The schedule queue is `routines.workflow.taskQueue`, and must differ from the ordinary `deployment.temporal.taskQueue` used for conversation dispatch. The schedule runtime remains `sourceEnabled:false` and receives only its existing schedule configuration, health port8083, native private-control capability, pinned `meri-temporal-schedule` certificate and Core service-secret file. Node loads the same pinned private-control CA before startup.
 
 The schedule worker requires its own reviewed database login: `deployment.database.roles.schedule` and private `db-logins.json` entry `schedule`. Control's login is deliberately forbidden from inserting occurrences and must not be elevated or reused. The database owner must supply and qualify the narrow schedule grants through the existing migration/grant owner before activation. This renderer performs no database changes.

@@ -1,6 +1,8 @@
-/** Production Office composition. Inert unless configuration.office.enabled; startup reads only the two named
- * secrets and performs one bounded CODE discovery fetch before any listener accepts requests. */
+/** Production Office composition. Inert unless configuration.office.enabled; startup reads the WOPI signing key (fail
+ * closed: it is deployment material) and awaits one bounded CODE discovery fetch. An unreachable or malformed editor
+ * no longer blocks control: the mount answers UNAVAILABLE, one event is logged and discovery retries on a backoff. */
 import {readSecret} from '../config.mjs';
+import {OFFICE_SCHEMA} from '../../../packages/contracts/dist/office-application.mjs';
 import {routinesReservedSecretFiles} from '../native-authority/routines-configuration.mjs';
 import {protectedMaterialFiles} from './office-configuration.mjs';
 import {createRoutinesServiceSecret} from '../native-authority/routines-core-client.mjs';
@@ -46,15 +48,63 @@ export async function readCodeDiscovery({editorOrigin,signal,now=Date.now,timeou
  }finally{life.close();}
 }
 
-/** Startup preparation: one key read and one discovery fetch, before any listener. */
-export async function prepareOfficeMaterial({configuration,office,signal,now=Date.now,fetchImpl,readMaterial=readSecret}){
+/** Startup key read, before any listener. The key is deployment material: unreadable or short refuses startup. */
+export async function readOfficeKey({office,readMaterial=readSecret}){
  if(office===null||office===undefined||office.enabled!==true)return null;
  const key=await readMaterial(office.keyFile);
  if(!Buffer.isBuffer(key)||key.byteLength<32){if(Buffer.isBuffer(key))key.fill(0);throw fault();}
- try{
-  const discoveryBytes=await readCodeDiscovery({editorOrigin:office.editorOrigin,signal,now,fetchImpl});
-  return Object.freeze({key,discoveryBytes});
- }catch(error){key.fill(0);throw error;}
+ return key;
+}
+
+export const OFFICE_UNAVAILABLE_EVENT='runtime.office.unavailable',OFFICE_AVAILABLE_EVENT='runtime.office.available';
+/** Discovery retry: first attempt after 5 s, doubling to 5 min, until the mount composes or the control closes. */
+export const OFFICE_RETRY_MS=Object.freeze({initial:5000,max:300000});
+const unavailable=()=>new Response(JSON.stringify({schema:OFFICE_SCHEMA,error:{code:'UNAVAILABLE',outcome:'NOT_DISPATCHED'}}),{status:503,
+ headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store','referrer-policy':'no-referrer','x-content-type-options':'nosniff'}});
+/** The Office mount the route boundary holds for the control's lifetime. It owns the signing key; `mount(discoveryBytes)`
+ * composes the real adapters over a copy of the key exactly once, so a refused (malformed) composition keeps the key for
+ * the next discovery attempt. Until then every Office route answers 503 UNAVAILABLE instead of 404 absent. */
+export function createOfficeMount({configuration,office,ports,sessions,retention,now,key,context=null,store=null}){
+ if(office===null||office===undefined||office.enabled!==true)return null;
+ if(!Buffer.isBuffer(key)||key.byteLength<32)throw fault();
+ let current=null,closed=false;
+ return Object.freeze({
+  application:Object.freeze({handleControl:request=>current===null?unavailable():current.application.handleControl(request),
+   handleWopi:request=>current===null?unavailable():current.application.handleWopi(request)}),
+  mounted:()=>current!==null,
+  current:()=>current,
+  mount(discoveryBytes){
+   if(closed||current!==null)throw fault();
+   current=composeOffice({configuration,office,ports,sessions,retention,now,material:{key:Buffer.from(key),discoveryBytes},...(context!==null?{context,store}:{})});
+  },
+  async close(){if(closed)return;closed=true;try{await current?.close();}finally{key.fill(0);}}
+ });
+}
+/** Editor discovery with a bounded retry. Startup awaits `first`; a failure logs ONE event (not one per retry), leaves the
+ * mount unavailable and retries on the doubling backoff; a later success mounts and logs one recovery event. `close` stops
+ * the retry; the control's own signal aborts an in-flight fetch. A failing `log` is swallowed: it never schedules a retry
+ * (which would loop on an already mounted office) and never fails the attempt. */
+export function startOfficeDiscovery({office,mount,signal,now=Date.now,fetchImpl,log=line=>process.stderr.write(JSON.stringify(line)+'\n'),retry=OFFICE_RETRY_MS}){
+ if(office?.enabled!==true||typeof mount?.mount!=='function'||typeof mount.mounted!=='function'||typeof log!=='function')throw fault();
+ let timer=null,closed=false,delayMs=retry.initial,attempts=0,reported=false;
+ const emit=line=>{try{log(line);}catch{}};
+ const attempt=async()=>{
+  attempts++;
+  try{
+   const discoveryBytes=await readCodeDiscovery({editorOrigin:office.editorOrigin,signal,now,fetchImpl});
+   if(closed)return false;
+   mount.mount(discoveryBytes);
+  }catch(error){
+   if(closed||signal?.aborted||mount.mounted())return false;
+   if(!reported){reported=true;emit({event:OFFICE_UNAVAILABLE_EVENT,editorOrigin:office.editorOrigin,code:typeof error?.code==='string'?error.code:'OFFICE_DISCOVERY_FAILED',retryMs:delayMs});}
+   timer=setTimeout(()=>{timer=null;attempt();},delayMs);timer.unref?.();
+   delayMs=Math.min(delayMs*2,retry.max);
+   return false;
+  }
+  if(reported)emit({event:OFFICE_AVAILABLE_EVENT,editorOrigin:office.editorOrigin,attempts});
+  return true;
+ };
+ return Object.freeze({first:attempt(),close(){closed=true;if(timer!==null){clearTimeout(timer);timer=null;}}});
 }
 
 /** Synchronous assembly from already prepared material; returns null when disabled. */
