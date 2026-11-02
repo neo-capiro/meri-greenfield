@@ -1,6 +1,6 @@
 /** Real preparation, approval/list and HTTP owners over a synthetic atomic Core task receiver. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {createIntentApprovalOwner,inboxRow,INBOX_KINDS} from '../approval.mjs';
+import {createIntentApprovalOwner,inboxRow,INBOX_KINDS,PENDING_SETTLE_WINDOW_MS} from '../approval.mjs';
 import {createIntentApplication,INTENT_PATHS} from '../http.mjs';
 import {createNativeIntentApprovals} from '../native-approvals.mjs';
 import {composeIntentApprovals} from '../compose.mjs';
@@ -211,4 +211,21 @@ test('inbox rows read owner statuses as phases and leave non-decision items out'
  for(const kind of ['draft','saved_note','memory_review','schedule_proposal','analysis_pending'])assert.equal(row(kind,{}),null,kind);
  for(const state of ['pending','unknown','failed'])assert.equal(inboxRow({...base,state},'00000000-0000-4000-8000-000000000777',at),null,state);
  assert.deepEqual(INBOX_KINDS,['proposal','browser_action','watch_action','legiwatch_action','client_record_action','bizdev_action','legislative_document_action','research_action','research_share']);
+});
+
+test('a preparation still pending long after its claim reads as failed at its deadline, so its card ends; the row itself is untouched',async()=>{
+ // 2 Nov: three schedule deliveries whose explained settle the journal refused stayed PENDING for good ("Preparing" cards, and the
+ // composer waiting on them). No preparing call outlives the window (runner 30 s, worker 60 s at most).
+ const s=setup();s.store.state.loseClaimAck=true;
+ const lost=await s.prepare(1).catch(error=>error);assert.equal(lost.code,'UNAVAILABLE');
+ assert.deepEqual([...s.store.rows.values()].map(r=>r.state),['PENDING']);
+ const fresh=await s.list();assert.deepEqual(fresh.intents.map(i=>[i.state,i.code]),[['pending',undefined]]);
+ s.c.f.state.now=NOW+PENDING_SETTLE_WINDOW_MS-1;
+ assert.deepEqual((await s.list()).intents.map(i=>i.state),['pending'],'inside the window it is still pending');
+ s.c.f.state.now=NOW+PENDING_SETTLE_WINDOW_MS;
+ const late=await s.list();assert.deepEqual(late.intents.map(i=>[i.state,i.code,i.deliveryId]),[['failed','DEADLINE',delivery(1)]]);
+ // A replay of that delivery still answers UNKNOWN and prepares nothing: the journal row is read, never rewritten.
+ const again=await s.prepare(1).catch(error=>error);assert.equal(again.code,'UNKNOWN');assert.equal(s.c.metadataCalls.prepare,0);
+ assert.deepEqual([...s.store.rows.values()].map(r=>r.state),['PENDING']);
+ assert.equal((await s.owner.inbox({principal:s.principal,request:{}})).rows.length,0,'never an inbox row');
 });

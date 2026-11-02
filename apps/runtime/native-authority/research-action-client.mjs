@@ -24,15 +24,20 @@ const TOKEN=/^[A-Z][A-Z0-9_]{1,62}$/u;
 const tokenOf=error=>[ownValue(error,'code'),ownValue(ownValue(error,'cause'),'code'),ownValue(error,'name')].find(value=>typeof value==='string'&&TOKEN.test(value));
 /** The answering owner's own constant (`{"error":"PREVIEW_ROUTE_NOT_FOUND"}`), read within the same lifetime from at most 1 KiB
  * of a definite refusal; a message, a host or anything not constant-shaped is dropped. */
-async function refusalToken(response,life){
+async function refusalBody(response,life){
  let reader;try{
   const stream=responseBody(response);if(!stream||!/^application\/json/iu.test(response.headers.get('content-type')??''))return undefined;
   reader=stream.getReader();const chunks=[];let bytes=0;
   while(bytes<1024){const part=await life.run(()=>reader.read());if(part.done)break;if(!(part.value instanceof Uint8Array))return undefined;bytes+=part.value.byteLength;chunks.push(part.value);}
-  const parsed=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks)));
-  return [parsed?.error,parsed?.message].find(value=>typeof value==='string'&&TOKEN.test(value));
+  return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks)));
  }catch{return undefined;}finally{try{reader?.releaseLock();}catch{}}
 }
+const refusalToken=parsed=>[parsed?.error,parsed?.message].find(value=>typeof value==='string'&&TOKEN.test(value));
+/** Core's own gate on the proposal POST (`MERIV2_ACTION_PROPOSALS_ENABLED`, `assertEnabled` in its action-proposal service)
+ * answers 503 "MeriV2 action proposals are disabled." before any proposal is created: a definite refusal, not a lost answer
+ * (2 Nov preview: every proposal card ended "Result uncertain" on that 1 ms answer). Any other 503 stays unknown. */
+const DISABLED=/\bproposals are disabled\b/iu;
+const proposalsDisabled=parsed=>typeof parsed?.message==='string'&&DISABLED.test(parsed.message);
 export function createResearchActionCoreClient({origin,getCredentials,getServiceSecret,reservedCredentials,now,fetchImpl=globalThis.fetch,maxRequestMs=10000}){
  origin=retainedOrigin(origin);
  if([getCredentials,getServiceSecret,reservedCredentials,now,fetchImpl].some(fn=>typeof fn!=='function'))refuse();
@@ -59,7 +64,10 @@ export function createResearchActionCoreClient({origin,getCredentials,getService
     // A definite refusal of the proposal POST left nothing behind: the delivery settles FAILED, with the answering owner's
     // constant as the reason for the log line. Only this path decides its effect; a 409, a 5xx or a lost answer after dispatch
     // still may have created the proposal and keeps the unknown effect below.
-    if(effect&&path===prefix&&method==='POST'&&DEFINITE_REFUSALS.has(status))throw Object.assign(intentFault(code,'none',`${kind} was answered before any proposal was created (HTTP ${status})`,(await refusalToken(acquired,life))??`HTTP_${status}`),{definite:true});
+    if(effect&&path===prefix&&method==='POST'){
+     if(DEFINITE_REFUSALS.has(status))throw Object.assign(intentFault(code,'none',`${kind} was answered before any proposal was created (HTTP ${status})`,refusalToken(await refusalBody(acquired,life))??`HTTP_${status}`),{definite:true});
+     if(status===503&&proposalsDisabled(await refusalBody(acquired,life)))throw Object.assign(intentFault('UNAVAILABLE','none',`${kind} was refused because proposals are switched off at the backend, so nothing was created (HTTP 503)`,'CORE_PROPOSALS_DISABLED'),{definite:true});
+    }
     refuse(code);
    }
    // Nest's existing action-proposal POSTs return 201; the bounded reader otherwise expects 200.
