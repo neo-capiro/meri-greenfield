@@ -13,6 +13,7 @@ import {createPostgresConversationStore} from '../control/conversations/postgres
 import {createInitialRunBindingJournal} from '../control/conversations/initial-run-binding-journal.mjs';
 import {createNextRunOwner} from '../control/conversations/next-run.mjs';
 import {createRunReconciler} from '../control/conversations/run-reconciler.mjs';
+import {createUnprogressedRunSettlement,listUnprogressedRuns} from '../control/conversations/unprogressed-runs.mjs';
 import {compileAgentCoreConfiguration} from './agentcore-configuration.mjs';
 import {compileBrowserActivation,activationOpen} from '../worker/conversation/browser/activation.mjs';
 import {createAgentCoreExecutionOwner} from './agentcore-execution.mjs';
@@ -243,6 +244,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   ...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{}),
   reconcileEnded:value=>reconciler.reconcile(value)});
  const reconciler=createRunReconciler({store,stopExecution:execution.stopExecution,now,maxReconcileMs:Math.min(120000,configuration.limits.shutdownMs)});
+ const unprogressed=createUnprogressedRunSettlement({list:input=>listUnprogressedRuns(pool,input),reconciler,now});
  async function stop({binding,executionId,signal}){
   if(executionId!==hash(binding))refuse();
   const result=await reconciler.reconcile({binding,signal});if(result.outcome==='unknown')throw fault('EXECUTION_STOP_UNKNOWN');
@@ -266,6 +268,8 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  const owner=Object.freeze({...execution,...(nativeHostAuthority?{hostAuthority:async(input)=>{if(typeof nativeHostAuthority!=='function')throw fault('NATIVE_HOST_AUTHORITY_UNAVAILABLE');return nativeHostAuthority(input);}}:{}),
   ...(nativeHostTeardown?{hostTeardown:async(input)=>{if(typeof nativeHostTeardown?.settle!=='function')throw fault('NATIVE_HOST_TEARDOWN_UNAVAILABLE');return nativeHostTeardown.settle(input);}}:{}),stop,readiness,retentionSweep:input=>{
   if(typeof outerApplication?.sweepRetention!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');
+  // Every hourly pass opens with `after: null`; it also starts this process's one bounded settlement of runs nothing can progress.
+  if(input?.after===null)unprogressed.start();
   return outerApplication.sweepRetention(input);
  }});
  const control=createAgentCoreControlApplication({owner,controlCredential,now,maxRequestMs:requestMs,maxRequestBytes:configuration.limits.requestBytes});
@@ -334,7 +338,7 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   objective:Object.freeze({runStarts,core:objectiveCore,template:{versions,policyRevision:config.policyRevision,configurationSha256:hash(config),runWindowMs:config.runWindowMs}}),
   productPorts:Object.freeze({executionOwner:execution,objectiveSelection,identityContext,conversationMembership,conversationCurrentness,...(conversationManagement?{conversationManagement}:{}),...(conversationSourceReader?{conversationSourceReader}:{}),conversationTurns:nextRunOwner,sdkSessionOwner,sdkSessionSnapshot,continuationAdmission,transitionAuthority,browserHostCore:core,...(procedureAdmission?{procedureAdmission}:{}),...(siteWorkflowAdmission?{siteWorkflowAdmission}:{})}),
   bindApplication(value){if(outerApplication||typeof value?.handle!=='function')throw fault('AGENTCORE_CONFIGURATION');outerApplication=value;},
-  async close(){closed=true;await execution.close();}});
+  async close(){closed=true;await unprogressed.close();await execution.close();}});
 }
 
 export async function startAgentCoreCandidate({configuration,pool,signal,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,nativeNeed,nativeReady,browserNeed,browserReady,nativeHostAuthority,nativeHostTeardown}){
