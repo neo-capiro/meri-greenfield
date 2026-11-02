@@ -32,9 +32,9 @@ const nativeBearer=issued=>{if(typeof issued==='string')return token(issued)?{cr
  let v;try{v=data(own(issued,['credential','expiresAtMs'],['scopeKind','scope']));researchContextFields(v);}catch{refuse('UNAVAILABLE');}
  if(!token(v.credential)||!Number.isSafeInteger(v.expiresAtMs))refuse('UNAVAILABLE');return v;};
 export function createReadContextOwner(configuration){
- const c=own(configuration,['binding','expiresAtMs'],['current','executionSha256','approvedReads','coreAuthority','getNativeCredential','getServiceSecret','getReadModeServiceSecret','defaultCongress','now','enabled']),binding=data(c.binding),now=c.now??Date.now,enabled=c.enabled??false;
+ const c=own(configuration,['binding','expiresAtMs'],['current','executionSha256','approvedReads','coreAuthority','getNativeCredential','getServiceSecret','defaultCongress','now','enabled']),binding=data(c.binding),now=c.now??Date.now,enabled=c.enabled??false;
  validateShape('RunBinding',binding);if(typeof now!=='function'||typeof enabled!=='boolean'||!Number.isSafeInteger(c.expiresAtMs)||c.defaultCongress!==undefined&&(!Number.isSafeInteger(c.defaultCongress)||c.defaultCongress<1||c.defaultCongress>2147483647))refuse('CONFIGURATION');
- for(const name of ['getNativeCredential','getServiceSecret','getReadModeServiceSecret'])if(c[name]!==undefined&&(typeof c[name]!=='function'||types.isProxy(c[name])))refuse('CONFIGURATION');
+ for(const name of ['getNativeCredential','getServiceSecret'])if(c[name]!==undefined&&(typeof c[name]!=='function'||types.isProxy(c[name])))refuse('CONFIGURATION');
  const core=c.coreAuthority===undefined?undefined:own(c.coreAuthority,['available','origin','readCurrent'],['readConversation','readClientReference','readModeObservation','readChatAttachmentSource','readMailboxes','readSendingMailboxes']),origin=core?.origin===undefined?undefined:retainedOrigin(core.origin);
  const approved=c.approvedReads===undefined?undefined:assertNativeReadConfiguration(c.approvedReads);
  const available=Boolean(enabled&&typeof c.current==='function'&&typeof c.executionSha256==='string'&&approved?.enabled&&core?.available===true&&origin&&c.getNativeCredential&&c.getServiceSecret);
@@ -53,7 +53,7 @@ export function createReadContextOwner(configuration){
   else if(contract.binding.group!=='state-status-votes')readShape(contract.binding.input,v.request);
   assertSourceReadRequest(contract,v.request,v.subject);
   if(sourceReadClientReference(contract,v.request)!==null&&!readClientReference)refuse('UNAVAILABLE');
-  if(MODE_READ_OPERATIONS.includes(v.operation.id)&&(!readModeObservation||!c.getReadModeServiceSecret))refuse('UNAVAILABLE');
+  if(MODE_READ_OPERATIONS.includes(v.operation.id)&&!readModeObservation)refuse('UNAVAILABLE');
   if(contract.binding.group==='client-knowledge-attachments'){attachmentSelection(v.request,v.subject,v.binding);if(!readChatAttachmentSource)refuse('UNAVAILABLE');}
   if(contract.binding.group==='business-development'&&!readConversation&&captureBusinessDevelopmentResource(v.operation,v.request,v.subject).clientId!==null)refuse('UNAVAILABLE');
   if(!same(v.binding,binding)||v.subject.policyRevision!==v.policyRevision||v.requestSha256!==hash(v.request)||!same([...v.sourceIds].sort(),[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))].sort())||!Number.isSafeInteger(v.deadlineMs))refuse('ACCESS_DENIED');
@@ -135,7 +135,8 @@ export function createReadContextOwner(configuration){
    }
    if(MODE_READ_OPERATIONS.includes(proof.operation.id)){
     await admission();
-    const serviceSecret=await life.run(signal=>c.getReadModeServiceSecret({binding,operation:proof.operation,origin,requestSha256:proof.requestSha256,signal,deadlineMs:cutoff}));
+    // Core checks the read-mode observation with the same service-identity guard and secret as every tool route.
+    const serviceSecret=await life.run(signal=>c.getServiceSecret({binding,operation:proof.operation,origin,requestSha256:proof.requestSha256,signal,deadlineMs:cutoff}));
     if(!token(serviceSecret))refuse('UNAVAILABLE');
     await admission();
     const started=now(),deadlineMs=cutoff;

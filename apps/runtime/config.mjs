@@ -120,10 +120,10 @@ export function validateConfiguration(raw,role){
  // Typed reads use the current Core service identity plus the live user relay. No installation proof, grant or bearer file.
  if(c.reads!==undefined){
   requireValue(role==='control','READS_CONFIGURATION');
-  own(c.reads,['enabled'],['serviceSecretFile','readModeServiceSecretFile','defaultCongress']);
+  own(c.reads,['enabled'],['serviceSecretFile','defaultCongress']);
   requireValue(typeof c.reads.enabled==='boolean','READS_CONFIGURATION');
-  if(c.reads.enabled){file(c.reads.serviceSecretFile);if(c.reads.readModeServiceSecretFile!==undefined)file(c.reads.readModeServiceSecretFile);requireValue(c.capabilityPlatform!==undefined,'READS_CONFIGURATION');}
-  else requireValue(c.reads.serviceSecretFile===undefined&&c.reads.readModeServiceSecretFile===undefined&&c.reads.defaultCongress===undefined,'READS_CONFIGURATION');
+  if(c.reads.enabled){file(c.reads.serviceSecretFile);requireValue(c.capabilityPlatform!==undefined,'READS_CONFIGURATION');}
+  else requireValue(c.reads.serviceSecretFile===undefined&&c.reads.defaultCongress===undefined,'READS_CONFIGURATION');
   if(c.reads.defaultCongress!==undefined)requireValue(integer(c.reads.defaultCongress,1,1000),'READS_CONFIGURATION');
  }
  {

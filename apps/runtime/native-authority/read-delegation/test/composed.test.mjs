@@ -19,11 +19,11 @@ import {datasetMetadataTaskPort} from '../../retained-reads/dataset-metadata-por
 import {OBSERVATION_CALLS,DISPATCH_OBSERVATIONS,CREDENTIAL_OBSERVATIONS,READ_TOKEN_CEILINGS,operationsDigest} from '../contract.mjs';
 
 const CANDIDATE={identity:'/run/meri/identity',task:'/run/meri/task-capability',control:'/run/meri/control-capability',proxy:'/run/meri/proxy-capability'};
-const READ={serviceSecret:'/run/meri/core-tool-service-secret',readModeServiceSecret:'/run/meri/core-read-mode-service-secret'};
+const READ={serviceSecret:'/run/meri/core-tool-service-secret'};
 const DELEGATION_ROUTE=/^\/api\/clio\/application-authority\/read-delegation/u,IDENTITY=/^\/api\/clio\/application-authority\/(identity|context|membership)$/u;
 function secrets(){
  const files=new Map([[CANDIDATE.identity,'MARKED_CONTROL_SYNTHETIC'],[CANDIDATE.task,'TASK_CAPABILITY_SYNTHETIC'],[CANDIDATE.control,'CONTROL_CAPABILITY_SYNTHETIC'],[CANDIDATE.proxy,'PROXY_CAPABILITY_SYNTHETIC'],
-  [READ.serviceSecret,'SYNTHETIC_SERVICE'],[READ.readModeServiceSecret,'SYNTHETIC_SERVICE']]);
+  [READ.serviceSecret,'SYNTHETIC_SERVICE']]);
  return {files,readSecret:async path=>{if(!files.has(path))throw Error('missing');return Buffer.from(files.get(path)+'\n');},
   configuration:{nativeCandidate:{identity:{origin:coreOrigin,credentialFile:CANDIDATE.identity},taskCapabilityFile:CANDIDATE.task,controlCapabilityFile:CANDIDATE.control,proxyCredentialFile:CANDIDATE.proxy}}};
 }

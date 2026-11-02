@@ -15,7 +15,7 @@ const plain=(value)=>{
 export function protectedMaterialFiles(configuration){
  const values=[configuration?.native?.capabilityFile,configuration?.native?.serverCaFile,
   configuration?.temporal?.tls?.caFile,configuration?.temporal?.tls?.certFile,configuration?.temporal?.tls?.keyFile,
-  configuration?.database?.connectionFile,configuration?.reads?.serviceSecretFile,configuration?.reads?.readModeServiceSecretFile,
+  configuration?.database?.connectionFile,configuration?.reads?.serviceSecretFile,
   configuration?.downloadLinks?.keyFile,
   configuration?.artifacts?.authority?.serviceSecretFile,
   ...routinesReservedSecretFiles(configuration)];

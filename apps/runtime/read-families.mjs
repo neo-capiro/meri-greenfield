@@ -31,7 +31,7 @@ function createExternalUsage(){const records=[];let truncated=false;
    const unknown=calls.some(c=>c.outcome==='unknown'),failed=calls.some(c=>c.outcome==='failed');
    return Object.freeze({provider:calls[0].provider,attempts,estimateMicroUsd,billedMicroUsd:null,
     outcome:unknown?'unknown':failed?'failed':'completed',calls:Object.freeze(calls),truncated});}};}
-export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy,defaultCongress,getNativeCredential,getServiceSecret,getReadModeServiceSecret,memoryContexts,primaryCredentials}){
+export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,capabilityPolicy,defaultCongress,getNativeCredential,getServiceSecret,memoryContexts,primaryCredentials}){
  const prepared=prepareGeneralReadFamilyHandlers({familyIds});
  async function createGateway({binding,current,approvedReads,signal,deadlineMs,objectiveCore,routineCore,capabilityPolicy:runCapabilityPolicy=capabilityPolicy,readCapabilityRole}){
   const started=now(),externalUsage=createExternalUsage();
@@ -44,7 +44,7 @@ export function prepareReadFamilies({familyIds,coreOrigin,fetchImpl,now,newId,ca
   const coreAuthority=job?null:createNativeToolAuthorityClient({origin:coreOrigin,fetchImpl,now,enabled:true,binding,selectedClientId:initial.selectedClientId});
   const nativeCredential=request=>getNativeCredential({...request,binding,selectedClientId:initial.selectedClientId});
   const credentials=job?(routine?createRoutineReadContext:createObjectiveReadContext)({record:job.record,current:job.current,readSource,policyRevision:initial.policyRevision,approvedReads,defaultCongress,now}):createReadContextOwner({binding,expiresAtMs:initial.execution.expiresAtMs,executionSha256:initial.executionSha256,current,
-   approvedReads,coreAuthority,getNativeCredential:nativeCredential,getServiceSecret,...(getReadModeServiceSecret?{getReadModeServiceSecret}:{}),
+   approvedReads,coreAuthority,getNativeCredential:nativeCredential,getServiceSecret,
    ...(defaultCongress===undefined?{}:{defaultCongress}),now,enabled:true});
   async function ordinaryCredentials(request){
    const {signal,input,deadlineMs,...echo}=own(request,['binding','subject','deadlineMs'],
