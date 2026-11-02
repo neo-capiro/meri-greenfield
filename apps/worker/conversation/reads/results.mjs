@@ -9,9 +9,9 @@ import {SQL_TOOL_IDS} from './tools.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
 /** @type {Readonly<Record<string,(tool:string)=>string>>} */
 const TEXTS=Object.freeze({
- UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not enabled, installed or served for this request in this conversation (an unsupported operation or a source-side refusal that is neither a denied scope nor an outage). ${NOTHING}`,
+ UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not enabled, installed or served for this request in this conversation (an unsupported operation or a source-side refusal that is neither a permission refusal nor an outage). ${NOTHING}`,
  SOURCE_UNAVAILABLE:tool=>`SOURCE_UNAVAILABLE: ${tool} is served, but its source did not answer this call (outage, overload, a refusal by the source or an upstream timeout). This is not an empty result. ${NOTHING}`,
- ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now (denied scope, not absent data). ${NOTHING}`,
+ ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now (not permitted, not absent data). ${NOTHING}`,
  DEADLINE:tool=>`DEADLINE: ${tool} did not finish within its time limit. ${NOTHING}`,
  CANCELLED:tool=>`CANCELLED: ${tool} was cancelled before it finished. ${NOTHING}`,
  INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${NOTHING}`,
@@ -111,7 +111,7 @@ function connectedAppNotice(operation,page){
  * @param {{id:string}} operation @param {string} result the canonical result text @param {any} parsed its parsed envelope */
 export function readNotices(operation,result,parsed){
  if(operation.id==='find_contacts')return result.includes('update_client_profile')?
-  [notice('Notice: update_client_profile is not available in Meri. Do not propose or claim a client profile change. You may offer a governed task proposal instead.')]:[];
+  [notice('Notice: update_client_profile is not available in Meri. Do not propose or claim a client profile change. You may offer to prepare a task request for the user\'s approval instead.')]:[];
  const connected=connectedAppNotice(operation,parsed?.result);
  if(connected!==null)return [notice(`Notice: ${connected}`)];
  if(MAIL_TOOLS.has(operation.id)){const text=mailNotice(parsed);return text===null?[]:[notice(`Notice: ${text}`)];}
@@ -126,13 +126,13 @@ export function readNotices(operation,result,parsed){
  if(operation.id==='describe_capiro_data'){
   if(page?.ok!==true||!Array.isArray(page.relations))return [];
   const names=page.relations.map(r=>r?.name).filter(name=>typeof name==='string');
-  return [notice(`Notice: ${names.length} ${page.scope?.kind??'public'} relation(s) described: ${names.join(', ')}. Spell relation and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each relation's grain and limitations; rowLimit default ${page.limits?.defaultRowLimit}, max ${page.limits?.maxRowLimit}.`)];
+  return [notice(`Notice: ${names.length} ${page.scope?.kind??'public'} table(s) described: ${names.join(', ')}. Spell table and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each table's grain and limitations; rowLimit default ${page.limits?.defaultRowLimit}, max ${page.limits?.maxRowLimit}.`)];
  }
  if(operation.id!=='query_capiro_data'||page?.ok!==true)return [];
  const lines=[`Notice: ${page.rowCount} row(s) returned of rowLimit ${page.limits?.rowLimit} from ${(page.relationsUsed??[]).join(', ')}.`];
  if(page.rowLimitReached)lines.push('rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');
  if(page.byteTruncated)lines.push('byteTruncated: whole rows were dropped at the 256 KiB output budget; select fewer columns or lower rowLimit.');
- if(page.rowCount===0)lines.push('Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the relation coverage limitations before concluding.');
+ if(page.rowCount===0)lines.push('Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the table coverage limitations before concluding.');
  return [notice(lines.join(' '))];
 }
 /** Closed code of a failure: the gateway's own code (carried as `code` or as the message of a `GatewayDenied`) when it

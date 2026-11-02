@@ -11,14 +11,14 @@ import {canonicalSha256 as hash} from '../../contracts/validate.mjs';
 import {assertSkillInstallation} from '../../contracts/selected-skills/validate.mjs';
 const currentHash='24f03dec8d86033a2344fc60de70e525c7ce37f8f83502fc9984c094bbceb9bc';
 
-test('all thirty-five original asset identities survive the exact additive installation without added grants',()=>{
- assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'6a2349e3b6828fa49bdf672633db7ba4db85b1b9fb904557ee55a7f11fa4eab8');
+test('all thirty-six original asset identities survive the exact additive installation without added grants',()=>{
+ assert.equal(createHash('sha256').update(readFileSync(new URL('../assets.json',import.meta.url))).digest('hex'),'b5de28280262c23bb828bf36c76265651b5b26781e02b0594698f425336634fb');
  assert.equal(hash(historical),assets.installationCatalogSha256);assert.equal(hash(current),currentHash);
  assert.equal(current.sourceRegistryCommit,historical.sourceRegistryCommit);
  assert.equal(historical.operations.length,142);assert.equal(current.operations.length,161);
  const oldRows=new Map(historical.operations.map(row=>[hash(row.operation),row])),newRows=new Map(current.operations.map(row=>[hash(row.operation),row]));
  for(const [key,row]of oldRows)assert.deepEqual(newRows.get(key),row);
- assert.equal(listSkills().length,35);
+ assert.equal(listSkills().length,36);
  for(const row of assets.assets){
   const selected=selectSkill(row.skillId,row.skillVersion);
   assert.deepEqual(selected.pin,{skillId:row.skillId,skillVersion:row.skillVersion,manifestSha256:row.manifestSha256,proseSha256:row.proseSha256,catalogSha256:row.catalogSha256??assets.catalogSha256});
@@ -46,5 +46,5 @@ test('loader refuses a changed current catalog even when all historical operatio
  const original=current.originals[0].boundary;
  try{current.originals[0].boundary=original+' Altered routing claim.';assert.throws(()=>listSkills(),/SKILL_INSTALLATION_CATALOG_PIN/u);}
  finally{current.originals[0].boundary=original;}
- assert.equal(listSkills().length,35);
+ assert.equal(listSkills().length,36);
 });

@@ -39,7 +39,7 @@ test('memory: scope per conversation kind, the page size, the result fields, att
  const memory=tool('search_memory');
  for(const rule of [/clientId \(in a selected-client conversation the selected client's UUID.*null in General/,/pages are small, effectivePageSize in the result says how many, and nextCursor continues/,/memoryItemId with contentCursor/,
   /payload carries title, type, scope \(personal, client or firm\), governance \(status, approvedAt, approvedByUserId, stale, validUntil\) and content/,/Attribute each item as saved memory by title, scope and approvedAt/,
-  /pending proposals, rejected, withdrawn, revoked and superseded items are excluded, so an empty result is not proof/,/never say a memory was saved or remembered/,/fails the whole call as ACCESS_DENIED/])assert.match(memory.description,rule);
+  /pending proposals, rejected, withdrawn, revoked and superseded items are excluded, so an empty result is not proof/,/never say a memory was saved or remembered/,/fails the whole call as not permitted/])assert.match(memory.description,rule);
  assert.deepEqual(Object.keys(memory.arguments.properties),['query','clientId','k','cursor','memoryItemId','contentCursor']);
  assert.match(view.systemPrompt,/Saved knowledge: .* call search_memory first/);
  const texts=Object.fromEntries(view.notices.map(n=>[n.scenario,n.texts]));
@@ -47,7 +47,7 @@ test('memory: scope per conversation kind, the page size, the result fields, att
  assert.match(texts['search_memory: empty recall'][0],/0 approved memory item\(s\).*not proof that nothing was saved or proposed/);
  assert.match(texts['search_memory: Core argument error'][0],/refused the arguments: Provide a search query\. Pass the topic or client as query text/);
  assert.match(texts['search_memory: ACCESS_DENIED'][0],/clientId must be that client's UUID, in General it must be null/);
- assert.match(texts['search_memory: UNAVAILABLE'][0],/Governed memory recall is not available in this conversation; say nothing about what is or is not saved beyond that it could not be read/);
+ assert.match(texts['search_memory: UNAVAILABLE'][0],/Saved memory cannot be read in this conversation; say nothing about what is or is not saved beyond that it could not be read/);
 });
 
 test('mail: the subject, filters, paging, candidate and thread fields, stale mailbox and refusals are stated',()=>{
@@ -68,9 +68,9 @@ test('mail: the subject, filters, paging, candidate and thread fields, stale mai
  assert.match(texts['mail_search_messages: ACCESS_DENIED'][0],/use \{kind:"personal"\} in General and \{kind:"client", entityId\} only for the selected client/);
 });
 
-test('the describe orientation line names the relations and the retired contract envelope is never mentioned',()=>{
+test('the describe orientation line names the tables and the retired contract envelope is never mentioned',()=>{
  const texts=Object.fromEntries(view.notices.map(n=>[n.scenario,n.texts]));
- assert.match(texts['describe_capiro_data: Core 362 describe envelope'][0],/^Notice: 1 public relation\(s\) described: program_elements\./);
+ assert.match(texts['describe_capiro_data: Core 362 describe envelope'][0],/^Notice: 1 public table\(s\) described: program_elements\./);
  assert.match(texts['query_capiro_data: gate refusal UNSUPPORTED_SQL'][0],/Send exactly one statement that starts with SELECT or WITH \.\.\. SELECT/);
  for(const {texts} of view.notices)for(const text of texts)assert.doesNotMatch(text,/contract/);
 });

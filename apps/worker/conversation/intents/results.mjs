@@ -40,7 +40,7 @@ export function preparedResult(json,status,operation){
   :status==='read'
   ?'READ RESULT: this is current owner data. No proposal or change was created; no approval is needed.'
   :status==='review_pending'
-  ?'SUBMITTED FOR REVIEW: a memory candidate is pending governed Core review. It has not been saved or published as memory. Do not ask for a task approval or say the memory was saved.'
+  ?'SUBMITTED FOR REVIEW: a memory candidate is pending review. It has not been saved or published as memory. Do not ask for a task approval or say the memory was saved.'
   :status==='analysis_pending'
   ?'ANALYSIS OUTPUTS PENDING: the admitted analysis owner returned durable output references. Inspection and publication remain pending; do not say these outputs are published or filed.'
   :status==='draft'

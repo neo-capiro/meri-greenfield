@@ -256,6 +256,14 @@
       "proseSha256": "c4b1409c0cf66843f198429d43eb67a56284a9195de214f6320c5d7c66e6677d"
     },
     {
+      "skillId": "quick_skill.mail_history",
+      "skillVersion": "1.0.2",
+      "manifestPath": "./originals/mail_history/1.0.2/manifest.json",
+      "prosePath": "./originals/mail_history/1.0.2/SKILL.md",
+      "manifestSha256": "c424f5492807788ecef5ca074d4b7589236760da522de6931977526d9030c62a",
+      "proseSha256": "bfb8b9cbe8fa7f81adfee3457bfb0beaeef88301384d2388e83a900b2b7d3b07"
+    },
+    {
       "skillId": "quick_skill.pe_deep_dive",
       "skillVersion": "1.1.1",
       "manifestPath": "./originals/pe_deep_dive/1.1.1/manifest.json",
@@ -304,7 +312,7 @@
     "quick_skill.research_company": "1.0.2",
     "quick_skill.commitments_audit": "1.0.1",
     "quick_skill.relationship_brief": "1.0.1",
-    "quick_skill.mail_history": "1.0.1",
+    "quick_skill.mail_history": "1.0.2",
     "quick_skill.pe_deep_dive": "1.1.1",
     "quick_skill.bill_watch": "1.1.1",
     "quick_skill.cited_report": "1.0.1"
