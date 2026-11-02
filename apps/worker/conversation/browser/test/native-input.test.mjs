@@ -22,12 +22,24 @@ test('the wire batch is admitted as a whole and dispatched in order: text, named
  await q.perform();q.dispose();
  assert.deepEqual(f.events,[['text','Synthetic text'],['down','Shift'],['down','Tab'],['up','Tab'],['up','Shift'],['move',2,3],['move',2,3],['mousedown','left'],['move',2,3],['mouseup','left'],['move',4,5],['wheel',0,120]]);
 });
-test('input refuses foreign pages, a foreign lease epoch, printable keys, chords, oversized or control text and out-of-viewport coordinates',()=>{
+test('the frontend keystroke shape (every character as a key down/up pair) is admitted and typed as text; named keys stay keys',async()=>{
+ const f=fixture();
+ // Exactly what the viewer sends for typing "Hi!" then Enter: shift held, printable keys, shift released, Enter down/up.
+ const typed=[{type:'key',action:'down',key:'Shift'},{type:'key',action:'down',key:'H',shift:true},{type:'key',action:'up',key:'H',shift:true},{type:'key',action:'up',key:'Shift'},
+  {type:'key',action:'down',key:'i'},{type:'key',action:'up',key:'i'},{type:'key',action:'down',key:'Shift'},{type:'key',action:'down',key:'!',shift:true},{type:'key',action:'up',key:'!',shift:true},
+  {type:'key',action:'up',key:'Shift'},{type:'key',action:'down',key:'Enter'},{type:'key',action:'up',key:'Enter'}];
+ const q=admit(f.context,f.page,batch(typed));
+ assert.equal(q.text,'Hi!','the typed characters enter the confidentiality filter as text');
+ await q.perform();q.dispose();
+ assert.deepEqual(f.events,[['down','Shift'],['text','H'],['up','Shift'],['text','i'],['down','Shift'],['text','!'],['up','Shift'],['down','Enter'],['up','Enter']]);
+ assert.equal(f.events.filter(e=>e[0]==='down'&&!['Shift','Enter'].includes(e[1])).length,0,'no printable key is ever pressed as a key');
+});
+test('input refuses foreign pages, a foreign lease epoch, chords, oversized or control text and out-of-viewport coordinates',()=>{
  const f=fixture();
  assert.throws(()=>admit(f.context,{...f.page},batch([{type:'key',action:'down',key:'Enter'}])));
  assert.throws(()=>admit(f.context,f.page,batch([{type:'key',action:'down',key:'Enter'}],2)),/BROWSER_INPUT_REFUSED/);
  for(const events of [[{type:'text',text:'x'.repeat(INPUT_LIMITS.maxText+1)}],[{type:'text',text:'x\u0007'}],[{type:'text',text:'x',perform:()=>{}}],
-  [{type:'key',action:'down',key:'a'}],[{type:'key',action:'down',key:'Control+v'}],[{type:'key',action:'down',key:'Control+r'}],[{type:'paste',text:'x'}],
+  [{type:'key',action:'down',key:'ab'}],[{type:'key',action:'down',key:'Control+v'}],[{type:'key',action:'down',key:'Control+r'}],[{type:'paste',text:'x'}],
   [{type:'mouse',action:'down',x:800,y:2,button:'left'}],[{type:'mouse',action:'down',x:2,y:-1,button:'left'}],[{type:'mouse',action:'down',x:2,y:2}],
   [{type:'wheel',x:2,y:3,deltaX:0,deltaY:INPUT_LIMITS.maxWheelDelta+1}],[],[{kind:'click',x:1,y:1}]]){
   assert.throws(()=>admit(f.context,f.page,batch(events)),JSON.stringify(events));

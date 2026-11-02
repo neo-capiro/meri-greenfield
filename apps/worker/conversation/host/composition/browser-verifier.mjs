@@ -21,6 +21,7 @@ import {own,data} from '../../../../../packages/contracts/commands-0.2/execution
 import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity} from '../binding.mjs';
 import {hostWideCgroup,HOST_CGROUP_CONFINEMENT_SCHEMA} from '../host-wide-process-observer.mjs';
 import {readLeaderKernelFacts,assertHiddenCgroupfs} from './native-verifier.mjs';
+import {runLimitValues} from '../../../../runtime/native-processing-host/hierarchy.mjs';
 
 const fault=code=>Object.assign(new Error(code),{code});
 const fail=code=>{throw fault(code);};
@@ -34,7 +35,7 @@ const exactLine=(raw,name)=>{
 export function createLinuxBrowserConfinementPorts(){return Object.freeze({readFile,stat,readdir});}
 
 export function createBrowserHostConfinementVerifier({allocation,binding,hostIdentity,browserNetwork,browserUid,browserGid,
- confinedUids,ports=createLinuxBrowserConfinementPorts(),now=Date.now}={}){
+ confinedUids,expectedLimits,ports=createLinuxBrowserConfinementPorts(),now=Date.now}={}){
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding),i=assertD005HostIdentity(hostIdentity,b,a);
  if(a.hostMode!=='browser-only'||!uidOk(browserUid)||!uidOk(browserGid)||!Array.isArray(confinedUids)||confinedUids.length<1||
   confinedUids.some(uid=>!uidOk(uid))||!confinedUids.includes(browserUid)||browserNetwork===null||typeof browserNetwork!=='object'||
@@ -42,6 +43,15 @@ export function createBrowserHostConfinementVerifier({allocation,binding,hostIde
   fail('HOST_CONFINEMENT_CONFIGURATION');
  const group=hostWideCgroup({allocation:a,binding:b,hostIdentity:i}),aSha=canonicalSha256(a),bSha=canonicalSha256(b),iSha=canonicalSha256(i);
  const runParent=`${group.path}/${bSha}`;
+ let limits=null;if(expectedLimits!==undefined){try{limits=runLimitValues(expectedLimits);}catch{fail('HOST_CONFINEMENT_CONFIGURATION');}}
+ /** The run parent still carries the finite memory, pid and cpu limits the supervisor applied (re-measured each tick). */
+ const limitsHeld=async()=>{
+  if(limits===null)return;
+  for(const [file,value] of Object.entries(limits)){
+   let raw;try{raw=await ports.readFile(`${runParent}/${file}`,'utf8');}catch{fail('HOST_CONFINEMENT_UNPROVEN');}
+   if(String(raw).trim()!==value)fail('HOST_CONFINEMENT_UNPROVEN');
+  }
+ };
  const rootOwnedClosed=async path=>{
   let s;try{s=await ports.stat(path);}catch{fail('HOST_CONFINEMENT_UNPROVEN');}
   if(s?.isDirectory?.()!==true||s.uid!==0||(s.mode&0o022)!==0)fail('HOST_CONFINEMENT_UNPROVEN');
@@ -82,7 +92,7 @@ export function createBrowserHostConfinementVerifier({allocation,binding,hostIde
   const proof=browserNetwork.proof;
   if(proof?.verified!==true||proof.kind!=='browser')fail('HOST_CONFINEMENT_UNPROVEN');
   // The tree itself: root-owned closed directories, and only launcher-placed unprivileged processes inside them.
-  await rootOwnedClosed(group.path);await rootOwnedClosed(runParent);
+  await rootOwnedClosed(group.path);await rootOwnedClosed(runParent);await limitsHeld();
   const pids=await pidsBelow(group.path,new Set(),0);
   if(pids.has(r.browserLeaderPid)){
    // The live browser leader, measured against its exact leaf, namespace, identity, capabilities, NNP and hidden cgroupfs.

@@ -23,7 +23,8 @@ function tree(over={}){
  const dirs={[group.path]:{procs:'',entries:[bSha],mode:0o755,uid:0},[`${group.path}/${bSha}`]:{procs:'',entries:['browser','host-relay-browser'],mode:0o755,uid:0},
   [leaf]:{procs:'1234\n',entries:[],mode:0o755,uid:0},[relayLeaf]:{procs:'2345\n',entries:[],mode:0o755,uid:0}};
  const files={'/proc/1234/stat':statLine(1234),'/proc/1234/status':status(BROWSER),'/proc/1234/cgroup':`0::${leaf.slice('/sys/fs/cgroup'.length)}\n`,
-  '/proc/1234/mountinfo':mountinfo,'/proc/2345/status':status(HOST_RELAY),'/proc/2345/mountinfo':mountinfo,'/proc/sys/kernel/random/boot_id':`${hostIdentity.bootId}\n`,...over.files};
+  '/proc/1234/mountinfo':mountinfo,'/proc/2345/status':status(HOST_RELAY),'/proc/2345/mountinfo':mountinfo,'/proc/sys/kernel/random/boot_id':`${hostIdentity.bootId}\n`,
+  [`${group.path}/${bSha}/memory.max`]:'2147483648\n',[`${group.path}/${bSha}/pids.max`]:'512\n',[`${group.path}/${bSha}/cpu.max`]:'200000 100000\n',...over.files};
  for(const [path,node] of Object.entries(over.dirs??{}))dirs[path]={...dirs[path],...node};
  for(const [path,value] of Object.entries(over.files??{}))if(value===undefined)delete files[path];
  return {
@@ -40,8 +41,9 @@ function tree(over={}){
   async readdir(path){const d=dirs[path];if(!d)throw Error('missing dir');return ['cgroup.procs','cgroup.events',...d.entries];},
  };
 }
+const LIMITS={memoryBytes:2147483648,pidsMax:512,cpuQuotaUs:200000,periodUs:100000};
 const verifier=(ports,over={})=>createBrowserHostConfinementVerifier({allocation,binding,hostIdentity,browserNetwork:{get proof(){return proof;}},
- browserUid:BROWSER,browserGid:BROWSER,confinedUids:[BROWSER,HOST_RELAY,LOCAL_RELAY],ports,now:Date.now,...over});
+ browserUid:BROWSER,browserGid:BROWSER,confinedUids:[BROWSER,HOST_RELAY,LOCAL_RELAY],expectedLimits:LIMITS,ports,now:Date.now,...over});
 const request={allocation,binding,hostIdentity,cgroupRelative:group.relative,groupIdentity,browserLeaderPid:1234};
 
 test('a measured browser leader, root-owned closed groups and only confined uids in the tree yield the confinement record',async()=>{
@@ -79,6 +81,8 @@ test('a root or foreign process in the tree, a writable group, a missing leader 
   tree({dirs:{[`${group.path}/${bSha}`]:{mode:0o775}}}),
   tree({dirs:{[`${group.path}/${bSha}`]:{uid:2002}}}),
   tree({files:{'/proc/1234/cgroup':'0::/wrong\n'}}),
+  tree({files:{[`${group.path}/${bSha}/memory.max`]:'max\n'}}),
+  tree({files:{[`${group.path}/${bSha}/pids.max`]:undefined}}),
   tree({files:{'/proc/1234/mountinfo':mountinfo.replace('tmpfs tmpfs','cgroup2 cgroup2')}}),
  ];
  for(const ports of cases)await assert.rejects(verifier(ports).verifyConfinement(request),error=>error?.code==='HOST_CONFINEMENT_UNPROVEN');

@@ -5,10 +5,10 @@ import assert from 'node:assert/strict';
 import {PLAYWRIGHT_MCP_VERSION} from '../../worker/conversation/browser/policy.mjs';
 
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
-const layout={kind:'browser-host',limits:{deadlineMaxMs:5000,maxFreshMs:5000,localSettleMs:5000},
+const layout={kind:'browser-host',limits:{deadlineMaxMs:5000,maxFreshMs:5000,localSettleMs:5000,memoryBytes:2147483648,pidsMax:512,cpuQuotaUs:200000,periodUs:100000},
  paths:{helperPath:'/opt/meri/meri-host-launcher',hostRelayHelperPath:'/opt/meri/meri-host-relay-launcher',nodePath:'/usr/local/bin/node',
   cliPath:'/opt/meri/browser-host/node_modules/@playwright/mcp/cli.js',browsersPath:'/opt/meri/browsers',workspaceRoot:'/var/lib/meri/browser-workspaces'},
- identities:{sdk:{uid:1001,gid:1001},browser:{uid:2002,gid:2002},hostRelay:{uid:3001,gid:3001},localRelay:{uid:3002,gid:3002}},
+ identities:{sdk:{uid:1001,gid:1001},browser:{uid:2002,gid:2002},hostRelay:{uid:3001,gid:3001},localRelay:{uid:3002,gid:3002},proxy:{uid:3003,gid:3003}},
  network:{privateInterfaceName:'ens5',browserProxyPort:3128}};
 const material=hostMode=>({installed:true,profile:{layout},allocation:{schema:'meri-conversation-host-allocation/1',tenantId:id(1),conversationId:id(3),hostId:id(7),
  generation:2,hostMode,imageDigest:'sha256:'+'a'.repeat(64),leaseDeadlineMs:Date.now()+600000},
@@ -26,7 +26,7 @@ test('a browser-only bundle yields the installation, workspace, identities and n
  assert.equal(config.allocation.hostMode,'browser-only');assert.equal(config.profile,undefined,'the raw profile does not leak into the configuration');
  assert.deepEqual(config.installation,{nodePath:'/usr/local/bin/node',cliPath:layout.paths.cliPath,browsersPath:'/opt/meri/browsers',version:PLAYWRIGHT_MCP_VERSION,egressProxy:'http://127.0.0.1:3128'});
  assert.equal(config.cwd,`/var/lib/meri/browser-workspaces/${id(3)}`);
- assert.deepEqual(config.identities.browser,{uid:2002,gid:2002});assert.equal(config.paths.hostRelayHelperPath,BROWSER_HOST_RELAY_HELPER);
+ assert.deepEqual(config.identities.browser,{uid:2002,gid:2002});assert.deepEqual(config.identities.proxy,{uid:3003,gid:3003});assert.equal(config.paths.hostRelayHelperPath,BROWSER_HOST_RELAY_HELPER);
  assert.deepEqual(config.network,{privateInterfaceName:'ens5',browserProxyPort:3128});assert.equal(config.listen.serverName,'browser-host.example');
  assert.deepEqual(config.limits,layout.limits);
 });
@@ -41,7 +41,8 @@ test('the browser layout refuses other kinds, foreign executables, shared or pri
   over('kind','native-processing'),over('paths.helperPath','/usr/local/bin/meri-host-launcher'),over('paths.hostRelayHelperPath','/opt/meri/other'),
   over('paths.cliPath','/opt/meri/browser-host/node_modules/@playwright/mcp/index.js'),over('paths.workspaceRoot','relative/path'),over('paths.browsersPath','/opt/../etc'),
   over('identities.browser.uid',1001),over('identities.sdk.uid',0),over('identities.localRelay.gid',70000),
-  over('limits.deadlineMaxMs',999),over('limits.maxFreshMs',30001),over('limits.localSettleMs',undefined),
+  over('limits.deadlineMaxMs',999),over('limits.maxFreshMs',30001),over('limits.localSettleMs',undefined),over('limits.pidsMax',0),over('limits.memoryBytes',1024),
+  over('identities.proxy',undefined),over('identities.proxy.uid',3002),
   over('network.privateInterfaceName','Eth0;rm'),over('network.browserProxyPort',80),
  ])assert.throws(()=>validateBrowserHostLayout(bad),{code:'BROWSER_HOST_INSTALLED_REFUSED'});
  assert.throws(()=>validateBrowserHostLayout(null),{code:'BROWSER_HOST_INSTALLED_REFUSED'});

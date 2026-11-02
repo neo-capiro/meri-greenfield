@@ -8,11 +8,13 @@ export function prepareNativeBrowserInput(context,page,raw,{leaseEpoch,limiter})
  if(!context.pages().includes(page)||page.isClosed())fail();
  // The session's existing input owner is the only source of key/text/viewport bounds and rate admission. The whole
  // batch is charged before any effect is dispatched; a refused batch injects nothing.
- const batch=admitInputBatch(data(raw),{viewport:page.viewportSize(),limiter});
- if(batch.leaseEpoch!==leaseEpoch)fail();
- // Printable input must travel as text so it enters the session confidentiality filter before a page handler can
- // remove and reflect its field. Shift is itself a named key the viewer sends as its own down/up events.
- if(batch.events.some(event=>event.type==='key'&&!NAMED_KEYS.includes(event.key)))fail();
+ const admitted=admitInputBatch(data(raw),{viewport:page.viewportSize(),limiter});
+ if(admitted.leaseEpoch!==leaseEpoch)fail();
+ // The frontend sends every character as a key down/up pair. Printable input travels as text here so it enters the
+ // session confidentiality filter before a page handler can remove and reflect its field: the key-down becomes the
+ // inserted text, the matching key-up has no effect. Named keys (Enter, Tab, Shift, arrows, ...) stay key events.
+ const batch={leaseEpoch:admitted.leaseEpoch,events:Object.freeze(admitted.events.flatMap(event=>event.type!=='key'||NAMED_KEYS.includes(event.key)?[event]
+  :event.action==='down'?[Object.freeze({type:'text',text:event.key})]:[]))};
  const text=batch.events.filter(event=>event.type==='text').map(event=>event.text).join('');
  const frame=page.mainFrame(),url=page.url();let navigated=false,disposed=false,consumed=false;
  const changed=selected=>{if(selected===frame)navigated=true;};

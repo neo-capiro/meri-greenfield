@@ -6,8 +6,10 @@
  *   1. root-owned generation root and run parent cgroups (hierarchy.mjs), then the lifecycle producer pins the root;
  *   2. the authenticated browser-purpose currentness client reads this run's canonical facts: the active browser policy
  *      and its digest are the only policy this host will ever serve;
- *   3. the run-bound egress proxy on host loopback (denied until `browser-prepare` grants the policy) with the system
- *      resolver, then the browser network compartment with its one route from the namespace-local relay port to it;
+ *   3. the run-bound egress proxy as its own process under the proxy uid in the run's `browser-proxy` cgroup leaf
+ *      (denied until `browser-prepare` grants the policy; the supervisor decides every connection with the system
+ *      resolver), confined by the host nft guard to public TCP 80/443, then the browser network compartment with its
+ *      one route from the namespace-local relay port to that proxy;
  *   4. the per-browser and host-wide observers (the latter with the measured browser confinement verifier);
  *   5. the browser-only service composition (workspace, launcher, context, session facade, named operations, viewer)
  *      with the host-owned retirement, the Control facts as `current`, Control's hold as `hold`, and the fixed Control
@@ -28,6 +30,8 @@ import {assertBrowserHostCurrent} from '../../worker/conversation/host/binding.m
 import {validateBrowserPolicy,PLAYWRIGHT_MCP_VERSION} from '../../worker/conversation/browser/policy.mjs';
 import {startBrowserHostEgressService} from '../../worker/conversation/host/browser-egress-service.mjs';
 import {systemResolver} from '../../worker/conversation/egress/bash-egress.mjs';
+import {startProxyProcess} from '../../worker/conversation/egress/proxy-process.mjs';
+import {installBrowserProxyGuard} from '../../worker/conversation/host/network/proxy-guard.mjs';
 import {prepareNetworkCompartment} from '../../worker/conversation/host/network/confinement.mjs';
 import {createNativeHostRelayPort} from '../../worker/conversation/host/network/host-launcher-adapter.mjs';
 import {createNativeLocalRelayPort} from '../../worker/conversation/host/network/launcher-adapter.mjs';
@@ -37,7 +41,7 @@ import {createHostWideProcessObserver} from '../../worker/conversation/host/host
 import {createBrowserHostConfinementVerifier} from '../../worker/conversation/host/composition/browser-verifier.mjs';
 import {createBrowserViewerRelay} from '../../worker/conversation/host/browser-viewer-relay.mjs';
 import {browserPaths,disposeBrowserState} from '../../worker/conversation/browser/workspace.mjs';
-import {prepareHostHierarchy,prepareRunParent,releaseOwnedHierarchy,realHierarchyPort} from '../native-processing-host/hierarchy.mjs';
+import {prepareHostHierarchy,prepareRunParent,prepareRunLeaf,attachProcess,applyRunLimits,releaseOwnedHierarchy,realHierarchyPort} from '../native-processing-host/hierarchy.mjs';
 import {openNativeLifecycle} from '../native-processing-host/lifecycle.mjs';
 import {createLifecycleHandler,createControlPeerAuthenticator,readBoundedBody} from '../native-processing-host/lifecycle-http.mjs';
 import {NATIVE_LIFECYCLE_BODY_BYTES} from '../native-processing-host/lifecycle-contract.mjs';
@@ -79,6 +83,10 @@ export async function startBrowserHost({config,ports={},now=Date.now}={}){
   owned.push(()=>releaseOwnedHierarchy({record:hierarchy,port:hierarchyPort}));
   const runParent=await prepareRunParent({config:physical,binding,port:hierarchyPort,now,deadlineMs:now()+limits.deadlineMaxMs});
   owned.push(()=>releaseOwnedHierarchy({record:runParent,port:hierarchyPort}));
+  // Finite memory, pid and cpu limits for every process of the run (browser, relays, proxy), read back from the kernel.
+  const runLimits={memoryBytes:limits.memoryBytes,pidsMax:limits.pidsMax,cpuQuotaUs:limits.cpuQuotaUs,periodUs:limits.periodUs};
+  await applyRunLimits({path:runParent.path,limits:runLimits,port:hierarchyPort});
+  const leaves=[];
   let quiesce=null;
   const lifecycle=await openNativeLifecycle({config:physical,quiesce:input=>quiesce===null?Object.freeze({closed:false}):quiesce(input),
    ...(ports.lifecyclePorts===undefined?{}:{ports:ports.lifecyclePorts}),now,deadlineMs:now()+limits.deadlineMaxMs});
@@ -93,16 +101,26 @@ export async function startBrowserHost({config,ports={},now=Date.now}={}){
    const receipt=await client.readCurrent({allocation:structuredClone(allocation),binding:structuredClone(binding),policySha256,signal});
    assertBrowserHostCurrent({allocation,binding,policySha256,current:receipt,nowMs:now(),maxFreshMs});
   };
-  // 3. Egress proxy first (its port is the compartment's route target), then the browser network compartment.
+  // 3. Egress proxy first (its port is the compartment's route target): a separate process under the proxy uid, placed in
+  //    the run's browser-proxy leaf before it listens, then pinned by the host nft guard; then the browser network compartment.
+  const startProxy=input=>startProxyProcess({...input,nodePath:paths.nodePath,uid:identities.proxy.uid,gid:identities.proxy.gid,...(ports.spawnNative===undefined?{}:{spawnNode:ports.spawnNative}),
+   place:async pid=>{
+    const leaf=await prepareRunLeaf({config:physical,binding,name:'browser-proxy',port:hierarchyPort});
+    leaves.push(leaf);await attachProcess({path:leaf.path,pid,port:hierarchyPort});
+   }});
   const browser=await (ports.startEgress??startBrowserHostEgressService)({allocation,binding,readCurrent:authority.readCurrent,resolve:systemResolver,
-   now,maxFreshMs,refreshEveryMs:Math.max(1,Math.floor(maxFreshMs/2))});
+   now,maxFreshMs,refreshEveryMs:Math.max(1,Math.floor(maxFreshMs/2)),startProxy});
   owned.push(()=>browser.close());
+  if(!Number.isSafeInteger(browser.pid))fail('BROWSER_HOST_PROXY_UNCONFINED');
+  const guard=await (ports.installProxyGuard??installBrowserProxyGuard)({allocation,binding,eniName:network.privateInterfaceName,proxyUid:identities.proxy.uid,pid:browser.pid,
+   ...(ports.execute===undefined?{}:{execute:ports.execute})});
+  owned.push(()=>guard.close());
   const proxyPort=Number(new URL(browser.endpoint).port);
   const browserNetwork=await (ports.prepareCompartment??prepareNetworkCompartment)({allocation,binding,kind:'browser',
    routes:[{name:'browser-http',localPort:network.browserProxyPort,targetAddress:'127.0.0.1',targetPort:proxyPort}],
    startHostRelayProcess:createNativeHostRelayPort({allocation,binding,hostIdentity,helperPath:paths.hostRelayHelperPath,nodePath:paths.nodePath,
-    uid:identities.hostRelay.uid,gid:identities.hostRelay.gid,forbiddenUids:[identities.sdk.uid,identities.browser.uid,identities.localRelay.uid],
-    forbiddenGids:[identities.sdk.gid,identities.browser.gid,identities.localRelay.gid],authorize,...spawn}),
+    uid:identities.hostRelay.uid,gid:identities.hostRelay.gid,forbiddenUids:[identities.sdk.uid,identities.browser.uid,identities.localRelay.uid,identities.proxy.uid],
+    forbiddenGids:[identities.sdk.gid,identities.browser.gid,identities.localRelay.gid,identities.proxy.gid],authorize,...spawn}),
    hostRelayUid:identities.hostRelay.uid,hostRelayGid:identities.hostRelay.gid,privateInterfaceName:network.privateInterfaceName,
    startLocalRelayProcess:createNativeLocalRelayPort({allocation,binding,hostIdentity,helperPath:paths.helperPath,nodePath:paths.nodePath,cwd:'/',
     relayUid:identities.localRelay.uid,relayGid:identities.localRelay.gid,toolUid:identities.browser.uid,
@@ -112,7 +130,8 @@ export async function startBrowserHost({config,ports={},now=Date.now}={}){
   // 4. Observers: the per-browser leaf and the host-wide generation tree with the measured browser confinement verifier.
   const sessionProcesses=createBrowserProcessObserver({allocation,binding,profile,...(ports.cgroupPorts===undefined?{}:{ports:ports.cgroupPorts})});
   const verifier=createBrowserHostConfinementVerifier({allocation,binding,hostIdentity,browserNetwork,browserUid:identities.browser.uid,browserGid:identities.browser.gid,
-   confinedUids:[identities.browser.uid,identities.hostRelay.uid,identities.localRelay.uid],...(ports.confinementPorts===undefined?{}:{ports:ports.confinementPorts}),now});
+   confinedUids:[identities.browser.uid,identities.hostRelay.uid,identities.localRelay.uid,identities.proxy.uid],expectedLimits:runLimits,
+   ...(ports.confinementPorts===undefined?{}:{ports:ports.confinementPorts}),now});
   const processes=createHostWideProcessObserver({allocation,binding,hostIdentity,profile,verifyConfinement:verifier.verifyConfinement,
    ...(ports.hostCgroupPorts===undefined?{}:{ports:ports.hostCgroupPorts}),now});
   // 5. The service composition over Control-backed ports and the lifecycle route on its listener.
@@ -135,13 +154,16 @@ export async function startBrowserHost({config,ports={},now=Date.now}={}){
    ...(ports.prepareBrowserWorkspace===undefined?{}:{prepareBrowserWorkspace:ports.prepareBrowserWorkspace}),
    ...(ports.readWorkspace===undefined?{}:{readWorkspace:ports.readWorkspace}),
   },ports.dependencies??{});
-  // Control's close: settle everything but the listener, then retire the compartment so the generation tree empties.
+  // Control's close: settle everything but the listener (the teardown closes the proxy process), then retire the
+  // compartment, the proxy guard and the proxy leaf so the generation tree empties.
   const settleLocal=async reason=>{
    let receipt;
    try{receipt=await service.destroy({reason,retainListener:true});}
    catch(error){receipt=error?.receipt??Object.freeze({status:'UNKNOWN'});}
    let compartment=false;try{compartment=(await browserNetwork.close())?.closed===true;}catch{compartment=false;}
-   return Object.freeze({closed:receipt.status==='VERIFIED'&&compartment,
+   let guarded=false;try{guarded=(await guard.close())?.closed===true;}catch{guarded=false;}
+   let released=true;for(const leaf of leaves.splice(0)){const result=await releaseOwnedHierarchy({record:leaf,port:hierarchyPort}).catch(()=>({unknown:['leaf']}));if(result.unknown.length)released=false;}
+   return Object.freeze({closed:receipt.status==='VERIFIED'&&compartment&&guarded&&released,
     browserEgress:receipt.browserEgress==='closed'?'closed':'unknown',browserState:receipt.browserState==='disposed'?'disposed':'unknown',receipt});
   };
   quiesce=()=>settleLocal('conversation-end');

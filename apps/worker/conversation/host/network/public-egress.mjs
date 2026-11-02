@@ -16,7 +16,7 @@ const tcp=(field,right)=>({match:{op:'==',left:{payload:{protocol:'tcp',field}},
 const udp=(field,right)=>({match:{op:'==',left:{payload:{protocol:'udp',field}},right}});
 const conntrack=(key,right)=>({match:{op:'==',left:{ct:{key}},right}});
 const accept={accept:null},drop={drop:null};
-const PROXY_DENIED_IPV4=Object.freeze([['0.0.0.0',8],['10.0.0.0',8],['100.64.0.0',10],['127.0.0.0',8],['169.254.0.0',16],['172.16.0.0',12],
+export const PROXY_DENIED_IPV4=Object.freeze([['0.0.0.0',8],['10.0.0.0',8],['100.64.0.0',10],['127.0.0.0',8],['169.254.0.0',16],['172.16.0.0',12],
  ['192.0.0.0',24],['192.0.2.0',24],['192.88.99.0',24],['192.168.0.0',16],['198.18.0.0',15],['198.51.100.0',24],['203.0.113.0',24],['224.0.0.0',4],['240.0.0.0',4]]);
 
 /** Exact host OUTPUT guard. The future public SG/route packet must be reviewed separately. All ENI output not

@@ -10,8 +10,11 @@ const fault=()=>{throw Object.assign(new Error(REFUSED),{code:REFUSED});};
 const BROWSER_HOST_LAYOUT_KIND='browser-host';
 /** The relay helper the network owner's host-veth relay port spawns; fixed like the launcher helper. */
 export const BROWSER_HOST_RELAY_HELPER='/opt/meri/meri-host-relay-launcher';
-const LIMITS=Object.freeze({deadlineMaxMs:[1000,60000],maxFreshMs:[1000,30000],localSettleMs:[1000,120000]});
-const IDENTITIES=Object.freeze(['sdk','browser','hostRelay','localRelay']);
+/** Finite service budgets and the run cgroup limits applied to every browser, relay and proxy process of the run. */
+const LIMITS=Object.freeze({deadlineMaxMs:[1000,60000],maxFreshMs:[1000,30000],localSettleMs:[1000,120000],
+ memoryBytes:[16*1024*1024,64*1024*1024*1024],pidsMax:[1,4096],cpuQuotaUs:[1000,4000000],periodUs:[1000,1000000]});
+/** The four launcher-placed identities plus the egress proxy's own uid (confined by the host nft guard). */
+const IDENTITIES=Object.freeze(['sdk','browser','hostRelay','localRelay','proxy']);
 const INTERFACE=/^[a-z][a-z0-9]{1,14}$/u;
 const absolute=value=>{
  if(typeof value!=='string'||!value.startsWith('/')||value.includes('..')||value.includes('\0')||value.length>1024||value.endsWith('/'))fault();

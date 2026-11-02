@@ -17,11 +17,13 @@ is the second purpose of that same lifecycle, never a second coordinator: `hostM
 `host_allocations` table, the same reservation writer, the same provisioning coordinator, the same watchdog, the same
 bootstrap protocol and the same teardown owner, with its own image, AMI, instance type and bootstrap document.
 
-**Need and readiness.** While control's compiled `browserActivation` record is open, every run is admitted with
-`browser.enabled` and the runtime mounts the browser port, whose `browser-prepare` resolves this run's browser-only
-allocation. So the browser need is the activation record itself (`browser-execution-prerequisite.mjs`), read by the
-Temporal broker right after the native need (`execution/browser/prerequisite`), and the model turn waits until the
-browser host is `ready`: active row, bootstrap custody retained, and the canonical run says `browserAdmitted`.
+**Need and readiness.** The browser need (`browser-execution-prerequisite.mjs`, read by the Temporal broker right after
+the native need over `execution/browser/prerequisite`) requires control's `browserActivation` record to be open AND the
+run's resolved browser policy (platform record, tenant settings, the actor's current role) to be enabled: a tenant or
+role with the browser off gets no host and never waits. When needed, the model turn waits until the browser host is
+`ready`: active row, bootstrap custody retained, and the canonical run says `browserAdmitted`. Known cost, accepted for
+this release: every browser-enabled run boots one host before its first turn (tens of seconds); provisioning on first
+browser tool use is the follow-up that removes it.
 
 **Generation and identity.** Generation is the run's writer fence, as for native. The host id is deterministic per
 purpose (`meri-browser-host-provision/1` versus `meri-native-host-provision/1`), so the two hosts of one run never share
@@ -29,9 +31,11 @@ an id, and the unique index "one unterminated host per conversation and purpose"
 
 **The host itself.** One root service (`apps/runtime/browser-host-service/host.mjs`) over the protected installed
 bundle the bootstrap program wrote: it creates the root-owned generation and run cgroups, pins the lifecycle producer,
-reads this run's canonical facts from Control (the active browser policy is the only policy it will serve), opens the
-run-bound egress proxy on host loopback, builds the browser network compartment with one route from the namespace-local
-relay port to that proxy, arms the per-browser and host-wide observers through a measured confinement verifier, and
+reads this run's canonical facts from Control (the active browser policy is the only policy it will serve), applies
+finite memory/pid/cpu limits to the run cgroup, starts the run-bound egress proxy as its own process under the proxy uid
+in the run's `browser-proxy` leaf (every admission is decided by the supervisor's egress control over IPC) and pins it
+with a host nft guard (public IPv4 TCP 80/443 only; private, CGNAT, link-local and metadata ranges dropped), builds the
+browser network compartment with one route from the namespace-local relay port to that proxy, arms the per-browser and host-wide observers through a measured confinement verifier, and
 composes the browser-only service: admitted workspace, root-only launcher (browser child dropped to its own uid with
 NoNewPrivs, hidden cgroupfs, private workspace view), confined Chromium context, session facade, named operations and
 the viewer, all on ONE pinned mTLS listener (`hostEndpoint.port`) that also serves the Control lifecycle route. The SDK
@@ -129,12 +133,17 @@ Preconditions: PR 540, PR 2 and PR 3 merged; native processing (runbook step 2) 
 host-to-control currentness listener (`browserHosts.tls.hostServer` + `bind`) rendered and reachable from the host
 subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step below deploys anything without Release.
 
-1. **Database (Release).** Snapshot `capiro-newstack-preview-clone`. Apply ordinal 85
+1. **Database (Release).** First rehearse on an isolated PostgreSQL 16 (Codex-Gates): with `MERI_D2_TEST_ADMIN_URL`
+   pointing at a throwaway database, run `node --test infra/product-preview/first-chat-database.test.mjs
+   apps/control/browser-hosts/test/browser-only-provisioning-migration.test.mjs` and then the full plan
+   `node infra/product-preview/first-chat-migrate.mjs integration` against that database twice (the second run must be a
+   no-op). Then snapshot `capiro-newstack-preview-clone` and apply ordinal 85
    (`0008_browser_only_provisioning.sql`) with the existing `first-chat-migrate.mjs integration` stage. Verify:
    `guard_allocation()` and `guard_native_observer()` `prosrc` hashes changed from `ee96403b…`/`24b99863…`; the three
    constraints are `convalidated`; the ledger has 85 rows. Rollback: the forward migration is reversible only by
    restoring the snapshot (no browser-only rows exist before the first browser run).
-2. **Image.** In the gate environment (WSL Codex-Gates): generate the browser stack lockfile once with
+2. **Image.** Create the ECR repository `meri-greenfield/browser-host` (immutable tags, scan on push) if it does not
+   exist. In the gate environment (WSL Codex-Gates): generate the browser stack lockfile once with
    `npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefix apps/runtime/browser-host-service/image`
    and commit it (lockfile owner). Build `apps/runtime/Dockerfile.browser-host` once for `linux/arm64` from the exact
    source commit (`docker buildx build --platform linux/arm64 -f apps/runtime/Dockerfile.browser-host .`), push to the
@@ -148,17 +157,29 @@ subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step belo
    Chromium's namespace sandbox). Write the reviewed profile (`profile.json`) with `layout.kind:'browser-host'`, the
    limits, the fixed paths (`/opt/meri/meri-host-launcher`, `/opt/meri/meri-host-relay-launcher`, `/usr/local/bin/node`,
    `/opt/meri/browser-host/node_modules/@playwright/mcp/cli.js`, `/opt/meri/browsers`, `/var/lib/meri/browser-workspaces`),
-   the image identities (sdk 1001, browser 2002, hostRelay 3001, localRelay 3002), the instance's private interface
-   name (`ens5` on c7g) and the namespace-local proxy port (3128); its SHA-256 is `profileSha256`. Record
+   the image identities (sdk 1001, browser 2002, hostRelay 3001, localRelay 3002, proxy 3003), the run limits
+   (`memoryBytes` 2147483648, `pidsMax` 512, `cpuQuotaUs` 200000, `periodUs` 100000 on c7g.large), the instance's
+   private interface name (`ens5` on c7g) and the namespace-local proxy port (3128); its SHA-256 is `profileSha256`.
+   AMI recipe, concretely: start from the native host AMI recipe (same base, same SSM agent, same bootstrap document
+   install), replace the pulled image with the browser host digest, set the account/AMI defaults for IMDSv2 required with
+   hop limit 1 and an encrypted gp3 30 GiB root volume, enable `kernel.unprivileged_userns_clone=1` and
+   `user.max_user_namespaces` for Chromium's namespace sandbox, and register the SSM document
+   `meri-browser-host-bootstrap` (the same document body as the native one; its name, version and SHA-256 go in
+   `bootstrapSpec.document`). Record
    `imageDigest`, `sourceCommit`, `bootstrapSha256`, AMI id.
 3. **Static host infra (Release).** Render `infra/browser-host/provisioned-stack.mjs` with the VPC id and CIDR, the
    control task security group and the `meri-greenfield/browser-host` repository, review, create the stack. It yields
    the `meri-browser-host` security group (ingress TCP 9444 from the control security group only; egress TCP 443 to
-   control, DNS to the VPC resolver, TCP 443/80 to the internet through the NAT route for the host egress proxy; no IPv6),
-   the instance role (SSM core, pull of that one repository, writes to its own log group) and the instance profile.
+   control, DNS to the VPC resolver, TCP 443/80 to 0.0.0.0/0; no IPv6), the instance role (SSM core, pull of that one
+   repository, writes to its own log group) and the instance profile; outputs give the group id and the profile Name.
+   The security group's 0.0.0.0/0 includes the VPC: it is one layer only. Private, link-local and metadata ranges are
+   refused by the run policy in the supervisor and dropped for the proxy uid by the host nft guard, which step 4c probes.
    One listener port: viewer, named browser operations and the lifecycle route share `hostEndpoint.port` 9444.
 4. **Deployment inputs (private copy).** `features.nativeProcessing.browserDeployment` with `accountId`, `region`,
-   the native `placement`, `launch{ImageId:<browser AMI>,InstanceType:'c7g.large',SubnetId,SecurityGroupIds:[<browser SG>],IamInstanceProfile:{Arn},MetadataOptions{HttpTokens:'required',HttpPutResponseHopLimit:1,HttpEndpoint:'enabled'},BlockDeviceMappings[30 GiB encrypted gp3, delete on termination]}`,
+   the native `placement` (with `securityGroupIds:[<browser SG>]` and `iamInstanceProfile:<profile Name>`),
+   `launch{ImageId:<browser AMI>,InstanceType:'c7g.large',SubnetId,SecurityGroupIds:[<browser SG>],IamInstanceProfile:{Name:<profile Name>}}`
+   (exactly these keys: `compileNativeDeployment` refuses `Arn`, `MetadataOptions` and `BlockDeviceMappings`; those
+   properties come from the AMI and account defaults of step 2),
    `imageDigest`, `sourceCommit`, `bootstrapSha256`, `physicalObserver`, `launchTagPolicy`, `bootstrapSpec` (the
    bootstrap document name/version/sha256, `programSha256` and `profileSha256` from step 2, `hostEndpoint{port:9444,
    serverName}`, the SAME `control` block and `issuerCaCertificate` as the native deployment). Render; the renderer
@@ -178,11 +199,14 @@ subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step belo
    browser-only receipt (`close` answered `browserEgress closed`, `browserState disposed`; `processes` empty); the
    instance, root volume and ENI are absent.
 
-Known measurement gaps for step 4c of the runbook (not source gaps): the public egress nft guard (`public-egress.mjs`)
-is not applied by the host; destination control is the policy (`checkBrowserUrl`, denied hosts, resolved-address
-checks) enforced by the host proxy, which the egress evidence must measure on the live host. The Claude Agent SDK
-package is present in the image as a module dependency of shared worker modules and is never invoked (no query, no
-provider credential, no Bash); splitting that import chain is a follow-up.
+Hardening set by source: proxy under its own uid with a read-back nft guard; finite memory/pid/cpu limits on the run
+cgroup, re-measured by the confinement verifier; NoNewPrivs, zero capabilities and hidden cgroupfs for every tree
+process. Not set by the recipe, to be measured or decided at step 4c: a seccomp/AppArmor profile for the root
+supervisor (it runs privileged with host network and PID namespaces, which the helpers require), a read-only root
+filesystem for the supervisor container, and per-process rlimits beyond the cgroup limits. The Claude Agent SDK package
+is present in the image as a module dependency of shared worker modules and is never invoked (no query, no provider
+credential, no Bash); splitting that import chain is a follow-up. The frontend viewer sends each character as a key
+down/up pair; the host types printable keys as text, so no frontend change is needed for takeover sign-in.
 
 Rollback: hold `features.browserActivation` (new runs mount no browser port and no browser host is provisioned); the
 database delta, the static host stack and the worker's `browserDeployment` may stay in place.

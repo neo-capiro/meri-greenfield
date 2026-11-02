@@ -18,14 +18,15 @@ import {allocation,hostIdentity,policy,policySha256,cwd,serviceFixture,TLS,PEER,
 const scopes=[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:'p1'}];
 const activeFacts={schema:BROWSER_HOST_FACTS_SCHEMA,binding,scopes,deadlineMs:FIXTURE_NOW_MS+60000,currentUntilMs:FIXTURE_NOW_MS+5000,phase:'active',
  admitted:{sdk:true,bash:false,browser:true},capabilityPolicy:{},capabilityPolicySha256:canonicalSha256({}),browserPolicy:policy,browserPolicySha256:policySha256};
-const IDENTITIES={sdk:{uid:1001,gid:1001},browser:{uid:2002,gid:2002},hostRelay:{uid:3001,gid:3001},localRelay:{uid:3002,gid:3002}};
+const IDENTITIES={sdk:{uid:1001,gid:1001},browser:{uid:2002,gid:2002},hostRelay:{uid:3001,gid:3001},localRelay:{uid:3002,gid:3002},proxy:{uid:3003,gid:3003}};
+const LIMITS={deadlineMaxMs:5000,maxFreshMs:1000,localSettleMs:5000,memoryBytes:2147483648,pidsMax:512,cpuQuotaUs:200000,periodUs:100000};
 const config=Object.freeze({
  allocation,binding,hostIdentity,image:{digest:allocation.imageDigest},cwd,
  installation:{nodePath:'/usr/local/bin/node',cliPath:'/opt/meri/browser-host/node_modules/@playwright/mcp/cli.js',browsersPath:'/opt/meri/browsers',version:'0.0.83',egressProxy:'http://127.0.0.1:3128'},
  identities:IDENTITIES,
  paths:{helperPath:'/opt/meri/meri-host-launcher',hostRelayHelperPath:'/opt/meri/meri-host-relay-launcher',nodePath:'/usr/local/bin/node',
   cliPath:'/opt/meri/browser-host/node_modules/@playwright/mcp/cli.js',browsersPath:'/opt/meri/browsers',workspaceRoot:'/workspace'},
- network:{privateInterfaceName:'ens5',browserProxyPort:3128},limits:{deadlineMaxMs:5000,maxFreshMs:1000,localSettleMs:5000},
+ network:{privateInterfaceName:'ens5',browserProxyPort:3128},limits:LIMITS,
  tls:{installed:true,peerSan:PEER.name,peerFingerprint:PEER.fingerprintSha256,maxPeerLifetimeMs:900000,peerNotAfterMs:FIXTURE_NOW_MS+600000,cleanupCeilingMs:FIXTURE_NOW_MS+700000},
  control:{address:'10.0.0.1',port:443,serverName:'control.meri-preview.internal',clientName:PEER.name,policySha256:'e'.repeat(64),serverFingerprintSha256:'c'.repeat(64)},
  listen:{address:'127.0.0.1',port:9444,serverName:TLS.serverName},
@@ -44,9 +45,10 @@ function kernel(events){
  const exited=()=>events.includes('launcher-close');
  const dirs=()=>({[group.path]:[bSha],[`${group.path}/${bSha}`]:['browser','host-relay-browser'],[leaf]:[],[relayLeaf]:[]});
  const procs=path=>exited()?'':path===leaf?`${LEADER}\n`:path===relayLeaf?'302\n':'';
- const files=()=>exited()?{'/proc/sys/kernel/random/boot_id':`${hostIdentity.bootId}\n`}:{
+ const limitFiles={[`${group.path}/${bSha}/memory.max`]:'2147483648\n',[`${group.path}/${bSha}/pids.max`]:'512\n',[`${group.path}/${bSha}/cpu.max`]:'200000 100000\n'};
+  const files=()=>exited()?{'/proc/sys/kernel/random/boot_id':`${hostIdentity.bootId}\n`,...limitFiles}:{
   [`/proc/${LEADER}/stat`]:statLine(LEADER),[`/proc/${LEADER}/status`]:status(2002),[`/proc/${LEADER}/cgroup`]:`0::${leaf.slice('/sys/fs/cgroup'.length)}\n`,
-  [`/proc/${LEADER}/mountinfo`]:mountinfo,'/proc/302/status':status(3001),'/proc/302/mountinfo':mountinfo,'/proc/sys/kernel/random/boot_id':`${hostIdentity.bootId}\n`};
+  [`/proc/${LEADER}/mountinfo`]:mountinfo,'/proc/302/status':status(3001),'/proc/302/mountinfo':mountinfo,'/proc/sys/kernel/random/boot_id':`${hostIdentity.bootId}\n`,...limitFiles};
  const dirStat=(path,ino)=>({dev:1,ino,uid:0,mode:0o040755,isDirectory:()=>true,isSymbolicLink:()=>false});
  const confinementPorts={
   async readFile(path){
@@ -83,8 +85,10 @@ function harness({facts=activeFacts}={}){
   hierarchyPort:makeInertHierarchyPort({boot:hostIdentity.bootId}),
   lifecyclePorts:{async readBootId(){return hostIdentity.bootId;},async openGroup(){events.push('group-open');return {async readEvents(){return 'populated 0\nfrozen 0\n';},async close(){events.push('group-close');}};}},
   createClient(input){events.push('client');assert.equal(input.purpose,'browser');assert.equal(input.maxFreshMs,1000);assert.equal(input.tls.cert,config.installedTls.tls.clientCert);return client;},
-  async startEgress(input){events.push('egress-start');assert.equal(input.maxFreshMs,1000);assert.equal(typeof input.resolve,'function');
-   return {endpoint:'http://127.0.0.1:4100',async grant(){return {granted:true};},async refresh(){},async revoke(){events.push('egress-revoke');return {revoked:true};},async close(){events.push('egress-close');return {closed:true};}};},
+  async startEgress(input){events.push('egress-start');assert.equal(input.maxFreshMs,1000);assert.equal(typeof input.resolve,'function');assert.equal(typeof input.startProxy,'function','the host supplies the separate proxy process');
+   return {endpoint:'http://127.0.0.1:4100',pid:777,async grant(){return {granted:true};},async refresh(){},async revoke(){events.push('egress-revoke');return {revoked:true};},async close(){events.push('egress-close');return {closed:true};}};},
+  async installProxyGuard(input){events.push('guard-install');assert.deepEqual([input.eniName,input.proxyUid,input.pid],['ens5',3003,777]);assert.equal(input.allocation.hostMode,'browser-only');
+   return {guard:{tableName:'mp0'},readback:{verified:true},async close(){events.push('guard-close');return {closed:true};}};},
   async prepareCompartment(input){compartmentCalls.push(input);events.push('compartment');
    return {plan,get proof(){return proof;},async verify(){return proof;},async close(){events.push('compartment-close');return {closed:true};}};},
   upstream:{version:'0.0.83',createConnection(){}},
@@ -102,7 +106,9 @@ test('start reads the active policy from Control, opens egress before the compar
  const h=harness();
  const host=await startBrowserHost({config,ports:h.ports,now:()=>FIXTURE_NOW_MS});
  assert.equal(host.started,true);assert.equal(host.policySha256,policySha256);assert.deepEqual(host.address,{address:'127.0.0.1',port:9443});
- const order=['client','group-open','facts','egress-start','compartment','prepare-workspace','launcher-ctor','prepare','readback','go','viewer-start'].map(name=>at(h.events,name));
+ const order=['client','group-open','facts','egress-start','guard-install','compartment','prepare-workspace','launcher-ctor','prepare','readback','go','viewer-start'].map(name=>at(h.events,name));
+ const parent=h.ports.hierarchyPort.nodes.get(`/sys/fs/cgroup/meri/hosts/${allocation.hostId}-${allocation.generation}/${bSha}`);
+ assert.deepEqual(parent.limits,{'memory.max':'2147483648','pids.max':'512','cpu.max':'200000 100000'},'finite run limits are applied to the run parent');
  assert.ok(order.every(i=>i>=0),JSON.stringify(h.events));assert.deepEqual([...order].sort((a,b)=>a-b),order,JSON.stringify(h.events));
  const compartment=h.compartmentCalls[0];
  assert.equal(h.compartmentCalls.length,1);assert.equal(compartment.kind,'browser');
@@ -113,7 +119,7 @@ test('start reads the active policy from Control, opens egress before the compar
  assert.equal(closed.closed,true,JSON.stringify(closed.receipt));
  assert.deepEqual([closed.receipt.browserEgress,closed.receipt.processes,closed.receipt.browserState,closed.receipt.hostDestroy],['closed','exited','disposed','not-applicable']);
  assert.ok(at(h.events,'session-destroy')<at(h.events,'launcher-close')&&at(h.events,'launcher-close')<at(h.events,'egress-revoke')&&
-  at(h.events,'egress-revoke')<at(h.events,'compartment-close')&&at(h.events,'compartment-close')<at(h.events,'viewer-close')&&
+  at(h.events,'egress-revoke')<at(h.events,'compartment-close')&&at(h.events,'compartment-close')<at(h.events,'guard-close')&&at(h.events,'guard-close')<at(h.events,'viewer-close')&&
   at(h.events,'viewer-close')<at(h.events,'group-close'),JSON.stringify(h.events));
  assert.equal(h.events.includes('physical-destroy'),false,'the instance is destroyed by Control, never by the host');
  assert.ok(h.events.includes('client-close'));
@@ -145,6 +151,13 @@ test('the lifecycle route is served through the real handler with the protected 
  await served.lifecycle(req,res);
  assert.deepEqual(sent,[401]);
  await host.close();
+});
+
+test('an egress proxy without a pid cannot be guarded and refuses the host before the compartment exists',async()=>{
+ const h=harness();
+ h.ports.startEgress=async()=>({endpoint:'http://127.0.0.1:4100',async close(){h.events.push('egress-close');return {closed:true};}});
+ await assert.rejects(startBrowserHost({config,ports:h.ports,now:()=>FIXTURE_NOW_MS}),{code:'BROWSER_HOST_PROXY_UNCONFINED'});
+ assert.equal(h.events.includes('compartment'),false);assert.ok(h.events.includes('egress-close'));
 });
 
 test('a run without an active browser policy refuses before any egress or compartment exists and releases what it acquired',async()=>{

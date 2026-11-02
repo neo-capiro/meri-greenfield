@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
 # Provisioned browser-only host image (linux/arm64, c7g). It carries the host service sources, Playwright MCP 0.0.83 with
 # its pinned playwright-core and Chromium build, the two root-only C helpers compiled from this tree, and the network
-# tools the per-run compartment needs (iproute2, nftables). Build once per source commit, push to
+# tools the per-run compartment and the proxy-uid nft guard need (iproute2, nftables). Identities: sdk 1001 (workspace
+# owner only), browser 2002, host relay 3001, local relay 3002, egress proxy 3003. Build once per source commit, push to
 # meri-greenfield/browser-host, scan the digest (0 HIGH/CRITICAL), then bake the browser host AMI from it exactly as the
 # native host AMI is baked from the runtime image. The host service runs as root on the instance (it owns cgroups, network
 # namespaces and the helpers); every browser, relay and workspace process is dropped to its fixed unprivileged identity by
@@ -96,6 +97,7 @@ RUN set -eux; \
     groupadd --gid 2002 meri-browser && useradd --uid 2002 --gid 2002 --no-create-home --shell /usr/sbin/nologin meri-browser; \
     groupadd --gid 3001 meri-host-relay && useradd --uid 3001 --gid 3001 --no-create-home --shell /usr/sbin/nologin meri-host-relay; \
     groupadd --gid 3002 meri-local-relay && useradd --uid 3002 --gid 3002 --no-create-home --shell /usr/sbin/nologin meri-local-relay; \
+    groupadd --gid 3003 meri-proxy && useradd --uid 3003 --gid 3003 --no-create-home --shell /usr/sbin/nologin meri-proxy; \
     mkdir -p /var/lib/meri/browser-workspaces /var/lib/meri/native-bootstrap /run/netns; \
     chmod 0755 /var/lib/meri/browser-workspaces; chmod 0700 /var/lib/meri/native-bootstrap
 # Privilege-bit reduction and inventory: no SUID/SGID regular file anywhere, exact package set recorded from the real build.

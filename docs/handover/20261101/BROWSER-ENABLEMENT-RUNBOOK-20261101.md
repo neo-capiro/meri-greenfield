@@ -17,7 +17,7 @@ The PR makes the browser gate a **configuration record owned by control** instea
 Requirement digest at the PR head (recompute at the deployed commit; see step 6):
 
 ```text
-EGRESS_REQUIREMENTS_SHA256 = 3fb9c99619a78021205c5fc3708230ec9f4fd5d0a5618515baeba07a8aa65e13
+EGRESS_REQUIREMENTS_SHA256 = 606f476adfd9d872eec797e67be3a3419dd755b59a04373f99fd888ea6ed0ec1
 ```
 
 **What does not exist yet, anywhere (source or live).** Shipping the browser is gated on these, in this order. None of them is a deployment-input flip, and none can be measured before the previous one exists.
@@ -72,9 +72,12 @@ Time: image/AMI build and scan 1 day; observer, watchdog and policy stacks 1 day
 
 4b. **Provisioner, launcher and host.** Source, 2 November 2026: PR 2 makes the browser-only host the second purpose of the existing native coordinator (`hostMode:'browser-only'`, migration 0008, `nativeProvisioning.browserDeployment`, the broker's `execution/browser/prerequisite`, control-side teardown dispatch); PR 3 is the host itself (`apps/runtime/browser-host-service/host.mjs` over the installed bundle, the lifecycle route on the one pinned listener, the viewer input adapter over the wire batch, host-owned takeover retirement, the measured browser confinement verifier, the host-local teardown) plus the static host infra template (`infra/browser-host/provisioned-stack.mjs`: security group, instance role/profile, log group). What remains is review and the release steps of the brief (§3 steps 1 to 5: migration 84, image and AMI, static stack, `browserDeployment` inputs, deploy order). Time: review 1 day, release 1 day.
 
-4c. **One qualification host.** Provision exactly one browser-only host in the closed network for one synthetic conversation. Run the checklist: A1 to A5 (sandbox, metadata unreachability, per-conversation host, destruction receipt), B1 to B13 (every `EGRESS_REQUIREMENTS` entry, with the host proxy running `createEgressControl` and the browser launched with `--proxy-server`), C1 to C5 (approval round trip through Core), D1 to D4, E1 to E2, F1. Record each probe, refusal code, control decision log and egress capture under `docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-<date>.md` with the host instance id, image digest, allocation id and source commit. Hermes performs the independent review. Time: 2 to 3 days of measurement, 1 day review.
+4c. **One qualification host.** Provision exactly one browser-only host (public egress through the NAT route, the host nft guard on the proxy uid) for one synthetic conversation. Run the checklist: A1 to A5 (sandbox, metadata unreachability, per-conversation host, destruction receipt), B1 to B13 (every `EGRESS_REQUIREMENTS` entry, with the host proxy running `createEgressControl` and the browser launched with `--proxy-server`), C1 to C5 (approval round trip through Core), D1 to D4, E1 to E2, F1. Add the host probes: from the proxy uid, a TCP connect to 169.254.169.254:80, 10.0.0.1:443, the Control address and a public address on :22 must all fail at the nft guard; from the root supervisor, IMDS answers only with an IMDSv2 token (hop limit 1, no container hop); `memory.max`, `pids.max` and `cpu.max` on the run parent read back the profile limits; the instance metadata options and the encrypted gp3 root volume read back as the AMI and account defaults promise. Record each probe, refusal code, control decision log and egress capture under `docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-<date>.md` with the host instance id, image digest, allocation id and source commit. Hermes performs the independent review. Time: 2 to 3 days of measurement, 1 day review.
 
 Cannot be known until this host exists: instance id and private IP, host certificate fingerprint and expiry, allocation hostId/generation, actual Chromium process tree and seccomp readback, the egress capture, the evidence file bytes and therefore `evidenceSha256`.
+
+
+4d. **Next for "feel like Claude" (not blocking activation).** The viewer is one PNG per frame request, mouse is move/down/up/wheel only (no hover stream, drag or right-click), and the session drops further input while one batch is pending. The next step is a fast frame stream (screencast or JPEG deltas at a fixed rate under the same lease) and client-side input batching that coalesces moves and queues keystrokes instead of dropping them.
 
 ## 5. Step 4: open the gate (one deploy)
 

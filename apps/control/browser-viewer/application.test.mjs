@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {createBrowserViewerApplication} from './application.mjs';
 import {createBrowserViewerHttp} from './http.mjs';
 import {BROWSER_VIEWER_SCHEMA as schema} from '../../../packages/contracts/browser-viewer/receive.mjs';
+import {createHash} from 'node:crypto';
+const createHashHex=value=>createHash('sha256').update(value).digest('hex');
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`;
 const sourceBinding={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),attemptId:id(5),workerId:id(6),writerFence:1};
 const context={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),selectedClientId:null};
@@ -15,8 +17,8 @@ function fixture(){
  const application=createBrowserViewerApplication({lifecycle,transport,now:()=>1000});
  const http=createBrowserViewerHttp({application,now:()=>1000});
  const run=(route,body={schema})=>http.handle(new Request(`https://control.test/api/meri/browser/${route}`,{method:'POST',headers:{authorization:`Bearer ${credential}`,'content-type':'application/json'},body:JSON.stringify(body)}));
- const hold=()=>{held={...held,state:'held',ownerInstanceId:id(7),custody:{binding:sourceBinding,ownerInstanceId:id(7),hostId:id(8),generation:1,expiresAtMs:100000,leaseEpoch:1}};};
- return {application,http,run,controls,host,transport,hold,revoke:()=>{lifecycle.readTakeover=async()=>{throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});};}};
+ const hold=(over={})=>{held={...held,state:'held',ownerInstanceId:id(7),custody:{binding:sourceBinding,controlId:id(30),ownerInstanceId:id(7),hostId:id(8),generation:1,expiresAtMs:100000,leaseEpoch:1,...over}};};
+ return {application,http,run,controls,host,transport,hold,lifecycle,held:()=>held,revoke:()=>{lifecycle.readTakeover=async()=>{throw Object.assign(Error('SESSION_REFUSED'),{code:'SESSION_REFUSED'});};}};
 }
 test('mounted ticket starts only the canonical begin; pending read never retries it',async()=>{
  const f=fixture(),before=await (await f.run('read')).json();assert.equal(before.state,'agent');
@@ -30,6 +32,18 @@ test('held connection routes by canonical custody and strips routing/session met
  assert.equal(reply.status,200);const body=await reply.text();
  assert(!body.includes('sessionKey'));assert(!body.includes('custody'));assert(!body.includes('hostId'));assert(!body.includes(credential));
  assert.equal(f.controls.length,0);assert.equal(f.host[0].grant.custody.hostId,id(8));assert.match(f.host[0].grant.sessionKey,/^[0-9a-f]{64}$/u);
+});
+test('the viewer lease key is the actor\'s takeover, so a rotated bearer token keeps the lease and another takeover does not',async()=>{
+ const f=fixture();f.hold();
+ const rotated='action_session_'+'b'.repeat(43);
+ f.lifecycle.readTakeover=async q=>{assert.ok([credential,rotated].includes(q.credential));return f.held();};
+ await f.run('ticket',{schema,requestId:id(9)});
+ await f.http.handle(new Request('https://control.test/api/meri/browser/read',{method:'POST',headers:{authorization:`Bearer ${rotated}`,'content-type':'application/json'},body:JSON.stringify({schema})}));
+ assert.equal(f.host.length,2);assert.equal(f.host[0].grant.sessionKey,f.host[1].grant.sessionKey,'same actor, same takeover: same lease owner across tokens');
+ assert.notEqual(f.host[0].grant.sessionKey,createHashHex(credential));
+ f.hold({controlId:id(31)});
+ await f.run('read');
+ assert.notEqual(f.host[2].grant.sessionKey,f.host[0].grant.sessionKey,'a different takeover is a different lease owner');
 });
 test('revocation during a host call withholds the late result',async()=>{
  const f=fixture();f.hold();const execute=f.transport.execute;f.transport.execute=async q=>{const result=await execute(q);f.revoke();return result;};

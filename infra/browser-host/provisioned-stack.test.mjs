@@ -10,7 +10,8 @@ test('the static stack holds only the shared group, role, profile and log group;
  assert.deepEqual(Object.keys(t.Resources).sort(),['BrowserHostInstanceProfile','BrowserHostLogGroup','BrowserHostRole','BrowserHostSecurityGroup']);
  assert.equal(Object.hasOwn(t,'Parameters'),false);assert.equal(Object.hasOwn(t,'Conditions'),false);
  assert.equal(Object.isFrozen(t.Resources.BrowserHostRole.Properties),true);
- assert.deepEqual(Object.keys(t.Outputs).sort(),['BrowserHostInstanceProfileArn','BrowserHostLogGroupName','BrowserHostSecurityGroupId']);
+ assert.deepEqual(Object.keys(t.Outputs).sort(),['BrowserHostInstanceProfileArn','BrowserHostInstanceProfileName','BrowserHostLogGroupName','BrowserHostSecurityGroupId']);
+ assert.deepEqual(t.Outputs.BrowserHostInstanceProfileName.Value,{Ref:'BrowserHostInstanceProfile'});
 });
 test('ingress is the one Control-sourced listener port; egress is Control, VPC DNS and the public web only',()=>{
  const sg=compileProvisionedBrowserHostTemplate(input()).Resources.BrowserHostSecurityGroup.Properties;

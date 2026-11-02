@@ -39,7 +39,7 @@ export function compileProvisionedBrowserHostTemplate(input){
   AWSTemplateFormatVersion:'2010-09-09',
   Description:'Meri provisioned browser-only hosts: shared security group, instance role/profile and log group. Instances are launched per conversation run by the worker coordinator and destroyed by Control.',
   Metadata:{hostPurpose:'browser-only',listenerPort:BROWSER_HOST_LISTENER_PORT,instanceType:'c7g.large',architecture:'arm64',
-   note:'The per-run instance is not a stack resource. Its launch inputs (AMI, subnet, this security group, this instance profile, IMDSv2 hop limit 1, encrypted gp3 root, terminate on shutdown) live in the private deployment input browserDeployment.launch.'},
+   note:'The per-run instance is not a stack resource. browserDeployment.launch carries exactly ImageId, InstanceType, SubnetId, SecurityGroupIds and IamInstanceProfile:{Name} (compileNativeDeployment refuses other keys); IMDSv2 with hop limit 1, the encrypted gp3 root volume and terminate-on-shutdown come from the browser host AMI and the account instance defaults, and the qualification host readback (runbook 4c) verifies them.'},
   Resources:{
    BrowserHostLogGroup:{Type:'AWS::Logs::LogGroup',DeletionPolicy:'Retain',UpdateReplacePolicy:'Retain',Properties:{
     LogGroupName:b.logGroupName,RetentionInDays:7,Tags:tags}},
@@ -48,8 +48,9 @@ export function compileProvisionedBrowserHostTemplate(input){
     // Ingress: only Control reaches the one pinned listener (viewer, browser operations, lifecycle route).
     SecurityGroupIngress:[{IpProtocol:'tcp',FromPort:BROWSER_HOST_LISTENER_PORT,ToPort:BROWSER_HOST_LISTENER_PORT,
      SourceSecurityGroupId:b.controlSecurityGroupId,Description:'Control to the pinned host listener'}],
-    // Egress: Control currentness, VPC DNS, and the public web for the egress proxy (every connection is decided
-    // there by the run policy; link-local, metadata and private ranges are refused by the policy and the host nft rules).
+    // Egress: Control currentness, VPC DNS, and the public web. The security group is one layer: the run policy decides
+    // every connection in the supervisor, and the host nft guard (network/proxy-guard.mjs) confines the proxy uid to
+    // public TCP 80/443, dropping private, link-local and metadata ranges on the host itself.
     SecurityGroupEgress:[
      {IpProtocol:'tcp',FromPort:443,ToPort:443,DestinationSecurityGroupId:b.controlSecurityGroupId,Description:'Host to the Control private listener'},
      {IpProtocol:'udp',FromPort:53,ToPort:53,CidrIp:b.vpcCidr,Description:'VPC resolver'},
@@ -71,7 +72,8 @@ export function compileProvisionedBrowserHostTemplate(input){
   },
   Outputs:{
    BrowserHostSecurityGroupId:{Value:{Ref:'BrowserHostSecurityGroup'},Description:'browserDeployment.launch.SecurityGroupIds[0]'},
-   BrowserHostInstanceProfileArn:{Value:{'Fn::GetAtt':['BrowserHostInstanceProfile','Arn']},Description:'browserDeployment.launch.IamInstanceProfile.Arn'},
+   BrowserHostInstanceProfileName:{Value:{Ref:'BrowserHostInstanceProfile'},Description:'browserDeployment.launch.IamInstanceProfile.Name and placement.iamInstanceProfile'},
+   BrowserHostInstanceProfileArn:{Value:{'Fn::GetAtt':['BrowserHostInstanceProfile','Arn']},Description:'For the role inventory only; the launch input takes the Name'},
    BrowserHostLogGroupName:{Value:{Ref:'BrowserHostLogGroup'}},
   },
  });
