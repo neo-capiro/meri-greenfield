@@ -9,10 +9,10 @@ import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {assertHostAllocation,assertHostRunBinding} from '../binding.mjs';
 import {assertNetworkFirewallReadback} from './firewall.mjs';
 import {PROXY_DENIED_IPV4} from './public-egress.mjs';
-import {runLinuxNetworkCommand} from './confinement.mjs';
+import {runLinuxNetworkCommand,NETWORK_TOOLS} from './confinement.mjs';
 
 export const BROWSER_PROXY_GUARD_SCHEMA='meri-d005-browser-proxy-guard/1';
-const NFT='/usr/sbin/nft';
+const NFT=NETWORK_TOOLS.nft;
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const uid=n=>Number.isSafeInteger(n)&&n>=1000&&n<=65533;
 const meta=(key,right)=>({match:{op:'==',left:{meta:{key}},right}});

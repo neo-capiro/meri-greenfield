@@ -11,7 +11,7 @@
  *  private byte is ever written to stdout, an observation, a config projection or a return value.
  */
 import {X509Certificate,createHash,createPublicKey,createPrivateKey} from 'node:crypto';
-import {readFileSync,lstatSync,mkdirSync,openSync,closeSync,fstatSync,writeSync,fsyncSync,linkSync,unlinkSync,constants} from 'node:fs';
+import {readFileSync,lstatSync,mkdirSync,openSync,closeSync,fstatSync,writeSync,fsyncSync,linkSync,unlinkSync,realpathSync,constants} from 'node:fs';
 import {dirname,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {
@@ -538,7 +538,10 @@ export async function main({argv=process.argv,env=process.env,stdout=process.std
  }
 }
 
-if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1]){
+// The SSM document runs this module through the /opt/meri/native-bootstrap.mjs symlink; Node loads the real file, so the
+// entry check compares real paths (a missing argv path is not this module).
+const entry=()=>{try{return realpathSync(process.argv[1]);}catch{return null;}};
+if(process.argv[1]&&fileURLToPath(import.meta.url)===entry()){
  const code=await main();
  process.exitCode=code;
 }

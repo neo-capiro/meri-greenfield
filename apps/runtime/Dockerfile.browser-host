@@ -11,13 +11,14 @@
 # Pins:
 #  - NODE_IMAGE is the same immutable linux/arm64 Node 24.22.1 trixie-slim child manifest the runtime image uses
 #    (infra/product-preview/runtime-packages.lock.json: nodeImageUri).
-#  - DEBIAN_SNAPSHOT fixes every apt candidate; versions are recorded from the real build (dpkg inventory below) instead of
-#    being guessed per architecture here. Bump the snapshot deliberately and re-scan.
+#  - DEBIAN_SNAPSHOT fixes every apt candidate, and the base image's own packages are upgraded to it (security fixes
+#    such as expat and brotli land in the base packages); versions are recorded from the real build (dpkg inventory below)
+#    instead of being guessed per architecture here. Bump the snapshot deliberately and re-scan.
 #  - The browser-host lockfile (apps/runtime/browser-host-service/image/package-lock.json) pins @playwright/mcp 0.0.83,
 #    playwright and playwright-core 1.64.0-alpha-1790635538000 by registry integrity; regenerate it only with
 #    `npm install --package-lock-only --ignore-scripts` in that directory when image/package.json changes.
 ARG NODE_IMAGE=public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8
-ARG DEBIAN_SNAPSHOT=20261009T000000Z
+ARG DEBIAN_SNAPSHOT=20261102T000000Z
 
 FROM ${NODE_IMAGE} AS snapshot
 ARG DEBIAN_SNAPSHOT
@@ -34,6 +35,7 @@ RUN set -eux; \
       > /etc/apt/sources.list.d/meri-snapshot.sources; \
     apt-get update; apt-get install -y --no-install-recommends --no-remove ca-certificates; \
     sed -i 's#http://snapshot.debian.org#https://snapshot.debian.org#g' /etc/apt/sources.list.d/meri-snapshot.sources; \
+    apt-get update; apt-get upgrade -y --no-install-recommends; \
     apt-get clean; rm -rf /var/lib/apt/lists/*
 
 # ---------------------------------------------------------------- build: dependencies, helpers, Chromium
@@ -43,8 +45,12 @@ WORKDIR /opt/meri
 # The host service imports shared worker and runtime modules; their locked dependency sets are installed exactly as the
 # runtime image installs them (the Claude Agent SDK package arrives as a module dependency of shared worker modules and is
 # never invoked here: this host has no query, provider credential or Bash process).
-COPY package.json package-lock.json ./
-RUN npm ci --ignore-scripts --no-audit --no-fund --omit=dev
+# The repository root declares no runtime dependency; the shared contracts and the modules beside them resolve ajv,
+# ajv-formats, canonicalize and saxes from /opt/meri/node_modules, so the contracts' own locked runtime set is installed
+# there.
+COPY packages/contracts/package.json packages/contracts/package-lock.json /tmp/meri-contracts-deps/
+RUN npm ci --prefix /tmp/meri-contracts-deps --ignore-scripts --no-audit --no-fund --omit=dev && \
+    mv /tmp/meri-contracts-deps/node_modules /opt/meri/node_modules && rm -rf /tmp/meri-contracts-deps
 COPY apps/runtime/package.json apps/runtime/package-lock.json ./apps/runtime/
 RUN npm ci --prefix apps/runtime --ignore-scripts --no-audit --no-fund --omit=dev
 COPY apps/worker/conversation/package.json apps/worker/conversation/package-lock.json ./apps/worker/conversation/
@@ -65,16 +71,17 @@ RUN set -eux; \
       -o /opt/meri/meri-host-relay-launcher apps/worker/conversation/host/network/native/meri-host-relay-launcher.c; \
     sha256sum /opt/meri/meri-host-launcher /opt/meri/meri-host-relay-launcher > /opt/meri/browser-host/helper-hashes.txt; \
     cat /opt/meri/browser-host/helper-hashes.txt
-# Playwright's pinned Chromium (revision 1247 for this playwright-core) under the fixed browsers path. The setuid sandbox
-# helper is not used: the launcher sets NoNewPrivs before exec, so Chromium runs its user-namespace sandbox; the AMI must
-# allow unprivileged user namespaces.
+# Playwright's pinned Chromium (revision 1247 for this playwright-core) under the fixed browsers path, with its headless
+# shell, which is the executable a `headless: true` launch actually runs; both are hashed. The setuid sandbox helper is not
+# used: the launcher sets NoNewPrivs before exec, so Chromium runs its user-namespace sandbox; the AMI must allow
+# unprivileged user namespaces.
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/meri/browsers
 RUN set -eux; \
     node browser-host/node_modules/playwright-core/cli.js install chromium; \
-    test -d /opt/meri/browsers/chromium-1247; \
+    test -d /opt/meri/browsers/chromium-1247 && test -d /opt/meri/browsers/chromium_headless_shell-1247; \
     chmod -R a+rX,u-s,g-s /opt/meri/browsers; \
-    find /opt/meri/browsers -maxdepth 3 -type f -name 'chrome' -exec sha256sum {} \; > /opt/meri/browser-host/chromium-hashes.txt; \
-    test -s /opt/meri/browser-host/chromium-hashes.txt; cat /opt/meri/browser-host/chromium-hashes.txt; \
+    find /opt/meri/browsers -maxdepth 3 -type f \( -name chrome -o -name chrome-headless-shell \) -exec sha256sum {} \; | sort -k2 > /opt/meri/browser-host/chromium-hashes.txt; \
+    test "$(wc -l < /opt/meri/browser-host/chromium-hashes.txt)" = 2; cat /opt/meri/browser-host/chromium-hashes.txt; \
     test -z "$(find /opt/meri/browsers -perm /6000 -type f -print)"
 
 # ---------------------------------------------------------------- host image
@@ -85,9 +92,12 @@ RUN set -eux; apt-get update; \
       libnss3 libnspr4 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
       libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2t64 libatspi2.0-0t64 libx11-6 libxcb1 libxext6 \
       libglib2.0-0t64 libexpat1 libdbus-1-3 fonts-liberation fonts-noto-core; \
-    apt-get clean; rm -rf /var/lib/apt/lists/*; \
-    test -x /usr/sbin/ip && test -x /usr/sbin/nft && test -x /usr/sbin/ss
+    apt-get clean; rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/partial; \
+    userdel --remove node
 COPY --from=builder /opt/meri /opt/meri
+# The network executables the host service runs are checked at the exact paths its source names (confinement.mjs
+# NETWORK_TOOLS), so a package that moves one fails this build instead of the first run on an instance.
+RUN node --input-type=module -e "import {accessSync,constants} from 'node:fs';import {NETWORK_TOOLS} from '/opt/meri/apps/worker/conversation/host/network/confinement.mjs';for(const file of Object.values(NETWORK_TOOLS)){accessSync(file,constants.X_OK);console.log(file);}"
 # The bootstrap program the SSM document runs is this tree's protected-bootstrap module at its fixed path (its bytes are
 # programSha256); the helpers are root-only executables at their fixed protected paths (helperSha256).
 RUN set -eux; \
@@ -102,6 +112,8 @@ RUN set -eux; \
     mkdir -p /var/lib/meri/browser-workspaces /var/lib/meri/native-bootstrap /run/netns; \
     chmod 0755 /var/lib/meri/browser-workspaces; chmod 0700 /var/lib/meri/native-bootstrap
 # Privilege-bit reduction and inventory: no SUID/SGID regular file anywhere, exact package set recorded from the real build.
+# Nothing is left that root without capabilities cannot read (the build probe searches every file): the base image's unused
+# node account with its private home and apt's private partial directory are removed above.
 RUN set -eux; \
     find / -xdev \( -path /proc -o -path /sys -o -path /dev -o -path /run \) -prune -o -type f -perm /6000 -print | while IFS= read -r f; do chmod u-s,g-s "$f"; done; \
     test -z "$(find / -xdev \( -path /proc -o -path /sys -o -path /dev -o -path /run \) -prune -o -type f -perm /6000 -print)"; \

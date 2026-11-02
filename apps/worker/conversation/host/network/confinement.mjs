@@ -5,7 +5,11 @@ import {openSync,closeSync,fstatSync,statfsSync,readFileSync,lstatSync,constants
 import {createNetworkPlan} from './plan.mjs';
 import {buildNetworkFirewalls,buildHostRelayDenyFirewall,assertNetworkFirewallReadback,buildFirewallReplaceTransaction} from './firewall.mjs';
 
-const IP='/usr/sbin/ip',NFT='/usr/sbin/nft',SYSCTL='/usr/sbin/sysctl',SS='/usr/sbin/ss',NSFS_MAGIC=0x6e736673;
+/** The exact executables the host runs, at their Debian trixie (usr-merged) package paths: iproute2 installs ip under
+ * both /usr/bin and /usr/sbin but ss only as /usr/bin/ss; nftables and procps install nft and sysctl under /usr/sbin. The
+ * browser host image checks every one of these paths at build time (apps/runtime/Dockerfile.browser-host). */
+export const NETWORK_TOOLS=Object.freeze({ip:'/usr/bin/ip',nft:'/usr/sbin/nft',sysctl:'/usr/sbin/sysctl',ss:'/usr/bin/ss'});
+const {ip:IP,nft:NFT,sysctl:SYSCTL,ss:SS}=NETWORK_TOOLS,NSFS_MAGIC=0x6e736673;
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const parse=(s)=>{try{return JSON.parse(s);}catch{fail('HOST_NETWORK_READBACK_UNKNOWN');}};
 const array=s=>{const value=parse(s);if(!Array.isArray(value))fail('HOST_NETWORK_READBACK_UNKNOWN');return value;};
