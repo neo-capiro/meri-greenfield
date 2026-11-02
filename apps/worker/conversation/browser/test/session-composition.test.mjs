@@ -209,6 +209,19 @@ function hostedWorkflow(t,{resolver=true,widen=false}={}){
  return {...x,native:x.state,state,host,open:()=>host.open({binding,policy,deadlineMs:Date.now()+60000,manifest:workflowManifest})};
 }
 
+test('the first current workflow read is cancellable: closing the host during it ends the read and the open',async t=>{
+ const x=hostedWorkflow(t),entered=Promise.withResolvers();let seen;
+ const host=createBrowserSessionHost({binding,cwd,installation,upstream:x.upstream,now:Date.now,
+  contexts:{async create(){x.state.created++;return x.context;}},current:x.args.current,hold:x.args.hold,
+  siteWorkflows:{resolve:({signal})=>{seen=signal;entered.resolve();return new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(signal.reason),{once:true}));}},
+  processes:{waitForExit:x.args.ports.waitForExit},dispose:x.args.ports.dispose,
+  relay:{async bind(){return {mcpServers:{},async close(){}};}},controls:{async bind(){return {async close(){}};}}});
+ const opening=host.open({binding,policy:siteWorkflowPolicy(x.args.policy,workflowManifest),deadlineMs:Date.now()+60000,manifest:workflowManifest});
+ await entered.promise;assert.ok(seen instanceof AbortSignal);assert.equal(seen.aborted,false);
+ void host.destroy({trigger:'test'}).catch(()=>{});
+ await assert.rejects(opening);assert.equal(seen.aborted,true);assert.equal(x.state.created,0);
+});
+
 test('host refuses workflow creation without its canonical current resolver or with wider policy',async t=>{
  for(const options of [{resolver:false},{widen:true}]){
   const x=hostedWorkflow(t,options);await assert.rejects(x.open(),/BROWSER_WORKFLOW_(CURRENT_REQUIRED|POLICY_REFUSED)/);assert.equal(x.state.created,0);

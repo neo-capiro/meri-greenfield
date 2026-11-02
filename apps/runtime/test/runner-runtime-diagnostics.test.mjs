@@ -156,3 +156,10 @@ test('SDK-tagged failures and SyntaxErrors report msg=templated, never a hash of
  // Constant messages still hash, so the generator (scripts/diagnostics) can resolve them.
  assert.equal(detail(await firstRaw(Error('LIFECYCLE_EXECUTION_UNKNOWN')))[1],firstFailureMessageHash('LIFECYCLE_EXECUTION_UNKNOWN'));
 });
+
+test('a latched upload Read failure is named with its run-owner cause',async()=>{
+ const lines=[],deadline=Object.assign(Error('DEADLINE'),{code:'DEADLINE'});
+ const latched=Object.assign(Error('UPLOAD_SOURCE_UNAVAILABLE'),{code:'UPLOAD_SOURCE_UNAVAILABLE',cause:deadline});
+ await assert.rejects(withRunnerDiagnostics(()=>atRunnerStage('activity-stream',async()=>{throw latched;}),{write:line=>lines.push(line)}),error=>error===latched);
+ assert.match(lines[0],/^RUNNER_FIRST_FAILURE origin=runtime stage=activity-stream code=UPLOAD_SOURCE_UNAVAILABLE class=ERROR exit=none signal=none cause=DEADLINE /u);
+});
