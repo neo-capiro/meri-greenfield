@@ -46,9 +46,9 @@ Routing the model is given:
 
 ## Release owner inputs
 
-- Preview ALB rules (host-scoped, before the preview catch-all): `POST /api/clio/tools/semantic_search_bills`, `/api/clio/tools/semantic_search_grants`, `/api/clio/tools/semantic_search_contract_opportunities`.
+- Routes `POST /api/clio/tools/semantic_search_bills`, `/api/clio/tools/semantic_search_grants` and `/api/clio/tools/semantic_search_contract_opportunities`: no new ALB rule is expected, because the existing preview rule for `/api/clio/tools/<id>` (`first-chat-core-routes.json`) covers them; the release owner confirms this against the live ALB.
 - Preview Core task `MERI_TOOL_ALLOWLIST`: add the three ids (the rosters in `deployment-inputs.json` carry them for approval).
-- Core migrations `20281102100000_funding_grant_chunk_embedding_hnsw` and `20281102100001_funding_notice_chunk_embedding_hnsw` (one `CREATE INDEX CONCURRENTLY` each): snapshot the clone, `prisma migrate deploy`, then `SELECT indexrelid::regclass FROM pg_index WHERE NOT indisvalid;` must be empty and one `EXPLAIN` per family must show the partial index. The preview Core task must run with `EMBEDDING_MODEL=amazon.titan-embed-text-v2:0` and Titan invoke on its task role, matching the stored model, or every search is empty. No new ALB rule is expected: `first-chat-core-routes.json` already matches `/api/clio/tools/<id>` (confirm live).
+- Core migrations `20281102100000_funding_grant_chunk_embedding_hnsw` and `20281102100001_funding_notice_chunk_embedding_hnsw` (one `CREATE INDEX CONCURRENTLY` each): snapshot the clone, `prisma migrate deploy`, then `SELECT indexrelid::regclass FROM pg_index WHERE NOT indisvalid;` must be empty and one `EXPLAIN` per family must show the partial index. The preview Core task must run with `EMBEDDING_MODEL=amazon.titan-embed-text-v2:0` and Titan invoke on its task role, matching the stored model, or every search is empty.
 
 ## Live-only
 

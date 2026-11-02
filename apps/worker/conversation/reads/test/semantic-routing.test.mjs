@@ -63,13 +63,14 @@ test('each SQL sample question carries a cue the sentence routes to text-to-SQL,
 
 test('the answer cites records and never names the method or tool; the family guidance says what is returned to cite',()=>{
  const text=sentence(readPromptSentence(true,[...sql,...semantic]));
- assert.match(text,/Cite each record you use by its title and identifier from the returned reference/);
+ assert.match(text,/Cite each record you use by its title and its public number \(bill number, grant opportunity number, notice or solicitation number\)/);
+ assert.doesNotMatch(text,/identifier from the returned reference/,'internal references are never read out to the user');
  assert.match(text,/say the page is the nearest matches and not a count/);
  assert.match(text,/never name the search method or tool to the user/);
  const guidance=READ_FAMILY_GUIDANCE['semantic-search'];
  assert.equal(READ_FAMILIES['semantic-search'].clientScope,'optional');
  assert.equal(guidance.structured,false,'a semantic read never carries the SQL-first sentence of a structured family');
- assert.match(guidance.returns,/stable reference \(congress_bill, federal_grant or sam_opportunity plus id\) to cite/);
+ assert.match(guidance.returns,/stable reference \(congress_bill, federal_grant or sam_opportunity plus id\); cite by title and public number \(bill, opportunity or solicitation number\)/);
  assert.match(guidance.states,/total is the page size, never a count/);
  // The legacy cross-domain candidate search no longer advertises bills, grants or contract opportunities as its coverage.
  assert.doesNotMatch(READ_FAMILY_GUIDANCE['data-search'].covers,/outreach, bills, grants, awards/);

@@ -50,7 +50,7 @@ test('the model-facing description names what the read covers, how to cite and w
  const {tools}=await m.client.listTools();const tool=tools.find(row=>row.name==='semantic_search_contract_opportunities');assert.ok(tool);
  assert.match(tool.description,/^Find contract opportunities by meaning\. /);
  assert.match(tool.description,/Covers: Meaning-based discovery of public federal bills, Grants\.gov grants and SAM\.gov contract opportunities/);
- assert.match(tool.description,/stable reference \(congress_bill, federal_grant or sam_opportunity plus id\) to cite/);
+ assert.match(tool.description,/stable reference \(congress_bill, federal_grant or sam_opportunity plus id\); cite by title and public number/);
  assert.match(tool.description,/total is the page size, never a count/);
  assert.doesNotMatch(tool.description,/Structured questions:/,'a semantic read is not a structured family');
 });
