@@ -11,6 +11,7 @@ import {createViewerFrameOwner} from './viewer-frame.mjs';
 import {own} from '../../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {browserRefusalCode} from '../refusals.mjs';
 import {siteSessionExpired} from '../site-workflows/manifest.mjs';
+import {classifyInteraction} from './interaction-classifier.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
 export function createBrowserSessionOwner({context,invoke,policy,manifest=null,current,hold,ports,now=Date.now,deadlineMs}){
  if(typeof invoke!=='function'||typeof current!=='function'||typeof hold!=='function'||!context||
@@ -77,7 +78,12 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
   }finally{life.close();busy=false;}})();
   const tracked=operation.then(()=>undefined,()=>undefined);pending.add(tracked);try{return await operation;}finally{pending.delete(tracked);}
  }
- return Object.freeze({call,state:()=>fence.state(),prepareTakeover,destroy:({trigger})=>destroy(trigger),
+ /** Permission-gate classification of one interaction against the live pages; no page effect. */
+ async function classify({tool,input,signal}={}){
+  if(closed)fail('BROWSER_SESSION_ENDING');await assertCurrent(signal);
+  return classifyInteraction({tool,input,pages:context.pages(),sensitiveSelectors:manifest?.sensitiveSelectors??[],signal});
+ }
+ return Object.freeze({call,classify,state:()=>fence.state(),prepareTakeover,destroy:({trigger})=>destroy(trigger),
   async readState({signal}={}){
    const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+10000),now,signal,errorFactory:code=>Object.assign(Error(code),{code})});
    try{await life.run(assertCurrent);const state=fence.state();return {...state,leaseExpiresAtMs:state.leaseExpiresAtMs===null?null:Math.min(state.leaseExpiresAtMs,deadlineMs)};}finally{life.close();}

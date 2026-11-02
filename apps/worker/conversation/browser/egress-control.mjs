@@ -4,7 +4,7 @@
  * - `createEgressGrant` (worker side) binds one conversation run to the digest of its effective platform ∧ tenant ∧
  *   role policy, the same validated record the browser fragment uses, with an expiry. It carries no credential.
  * - `createEgressControl` (host side) admits a connection only when: the grant is current and not revoked; the
- *   effective allowlist admits its origin (`egressDecision`, so every hop, sub-resource, fetch, WebSocket, download
+ *   effective destination policy admits its origin (`egressDecision`, so every hop, sub-resource, fetch, WebSocket, download
  *   and tunnel is decided by one rule); its port is 80 or 443; and EVERY address the controlled resolver returns for
  *   the name is public. It answers with the single checked address the proxy must connect to, so a later DNS answer
  *   (rebinding) can never redirect an admitted connection. Each admission resolves afresh.

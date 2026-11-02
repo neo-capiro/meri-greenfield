@@ -171,7 +171,7 @@ export function createHostCurrentnessClient({allocation,binding,hostIdentity,pur
     const policy=facts.facts.browserPolicy;
     if(!policy)fail(); // no active browser policy: no canonical workflow can be admitted
     const manifest=validateSiteWorkflowManifest(data(workflow.manifest),
-     {platformMaximumOrigins:validateBrowserPolicy(data(policy)).allowedOrigins});
+     {platform:validateBrowserPolicy(data(policy))});
     // The SAVED canonical selection (from the same fresh facts) is the only thing that admits this
     // manifest: no selection, a foreign site/workflow/version or a changed digest is refused.
     if(facts.facts.siteWorkflow===undefined)fail();

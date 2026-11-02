@@ -53,7 +53,17 @@ test('the control enforces the effective tenant/role-narrowed list, not the plat
   for(const kind of ['navigation','redirect','subresource','fetch','download','tunnel'])assert.equal((await c.admit({kind,url:`${APPROVED[2]}/x`})).code,'BROWSER_ORIGIN_NOT_ALLOWED',`#${i} ${kind}: platform-approved but narrowed away`);
   assert.equal((await c.admit({kind:'websocket',url:'wss://archive.example/s'})).code,'BROWSER_ORIGIN_NOT_ALLOWED',`#${i} websocket`);
  }
- assert.equal((await control({policy:DEFAULT_BROWSER_POLICY}).c.admit({kind:'navigation',url:`${APPROVED[0]}/`})).code,'BROWSER_NO_ALLOWED_DESTINATIONS','an empty effective list admits nothing');
+ assert.equal((await control({policy:{enabled:true,destinations:'listed'}}).c.admit({kind:'navigation',url:`${APPROVED[0]}/`})).code,'BROWSER_NO_ALLOWED_DESTINATIONS','an empty effective list admits nothing');
+});
+test('under the open default any public origin is admitted and pinned; a denied host is refused before any lookup, on every kind and in proxy form',async()=>{
+ const {c,r}=control({policy:{...DEFAULT_BROWSER_POLICY,deniedHosts:['app.capiro.example']}});
+ assert.deepEqual(await c.admit({kind:'navigation',url:'https://unlisted.example/start'}),{ok:true,origin:'https://unlisted.example',connect:{address:'93.184.215.17',port:443}});
+ for(const kind of ['navigation','redirect','subresource','fetch','download','tunnel'])assert.equal((await c.admit({kind,url:'https://app.capiro.example/x'})).code,'BROWSER_HOST_DENIED',kind);
+ assert.equal((await c.admit({kind:'websocket',url:'wss://sso.app.capiro.example/s'})).code,'BROWSER_HOST_DENIED');
+ assert.equal((await c.admit({kind:'navigation',url:'http://169.254.169.254/'})).code,'BROWSER_URL_NOT_PUBLIC');
+ assert.equal((await c.admitProxyRequest({method:'CONNECT',target:'app.capiro.example:443'})).code,'BROWSER_HOST_DENIED');
+ assert.equal((await c.admitProxyRequest({method:'GET',target:'http://app.capiro.example/x'})).code,'BROWSER_HOST_DENIED');
+ assert.deepEqual(r.lookups,['unlisted.example'],'denied hosts are refused before DNS');
 });
 test('resolved-address and rebinding protection: any denied answer refuses the name, every admission resolves afresh',async()=>{
  let answer=['93.184.215.14'];

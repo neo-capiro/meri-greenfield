@@ -1,6 +1,6 @@
-/** Executable reference for the mandatory `effective-origin-allowlist` egress requirement (activation.mjs): the
+/** Executable reference for the mandatory `destination-policy` egress requirement (activation.mjs): the
  * destination decision the browser host's egress control must reproduce for every connection of a conversation run.
- * It applies the platform security limits and then the run's effective allowlist (`checkBrowserUrl`) to each
+ * It applies the platform security limits and then the run's effective destination policy (`checkBrowserUrl`) to each
  * connection kind; WebSocket URLs are compared by their http/https origin. Pure and synchronous: it does not resolve
  * DNS, so the resolved-address and rebinding requirements still apply at the host in addition. This is not a network
  * control and proves nothing about the real browser; it fixes the expected decisions for host qualification. The

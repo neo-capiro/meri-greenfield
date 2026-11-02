@@ -5,12 +5,13 @@
  *               ∧ platform role ceiling ∧ optional tenant narrowing of that role ceiling
  *
  * Capiro owns the platform record (maximum, defaults, role ceilings) and supplies it as trusted configuration. Its
- * `maximum.allowedOrigins` is the platform-approved destination set; `defaults.allowedOrigins` is the subset enabled
- * for a tenant that has not chosen. Tenant admins may disable or narrow, or enable approved origins the default left
- * out, but only inside the maximum, and may only narrow a role ceiling; a value that would widen either refuses with a
- * stable code and is never clipped silently. `enabled` ANDs, `tools` and `allowedOrigins` intersect, timeouts and
- * limits take the minimum. An empty effective allowlist leaves the capability on with no destination. The platform
- * security limits (`public-web.mjs`) apply to every record and cannot be removed by any of them.
+ * `maximum.destinations` is `public-web` (the product default) or `listed` with `maximum.allowedOrigins`; its
+ * `maximum.deniedHosts` are the platform denials every record keeps. Tenant admins may disable, narrow to a list or
+ * narrow a list further, add denied hosts, and may only narrow a role ceiling; a value that would widen either refuses
+ * with a stable code and is never clipped silently. `enabled` ANDs, `tools` intersect, `destinations` is `public-web`
+ * only when both are, `allowedOrigins` intersect (a list beside `public-web` is the list), `deniedHosts` union,
+ * timeouts and limits take the minimum. An empty effective list under `listed` leaves the capability on with no
+ * destination. The platform security limits (`public-web.mjs`) apply to every record and cannot be removed.
  * No I/O, clock or authority: the control owner (Core) supplies all inputs from trusted records and the user's
  * server-side role. */
 import {own} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -23,7 +24,9 @@ function fieldWithin(key,c,m){
  switch(key){
   case 'enabled':return !c.enabled||m.enabled;
   case 'tools':return c.tools.every(t=>m.tools.includes(t));
-  case 'allowedOrigins':return c.allowedOrigins.every(o=>m.allowedOrigins.includes(o));
+  case 'destinations':return c.destinations==='listed'||m.destinations==='public-web';
+  case 'allowedOrigins':return m.destinations==='public-web'||c.allowedOrigins.every(o=>m.allowedOrigins.includes(o));
+  case 'deniedHosts':return m.deniedHosts.every(h=>c.deniedHosts.includes(h));
   case 'timeouts':return c.timeouts.actionMs<=m.timeouts.actionMs&&c.timeouts.navigationMs<=m.timeouts.navigationMs;
   case 'downloads':return (!c.downloads.enabled||m.downloads.enabled)&&c.downloads.formats.every(f=>m.downloads.formats.includes(f))&&c.downloads.maxBytes<=m.downloads.maxBytes&&c.downloads.maxFiles<=m.downloads.maxFiles;
  }
@@ -41,7 +44,10 @@ function normalize(raw){
 /** Intersection of two complete policies; list order follows the first operand, so `intersect(p,p)` is `p`. */
 export function intersectBrowserPolicies(a,b){
  const pa=assertFullBrowserPolicy(a),pb=assertFullBrowserPolicy(b),both=(x,y)=>x.filter(v=>y.includes(v));
- return assertFullBrowserPolicy(normalize({enabled:pa.enabled&&pb.enabled,tools:both(pa.tools,pb.tools),allowedOrigins:both(pa.allowedOrigins,pb.allowedOrigins),
+ const listed=[pa,pb].filter(p=>p.destinations==='listed'),destinations=listed.length?'listed':'public-web';
+ const allowedOrigins=listed.length===2?both(pa.allowedOrigins,pb.allowedOrigins):listed.length===1?[...listed[0].allowedOrigins]:[];
+ const deniedHosts=[...pa.deniedHosts,...pb.deniedHosts.filter(h=>!pa.deniedHosts.includes(h))];
+ return assertFullBrowserPolicy(normalize({enabled:pa.enabled&&pb.enabled,tools:both(pa.tools,pb.tools),destinations,allowedOrigins,deniedHosts,
   timeouts:{actionMs:Math.min(pa.timeouts.actionMs,pb.timeouts.actionMs),navigationMs:Math.min(pa.timeouts.navigationMs,pb.timeouts.navigationMs)},
   downloads:{enabled:pa.downloads.enabled&&pb.downloads.enabled,formats:both(pa.downloads.formats,pb.downloads.formats),maxBytes:Math.min(pa.downloads.maxBytes,pb.downloads.maxBytes),maxFiles:Math.min(pa.downloads.maxFiles,pb.downloads.maxFiles)}}));
 }
@@ -67,7 +73,7 @@ export function assertPlatformBrowserLimits(value){
 /** Raw field types a partial tenant/role record may carry, checked BEFORE any merge or normalization so that a value
  * of the wrong type (for example `enabled:'yes'`) refuses instead of being coerced. Value ranges, vocabularies and
  * widening are checked afterwards on the merged complete record. */
-const PARTIAL_TYPES=Object.freeze({enabled:v=>typeof v==='boolean',tools:Array.isArray,allowedOrigins:Array.isArray});
+const PARTIAL_TYPES=Object.freeze({enabled:v=>typeof v==='boolean',tools:Array.isArray,destinations:v=>typeof v==='string',allowedOrigins:Array.isArray,deniedHosts:Array.isArray});
 const NESTED_TYPES=Object.freeze({
  timeouts:Object.freeze({actionMs:Number.isSafeInteger,navigationMs:Number.isSafeInteger}),
  downloads:Object.freeze({enabled:v=>typeof v==='boolean',formats:Array.isArray,maxBytes:Number.isSafeInteger,maxFiles:Number.isSafeInteger})});
@@ -82,14 +88,18 @@ function typedPartial(fields){
  }
  return typed;
 }
-/** Applies a partial tenant override to `base`; `timeouts`/`downloads` merge field by field. Raw field types are
+/** Applies a partial tenant override to `base`; `timeouts`/`downloads` merge field by field and `deniedHosts` add to
+ * the base's (a platform denial is never removed). Raw field types are
  * validated first (`typedPartial`); only then are values merged and normalized. Every overridden key must stay
  * within `ceiling`. */
 function override(base,partial,ceiling,code){
  let raw;try{raw=own(partial,[],[...BROWSER_POLICY_KEYS]);}catch{fail('BROWSER_TENANT_SETTINGS_REFUSED');}
  const fields=typedPartial(raw);
  const nested=key=>fields[key]===undefined?base[key]:{...base[key],...fields[key]};
- const merged=full(()=>normalize({...base,...fields,timeouts:nested('timeouts'),downloads:nested('downloads')}),'BROWSER_TENANT_SETTINGS_REFUSED');
+ const deniedHosts=fields.deniedHosts===undefined?base.deniedHosts:[...base.deniedHosts,...fields.deniedHosts.filter(h=>!base.deniedHosts.includes(h))];
+ // `destinations:'public-web'` without a list means the open web, not the inherited list; the ceiling check then refuses it under a listed ceiling.
+ const allowedOrigins=fields.allowedOrigins??(fields.destinations==='public-web'?[]:base.allowedOrigins);
+ const merged=full(()=>normalize({...base,...fields,allowedOrigins,deniedHosts,timeouts:nested('timeouts'),downloads:nested('downloads')}),'BROWSER_TENANT_SETTINGS_REFUSED');
  const field=browserWideningField(merged,ceiling,Object.keys(fields));if(field)fail(code,field);
  return merged;
 }

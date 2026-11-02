@@ -1,17 +1,33 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {validateBrowserPolicy,checkBrowserUrl,browserStatus,DEFAULT_BROWSER_POLICY,BROWSER_TOOLS} from '../policy.mjs';
-import {classifyWebUrl,isPublicHost} from '../public-web.mjs';
+import {validateBrowserPolicy,checkBrowserUrl,browserStatus,DEFAULT_BROWSER_POLICY,BROWSER_TOOLS,MAX_DENIED_HOSTS} from '../policy.mjs';
+import {classifyWebUrl,isPublicHost,isDeniedHostEntry,hostDenied} from '../public-web.mjs';
 import {resolveBrowserPolicy,assertTenantBrowserSettings,assertPlatformBrowserLimits} from '../resolution.mjs';
 import {enabledPolicy,APPROVED} from './fixtures.mjs';
 const code=c=>e=>e.code===c;
-test('the capability is on by default and destinations are denied by default: an empty allowlist opens nothing external',()=>{
- for(const p of [validateBrowserPolicy(),validateBrowserPolicy({enabled:true}),validateBrowserPolicy(DEFAULT_BROWSER_POLICY)]){
-  assert.equal(p.enabled,true);assert.deepEqual(p.allowedOrigins,[]);assert.deepEqual(p.tools,BROWSER_TOOLS);
-  assert.deepEqual(browserStatus(p),{capability:'enabled',destinations:'none',allowedOriginCount:0,notice:'BROWSER_NO_ALLOWED_DESTINATIONS'});
-  for(const url of ['https://records.example/a','http://example.com:8080/x','https://8.8.8.8/'])assert.equal(checkBrowserUrl(p,url).code,'BROWSER_NO_ALLOWED_DESTINATIONS',url);
+test('the capability is on by default and opens the public web: no list, no denied hosts, platform limits only',()=>{
+ for(const p of [validateBrowserPolicy(),validateBrowserPolicy({enabled:true}),validateBrowserPolicy(DEFAULT_BROWSER_POLICY),validateBrowserPolicy({enabled:true,destinations:'public-web'})]){
+  assert.equal(p.enabled,true);assert.equal(p.destinations,'public-web');assert.deepEqual(p.allowedOrigins,[]);assert.deepEqual(p.deniedHosts,[]);assert.deepEqual(p.tools,BROWSER_TOOLS);
+  assert.deepEqual(browserStatus(p),{capability:'enabled',destinations:'public-web',allowedOriginCount:0,deniedHostCount:0});
+  for(const url of ['https://records.example/a','http://example.com:8080/x','https://8.8.8.8/','https://www.congress.gov/bill'])assert.equal(checkBrowserUrl(p,url).ok,true,url);
+  assert.equal(checkBrowserUrl(p,'https://records.example./opp').origin,'https://records.example');
   assert.equal(checkBrowserUrl(p,'about:blank',{allowBlank:true}).ok,true);}
  assert.deepEqual(validateBrowserPolicy(validateBrowserPolicy()),validateBrowserPolicy(),'idempotent');
  assert.deepEqual(browserStatus(validateBrowserPolicy({enabled:false})),{capability:'disabled',destinations:'none',allowedOriginCount:0});
+ const none=validateBrowserPolicy({enabled:true,destinations:'listed'});
+ assert.deepEqual(browserStatus(none),{capability:'enabled',destinations:'none',allowedOriginCount:0,deniedHostCount:0,notice:'BROWSER_NO_ALLOWED_DESTINATIONS'});
+ for(const url of ['https://records.example/a','https://8.8.8.8/'])assert.equal(checkBrowserUrl(none,url).code,'BROWSER_NO_ALLOWED_DESTINATIONS',url);
+});
+test('denied hosts refuse the exact name and every name below it before the destination mode; IP literals deny exactly',()=>{
+ const p=validateBrowserPolicy({enabled:true,deniedHosts:['app.capiro.example','meri-preview.capiro.example','8.8.8.8','[2606:4700:4700::1111]']});
+ assert.deepEqual(browserStatus(p),{capability:'enabled',destinations:'public-web',allowedOriginCount:0,deniedHostCount:4});
+ for(const url of ['https://app.capiro.example/','https://APP.capiro.example./x','https://api.app.capiro.example/','http://meri-preview.capiro.example:8080/','https://8.8.8.8/','https://[2606:4700:4700::1111]/'])assert.equal(checkBrowserUrl(p,url).code,'BROWSER_HOST_DENIED',url);
+ for(const url of ['https://capiro.example/','https://notapp.capiro.example/','https://1.8.8.8/','https://[2606:4700:4700::1001]/'])assert.equal(checkBrowserUrl(p,url).ok,true,url);
+ assert.equal(checkBrowserUrl(p,'http://169.254.169.254/').code,'BROWSER_URL_NOT_PUBLIC','platform limits come first');
+ const listed=validateBrowserPolicy(enabledPolicy({deniedHosts:['records.example']}));
+ assert.equal(checkBrowserUrl(listed,`${APPROVED[0]}/x`).code,'BROWSER_HOST_DENIED','a denial beats a listed origin');assert.equal(checkBrowserUrl(listed,`${APPROVED[1]}/x`).ok,true);
+ for(const bad of ['https://app.example','App.Example','localhost','*.example','-a.example','a..example','',' ',1,null,'app.example/'])assert.equal(isDeniedHostEntry(bad),false,String(bad));
+ for(const bad of [['https://app.example'],['app.example','app.example'],Array.from({length:MAX_DENIED_HOSTS+1},(_,i)=>`h${i}.example`),'app.example',null])assert.throws(()=>validateBrowserPolicy({enabled:true,deniedHosts:bad}),e=>e.code==='BROWSER_POLICY'&&e.field==='deniedHosts',JSON.stringify(bad)?.slice(0,60));
+ assert.equal(hostDenied('x.8.8.8.8',['8.8.8.8']),false,'an IP entry denies no name');assert.equal(hostDenied('app.example',[]),false);
 });
 test('every platform-blocked class is refused by the URL classifier regardless of policy',()=>{
  const cases={BROWSER_URL_NOT_PUBLIC:['http://127.0.0.1/','http://127.1/','http://2130706433/','http://0x7f.0.0.1/','http://0.0.0.0/','http://10.0.0.8/','http://172.16.5.4/','http://192.168.1.1/','http://100.64.0.1/','http://169.254.169.254/latest/meta-data/','http://169.254.170.2/v2/credentials','http://198.18.0.1/','http://224.0.0.251/','http://239.255.255.250/','http://255.255.255.255/','http://240.0.0.1/','http://192.0.2.1/',
@@ -25,21 +41,23 @@ test('every platform-blocked class is refused by the URL classifier regardless o
  assert.deepEqual(classifyWebUrl('about:blank',{allowBlank:true}),{ok:true,blank:true});assert.equal(classifyWebUrl('about:blank').code,'BROWSER_URL_SCHEME');
  for(const host of ['sam.gov','www.congress.gov','xn--bcher-kva.example','8.8.8.8','[2606:4700:4700::1111]'])assert.equal(isPublicHost(host),true,host);
 });
-test('only allowlisted origins open, after the platform limits; a trailing-dot host cannot bypass the list',()=>{
- const p=validateBrowserPolicy(enabledPolicy());
- assert.deepEqual(browserStatus(p),{capability:'enabled',destinations:'allowlisted',allowedOriginCount:2});
+test('a policy that names origins is a list: only listed origins open, after the platform limits; a trailing-dot host cannot bypass the list',()=>{
+ const p=validateBrowserPolicy(enabledPolicy());assert.equal(p.destinations,'listed');
+ assert.deepEqual(browserStatus(p),{capability:'enabled',destinations:'allowlisted',allowedOriginCount:2,deniedHostCount:0});
+ assert.equal(validateBrowserPolicy({...DEFAULT_BROWSER_POLICY,allowedOrigins:APPROVED}).destinations,'listed','naming origins narrows an open record to a list');
  assert.equal(checkBrowserUrl(p,'https://records.example/opp').ok,true);assert.equal(checkBrowserUrl(p,'https://records.example./opp').origin,'https://records.example');
  for(const url of ['https://archive.example/','http://records.example/','https://records.example:8443/','https://sub.records.example/'])assert.equal(checkBrowserUrl(p,url).code,'BROWSER_ORIGIN_NOT_ALLOWED',url);
  assert.equal(checkBrowserUrl(p,'http://127.0.0.1/').code,'BROWSER_URL_NOT_PUBLIC');assert.equal(checkBrowserUrl(p,'https://u:p@records.example/').code,'BROWSER_URL_CREDENTIALS');
 });
 test('policy validation refuses unknown keys, unbounded tools, malformed origins and limits, and reports platform-limit origins distinctly',()=>{
  const bad=[{enabled:'yes'},{...enabledPolicy(),extra:1},{...enabledPolicy(),installation:{}},{...enabledPolicy(),sourceScopes:[]},{...enabledPolicy(),tools:['browser_evaluate']},{...enabledPolicy(),tools:['browser_run_code_unsafe']},{...enabledPolicy(),tools:['browser_file_upload']},{...enabledPolicy(),tools:[]},
-  {...enabledPolicy(),allowedOrigins:['https://records.example/path']},{...enabledPolicy(),allowedOrigins:['*']},{...enabledPolicy(),allowedOrigins:null},{...enabledPolicy(),allowedOrigins:['https://records.example:443']},{...enabledPolicy(),allowedOrigins:['https://Records.example']},{...enabledPolicy(),allowedOrigins:['https://records.example','https://records.example']},{...enabledPolicy(),blockedOrigins:[]},
+  {...enabledPolicy(),destinations:'all'},{...enabledPolicy(),destinations:null},{...enabledPolicy(),deniedHosts:['https://app.example']},{...enabledPolicy(),allowedOrigins:['https://records.example/path']},{...enabledPolicy(),allowedOrigins:['*']},{...enabledPolicy(),allowedOrigins:null},{...enabledPolicy(),allowedOrigins:['https://records.example:443']},{...enabledPolicy(),allowedOrigins:['https://Records.example']},{...enabledPolicy(),allowedOrigins:['https://records.example','https://records.example']},{...enabledPolicy(),blockedOrigins:[]},
   {...enabledPolicy(),timeouts:{actionMs:0,navigationMs:30000}},{...enabledPolicy(),downloads:{enabled:true,formats:['exe'],maxBytes:1024,maxFiles:1}},{...enabledPolicy(),downloads:{enabled:true,formats:['pdf'],maxBytes:10**9,maxFiles:1}},{...enabledPolicy(),downloads:{enabled:true,formats:[],maxBytes:1,maxFiles:1}}];
  for(const policy of bad)assert.throws(()=>validateBrowserPolicy(policy),code('BROWSER_POLICY'),JSON.stringify(policy).slice(0,120));
  for(const o of ['http://127.0.0.1','http://localhost','http://169.254.169.254','http://[::1]','http://10.1.2.3','http://[fd00::1]','http://metadata.google.internal','file:///etc','https://user:pw@records.example'])assert.throws(()=>validateBrowserPolicy(enabledPolicy({allowedOrigins:[o]})),code('BROWSER_PLATFORM_LIMIT'),o);
  assert.equal(validateBrowserPolicy(enabledPolicy({allowedOrigins:['http://records.example']})).allowedOrigins[0],'http://records.example','plain http public origins are web origins');
- assert.deepEqual(validateBrowserPolicy(enabledPolicy({allowedOrigins:[]})).allowedOrigins,[],'an empty allowlist is valid and keeps the capability on');
+ assert.equal(validateBrowserPolicy(enabledPolicy({allowedOrigins:[]})).destinations,'public-web','no mode and no list is the open default');
+ assert.equal(validateBrowserPolicy(enabledPolicy({destinations:'listed',allowedOrigins:[]})).destinations,'listed','an empty list under listed is valid and keeps the capability on');
 });
 const role=(over={})=>({...DEFAULT_BROWSER_POLICY,allowedOrigins:APPROVED,...over});
 const platform=(over={})=>({maximum:role(),defaults:role({allowedOrigins:APPROVED.slice(0,2)}),roleCeilings:{member:role(),viewer:role({tools:['browser_navigate','browser_snapshot','browser_take_screenshot'],downloads:{enabled:false,formats:['pdf'],maxBytes:1024,maxFiles:1}})},...over});
@@ -47,7 +65,7 @@ const same=p=>({maximum:p,defaults:p,roleCeilings:{member:p}});
 test('resolution: platform-approved origins from trusted config, defaults on, role ceilings narrow, tenant admins narrow or enable approved origins',()=>{
  const member=resolveBrowserPolicy({platform:platform(),role:'member'});assert.equal(member.enabled,true);assert.deepEqual(member.allowedOrigins,APPROVED.slice(0,2));
  const viewer=resolveBrowserPolicy({platform:platform(),role:'viewer'});assert.deepEqual(viewer.tools,['browser_navigate','browser_snapshot','browser_take_screenshot']);assert.equal(viewer.downloads.enabled,false);
- assert.deepEqual(resolveBrowserPolicy({platform:same(DEFAULT_BROWSER_POLICY),role:'member'}),validateBrowserPolicy(),'source defaults alone: capability on, no destinations');
+ assert.deepEqual(resolveBrowserPolicy({platform:same(DEFAULT_BROWSER_POLICY),role:'member'}),validateBrowserPolicy(),'source defaults alone: capability on, open public web');
  const enabledApproved=resolveBrowserPolicy({platform:platform(),tenant:{browser:{allowedOrigins:[APPROVED[2],APPROVED[0]]}},role:'member'});
  assert.deepEqual(enabledApproved.allowedOrigins,[APPROVED[0],APPROVED[2]],'a tenant may enable an approved origin the default left out (order follows the platform list)');
  const narrowed=resolveBrowserPolicy({platform:platform(),tenant:{browser:{allowedOrigins:[APPROVED[0]],downloads:{maxFiles:3}}},role:'member'});
@@ -57,6 +75,28 @@ test('resolution: platform-approved origins from trusted config, defaults on, ro
  assert.deepEqual(resolveBrowserPolicy({platform:platform(),tenant:{browser:{enabled:false}},role:'member'}),{enabled:false});
  const none=resolveBrowserPolicy({platform:platform(),tenant:{browser:{allowedOrigins:[APPROVED[0]]},roles:{member:{allowedOrigins:[APPROVED[1]]}}},role:'member'});
  assert.equal(none.enabled,true);assert.deepEqual(none.allowedOrigins,[]);assert.equal(browserStatus(none).destinations,'none','a disjoint narrowing leaves the capability on with no destination');
+});
+test('resolution under the open default: tenants narrow to a list or add denied hosts, roles narrow further; nobody removes a platform denial or reopens the web under a list',()=>{
+ const open=(over={})=>({...DEFAULT_BROWSER_POLICY,deniedHosts:['app.capiro.example'],...over});
+ const platformOpen={maximum:open(),defaults:open(),roleCeilings:{member:open(),viewer:open({tools:['browser_navigate','browser_snapshot']})}};
+ const member=resolveBrowserPolicy({platform:platformOpen,role:'member'});
+ assert.equal(member.destinations,'public-web');assert.deepEqual(member.deniedHosts,['app.capiro.example']);
+ assert.equal(checkBrowserUrl(member,'https://www.congress.gov/').ok,true);assert.equal(checkBrowserUrl(member,'https://app.capiro.example/').code,'BROWSER_HOST_DENIED');
+ const listed=resolveBrowserPolicy({platform:platformOpen,tenant:{browser:{allowedOrigins:[APPROVED[0]]}},role:'member'});
+ assert.equal(listed.destinations,'listed');assert.deepEqual(listed.allowedOrigins,[APPROVED[0]]);assert.deepEqual(listed.deniedHosts,['app.capiro.example'],'a tenant list keeps the platform denials');
+ assert.equal(checkBrowserUrl(listed,`${APPROVED[1]}/`).code,'BROWSER_ORIGIN_NOT_ALLOWED');
+ const roleListed=resolveBrowserPolicy({platform:platformOpen,tenant:{roles:{viewer:{allowedOrigins:[APPROVED[1]]}}},role:'viewer'});
+ assert.deepEqual([roleListed.destinations,roleListed.allowedOrigins,roleListed.tools],['listed',[APPROVED[1]],['browser_navigate','browser_snapshot']]);
+ const denied=resolveBrowserPolicy({platform:platformOpen,tenant:{browser:{deniedHosts:['social.example','app.capiro.example']},roles:{member:{deniedHosts:['video.example']}}},role:'member'});
+ assert.deepEqual(denied.deniedHosts,['app.capiro.example','social.example','video.example'],'tenant and role denials add to the platform list');
+ assert.deepEqual(resolveBrowserPolicy({platform:platformOpen,tenant:{browser:{deniedHosts:[]},roles:{member:{deniedHosts:[]}}},role:'member'}).deniedHosts,['app.capiro.example'],'a platform denial cannot be removed');
+ assert.deepEqual(assertTenantBrowserSettings({browser:{deniedHosts:['social.example']}},assertPlatformBrowserLimits(platformOpen)).browser.deniedHosts,['app.capiro.example','social.example'],'write-time view shows the added denial');
+ assert.throws(()=>resolveBrowserPolicy({platform:platform(),tenant:{browser:{destinations:'public-web'}},role:'member'}),e=>e.code==='BROWSER_TENANT_WIDENING_REFUSED'&&e.field==='destinations','a tenant cannot reopen the web under a listed platform');
+ assert.throws(()=>resolveBrowserPolicy({platform:platform(),tenant:{roles:{member:{destinations:'public-web'}}},role:'member'}),e=>e.code==='BROWSER_ROLE_WIDENING_REFUSED'&&e.field==='destinations');
+ assert.throws(()=>resolveBrowserPolicy({platform:{...platform(),defaults:open()},role:'member'}),e=>e.code==='BROWSER_PLATFORM_LIMITS_REFUSED'&&e.field==='defaults.destinations','open defaults under a listed maximum');
+ assert.throws(()=>resolveBrowserPolicy({platform:{...platformOpen,defaults:DEFAULT_BROWSER_POLICY},role:'member'}),e=>e.code==='BROWSER_PLATFORM_LIMITS_REFUSED'&&e.field==='defaults.deniedHosts','defaults without the platform denials');
+ assert.throws(()=>resolveBrowserPolicy({platform:{...platformOpen,roleCeilings:{member:DEFAULT_BROWSER_POLICY}},role:'member'}),e=>e.code==='BROWSER_PLATFORM_LIMITS_REFUSED'&&e.field==='roleCeilings.member.deniedHosts');
+ for(const bad of [{browser:{deniedHosts:['https://x.example']}},{browser:{deniedHosts:'x.example'}},{browser:{destinations:'all'}},{roles:{member:{destinations:1}}}])assert.throws(()=>resolveBrowserPolicy({platform:platformOpen,tenant:bad,role:'member'}),code('BROWSER_TENANT_SETTINGS_REFUSED'),JSON.stringify(bad));
 });
 test('resolution: tenant and role widening attempts refuse with stable codes, platform security limits cannot be removed',()=>{
  const widen=[[platform(),{browser:{allowedOrigins:['https://unapproved.example']}},'allowedOrigins'],[platform(),{browser:{allowedOrigins:[...APPROVED,'https://unapproved.example']}},'allowedOrigins'],

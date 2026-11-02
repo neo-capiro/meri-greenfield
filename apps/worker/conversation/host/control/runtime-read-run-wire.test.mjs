@@ -83,7 +83,7 @@ async function compose({factOverrides={},workflowOverrides={},decide=null,record
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding);
  const capabilityPolicy={},browserPolicy={...enabledPolicy(),allowedOrigins:[...MAX],...policyOverrides};
  const siteWorkflow={siteId:'synthetic-records',workflowId:'download-filings',version:1,
-  manifestSha256:hash(validateSiteWorkflowManifest(manifest(),{platformMaximumOrigins:MAX}))};
+  manifestSha256:hash(validateSiteWorkflowManifest(manifest(),{platform:{enabled:true,allowedOrigins:MAX}}))};
  const scopes=[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:'p1'}];
  const browserCustody={schema:'meri-browser-custody/1',binding:b,
   controlId:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',ownerInstanceId:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
@@ -172,7 +172,7 @@ test('a foreign binding, a bad digest, an out-of-policy origin and a changed sel
  tampered.client.close();
  // A manifest origin outside the fresh canonical policy is refused by the real validator itself.
  const outsideManifest={...manifest(),origins:['https://not-approved.example']};
- assert.throws(()=>validateSiteWorkflowManifest(outsideManifest,{platformMaximumOrigins:MAX}),
+ assert.throws(()=>validateSiteWorkflowManifest(outsideManifest,{platform:{enabled:true,allowedOrigins:MAX}}),
   /SITE_WORKFLOW_/u);
 });
 

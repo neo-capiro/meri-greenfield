@@ -9,8 +9,8 @@ import {assertPlatformBrowserLimits,resolveBrowserPolicy} from '../../worker/con
 import {createPostgresSettingsStore} from '../../control/settings/postgres-store.mjs';
 import {CORE_ROLES} from './capability-policy.mjs';
 const fault=code=>Object.assign(new Error(code),{code});
-/** Product default: browser capability on, no approved external destinations.
- * Browser activation and native qualification remain separate owners. */
+/** Product default: browser capability on, open public web, no denied hosts beyond the platform limits (the deployment's
+ * platform record adds Meri's own application hosts). Browser activation and native qualification remain separate owners. */
 export const DEFAULT_BROWSER_PLATFORM=assertPlatformBrowserLimits({maximum:DEFAULT_BROWSER_POLICY,defaults:DEFAULT_BROWSER_POLICY,
  roleCeilings:Object.fromEntries(CORE_ROLES.map(role=>[role,DEFAULT_BROWSER_POLICY]))});
 export function compileBrowserPlatform(configuration){

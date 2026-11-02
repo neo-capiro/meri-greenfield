@@ -45,11 +45,11 @@ test('in-flight cancellation withholds a late settings result',async()=>{
  const result=read(request({signal:controller.signal}));await started.promise;controller.abort();
  await assert.rejects(result,{code:'CANCELLED'});pending.resolve(null);
 });
-test('Control accepts validated browserPlatform only; missing config approves no external origins',()=>{
- assert.deepEqual(compileBrowserPlatform({}),DEFAULT_BROWSER_PLATFORM);
+test('Control accepts validated browserPlatform only; missing config is the open default without denied hosts',()=>{
+ assert.deepEqual(compileBrowserPlatform({}),DEFAULT_BROWSER_PLATFORM);assert.equal(DEFAULT_BROWSER_PLATFORM.maximum.destinations,'public-web');assert.deepEqual(DEFAULT_BROWSER_PLATFORM.maximum.deniedHosts,[]);
  const c=agentcoreControlFixture().configuration;
  assert.doesNotThrow(()=>validateConfiguration({...c,browserPlatform:platform()},'control'));
- for(const p of [null,{}, {...platform(),extra:true},{...platform(),maximum:{enabled:true,allowedOrigins:['http://127.0.0.1']}}]){
+ for(const p of [null,{}, {...platform(),extra:true},{...platform(),maximum:{enabled:true,allowedOrigins:['http://127.0.0.1']}},{...platform(),maximum:{enabled:true,deniedHosts:['https://app.example']}},{...DEFAULT_BROWSER_PLATFORM,maximum:{enabled:true,destinations:'listed'}}]){
   assert.throws(()=>compileBrowserPlatform({browserPlatform:p}),{code:'BROWSER_PLATFORM_CONFIGURATION'});
   assert.throws(()=>validateConfiguration({...c,browserPlatform:p},'control'));
  }

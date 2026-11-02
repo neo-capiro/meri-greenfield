@@ -40,9 +40,18 @@ export function classifyWebUrl(value,{allowBlank=false}={}){
 }
 /** True when `value` is exactly a canonical public http/https origin (no path, query, fragment, credentials, default port). */
 export function isPublicOrigin(value){const c=classifyWebUrl(value);return c.ok&&!c.blank&&c.origin===value;}
-/** Hosts that receive explicit Playwright MCP `--blocked-origins` entries as defence in depth. Playwright matches each
- * entry as a route glob (exact origin, `scheme://host:*` any port, or a bare host on default ports); it cannot express
- * address ranges, does not follow redirects and is not a security boundary (upstream 0.0.83 README). */
-const LOOPBACK_AND_METADATA_NAMES=Object.freeze(['localhost','127.0.0.1','0.0.0.0','169.254.169.254','169.254.170.2','metadata.google.internal']);
-const IPV6_LITERALS=Object.freeze(['[::1]','[fd00:ec2::254]']);
-export const PLATFORM_BLOCKED_ORIGINS=Object.freeze([...LOOPBACK_AND_METADATA_NAMES.flatMap(h=>[h,`http://${h}:*`,`https://${h}:*`]),...IPV6_LITERALS.flatMap(h=>[`http://${h}`,`https://${h}`])]);
+/** One denied-host entry: a lower-case public DNS name (it denies that name and every name below it) or an IP literal
+ * (exact). Entries are platform policy carried inside the browser policy, so the egress grant enforces them on the host. */
+const DENIED_HOST_NAME=/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/u;
+export function isDeniedHostEntry(value){
+ if(typeof value!=='string'||!value||value.length>255)return false;
+ if(isIPv4(value))return true;
+ if(value.startsWith('[')&&value.endsWith(']'))return isIPv6(value.slice(1,-1));
+ return DENIED_HOST_NAME.test(value);
+}
+/** True when `host` (as `classifyWebUrl` normalizes it) is one of `deniedHosts` or a name below one of them. */
+export function hostDenied(host,deniedHosts){
+ if(typeof host!=='string'||!Array.isArray(deniedHosts))return false;
+ const name=host.toLowerCase();
+ return deniedHosts.some(entry=>name===entry||!isIPv4(entry)&&!entry.startsWith('[')&&name.endsWith(`.${entry}`));
+}

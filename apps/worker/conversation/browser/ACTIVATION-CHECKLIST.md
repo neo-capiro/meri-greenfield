@@ -2,7 +2,7 @@
 
 The activation record is control configuration: `browserActivation` in the control configuration (`apps/runtime/config.mjs`), rendered from `features.browserActivation` in the deployment inputs (`infra/product-preview/first-chat/render-material.mjs`) and compiled by `compileBrowserActivation` (`activation.mjs`). Absent or `{"state":"held"}` is **held**. No argument, environment variable, tenant setting, policy field or runtime port opens it. It opens only through a reviewed deployment-input change that sets `state:"open"`, `evidence` to the repository path of a record citing a passing measurement for **every** item below, `evidenceSha256` to that record's SHA-256 and `requirementsSha256` to `EGRESS_REQUIREMENTS_SHA256` of the exact source being deployed (a changed requirement list re-holds every earlier record). The renderer reads the evidence file from the source root, refuses a record whose SHA-256 does not match the file, and attaches its verification receipt (`renderVerification`, restating `evidenceSha256` and `requirementsSha256`) to the control record; control refuses an open record whose receipt is missing or disagrees with the record. The receipt is a render marker, not a cryptographic binding: the real binding is that the control configuration is only ever produced by the renderer from reviewed inputs by the release executor, and anyone who can edit the published control configuration already controls the deployment. Each measurement is taken on the approved dedicated isolated browser host (D005), from the real non-root sandboxed browser launched by the product configuration (`server.mjs`), at the exact source and image candidate being opened. Source tests, scripted ports and local fixtures do not count as any of these measurements.
 
-The browser capability stays **on by default**. Destinations stay denied by default. Opening the gate does not choose the initial approved destination list, which is still open.
+The browser capability stays **on by default** and, since 1 November 2026, the public web is open by default (`destinations:'public-web'`): the platform limits deny non-public addresses and internal names, the platform record denies Meri's own application hosts (`deniedHosts`), and a tenant may narrow to a list. Opening the gate does not change that policy; it is `features.browserPlatform`.
 
 Every item records:
 
@@ -37,18 +37,18 @@ The host proxy runs `createEgressControl` (`egress-control.mjs`) under the run's
 
 | ID | Requirement | Probe | Pass |
 | --- | --- | --- | --- |
-| B1 | positive | navigate to an allowlisted origin | page loads; control logs `ok` with the pinned address |
+| B1 | positive | navigate to an ordinary public origin (and, under a tenant list, to a listed origin) | page loads; control logs `ok` with the pinned address |
 | B2 | deny-non-public-destinations | navigation, sub-resource and fetch to one address in each listed IPv4/IPv6 range | refused (`BROWSER_URL_NOT_PUBLIC`); nothing on the wire |
-| B3 | enforce-on-resolved-address | allowlisted test name resolving (controlled resolver) to a private address; mixed public+private answer | `BROWSER_EGRESS_ADDRESS` |
+| B3 | enforce-on-resolved-address | admitted test name resolving (controlled resolver) to a private address; mixed public+private answer | `BROWSER_EGRESS_ADDRESS` |
 | B4 | dns-rebinding | test name answering public then private with TTL 0, loaded repeatedly | second and later admissions refused; no connection to the private address; DNS only through the controlled resolver |
-| B5 | effective-origin-allowlist, redirects | allowlisted → unlisted public redirect (301/302/307/308, meta refresh, `location=` script); allowlisted → private redirect | refused at the hop (`BROWSER_ORIGIN_NOT_ALLOWED` / `BROWSER_URL_NOT_PUBLIC`) |
-| B6 | effective-origin-allowlist | unlisted public image, script, iframe, `fetch`, XHR, `ws://` and `wss://` WebSocket, download | each refused; the unlisted server logs no request |
-| B7 | effective-origin-allowlist | an origin the platform approves but the tenant narrowed away, and one the role ceiling narrowed away; empty effective list | refused; with an empty list nothing external loads |
-| B8 | web-ports-only | allowlisted host on a non-web port; outbound UDP (QUIC, raw UDP 53 to a public resolver); WebRTC `RTCPeerConnection` with a public STUN server | refused or nothing leaves the host (egress capture) |
+| B5 | destination-policy, redirects | public → denied-host redirect (301/302/307/308, meta refresh, `location=` script); public → private redirect; under a tenant list, listed → unlisted public redirect | refused at the hop (`BROWSER_HOST_DENIED` / `BROWSER_URL_NOT_PUBLIC` / `BROWSER_ORIGIN_NOT_ALLOWED`) |
+| B6 | destination-policy | denied-host image, script, iframe, `fetch`, XHR, `ws://` and `wss://` WebSocket, download; the same from an unlisted origin under a tenant list | each refused; the denied or unlisted server logs no request |
+| B7 | destination-policy | a tenant narrowed to a list: an origin off that list; a role ceiling narrowed further; an empty tenant list; a tenant-added denied host | refused; with an empty list nothing external loads; the added host is refused for that tenant only |
+| B8 | web-ports-only | admitted host on a non-web port; outbound UDP (QUIC, raw UDP 53 to a public resolver); WebRTC `RTCPeerConnection` with a public STUN server | refused or nothing leaves the host (egress capture) |
 | B9 | no-proxy-bypass | raw TCP from the browser user to a public `IP:443`; Chromium with an injected direct route | no connection |
 | B10 | proxy-route | page requests to `http://127.0.0.1:<port>` and `http://localhost/` | reach the proxy (logged) and are refused, never connected directly; no `PLAYWRIGHT_DISABLE_FORCED_CHROMIUM_PROXIED_LOOPBACK` in the environment |
 | B11 | proxy-route | a grant whose `policySha256` differs from the fragment's; a request after the run's grant is revoked; after expiry | grant refused; `BROWSER_EGRESS_REVOKED` / `BROWSER_EGRESS_EXPIRED` |
-| B12 | connection-coalescing | an unlisted name sharing an allowlisted origin's address and certificate (SAN covers both), HTTP/2 and HTTP/3, ORIGIN frame and Alt-Svc offered | no request for the unlisted origin reaches any server |
+| B12 | connection-coalescing | a denied name sharing an admitted origin's address and certificate (SAN covers both), HTTP/2 and HTTP/3, ORIGIN frame and Alt-Svc offered | no request for the denied origin reaches any server |
 | B13 | per-conversation-host | as A4 | as A4 |
 
 ## C. Pre-execution approval and SDK composition
@@ -57,7 +57,7 @@ Run with the pinned SDK 0.3.295 / CLI 2.1.295, real Playwright MCP, and the comp
 
 | ID | Measurement | Pass |
 | --- | --- | --- |
-| C1 | Each interaction tool (`INTERACTION_TOOLS`), including when another mount's hook returns `allow` | PreToolUse `ask` reaches the routed `canUseTool`; nothing executes before the canonical owner's consumed approval; hook precedence deny > ask > allow observed |
+| C1 | Each interaction tool (`INTERACTION_TOOLS`), including when another mount's hook returns `allow`: a routine click or hover, a form submission (`browser_type` with `submit`, a click on a submit control, Enter, an accepted dialog) and typing into a password or credential-autocomplete field | the routine call runs with no question; the submission's PreToolUse `ask` reaches the routed `canUseTool` and nothing executes before the canonical owner's consumed approval; the credential input is refused (`BROWSER_CREDENTIAL_INPUT_REFUSED`) and never reaches the page; hook precedence deny > ask > allow observed |
 | C2 | Page reports | Playwright MCP 0.0.83 responses carry `- Page URL:`; the tracker binds the real starting origin; a failing tool delivers PostToolUseFailure |
 | C3 | Canonical owner round trip | approver authenticated server-side; the UI shows action, target, data, page origin and expiry; approve/reject/expiry/revocation (30 s propagation, 30 s fail-closed staleness, Q-X7); a second execution with the same proposal or tool-use refused durably across a worker restart |
 | C4 | Run abort or cancel while an approval is pending | the callback completes at once; the owner withdraws the request; no late execution |

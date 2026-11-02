@@ -1,13 +1,16 @@
 /** Browser permission gate, decided BEFORE a tool executes, through SDK-native mechanisms only:
  *
  * - `PreToolUse` hook (runs for every call, including pre-approved ones): denies tools the policy does not admit and
- *   navigations/new tabs whose URL fails the effective policy (platform limits, then the deny-by-default destination
- *   allowlist). An admitted call is registered with the page tracker (`page-context.mjs`) so its starting page is
- *   known. For interaction tools it returns `ask`, which forces the SDK permission flow even if a rule elsewhere would
- *   pre-approve the tool; with no permission surface an `ask` is terminal, so the call is refused.
- * - `canUseTool`: interaction tools are never in `allowedTools`, so they reach this callback. It binds the call to the
- *   canonical approval owner (`approval-binding.mjs`): the subject is the run binding, server, tool, tool-use id,
- *   canonical input digest, the allowlisted origin of the page the call starts from and the effective policy digest.
+ *   navigations/new tabs whose URL fails the effective policy (platform limits, denied hosts, then the destination
+ *   mode). An admitted call is registered with the page tracker (`page-context.mjs`) so its starting page is known.
+ *   Every interaction tool returns `ask`, which forces the SDK permission flow even if a rule elsewhere would
+ *   pre-approve the tool.
+ * - `canUseTool`: interaction tools are never in `allowedTools`, so they reach this callback. It classifies the call
+ *   against the live page through the host's `classify` port (`session/interaction-classifier.mjs`): `credential`
+ *   input is denied (sign-in happens only through user takeover, Q-A2), a `routine` interaction is allowed as called,
+ *   and a `submission` is bound to the canonical approval owner (`approval-binding.mjs`): the subject is the run
+ *   binding, server, tool, tool-use id, canonical input digest, the admitted origin of the page the call starts from
+ *   and the effective policy digest. Without a classifier every interaction is a submission, as before.
  *   It allows only a consumed `approved` canonical decision for that exact subject, once, and the allowed
  *   `updatedInput` is the digested copy. The port call is raced against the run's AbortSignal and a bounded approval
  *   deadline owned here (`APPROVAL_DEADLINE_MS`): expiry denies with BROWSER_APPROVAL_EXPIRED, abort with
@@ -52,12 +55,21 @@ function browserAdmission({policy,tools},action,input){
  if(target){const decision=checkBrowserUrl(policy,target.url,{allowBlank:true});if(!decision.ok)return decision.code;}
  return null;
 }
-/** `pages` is the run's page tracker (`createPageContext`); `policySha256` the digest of the effective policy. */
-export function createPermissionGate({binding,policy,policySha256,server,approvals,pages,now,approvalDeadlineMs=APPROVAL_DEADLINE_MS.default,assertCurrent}){
- if(assertCurrent!==undefined&&typeof assertCurrent!=='function')throw Object.assign(Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
+const CLASSES=Object.freeze(['routine','submission','credential']);
+/** `pages` is the run's page tracker (`createPageContext`); `policySha256` the digest of the effective policy; `classify`
+ * is the host's live-page classifier (`{tool,input,toolUseId,signal}` to one of `CLASSES`), absent on a host that has
+ * no page to inspect, in which case every interaction is a submission and asks. */
+export function createPermissionGate({binding,policy,policySha256,server,approvals,pages,now,approvalDeadlineMs=APPROVAL_DEADLINE_MS.default,assertCurrent,classify}){
+ if(assertCurrent!==undefined&&typeof assertCurrent!=='function'||classify!==undefined&&typeof classify!=='function')throw Object.assign(Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<APPROVAL_DEADLINE_MS.min||approvalDeadlineMs>APPROVAL_DEADLINE_MS.max||typeof now!=='function'||['begin','capture','isCurrent','cancel'].some(m=>typeof pages?.[m]!=='function')||typeof policySha256!=='string')throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  const prefix=`mcp__${server}__`,tools=policy.tools,interactions=tools.filter(t=>INTERACTION_TOOLS.includes(t)),ledger=createReplayLedger();
  const actionOf=name=>typeof name==='string'&&name.startsWith(prefix)?name.slice(prefix.length):null;
+ /** The class of one interaction; an unavailable or malformed classification asks rather than runs. */
+ const classOf=async(action,input,toolUseId,signal)=>{
+  if(classify===undefined)return 'submission';
+  try{const kind=await classify({tool:action,input:structuredClone(input??{}),toolUseId,signal});return CLASSES.includes(kind)?kind:'submission';}
+  catch{return 'submission';}
+ };
  const preToolUse=async(input,toolUseID,options)=>{
   try{
    const action=actionOf(input?.tool_name);
@@ -106,7 +118,11 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
    if(options.signal?.aborted)throw Error('cancelled');
    if(options.mcpServer!==undefined&&options.mcpServer?.name!==server)decision=refusal('BROWSER_SERVER_MISMATCH');
    else{const refused=browserAdmission({policy,tools},action,input);
-    decision=refused?refusal(refused):interactions.includes(action)?await approve(action,input,options,refusal):{behavior:'allow',updatedInput:input};}
+    if(refused)decision=refusal(refused);
+    else if(!interactions.includes(action))decision={behavior:'allow',updatedInput:input};
+    else{const kind=await classOf(action,input,options.toolUseID,options.signal);
+     if(options.signal?.aborted)throw Error('cancelled');
+     decision=kind==='credential'?refusal('BROWSER_CREDENTIAL_INPUT_REFUSED'):kind==='submission'?await approve(action,input,options,refusal):{behavior:'allow',updatedInput:input};}}
   }catch{decision=refusal('BROWSER_APPROVAL_UNAVAILABLE');}
   if(decision.behavior!=='allow')pages.cancel(options.toolUseID);
   return decision;

@@ -18,7 +18,7 @@ import {renderMaterial,readBrowserActivationEvidence} from './render-material.mj
 import {NATIVE_PATHS} from './native-processing-material.mjs';
 import {configurationMaxBytes,validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {compileBrowserPlatform} from '../../../apps/runtime/product-ports/browser-policy.mjs';
-import {isPublicOrigin} from '../../../apps/worker/conversation/browser/public-web.mjs';
+import {isDeniedHostEntry} from '../../../apps/worker/conversation/browser/public-web.mjs';
 import {EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION} from '../../../apps/worker/conversation/browser/activation.mjs';
 import {startControl,assembleControl} from '../../../apps/runtime/control.mjs';
 import {agentcoreControlFixture} from '../../../apps/runtime/test/agentcore-fixture.mjs';
@@ -35,12 +35,14 @@ const receiptFor=i=>({schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit
 // nowMs is taken after the fixture issued its short-lived native client leaf, which is valid only from that moment on.
 const withNative=async change=>{const i=await nativeProcessingInputs(fixture);change?.(i);return {...i,browserEvidence:EVIDENCE,nowMs:Date.now()};};
 
-test('the committed browserPlatform renders into control as the runtime compiles it, with only canonical https origins, beside the native router',async()=>{
+test('the committed browserPlatform renders into control as the runtime compiles it: the open public web with Meri\'s own hosts denied, beside the native router',async()=>{
  const i=await withNative(v=>{v.deployment.features.browserPlatform=structuredClone(committed);v.deployment.features.browserActivation=structuredClone(OPEN);});
  const r=renderMaterial(i),c=r.roles.control.config,spec=i.deployment.features.nativeProcessing.deployment.bootstrapSpec.control;
  assert.deepEqual(c.browserPlatform,structuredClone(compileBrowserPlatform({browserPlatform:committed})));
- assert.ok(committed.maximum.allowedOrigins.length>0);
- for(const policy of [committed.maximum,committed.defaults,...Object.values(committed.roleCeilings)])for(const origin of policy.allowedOrigins)assert.ok(isPublicOrigin(origin)&&origin.startsWith('https://'),origin);
+ for(const policy of [committed.maximum,committed.defaults,...Object.values(committed.roleCeilings)]){
+  assert.equal(policy.destinations,'public-web');assert.equal(policy.allowedOrigins,undefined,'no list under the open default');
+  assert.deepEqual(policy.deniedHosts,committed.maximum.deniedHosts,'every record carries the platform denials');assert.ok(policy.deniedHosts.length>0);
+  for(const host of policy.deniedHosts)assert.ok(isDeniedHostEntry(host)&&host.endsWith('.capiro.ai'),host);}
  assert.deepEqual(Object.keys(committed.roleCeilings).sort(),['capiro_admin','standard_user','user_admin']);
  assert.deepEqual(c.browserActivation,{...OPEN,renderVerification:receiptFor(i)},'the control record carries the renderer\'s verification receipt');
  assert.deepEqual(r.summary.features.browserActivation,{state:'open',evidence:OPEN.evidence,evidenceSha256:OPEN.evidenceSha256,evidenceVerified:true});
@@ -89,9 +91,9 @@ test('an open record refuses without the evidence bytes, with a wrong hash, with
   const i=await withNative(v=>{v.deployment.features.browserActivation=bad;});
   assert.throws(()=>renderMaterial(i),{code:'RENDER_INPUT_REFUSED'},JSON.stringify(bad));
  }
- const widening=structuredClone(committed);widening.defaults.allowedOrigins=[...widening.defaults.allowedOrigins,'https://unlisted.example'];
+ const widening=structuredClone(committed);widening.defaults.deniedHosts=[];
  await assert.rejects(fixture.render(i=>{i.deployment.features={browserPlatform:widening};}),{code:'RENDER_INPUT_REFUSED'});
- const malformed=structuredClone(committed);malformed.maximum.allowedOrigins=['https://records.example/path'];
+ const malformed=structuredClone(committed);malformed.maximum.deniedHosts=['https://app.capiro.ai'];
  await assert.rejects(fixture.render(i=>{i.deployment.features={browserPlatform:malformed};}),{code:'RENDER_INPUT_REFUSED'});
  await assert.rejects(fixture.render(i=>{i.deployment.features={browserPlatform:{maximum:{enabled:true}}};}),{code:'RENDER_INPUT_REFUSED'});
 });

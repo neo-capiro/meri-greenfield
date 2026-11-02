@@ -4,7 +4,6 @@ import {createBrowserCapability} from '../index.mjs';
 import {DEFAULT_BROWSER_POLICY,INTERACTION_TOOLS,BROWSER_TOOLS} from '../policy.mjs';
 import {HELD_BROWSER_ACTIVATION,EGRESS_REQUIREMENTS,EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION,activationOpen,compileBrowserActivation,compileBrowserActivationInput} from '../activation.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
-import {PLATFORM_BLOCKED_ORIGINS} from '../public-web.mjs';
 import {playwrightHostCommand,validateBrowserInstallation} from '../server.mjs';
 import {browserPaths} from '../workspace.mjs';
 import {buildOpenBrowserFragment} from '../fragment.mjs';
@@ -14,8 +13,8 @@ import {binding,enabledPolicy,recorders,clock,installation,installationFor,sourc
 const cwd=`/workspace/${binding.conversationId}`;
 const workspace=async()=>{const root=await realpath(await mkdtemp(join(tmpdir(),'meri-browser-')));const dir=join(root,binding.conversationId);await mkdir(join(dir,'.browser','output'),{recursive:true});return {root,cwd:dir};};
 const post=(tool,{input={},response=[{type:'text',text:'### Result\nok'}],id='toolu_01'}={})=>({hook_event_name:'PostToolUse',session_id:'00000000-0000-4000-8000-0000000000aa',transcript_path:'/x',cwd:'/x',tool_name:`mcp__meri_browser__${tool}`,tool_input:input,tool_response:response,tool_use_id:id});
-test('the capability is on by default with no destinations; the builder has no gate of its own, control admission reaches it only under an open configured record',()=>{
- assert.equal(DEFAULT_BROWSER_POLICY.enabled,true);assert.deepEqual(DEFAULT_BROWSER_POLICY.allowedOrigins,[]);
+test('the capability is on by default and opens the public web; the builder has no gate of its own, control admission reaches it only under an open configured record',()=>{
+ assert.equal(DEFAULT_BROWSER_POLICY.enabled,true);assert.equal(DEFAULT_BROWSER_POLICY.destinations,'public-web');assert.deepEqual(DEFAULT_BROWSER_POLICY.deniedHosts,[]);
  const r=recorders(),ports={installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,approvals:r.approvals('approve')};
  for(const policy of [undefined,DEFAULT_BROWSER_POLICY,{enabled:true},enabledPolicy()]){
   const cap=createBrowserCapability({binding,cwd,policy,...ports,now:clock});
@@ -23,8 +22,8 @@ test('the capability is on by default with no destinations; the builder has no g
   assert.equal(cap.status.capability,'enabled');assert.equal(cap.status.activation,'open');
   assert.deepEqual(Object.keys(cap.mcpServers),['meri_browser']);assert.equal(typeof cap.canUseTool,'function');}
  const def=createBrowserCapability({binding,cwd,...ports,now:clock});
- assert.deepEqual(def.policy.allowedOrigins,[]);assert.deepEqual(def.status,{capability:'enabled',destinations:'none',allowedOriginCount:0,notice:'BROWSER_NO_ALLOWED_DESTINATIONS',activation:'open'});
- assert.deepEqual(createBrowserCapability({binding,cwd,policy:enabledPolicy(),...ports,now:clock}).status,{capability:'enabled',destinations:'allowlisted',allowedOriginCount:2,activation:'open'});
+ assert.deepEqual(def.policy.allowedOrigins,[]);assert.deepEqual(def.status,{capability:'enabled',destinations:'public-web',allowedOriginCount:0,deniedHostCount:0,activation:'open'});
+ assert.deepEqual(createBrowserCapability({binding,cwd,policy:enabledPolicy(),...ports,now:clock}).status,{capability:'enabled',destinations:'allowlisted',allowedOriginCount:2,deniedHostCount:0,activation:'open'});
  assert.equal(r.receipts.length+r.ingested.length+r.approvalRequests.length,0);
  // Building the fragment is not activation: nothing is launched, and no argument of the builder opens or holds the gate.
  assert.equal(createBrowserCapability.length,1,'no activation argument');
@@ -64,7 +63,6 @@ test('an absent or held configuration compiles to the held record; only a comple
 test('the SDK sees only the run-bound shim; native context preparation owns the separate profile and proxy',()=>{
  const r=recorders(),open=policy=>buildOpenBrowserFragment({binding,cwd,policy:validateBrowserPolicy(policy),installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,now:clock});
  const installed=validateBrowserInstallation(installation,binding),host=policy=>playwrightHostCommand(validateBrowserPolicy(policy),installed,browserPaths(cwd));
- for(const entry of ['localhost','http://localhost:*','169.254.169.254','http://169.254.169.254:*','https://169.254.170.2:*','metadata.google.internal','http://[::1]','http://[fd00:ec2::254]'])assert.ok(PLATFORM_BLOCKED_ORIGINS.includes(entry),entry);
  const cap=open(enabledPolicy()),server=cap.mcpServers.meri_browser,command=host(enabledPolicy()),args=command.args;
  assert.deepEqual(Object.keys(cap.mcpServers),['meri_browser']);assert.equal(server.type,'stdio');assert.equal(server.command,installation.launch.shimPath);
  assert.deepEqual(server.args,[installation.launch.socketPath,installation.launch.nonce]);assert.deepEqual(server.env,{});
