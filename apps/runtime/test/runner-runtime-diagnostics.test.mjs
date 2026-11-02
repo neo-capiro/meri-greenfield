@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {withRunnerDiagnostics,atRunnerStage,markRunnerStage,captureRunnerFailure,firstFailureMessageHash,reportIntentAvailability} from '../runner-runtime-diagnostics.mjs';
+import {withRunnerDiagnostics,atRunnerStage,markRunnerStage,captureRunnerFailure,firstFailureMessageHash,reportIntentAvailability,reportReadAvailability} from '../runner-runtime-diagnostics.mjs';
 import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
 import {assembleConversationRunner} from '../conversation-runner.mjs';
 import {main} from '../cli.mjs';
@@ -57,11 +57,14 @@ test('a failed intent offer is one bounded telemetry line on the run and never a
  const lines=[],telemetry=createTurnTelemetry({service:'runner',write:line=>lines.push(JSON.parse(line))});
  try{assert.equal(await withRunnerDiagnostics(async()=>{
    reportIntentAvailability({code:'DEADLINE',layer:'control',elapsedMs:8123});
-   reportIntentAvailability({code:'private detail',layer:'elsewhere',elapsedMs:'soon'});return 'completed';
+   reportIntentAvailability({code:'private detail',layer:'elsewhere',elapsedMs:'soon'});
+   reportReadAvailability({code:'DEADLINE',layer:'worker',elapsedMs:10001});return 'completed';
   },{binding,turnTelemetry:telemetry,write:()=>assert.fail('an unanswered offer is not a runner failure')}),'completed');
  }finally{telemetry.close();}
  const emitted=lines.filter(line=>line.event==='meri.intent.availability');
  assert.deepEqual(emitted.map(line=>[line.runId,line.attemptId,line.layer,line.code,line.elapsedMs]),[[binding.runId,binding.attemptId,'control','DEADLINE',8123],[binding.runId,binding.attemptId,'other','other',0]]);
+ const reads=lines.filter(line=>line.event==='meri.read.availability');
+ assert.deepEqual(reads.map(line=>[line.runId,line.attemptId,line.layer,line.code,line.elapsedMs]),[[binding.runId,binding.attemptId,'worker','DEADLINE',10001]],'a failed read snapshot is its own bounded line');
  assert.ok(lines.every(line=>!JSON.stringify(line).includes(binding.tenantId)&&!JSON.stringify(line).includes('private detail')));
  reportIntentAvailability({code:'DEADLINE',layer:'control',elapsedMs:1});assert.equal(lines.filter(line=>line.event==='meri.intent.availability').length,2,'outside a runner context nothing is emitted');
 });

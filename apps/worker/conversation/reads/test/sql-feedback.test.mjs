@@ -12,11 +12,11 @@ const notices=(operation,result)=>readNotices(operation,JSON.stringify(envelope(
 
 test('SQL argument refusals name the exact request shape; other tools keep the generic text',()=>{
  const text=failureResult('INVALID_ARGUMENTS','mcp__meri_reads__query_capiro_data').content[0].text;
- assert.match(text,/^INVALID_ARGUMENTS: mcp__meri_reads__query_capiro_data refused these arguments; supply literal arguments matching its input schema\. query_capiro_data takes sql \(1-16384 bytes\) and parameters \(required; \[\] when nothing is bound/);
+ assert.match(text,/^These arguments were refused; supply literal arguments matching the input schema\. query_capiro_data takes sql \(1-16384 bytes\) and parameters \(required; \[\] when nothing is bound/);
  assert.match(text,/rowLimit \(integer 1-1000\)/);assert.match(text,new RegExp(`${NOTHING}$`));
  assert.match(failureResult('INVALID_ARGUMENTS','mcp__meri_reads__describe_capiro_data').content[0].text,/describe_capiro_data takes optional relations: 1-15 unique lowercase table names/);
  assert.equal(failureResult('INVALID_ARGUMENTS','mcp__meri_reads__get_bill_status').content[0].text,
-  `INVALID_ARGUMENTS: mcp__meri_reads__get_bill_status refused these arguments; supply literal arguments matching its input schema. ${NOTHING}`);
+  `These arguments were refused; supply literal arguments matching the input schema. ${NOTHING}`);
  for(const code of READ_FAILURE_CODES.filter(code=>code!=='INVALID_ARGUMENTS'))
   assert.doesNotMatch(failureResult(code,'mcp__meri_reads__query_capiro_data').content[0].text,/takes sql/);
 });

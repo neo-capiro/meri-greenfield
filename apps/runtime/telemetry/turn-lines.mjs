@@ -64,6 +64,8 @@ export const LINE_SCHEMAS=Object.freeze({
  // A governed-intent availability offer that failed: the layer whose bound answered (the worker, the runner client or control) and its
  // closed code, so an UNAVAILABLE write tool is explained in the run's own log stream. Emitted by the runner and by control.
  'meri.intent.availability':{...COMMON,layer:choice(['worker','runner','control']),code:safeCode,elapsedMs:number},
+ // The general-read availability snapshot that failed, in the same shape: the run's reads answer "cannot be read right now" for that turn.
+ 'meri.read.availability':{...COMMON,layer:choice(['worker','runner','control']),code:safeCode,elapsedMs:number},
  'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable','reproven']),code:safeCode},
  'meri.budget.quarantined':{...COMMON,reason:safeCode},
  'meri.process.rollup':{service:choice(SERVICES),atMs:number,windowMs:number,...COUNTERS,ownerExchanges:exchanges,telemetryDropped:number},

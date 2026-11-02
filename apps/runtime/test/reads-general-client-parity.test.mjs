@@ -101,7 +101,7 @@ for(const general of [true,false])for(const message of [
  const m=await connect(t,f),out=await m.call();
  assert.equal(out.isError,true);
  const text=out.content.map(item=>item.text??'').join('\n');
- assert.match(text,/INVALID_ARGUMENTS:/);
+ assert.match(text,/These arguments were refused; supply literal arguments matching the input schema\./);
  assert.match(text,/restart without the cursor/);
  assert.match(text,/narrow the from\/to time range and restart/);
  assert.match(text,/No evidence, absence or completeness is established/);

@@ -26,7 +26,7 @@ async function admitted(saved,attempts){
  const {reads}=await createProfileMounts({policy,binding,scopes,now:Date.now,deadlineMs:Date.now()+60000,generalReads:port,...(runBudgets===undefined?{}:{runBudgets})});
  try{const hook=reads.sdkOptions.hooks.PreToolUse[0].hooks[0],name=reads.sdkOptions.allowedTools[0],signal=new AbortController().signal;
   for(let i=0;i<attempts;i++){const d=await hook({hook_event_name:'PreToolUse',session_id:'71000000-0000-4000-8000-000000000091',tool_name:name,tool_use_id:`toolu_budget_${i}`,tool_input:{arguments:{}}},undefined,{signal});
-   if(d.hookSpecificOutput.permissionDecision==='deny'){assert.match(d.hookSpecificOutput.permissionDecisionReason,/^RESOURCE_LIMIT: /u);return i;}}
+   if(d.hookSpecificOutput.permissionDecision==='deny'){assert.match(d.hookSpecificOutput.permissionDecisionReason,/^The Capiro data read limit for this run is reached; /u);return i;}}
   return attempts;}finally{await reads.close();}
 }
 

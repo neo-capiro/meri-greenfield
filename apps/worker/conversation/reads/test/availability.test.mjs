@@ -79,7 +79,7 @@ test('P3 local budgets are upper bounds that a skill can only narrow; the ledger
 
 test('every gateway code renders its own closed text; unknown failures are INTERNAL_ERROR',()=>{
  const texts=READ_FAILURE_CODES.map(code=>failureResult(code,'mcp__meri_reads__x').content[0].text);assert.equal(new Set(texts).size,READ_FAILURE_CODES.length);
- for(const [i,code] of READ_FAILURE_CODES.entries()){assert.ok(texts[i].startsWith(`${code}: mcp__meri_reads__x `));assert.equal(failureResult(code,'t').isError,true);}
+ for(const [i,code] of READ_FAILURE_CODES.entries()){assert.doesNotMatch(texts[i],new RegExp(`\\b${code}\\b|mcp__`,'u'),'the closed text carries neither its code nor the tool name');assert.equal(failureResult(code,'t').isError,true);}
  assert.deepEqual(READ_FAILURE_CODES.slice().sort(),['ACCESS_DENIED','BUDGET_UNCERTAIN','CANCELLED','DEADLINE','GATEWAY_CONFIGURATION','INTERNAL_ERROR','INVALID_ARGUMENTS','INVALID_RESULT','RESOURCE_LIMIT','SOURCE_PUBLICATION_CONFLICT','SOURCE_PUBLICATION_UNKNOWN','SOURCE_UNAVAILABLE','UNAVAILABLE']);
  assert.equal(failureCode(Object.assign(Error('x'),{code:'DEADLINE'})),'DEADLINE');assert.equal(failureCode(Error('ACCESS_DENIED')),'ACCESS_DENIED');assert.equal(failureCode(Error('PRIVATE detail')),'INTERNAL_ERROR');assert.equal(failureCode(null),'INTERNAL_ERROR');
 });
@@ -87,7 +87,7 @@ test('every gateway code renders its own closed text; unknown failures are INTER
 test('only meeting argument refusal adds fixed conditional list restart guidance',()=>{
  const tool='mcp__meri_reads__meeting_read_client_meetings';
  const text=failureResult('INVALID_ARGUMENTS',tool).content[0].text;
- assert.match(text,/supply literal arguments matching its input schema/);
+ assert.match(text,/supply literal arguments matching the input schema/);
  assert.match(text,/For a continued meeting list, restart without the cursor/);
  assert.match(text,/narrow the from\/to time range and restart/);
  assert.match(text,/No evidence, absence or completeness is established/);
@@ -95,7 +95,7 @@ test('only meeting argument refusal adds fixed conditional list restart guidance
   assert.doesNotMatch(failureResult(code,tool).content[0].text,/restart|cursor/);
  for(const name of ['mcp__meri_reads__meeting_query_debriefs','mcp__meri_reads__read_client_documents'])
   assert.equal(failureResult('INVALID_ARGUMENTS',name).content[0].text,
-   `INVALID_ARGUMENTS: ${name} refused these arguments; supply literal arguments matching its input schema. No evidence, absence or completeness is established.`);
+   'These arguments were refused; supply literal arguments matching the input schema. No evidence, absence or completeness is established.',`${name} carries no tool name`);
 });
 
 test('P8 fields resolve platform Ã¢Ë†Â§ tenant Ã¢Ë†Â§ role: flags AND, families intersect, widening refused',()=>{
