@@ -102,7 +102,21 @@ contract. The zero-timeout alarm sums control and runner signals; that sum is a
 **signal count, not a unique failed-turn count**. Join failure and summary records
 by `runId` to inspect the original runner cause.
 
-Checks: `node --test apps/runtime/telemetry/test/{turn-lines,turn-context,counting}.test.mjs`.
+## Route status counters
+
+`route-counters.mjs` wraps control's public and private listener applications
+(`control.mjs`) and counts every response by route pattern and status class. One
+**`meri.http.routes`** line per route, listener and window (60 s) carries
+`listener`, `route`, `statuses` (`2xx`, `3xx`, `401`, `403`, `404`, `409`, `4xx`,
+`503`, `5xx`) and `windowMs`; its metrics are `HttpResponses`, `HttpClientErrors`
+and `HttpServerErrors` with `Service` and `Service,Route` dimensions. Identifier
+segments (UUIDs, hex and numeric ids, long opaque tokens) become `:id`, a path with
+any other unusual segment counts as `other`, at most 200 routes are kept per window
+and nothing is written per request. There is no timer: the first response after a
+window ends flushes it, and control's close flushes the last one. A thrown handler
+counts as `5xx`.
+
+Checks: `node --test apps/runtime/telemetry/test/{turn-lines,turn-context,counting,route-counters}.test.mjs`.
 
 ## AgentCore setup, settlement and process startup
 
