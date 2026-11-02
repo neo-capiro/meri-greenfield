@@ -69,7 +69,8 @@ export const grammar={
     "database_to_xmlschema",
     "cursor_to_xml",
     "cursor_to_xmlschema",
-    "ts_stat"
+    "ts_stat",
+    "ts_rewrite"
   ],
   "blockedFunctionPatterns": [],
   "sourceMixing": false
