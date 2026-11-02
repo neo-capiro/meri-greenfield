@@ -1,6 +1,6 @@
 # Browser activation checklist
 
-The shipped activation record (`activation.mjs`, `BROWSER_ACTIVATION`) is **held**. No argument, environment variable, policy field or runtime port opens it. It opens only through a reviewed source change that sets `state:'open'` and `evidence` to a record citing a passing measurement for **every** item below. Each measurement is taken on the approved dedicated isolated browser host (D005), from the real non-root sandboxed browser launched by the product configuration (`server.mjs`), at the exact source and image candidate being opened. Source tests, scripted ports and local fixtures do not count as any of these measurements.
+The activation record is control configuration: `browserActivation` in the control configuration (`apps/runtime/config.mjs`), rendered from `features.browserActivation` in the deployment inputs (`infra/product-preview/first-chat/render-material.mjs`) and compiled by `compileBrowserActivation` (`activation.mjs`). Absent or `{"state":"held"}` is **held**. No argument, environment variable, tenant setting, policy field or runtime port opens it. It opens only through a reviewed deployment-input change that sets `state:"open"`, `evidence` to the repository path of a record citing a passing measurement for **every** item below, `evidenceSha256` to that record's SHA-256 and `requirementsSha256` to `EGRESS_REQUIREMENTS_SHA256` of the exact source being deployed (a changed requirement list re-holds every earlier record). The renderer reads the evidence file from the source root, refuses a record whose SHA-256 does not match the file, and attaches its verification receipt (`renderVerification`, restating `evidenceSha256` and `requirementsSha256`) to the control record; control refuses an open record whose receipt is missing or disagrees with the record. The receipt is a render marker, not a cryptographic binding: the real binding is that the control configuration is only ever produced by the renderer from reviewed inputs by the release executor, and anyone who can edit the published control configuration already controls the deployment. Each measurement is taken on the approved dedicated isolated browser host (D005), from the real non-root sandboxed browser launched by the product configuration (`server.mjs`), at the exact source and image candidate being opened. Source tests, scripted ports and local fixtures do not count as any of these measurements.
 
 The browser capability stays **on by default**. Destinations stay denied by default. Opening the gate does not choose the initial approved destination list, which is still open.
 
@@ -87,10 +87,10 @@ Run with the pinned SDK 0.3.295 / CLI 2.1.295, real Playwright MCP, and the comp
 
 ## Opening
 
-The opening change:
+The opening change (deployment inputs, rendered and deployed through the existing material path; see `docs/handover/20261101/BROWSER-ENABLEMENT-RUNBOOK-20261101.md`):
 
-1. cites the evidence record path in `BROWSER_ACTIVATION.evidence`, with every ID above marked passed;
-2. keeps `EGRESS_REQUIREMENTS` as the same array identity;
-3. changes no default (capability on, destinations empty).
+1. commits the evidence record under `docs/qualification/browser-egress/` with every ID above marked passed, and sets `features.browserActivation` to `{state:"open", evidence:<that path>, evidenceSha256:<sha256 of its bytes>, requirementsSha256:<EGRESS_REQUIREMENTS_SHA256 at the deployed source commit>}`;
+2. requires `features.nativeProcessing` enabled in the same inputs (the control-to-host router is rendered from that material) and is refused by the renderer and by control startup otherwise;
+3. changes no default (capability on; the platform destination list is `features.browserPlatform`).
 
-Any failed or unrun item keeps the gate held.
+Any failed or unrun item keeps the record held. Control's host currentness answers `browserAdmitted:false` while held, so a host refuses every browser read, and the AgentCore runtime mounts no browser port.

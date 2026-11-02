@@ -11,6 +11,7 @@ import {compileScheduleServiceConfiguration} from './schedule-service-configurat
 import {compileCapabilityPlatform} from './product-ports/capability-policy.mjs';
 import {compileBrowserPlatform} from './product-ports/browser-policy.mjs';
 import {compileBrowserHostConfiguration} from './browser-host-configuration.mjs';
+import {compileBrowserActivation} from '../worker/conversation/browser/activation.mjs';
 import {compileRuntimeArtifactsConfiguration} from './artifacts/configuration.mjs';
 import {compileOfficeConfiguration} from './artifacts/office-configuration.mjs';
 import {compileIntentsConfiguration} from './product-ports/intents.mjs';
@@ -35,7 +36,7 @@ export function validateConfiguration(raw,role){
  // owners are trusted in-process ports, never configuration, so JSON alone cannot start it; it may declare `native` (its client to
  // control's private occurrence operations, lane B3; schedule-service-configuration.mjs) and `routines` (Core's firing pin, lane B2).
  const common=['version','profile','sourceEnabled','limits',...(role==='schedule-worker'?[]:['native'])];
- own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','browserPlatform','routines','artifacts','intents','reads','objectiveGeneration','memory','uploads','browserHosts','office']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration','nativeProvisioning']);
+ own(c,[...common,...(role==='control'?['http','database','temporal','sessions','versions','agentcore','models']:role==='temporal-worker'?['http','temporal']:['http','temporal','versions','scheduledDispatch'])],role==='control'?['retention','telemetry','downloadLinks','privateHttp','userPreferences','tenantSettings','capabilityPlatform','browserPlatform','browserActivation','routines','artifacts','intents','reads','objectiveGeneration','memory','uploads','browserHosts','office']:role==='schedule-worker'?['database','native','routines']:['objectiveGeneration','nativeProvisioning']);
  if(role==='control')assertModelCatalog(c.models);
  if(c.userPreferences!==undefined){requireValue(role==='control','USER_PREFERENCES_CONFIGURATION');compileControlUserPreferencesConfiguration(c);}
  // Lane B control opt-ins (product-ports/settings.mjs, routines.mjs) and the trusted platform capability record (capability-policy.mjs, N3).
@@ -52,6 +53,11 @@ export function validateConfiguration(raw,role){
  // Shared browser hosts (browser-host-configuration.mjs): a control-role opt-in naming protected material
  // by path only. Absent or disabled composes no owner; a declared but unusable block refuses here.
  if(c.browserHosts!==undefined){requireValue(role==='control','BROWSER_HOST_CONFIGURATION');compileBrowserHostConfiguration(c);}
+ // Browser activation (browser/activation.mjs): the evidence-bearing record that opens the browser gate. It is a control value
+ // (control's host currentness and runner admission consume it); an open record requires the browser-host family it routes to,
+ // so an opened gate can never leave every run failing at browser preparation against a Control with no host router.
+ if(c.browserActivation!==undefined){requireValue(role==='control','BROWSER_ACTIVATION_CONFIGURATION');const activation=compileBrowserActivation(c.browserActivation);
+  requireValue(activation.state!=='open'||compileBrowserHostConfiguration(c)!==null,'BROWSER_ACTIVATION_CONFIGURATION');}
  // Objective generation opt-ins (objective-generation/configuration.mjs): control `runs`/`start`, worker `runs`. Absent = disabled.
  if(c.objectiveGeneration!==undefined)compileObjectiveGenerationConfiguration(c,role);
  // Retention serving is an explicit declaration: when enabled, control composes the canonical read gate over its own database and

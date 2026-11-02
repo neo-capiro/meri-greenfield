@@ -64,15 +64,17 @@ test('composition refuses foreign ownership of browser names, another permission
  refuse(builtOptions(),{...cap,hooks:{PostToolUse:cap.hooks.PostToolUse}});
  refuse(builtOptions(),{enabled:false,mcpServers:{meri_browser:{}},allowedTools:[],hooks:{}});
 });
-test('the shipped (held) capability composes to unchanged conversation options through options.mjs',()=>{
+test('a disabled fragment composes to unchanged conversation options through options.mjs; an enabled policy builds the open fragment control admission gates',()=>{
  const runtime={binding,versions:{sdk:'0.3.295',cli:'2.1.295'},cwd,model:'us.anthropic.claude-synthetic-fixture',region:'us-east-1',maxOutputTokens:1024,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:clock()+1000,maxTurns:2,maxCostMicroUSD:1000,maxOutputBytes:1024};
- const held=createBrowserCapability({binding,cwd,policy:enabledPolicy(),installation,sourceScopes,artifacts:{ingest(){}},receipts:{record(){}},now:clock});
- assert.equal(held.activation,'held');
- const without=buildConversationOptions(runtime,new AbortController()),withHeld=buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,held);
- for(const key of ['mcpServers','allowedTools','disallowedTools','hooks','permissionMode','tools'])assert.deepEqual(withHeld[key],without[key],key);
- assert.equal(withHeld.mcpServers,undefined,'no browser server while held');
  const disabled=createBrowserCapability({binding,cwd,policy:{enabled:false},now:clock});
- assert.deepEqual(Object.keys(buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,disabled)).sort(),Object.keys(without).sort());
+ assert.equal(disabled.activation,'not-applicable');
+ const without=buildConversationOptions(runtime,new AbortController()),withDisabled=buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,disabled);
+ for(const key of ['mcpServers','allowedTools','disallowedTools','hooks','permissionMode','tools'])assert.deepEqual(withDisabled[key],without[key],key);
+ assert.equal(withDisabled.mcpServers,undefined,'no browser server for a disabled policy');
+ assert.deepEqual(Object.keys(withDisabled).sort(),Object.keys(without).sort());
+ const built=createBrowserCapability({binding,cwd,policy:enabledPolicy(),installation,sourceScopes,artifacts:{ingest(){}},receipts:{record(){}},now:clock});
+ assert.equal(built.activation,'open');
+ assert.deepEqual(Object.keys(buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,built).mcpServers),['meri_browser']);
  // Through options.mjs, the open fragment is composed last and keeps the default deny for every other tool.
  const open=openFragment({cwd}).cap,o=buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,open);
  assert.deepEqual(Object.keys(o.mcpServers),['meri_browser']);assert.equal(o.permissionMode,'default');

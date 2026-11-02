@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {EGRESS_REQUIREMENTS,BROWSER_ACTIVATION,activationOpen} from '../activation.mjs';
+import {EGRESS_REQUIREMENTS,EGRESS_REQUIREMENTS_SHA256,HELD_BROWSER_ACTIVATION,BROWSER_ACTIVATION_RENDER_VERIFICATION,activationOpen,compileBrowserActivation} from '../activation.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {egressDecision,egressRedirectChain,EGRESS_CONNECTION_KINDS} from '../egress.mjs';
 import {validateBrowserPolicy,DEFAULT_BROWSER_POLICY} from '../policy.mjs';
 import {resolveBrowserPolicy} from '../resolution.mjs';
@@ -12,8 +13,11 @@ test('H3: the activation record makes the effective origin allowlist mandatory f
  for(const term of ['every redirect hop','sub-resources','fetch/XHR','WebSocket','downloads','platform-maximum ∧ tenant ∧ role','in addition to the non-public and resolved-address rules','allowlisted public origin redirecting to an unlisted public origin','narrowed away','egressDecision'])assert.ok(allowlist.includes(term),term);
  assert.match(requirement('redirects'),/effective-allowlist and destination-address checks/u);
  for(const probe of ['allowlisted-to-unlisted public redirect','unlisted public sub-resource','unlisted public WebSocket','narrowed away by tenant or role'])assert.ok(requirement('evidence').includes(probe),probe);
- assert.equal(activationOpen(BROWSER_ACTIVATION),false,'still held');
- assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',requirements:EGRESS_REQUIREMENTS.filter(r=>!r.startsWith('effective-origin-allowlist:'))}),false,'a record without the allowlist requirement never opens');
+ assert.equal(activationOpen(HELD_BROWSER_ACTIVATION),false,'still held');
+ assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:canonicalSha256(EGRESS_REQUIREMENTS.filter(r=>!r.startsWith('effective-origin-allowlist:')))}),false,'a record measured without the allowlist requirement never opens');
+ const receipt={schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256};
+ assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}),false,'no render verification receipt, no open');
+ assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:receipt}),true);
 });
 test('H3: an allowlisted public origin redirecting to an unlisted public origin is refused at the redirect hop',()=>{
  const p=validateBrowserPolicy(enabledPolicy());
@@ -50,12 +54,13 @@ test('H3: the egress decision uses the effective tenant/role-narrowed list, neve
  assert.equal(egressDecision(validateBrowserPolicy(),{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_NO_ALLOWED_DESTINATIONS','empty effective list admits nothing');
  assert.equal(egressDecision(resolveBrowserPolicy({platform,tenant:{browser:{enabled:false}},role:'member'}),{kind:'navigation',url:`${APPROVED[0]}/`}).code,'BROWSER_DISABLED');
 });
-test('the activation checklist names every egress requirement, the proxy route and connection coalescing are required, and the gate stays held',async()=>{
+test('the activation checklist names every egress requirement, the proxy route and connection coalescing are required, and an unconfigured gate stays held',async()=>{
  const {readFile}=await import('node:fs/promises');
  const checklist=await readFile(new URL('../ACTIVATION-CHECKLIST.md',import.meta.url),'utf8');
  for(const id of EGRESS_REQUIREMENTS.map(r=>r.slice(0,r.indexOf(':'))).filter(id=>id!=='evidence'))assert.ok(checklist.includes(`| ${id}`)||checklist.includes(`${id}, `)||checklist.includes(`, ${id} |`),id);
  assert.match(requirement('proxy-route'),/--proxy-server.*no --proxy-bypass.*createEgressControl.*policySha256.*revoked or expired/su);
  assert.match(requirement('connection-coalescing'),/coalescing/u);
  for(const probe of ['proxied-loopback probe','coalescing probe','WebRTC/QUIC UDP probe','request after grant revocation'])assert.ok(requirement('evidence').includes(probe),probe);
- assert.equal(BROWSER_ACTIVATION.state,'held');assert.equal(BROWSER_ACTIVATION.evidence,null);assert.equal(activationOpen(),false);
+ assert.equal(HELD_BROWSER_ACTIVATION.state,'held');assert.equal(HELD_BROWSER_ACTIVATION.evidence,null);assert.equal(activationOpen(compileBrowserActivation(undefined)),false);
+ assert.match(checklist,/browserActivation/u,'the checklist names the configuration key the evidence record opens');
 });

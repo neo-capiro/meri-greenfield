@@ -1,8 +1,7 @@
 # Browser-only host service (SCRUM-235 continuation 02, 2026-10-30)
 
-Composition and lifecycle seam for **one `hostMode:'browser-only'` allocation**. It replaces the earlier
-`prepareGuestHostRun` + `runnerQuery` composition, which was not a browser-only entrypoint: a browser-only host has no
-SDK query, process factory, model proxy, provider credential or Bash process. The canonical AgentCore runtime already
+Composition and lifecycle seam for **one `hostMode:'browser-only'` allocation**. It is the only host
+entrypoint: a browser-only host has no SDK query, process factory, model proxy, provider credential or Bash process. The canonical AgentCore runtime already
 owns the sole SDK query and in-process MCP.
 
 ## Real owners composed (imported, never re-implemented)

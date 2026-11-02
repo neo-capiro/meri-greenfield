@@ -16,6 +16,8 @@ import {compileAgentCoreConfiguration} from '../../../apps/runtime/agentcore-con
 import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
 import {validateStaticProductDelivery} from '../../../apps/runtime/material-init.mjs';
 import {APPROVED_READS_LITERAL,compileCapabilityPlatform} from '../../../apps/runtime/product-ports/capability-policy.mjs';
+import {compileBrowserPlatform} from '../../../apps/runtime/product-ports/browser-policy.mjs';
+import {compileBrowserActivationInput,BROWSER_ACTIVATION_RENDER_VERIFICATION} from '../../../apps/worker/conversation/browser/activation.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../../../apps/runtime/artifacts/configuration.mjs';
 import {compileObjectiveGenerationConfiguration} from '../../../apps/runtime/objective-generation/configuration.mjs';
 import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime-0.2/reads.mjs';
@@ -104,7 +106,7 @@ export function parseRuntimeValues(raw){
 }
 
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
-export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','nativeProcessing']);
+export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','nativeProcessing','browserPlatform','browserActivation']);
 /** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
 export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
 /** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
@@ -203,6 +205,17 @@ export function parseFeatures(raw,{secrets={}}={}){
  if(f.nativeProcessing!==undefined){
   out.nativeProcessing=parseNativeProcessing(f.nativeProcessing);
   if(out.nativeProcessing.enabled&&(out.sourceEnabled!==true||out.uploads?.enabled!==true))fail('RENDER_INPUT_REFUSED','nativeProcessing requires sourceEnabled and uploads');
+ }
+ // Browser destinations (product-ports/browser-policy.mjs): the platform-approved origin set tenant admins may narrow,
+ // never widen. The runtime's own compiler validates it, so a malformed or widening record refuses here, not at startup.
+ if(f.browserPlatform!==undefined){try{out.browserPlatform=compileBrowserPlatform({browserPlatform:f.browserPlatform});}catch{fail('RENDER_INPUT_REFUSED','features.browserPlatform (product-ports/browser-policy.mjs)');}}
+ // Browser activation (browser/activation.mjs): held, or the evidence record measured on the isolated host and pinned to the
+ // source's exact egress requirements. An open record needs the native host family: the control-to-host router it uses is
+ // rendered from that family's material below, and the runtime validator refuses an open record without that router.
+ if(f.browserActivation!==undefined){
+  let activation;try{activation=compileBrowserActivationInput(f.browserActivation);}catch{fail('RENDER_INPUT_REFUSED','features.browserActivation (browser/activation.mjs)');}
+  if(activation.state==='open'&&out.nativeProcessing?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.browserActivation open requires features.nativeProcessing');
+  out.browserActivation=activation;
  }
  if(f.objectiveGeneration!==undefined){
   let declared;try{declared=compileObjectiveGenerationConfiguration({objectiveGeneration:f.objectiveGeneration},'control');}catch{fail('RENDER_INPUT_REFUSED','features.objectiveGeneration (objective-generation/configuration.mjs)');}
@@ -344,12 +357,18 @@ export function assertProductCliGates(role,c,environment){
 
 /** Pure render (reads only the private material passed in). Returns every role's exact bytes plus the non-secret summary. */
 export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs=Date.now(),validityDays=DEFAULTS.validityDays,
- deploymentRevision=DEFAULTS.deploymentRevision,featureSecrets={},nativeMaterial={}}){
+ deploymentRevision=DEFAULTS.deploymentRevision,featureSecrets={},nativeMaterial={},browserEvidence}){
  const d=parseDeploymentInputs(deployment),activeRoles=deploymentRoles(d),schedule=activeRoles.includes('schedule-worker'),k=parseCoreValues(core),r=parseRuntimeValues(runtime),s=parseStage3(stage3,{clusterName:d.clusterName,roles:activeRoles});
  if(!Number.isSafeInteger(nowMs)||nowMs<1)fail('RENDER_INPUT_REFUSED','nowMs');
  if(!Number.isFinite(validityDays)||validityDays<=0)fail('RENDER_INPUT_REFUSED','validityDays must be positive');
  if(!/^[A-Za-z0-9_-]{1,128}$/u.test(deploymentRevision))fail('RENDER_INPUT_REFUSED','deploymentRevision');
  const features=d.features??{},secretFiles=featureSecretFiles(features,featureSecrets);
+ // An open browser activation record is accepted only against the evidence file's actual bytes (read by the CLI from the source
+ // root, or supplied by a caller): the recorded SHA-256 must match, and bytes without an open record are a mistaken input.
+ if(features.browserActivation?.state==='open'){
+  if(!Buffer.isBuffer(browserEvidence)||!browserEvidence.length)fail('RENDER_INPUT_REFUSED','features.browserActivation open requires the evidence file bytes');
+  if(sha(browserEvidence)!==features.browserActivation.evidenceSha256)fail('RENDER_INPUT_REFUSED','features.browserActivation.evidenceSha256 does not match the evidence file');
+ }else if(browserEvidence!==undefined)fail('RENDER_INPUT_REFUSED','browser evidence bytes without an open features.browserActivation');
  const {pins,notAfterMs}=verifyPki(d,pki);
  const native=composeNativeProcessing({feature:features.nativeProcessing,material:nativeMaterial,deployment:d,pki,nowMs});
  // Certificate validity is independent of each admitted conversation execution.
@@ -384,7 +403,23 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  // digest `versions.imageDigest` records — and to the existing deployment.agentcore owner. Absent emits no
  // key at all; `enabled:false` emits the inert declaration and nothing else, so no digest can be declared.
  if(features.uploads!==undefined)featureKeys.uploads={native:features.uploads.enabled?{enabled:true,agentcore:{imageDigest:'sha256:'+nodeDigest}}:{enabled:false}};
- if(native.control!==null)featureKeys.uploads=native.control;
+ if(native.control!==null){
+  featureKeys.uploads=native.control;
+  // The browser-host router (browser-host-configuration.mjs) is the SAME control-to-host mTLS identity the native inspection
+  // host already pins: the Control client leaf and the issuer root that signs every host certificate. Only the router is
+  // rendered; the host-currentness listener (`tls.hostServer` + `bind`) needs listener material and a host-to-Control network
+  // path that no deployment input declares yet (docs/handover/20261101/BROWSER-ENABLEMENT-RUNBOOK-20261101.md).
+  const t=native.control.native.host.tls;
+  featureKeys.browserHosts={enabled:true,tls:{privateClient:{clientName:t.clientName,certFile:t.certPath,keyFile:t.keyPath,caFile:t.caPath}}};
+ }
+ if(features.browserPlatform!==undefined)featureKeys.browserPlatform=structuredClone(features.browserPlatform);
+ // The held record renders as exactly `{state:'held'}` (the runtime compiles it back to the same held record); an open one
+ // renders with the renderer's verification receipt, which control requires: it names the rendered source commit and render time
+ // beside the evidence path, its digest and the requirement digest the record was measured against.
+ if(features.browserActivation!==undefined)featureKeys.browserActivation=features.browserActivation.state==='open'
+  ?{...structuredClone(features.browserActivation),renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:d.images.nodeRuntimeSourceCommit,renderedAtMs:nowMs,
+    evidenceSha256:features.browserActivation.evidenceSha256,requirementsSha256:features.browserActivation.requirementsSha256}}
+  :{state:'held'};
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
  // Memory (lane M): review-only proposals over Core M2 at the Core origin, with the same Core service secret file as reads.
  if(features.memory!==undefined)featureKeys.memory=features.memory.enabled?{enabled:true,origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}:{enabled:false};
@@ -454,7 +489,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,
   secretFiles:Object.fromEntries(Object.entries(secretFiles).map(([key,v])=>[key==='reads.serviceSecret'?PATHS.readsServiceSecret:PATHS.readsReadModeServiceSecret,
    {feature:key,secretArn:v.secretArn,versionId:v.versionId,sha256:sha(v.bytes)}])),
-  generatedFiles:downloadLinkKey?{[PATHS.downloadLinkKey]:'download-link signing key, fresh per render (32 random bytes, base64url)'}:{}};
+  generatedFiles:downloadLinkKey?{[PATHS.downloadLinkKey]:'download-link signing key, fresh per render (32 random bytes, base64url)'}:{},
+  ...(features.browserActivation===undefined?{}:{browserActivation:features.browserActivation.state==='open'?{state:'open',evidence:features.browserActivation.evidence,evidenceSha256:features.browserActivation.evidenceSha256,evidenceVerified:true}:{state:'held'}})};
  return {roles,summary,...(native.observerMaterial===undefined?{}:{nativeObserverMaterial:native.observerMaterial})};
 }
 
@@ -520,6 +556,16 @@ function summarize(x){
   pinsDer:pins.der,pinsPem:pins.pem,wiring};
 }
 
+/** The browser activation evidence record, read from under the source root by the exact repository path the deployment input
+ * names. A missing file, a path outside the root, a link or an oversized file refuses with a fixed code. */
+export async function readBrowserActivationEvidence(root,evidence){
+ if(typeof evidence!=='string'||!/^[A-Za-z0-9._/-]{1,200}$/u.test(evidence)||evidence.includes('..'))fail('RENDER_INPUT_REFUSED','features.browserActivation.evidence');
+ const base=resolve(root),path=resolve(base,evidence),rel=relative(base,path);
+ if(!rel||rel.startsWith('..')||isAbsolute(rel))fail('RENDER_INPUT_REFUSED','features.browserActivation.evidence must be under the source root');
+ let stat;try{stat=await lstat(path);}catch{fail('RENDER_INPUT_REFUSED','features.browserActivation.evidence is not a file under the source root');}
+ if(!stat.isFile()||stat.size<1||stat.size>1048576)fail('RENDER_INPUT_REFUSED','features.browserActivation.evidence is not a regular file of at most 1 MiB');
+ return readFile(path);
+}
 /** Writes into a NEW directory that must be outside the repository. Files are 0600, directories 0700. */
 export async function writeRendered(out,{roles,summary,nativeObserverMaterial},{sourceRoot=SOURCE_ROOT}={}){
  const target=resolve(out),rel=relative(sourceRoot,target);
@@ -555,7 +601,8 @@ export async function main(argv=process.argv.slice(2)){
    ...(a['now-ms']?{nowMs:Number(a['now-ms'])}:{}),...(a['validity-days']?{validityDays:Number(a['validity-days'])}:{}),
    ...(a['deployment-revision']?{deploymentRevision:a['deployment-revision']}:{}),
    ...(a['feature-secrets']?{featureSecrets:await readFeatureSecrets(await json(resolve(a['feature-secrets'])))}:{}),
-   ...(a['native-material']?{nativeMaterial:await readNativeMaterial(await json(resolve(a['native-material'])))}:{})});
+   ...(a['native-material']?{nativeMaterial:await readNativeMaterial(await json(resolve(a['native-material'])))}:{}),
+   ...(deployment?.features?.browserActivation?.state==='open'?{browserEvidence:await readBrowserActivationEvidence(SOURCE_ROOT,deployment.features.browserActivation.evidence)}:{})});
   const out=await writeRendered(a.out,rendered);
   process.stdout.write(JSON.stringify({status:'MERI_FIRST_CHAT_MATERIAL_RENDERED',out,summary:join(out,'summary.json'),configSha256:rendered.summary.taskDefinitionConfigPins})+'\n');
   return 0;

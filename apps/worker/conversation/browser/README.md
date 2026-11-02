@@ -45,7 +45,7 @@ The activity reaches it through `prepareBrowserRun` (`runtime.mjs`) when a trust
 
 | Module | Responsibility |
 | --- | --- |
-| `index.mjs` | Public entry: validates trusted context, applies the held activation gate |
+| `index.mjs` | Public entry: validates trusted context and composes the fragment; a host reaches it only through control's browser-admitted run facts |
 | `policy.mjs`, `resolution.mjs`, `public-web.mjs` | Policy shape, platform ∧ tenant ∧ role resolution, unremovable platform limits |
 | `egress.mjs` | Pure reference decision for every connection kind |
 | `egress-control.mjs`, `egress-proxy.mjs` | Run-bound grant (worker) and the enforceable admission the host proxy runs: allowlist, web ports, every resolved address public, pinned connect address, revocation and expiry; mapping of forward-proxy requests |
@@ -71,7 +71,7 @@ The same record says the direction does not accept the p1c defects, authorize li
 | Destinations | Mandatory explicit HTTPS origin list per policy | **Denied by default.** Only origins on `allowedOrigins` open. The source default list is empty. Capiro supplies its approved origins as trusted platform configuration; tenant admins may narrow them or enable approved origins the default left out, never widen beyond the approved set. An empty effective list keeps the capability on with no destination, and `status` says `destinations:'none'` with notice `BROWSER_NO_ALLOWED_DESTINATIONS`. |
 | Platform security limits | HTTPS syntax only | Unremovable denials on top of any list (`public-web.mjs`): non-public IPv4 ranges (0/8, 10/8, 100.64/10, 127/8, 169.254/16 including cloud metadata, 172.16/12, 192.0.0/24, 192.0.2/24, 192.88.99/24, 192.168/16, 198.18/15, 198.51.100/24, 203.0.113/24, multicast 224/4, reserved 240/4); IPv6 outside 2000::/3 (loopback, unspecified, IPv4-mapped, NAT64, unique-local including `fd00:ec2::254`, link-local, multicast) or inside 2001::/23, 2001:db8::/32, 2002::/16, 3fff::/20, 5f00::/16; single-label and special-use/internal names (`localhost`, `.local`, `.internal`, `.arpa`, `.test`, `.onion` and similar); every scheme except http/https (plus `about:blank` for navigation); credentials in URLs. No tenant, role or platform record can approve such an origin (`BROWSER_PLATFORM_LIMIT`). |
 | Consequential actions | Pre-approved in `allowedTools`; only a PostToolUse receipt | **Decided before execution** (`permissions.mjs`) |
-| Activation | Default disabled, uncomposed | **Held** (`activation.mjs`) until real egress controls, including the mandatory effective origin allowlist at every hop, are qualified; no argument opens it |
+| Activation | Default disabled, uncomposed | **Held** unless control's configured `browserActivation` record (`activation.mjs`, rendered from the deployment inputs) cites measured egress evidence for the exact `EGRESS_REQUIREMENTS`; no argument, environment variable or policy field opens it |
 
 ## Fragment contents (once activation opens)
 
@@ -132,7 +132,7 @@ No browser host is qualified, and activation is held. This fragment proves none 
 
 Remaining work:
 
-1. Record every measurement in [ACTIVATION-CHECKLIST.md](ACTIVATION-CHECKLIST.md) on the approved D005 host, including each requirement in `activation.mjs` (`EGRESS_REQUIREMENTS`), with the host proxy running `egress-control.mjs`. Then open the gate by a reviewed source change that cites that evidence.
+1. Record every measurement in [ACTIVATION-CHECKLIST.md](ACTIVATION-CHECKLIST.md) on the approved D005 host, including each requirement in `activation.mjs` (`EGRESS_REQUIREMENTS`), with the host proxy running `egress-control.mjs`. Then open the gate by a reviewed deployment-input change (`features.browserActivation`) that cites that evidence record and its digests.
 2. Composition into the single query is source-wired (`../options.mjs`, `../activity.mjs`) but inert while held; live SDK hook precedence and permission delivery remain unmeasured.
 3. Add `@playwright/mcp` 0.0.83 to the conversation worker package and lockfile through the lockfile owner.
 4. Add an artifact ingest operation for externally sourced files, honouring `idempotencyKey` and provenance, to the artifact owner.

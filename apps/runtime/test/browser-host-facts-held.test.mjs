@@ -3,7 +3,7 @@
  * The currentness test drives the REAL createBrowserHostCurrentness over a synthetic SQL client that
  * returns an actual rowRun record from the lifecycle fixture (projection + request on the row) and a real
  * allocation row; only the execution reader, Core client and policy readers are synthetic boundaries.
- * Activation is hard-held in source, so browserAdmitted is false and the facts producer refuses — that
+ * Activation is control configuration; without an open record browserAdmitted is false and the facts producer refuses — that
  * gate is asserted, never bypassed. No database, network, native or activation change happens here. */
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -14,6 +14,7 @@ import {assertBrowserHostFacts,browserHostFactsDigest,BROWSER_HOST_FACTS_SCHEMA,
   from '../../../packages/contracts/runtime-0.2/browser-host-facts.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
+import {compileBrowserActivation,EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION} from '../../worker/conversation/browser/activation.mjs';
 import {hostClientDnsName} from '../../worker/conversation/host/control/protocol.mjs';
 import {lifecycleFixture,binding as fixtureBinding,id} from '../../control/conversations/test/lifecycle-fixture.mjs';
 
@@ -58,7 +59,7 @@ function sqlClient({runRow,allocationRowValue,seen}){
   throw Error('unexpected SQL: '+sql);
  }};
 }
-function currentnessFor({runRow,allocationRowValue,now,state='running',scopesFor=scopes,bindingFor=binding}){
+function currentnessFor({runRow,allocationRowValue,now,state='running',scopesFor=scopes,bindingFor=binding,activation}){
  const seen=[];
  const core={async readCurrent(){return {principal:{tenantId:bindingFor.tenantId,actorId:bindingFor.actorId},role:'standard_user',permissions:[],
   clientIds:[scopesFor[0].resourceId],identityRevision:'1'.repeat(64),membershipRevision:'2'.repeat(64),contextRevision:'3'.repeat(64),
@@ -68,7 +69,7 @@ function currentnessFor({runRow,allocationRowValue,now,state='running',scopesFor
   lifecycle:{browserCustody:{async currentHost(){throw Error('no custody in this fixture');}}}};
  const currentness=createBrowserHostCurrentness({store,core,
   nativeCredentials:{async nativeCredentialFor(){return {credential:'synthetic-native',expiresAtMs:now+30000};}},
-  capabilityPolicy:{async forRun(){return {};}},readBrowserPolicy:async()=>validateBrowserPolicy(),now:()=>now,maxRequestMs:3000});
+  capabilityPolicy:{async forRun(){return {};}},readBrowserPolicy:async()=>validateBrowserPolicy(),...(activation?{activation}:{}),now:()=>now,maxRequestMs:3000});
  return {currentness,seen,client:sqlClient({runRow,allocationRowValue,seen})};
 }
 
@@ -89,7 +90,12 @@ test('real readFacts keeps row.request as the saved selection while readHost kee
   assert.deepEqual(fixture.seen,['allocation','advisory','runs'],'the facts read runs on the supplied transaction client');
   assert.deepEqual(facts.savedRequest,saved.request,'the saved request comes from the ROW, not from projection');
   assert.deepEqual(facts.scopes,rtScopes,'scopes come from the canonical execution read boundary');
-  assert.equal(facts.browserAdmitted,false,'source activation is held, so browser admission is truthfully false');
+  assert.equal(facts.browserAdmitted,false,'no configured activation record, so browser admission is truthfully false');
+  const open=currentnessFor({runRow,allocationRowValue:row,now,scopesFor:rtScopes,bindingFor:rtBinding,
+   activation:compileBrowserActivation({state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}})});
+  const admitted=await open.currentness.readFacts(open.client,{allocation:allocation,binding:rtBinding});
+  assert.equal(admitted.browserAdmitted,true,'the same read admits the browser under control\'s open record');
+  assert.equal(admitted.sdkAdmitted,true);assert.deepEqual(admitted.browserPolicy,facts.browserPolicy);
   assert.equal(facts.sdkAdmitted,true);
   assert.ok(facts.browserPolicy,'the current browser policy value is present');
   assert.ok(facts.capabilityPolicy);

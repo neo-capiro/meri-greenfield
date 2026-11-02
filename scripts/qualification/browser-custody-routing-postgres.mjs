@@ -52,7 +52,7 @@ test('canonical custody routing uses actual PostgreSQL and fresh logical-run Cor
  const hostStore=createPostgresHostCurrentnessStore({transact:body=>transact(pool,body),readCanonicalRun:full.readHost,maxLeaseMs:5000});
  const hostRead=(b,policySha256,purpose='sdk')=>hostStore.readCurrent({request:{schema:HOST_CONTROL_REQUEST_SCHEMA,allocation,binding:b,hostIdentity:admitted.hostIdentity,purpose,policySha256,nonce:hash(randomUUID())},fingerprintSha256:admitted.hostCertificate.fingerprintSha256,peerDnsName:admitted.hostCertificate.dnsName});
  const active=await fullRead(binding);assert.equal(active.sdkAdmitted,true);assert.equal(active.bashAdmitted,true);
- assert.equal(active.browserAdmitted,false,'current source activation remains held');assert.ok(active.currentUntilMs>Date.now()+3000,'request timeout does not shorten durable authority');
+ assert.equal(active.browserAdmitted,false,'no browserActivation record is configured, so the browser stays held');assert.ok(active.currentUntilMs>Date.now()+3000,'request timeout does not shorten durable authority');
  assert.deepEqual((await hostRead(binding,active.capabilityPolicySha256)).receipt.binding,binding);
  rotateAfterPolicy=true;await assert.rejects(fullRead(binding));rotateAfterPolicy=credentialAfterPolicy=false;
  allowBash=false;await assert.rejects(hostRead(binding,active.capabilityPolicySha256));assert.equal((await fullRead(binding)).bashAdmitted,false);allowBash=true;

@@ -6,7 +6,6 @@ import {assertBrowserCustody} from '../../../../packages/runtime/browser-custody
 import {assertBrowserHookResult,assertBrowserApprovalResult} from '../../../../packages/contracts/runtime-0.2/browser-tools.mjs';
 import {createBrowserSdkServer} from './sdk-server.mjs';
 import {validateBrowserPolicy,browserStatus,BROWSER_TOOLS,INTERACTION_TOOLS} from './policy.mjs';
-import {activationOpen} from './activation.mjs';
 import {EXPOSED_UNADMITTED_TOOLS} from './fragment.mjs';
 import {assertBrowserCleanupReceipt} from './lifecycle.mjs';
 const prefix='mcp__meri_browser__',fault=code=>Object.assign(Error(code),{code});
@@ -18,7 +17,7 @@ export async function prepareRemoteBrowserRun({port,binding,deadlineMs,now,signa
  })();
  try{
   metadata=await port.prepare({signal});const policy=validateBrowserPolicy(metadata.policy),open=metadata.activation==='open';
-  if(open&&!activationOpen()||browserHandoff&&!open)throw fault('BROWSER_ACTIVATION_HELD');
+  if(browserHandoff&&!open)throw fault('BROWSER_ACTIVATION_HELD');
   const status=Object.freeze({...browserStatus(policy),activation:metadata.activation,...(metadata.reason?{reason:metadata.reason}:{})});
   let fragment;
   if(!open)fragment=Object.freeze({enabled:false,activation:metadata.activation,policy,status,mcpServers:{},allowedTools:[],disallowedTools:[],hooks:{}});

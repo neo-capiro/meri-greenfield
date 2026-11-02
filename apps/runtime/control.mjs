@@ -82,6 +82,7 @@ import {createObjectiveGenerationStartApplication} from './objective-generation/
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 import {createObjectiveGenerationDispatcher} from '../control/conversations/objective-generation-dispatch.mjs';
 import {createBrowserHostComposition,readBrowserHostMaterial} from './browser-host-composition.mjs';
+import {compileBrowserActivation} from '../worker/conversation/browser/activation.mjs';
 import {createBrowserArtifactPublication} from './browser-artifact-publication.mjs';
 import {createBrowserDownloadReceiptRecorder} from './browser-download-receipt.mjs';
 import {compileBrowserHostConfiguration} from './browser-host-configuration.mjs';
@@ -245,6 +246,7 @@ export function assembleControl(options){
         requestMs:configuration.limits.requestMs})
       :null;
     browserHosts=createBrowserHostComposition({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
+     activation:compileBrowserActivation(configuration.browserActivation),
      siteWorkflowAdmission:ports.siteWorkflowAdmission??null,browserApproval,nativeCurrentness,
      browserReceipts:(()=>{const recorder=createBrowserActionRecorder({metadata:createPostgresApprovalMetadataReader({pool}),
       record:value=>browserReceipts.appendAction(value),result:typeof productIntents?.browser?.result==='function'?value=>productIntents.browser.result(value):null,

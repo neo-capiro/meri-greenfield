@@ -24,10 +24,10 @@ function fixture(){
    rows.set(keyOf(key),next);return structuredClone(next);},
   async read({key}){const row=rows.get(keyOf(key));return row?structuredClone(row):null;}})});
  const hosts={async executeBrowserOperation(operation,request,options){dispatches++;calls.push({operation,request,deadlineMs:options.deadlineMs});at+=advance;options.signal.throwIfAborted();
-  if(operation==='browser-prepare')return {binding:replyBinding,policy,activation:'held',approvalDeadlineMs:120000};
+  if(operation==='browser-prepare')return {binding:replyBinding,policy,activation:'open',approvalDeadlineMs:120000};
   if(operation==='browser-call')return {content:[{type:'text',text:'filtered snapshot'}]};
   if(operation==='browser-tools')return {tools:[{name:'browser_snapshot',inputSchema:{type:'object'}}]};
-  if(operation==='browser-settle')return {schema:'meri-browser-cleanup/1',binding,outcome:request.outcome,activation:'held',egress:'not-applicable',process:'not-applicable',profile:'done'};
+  if(operation==='browser-settle')return {schema:'meri-browser-cleanup/1',binding,outcome:request.outcome,activation:'open',egress:'done',process:'done',profile:'done'};
  }};
  const browserOperations=createBrowserOperations({hosts,now,custody,readCapabilityRole:async()=>{roleReads++;if(revoked)throw Error('REVOKED');return {actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000};},readBrowserPolicy:async input=>{policyReads++;assert.deepEqual(input.scopes,scopes);return policy;}});
  const app=createWorkerRunApplication({now,browserOperations,configuration:{limits:{requestMs:3000,requestBytes:1048576}},createService(){throw Error('browser must not invent a run-owner method');},

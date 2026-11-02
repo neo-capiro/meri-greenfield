@@ -1,6 +1,6 @@
-/** Real pinned SDK MCP and original host hooks. Open activation is mocked only
- * in this test; no production preparation override or provider loop exists. */
-import test,{mock} from 'node:test';import assert from 'node:assert/strict';
+/** Real pinned SDK MCP and original host hooks. The host answers `activation:'open'`
+ * here as control's browser-admitted facts would; no provider loop exists. */
+import test from 'node:test';import assert from 'node:assert/strict';
 import {tmpdir} from 'node:os';import {randomUUID} from 'node:crypto';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
@@ -9,9 +9,7 @@ import {validateBrowserPolicy} from '../policy.mjs';
 import {composeBrowserOptions} from '../options.mjs';
 import {dispatchPreparedBrowserOperation} from '../../host/browser-operation-host.mjs';
 import {binding,installation,sourceScopes,enabledPolicy,clock,recorders,hookInput,pageResponse} from './fixtures.mjs';
-const activation=await import('../activation.mjs');
-mock.module('../activation.mjs',{namedExports:{...activation,activationOpen:()=>true}});
-const {prepareRemoteBrowserRun}=await import('../remote-runtime.mjs');
+import {prepareRemoteBrowserRun} from '../remote-runtime.mjs';
 async function fixture(t){
  const r=recorders(),{launch,...contextInstallation}=installation,policy=validateBrowserPolicy(enabledPolicy());
  const cwd=tmpdir().replaceAll('\\','/')+'/meri-remote-'+randomUUID()+'/'+binding.conversationId;

@@ -1,5 +1,6 @@
 /** Full host currentness joins existing allocation, execution, custody, Core
- * and policy owners. It neither provisions a host nor opens browser activation. */
+ * and policy owners. It provisions no host; `activation` is control's compiled browser activation record
+ * (browser/activation.mjs), and `browserAdmitted` is false for every purpose while that record is held. */
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
@@ -9,7 +10,7 @@ import {rowRun} from '../conversations/boundary.mjs';
 import {assertBrowserHostAllocation,assertHostRunBinding} from '../../worker/conversation/host/binding.mjs';
 import {assertCapabilityPolicy} from '../../worker/conversation/capabilities/policy.mjs';
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
-import {activationOpen} from '../../worker/conversation/browser/activation.mjs';
+import {activationOpen,HELD_BROWSER_ACTIVATION} from '../../worker/conversation/browser/activation.mjs';
 import {allocationRow,fail,same} from './allocation.mjs';
 import {HOST_ALLOCATION_SQL} from './postgres-allocations.mjs';
 import {createCurrentBrowserCoreAccess} from './current-core.mjs';
@@ -18,7 +19,8 @@ import {createBrowserCustodyCurrentness} from './custody-currentness.mjs';
 /** `rowRun` keeps the immutable request on the ROW, beside `projection`; never inside it. Exported so the
  * mapping is testable without a database. */
 export function savedRequestOf(row){return row?.request??null;}
-export function createBrowserHostCurrentness({store,core,nativeCredentials,capabilityPolicy,readBrowserPolicy,now=Date.now,maxRequestMs=3000}){
+export function createBrowserHostCurrentness({store,core,nativeCredentials,capabilityPolicy,readBrowserPolicy,activation=HELD_BROWSER_ACTIVATION,now=Date.now,maxRequestMs=3000}){
+ const browserOpen=activationOpen(activation);
  const readExecution=storageMethod(store.executions,'readCurrentOnClient'),currentHost=storageMethod(store.lifecycle.browserCustody,'currentHost');
  const forRun=storageMethod(capabilityPolicy,'forRun'),readCore=createCurrentBrowserCoreAccess({core,nativeCredentials,now});
  if(typeof readBrowserPolicy!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>3000)fail();
@@ -44,7 +46,7 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    const held=source.projection.state==='paused'&&source.hold_control_id!=null;
    if(held&&(route||same(binding,original))){
     const state=await life.run(signal=>route?retained.readRoute(client,{allocation,originalBinding:original,binding,custody:v.custody,signal}):retained.readHost(client,{allocation,binding:original,signal}));
-    life.check();const held={...state,browserAdmitted:state.browserAdmitted&&activationOpen(),currentUntilMs:Math.min(state.currentUntilMs,authorityCutoff)};
+    life.check();const held={...state,browserAdmitted:state.browserAdmitted&&browserOpen,currentUntilMs:Math.min(state.currentUntilMs,authorityCutoff)};
     if(!facts)return held;
     // A held/successor run keeps legitimate browser custody while SDK and Bash stay denied. Its host-local
     // policy consumer still needs the CURRENT browser policy, read through the same Core/session owners —
@@ -55,7 +57,7 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
     const heldBrowser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:heldScopes,actorRole:heldAuthority.role,signal,deadlineMs:life.deadline()})));
     const heldCutoff=Math.min(await heldRecheck(),held.currentUntilMs,heldAuthority.expiresAtMs);
     life.check();
-    return {...held,browserAdmitted:heldBrowser.enabled&&activationOpen(),currentUntilMs:heldCutoff,sdkAdmitted:false,bashAdmitted:false,
+    return {...held,browserAdmitted:heldBrowser.enabled&&browserOpen,currentUntilMs:heldCutoff,sdkAdmitted:false,bashAdmitted:false,
      scopes:heldScopes,deadlineMs:authorityCutoff,browserPolicy:heldBrowser,
      savedRequest:savedRequestOf(source),originalBinding:original};
    }
@@ -77,7 +79,7 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    const {receipt:authority,recheck}=await readCore({binding,selectedClientId,life});
    const policy=assertCapabilityPolicy(await life.run(signal=>forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:authority.role,signal}))??{});
    const browser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:current.scopes,actorRole:authority.role,signal,deadlineMs:life.deadline()})));
-   const credentialCutoff=await recheck();life.check();const state={binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&activationOpen(),
+   const credentialCutoff=await recheck();life.check();const state={binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&browserOpen,
     capabilityPolicySha256:hash(policy),browserPolicySha256:hash(browser),currentUntilMs:Math.min(current.deadlineMs,authority.expiresAtMs,authorityCutoff,credentialCutoff)};
    // The facts projection adds what the SAME read already loaded from the canonical row: the execution
    // window, scopes, the saved request (authoritative selection source) and the policy VALUES. readHost
