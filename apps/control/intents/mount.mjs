@@ -93,7 +93,7 @@ export function createIntentMount(configuration){
      // A failure with no owner effect settles FAILED and replays the same refusal; anything else stays UNKNOWN.
      // An INVALID_ARGUMENTS refusal is settled with the canonical schema's field-path detail, so its replay explains itself too;
      // any other refusal keeps the owner's own bounded detail (who answered, and with what), so the journal names what happened.
-     const none=error?.effect==='none',code=none?closed(error.code):'UNKNOWN',detail=code==='INVALID_ARGUMENTS'?explain(preparer.operation,v.arguments)??detailOf(error):none?detailOf(error):undefined;
+     const none=error?.effect==='none',code=none?closed(error.code):'UNKNOWN',detail=code==='INVALID_ARGUMENTS'?explain(preparer.operation,v.arguments)??detailOf(error):detailOf(error);
      try{await life.run(s=>journal.settle({...key,state:none?'FAILED':'UNKNOWN',outcome:none?{code,...(detail===undefined?{}:{detail})}:null,signal:s}));}catch{}
      throw intentFault(code,undefined,detail);
     }
@@ -101,7 +101,9 @@ export function createIntentMount(configuration){
     // Custody is durable, but release still requires fresh authority and the original expiry. A refused release never redispatches.
     try{await life.run(s=>journal.settle({...key,state:'PREPARED',outcome:{result,release:original},signal:s}));}catch{throw intentFault('UNKNOWN');}
     return await release.release({...selected,owner:preparer.owner,result,original});
-   }catch(error){const code=closed(error?.code);throw intentFault(code,undefined,code==='UNKNOWN'?undefined:detailOf(error));}finally{life.close();}
+   // The journal keeps a detail only on FAILED rows; the thrown fault keeps it for every code so the control log line can name
+   // the owner's own reason behind an UNKNOWN too (the answer that never came is not a secret, only unconfirmed).
+   }catch(error){throw intentFault(closed(error?.code),undefined,detailOf(error));}finally{life.close();}
   },
  });
 }

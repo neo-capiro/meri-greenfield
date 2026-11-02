@@ -45,7 +45,8 @@ function setup(operation='create_research_portfolio_snapshot',{selected=true}={}
  const request=REQUESTS(binding)[operation];
  const state={paths:[],effects:0,prepares:0,loseCreate:false,loseApprove:false,proposal:null,scopeRevoked:false,bodies:[]};
  const client=createResearchActionCoreClient({origin:'https://core.invalid',now:()=>NOW,getServiceSecret:async()=>'service-secret',reservedCredentials:async()=>new Set(),
-  getCredentials:async()=>({credential:'user-session',expiresAtMs:NOW+60000}),async fetchImpl(url,init){
+  async getCredentials(){if(state.credentialsError)throw state.credentialsError;return {credential:'user-session',expiresAtMs:NOW+60000};},async fetchImpl(url,init){
+   if(state.fetchError)throw state.fetchError;
    const path=new URL(url).pathname,body=init.body===undefined?null:JSON.parse(init.body);state.paths.push({path,method:init.method});state.bodies.push(body);
    assert.equal(init.headers.authorization,'Bearer user-session');assert.equal(init.headers['x-internal-service-secret'],'service-secret');assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');
    if(path==='/api/clio/tools/manage_research_portfolio'){
@@ -134,6 +135,23 @@ test('a definite 4xx answer to the proposal POST settles FAILED with who answere
  for(const [status,code] of [[409,'REFUSED'],[500,'UNAVAILABLE'],[503,'UNAVAILABLE']]){
   const u=setup('create_research_portfolio_snapshot');u.state.edge={status,body:{error:'later'}};const e=await u.prepare().catch(error=>error);
   assert.equal(e.code,'UNKNOWN',String(status)+' '+code);assert.deepEqual([...u.store.rows.values()].map(r=>r.state),['UNKNOWN'],String(status));
+ }
+});
+
+test('a proposal request that was never sent or never answered names its own reason for the control log, not a bare code',async()=>{
+ // Before dispatch: the session owner has no relay-eligible session bound to this run (the 2 Nov new-conversation runs): nothing
+ // was sent, the delivery settles FAILED UNAVAILABLE and the reason is the owner's constant.
+ const f=setup('manage_research_portfolio');f.state.credentialsError=Object.assign(Error('SESSION_UNAVAILABLE'),{code:'SESSION_UNAVAILABLE'});
+ const unsent=await f.prepare().catch(error=>error);
+ assert.equal(unsent.code,'UNAVAILABLE');assert.equal(unsent.detail,'the proposal request was not sent (SESSION_UNAVAILABLE)');assert.equal(f.state.prepares,0);
+ assert.deepEqual([...f.store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'UNAVAILABLE',detail:unsent.detail}]]);
+ // After dispatch: a transport failure (connection refused, name or certificate failure) may have reached Core: UNKNOWN, journaled
+ // without a detail, while the thrown fault carries the transport's own code for the log line.
+ for(const [cause,expected] of [[{code:'ECONNREFUSED'},'ECONNREFUSED'],[{code:'UNABLE_TO_VERIFY_LEAF_SIGNATURE'},'UNABLE_TO_VERIFY_LEAF_SIGNATURE'],[undefined,undefined]]){
+  const g=setup('create_research_portfolio_snapshot');g.state.fetchError=Object.assign(new TypeError('fetch failed'),cause===undefined?{}:{cause:Object.assign(Error('x'),cause)});
+  const lost=await g.prepare().catch(error=>error);assert.equal(lost.code,'UNKNOWN',expected);
+  assert.equal(lost.detail,expected===undefined?undefined:`the proposal request got no answer (${expected})`,expected);
+  assert.deepEqual([...g.store.rows.values()].map(r=>[r.state,r.outcome]),[['UNKNOWN',null]],expected);
  }
 });
 

@@ -41,11 +41,13 @@ test('a refusal before any owner effect settles FAILED with the owner\'s bounded
  assert.deepEqual([...store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'REFUSED',detail}]]);
  answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'none'});
  const replayed=await call(m).catch(error=>error);assert.equal(replayed.code,'REFUSED');assert.equal(replayed.detail,detail,'the journal replays the explained refusal');
- // A detail longer than the journal bound is cut, never refused; an unknown effect never carries one (the owner may have acted).
+ // A detail longer than the journal bound is cut, never refused. An unknown effect is journaled without one (the owner may have
+ // acted), but the thrown fault keeps the owner's reason so control's log line can name it.
  answer=Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE',effect:'none',detail:'x'.repeat(500)});
  const long=await call(m,{deliveryId:delivery(2)}).catch(error=>error);assert.equal(long.code,'UNAVAILABLE');assert.equal(long.detail.length,400);
- answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'unknown',detail:'never shown'});
- const unknown=await call(m,{deliveryId:delivery(3)}).catch(error=>error);assert.equal(unknown.code,'UNKNOWN');assert.equal(Object.hasOwn(unknown,'detail'),false);
+ answer=Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE',effect:'unknown',detail:'the proposal request got no answer (ECONNREFUSED)'});
+ const unknown=await call(m,{deliveryId:delivery(3)}).catch(error=>error);assert.equal(unknown.code,'UNKNOWN');assert.equal(unknown.detail,'the proposal request got no answer (ECONNREFUSED)');
+ assert.deepEqual([...store.rows.values()].map(r=>[r.state,r.outcome]).slice(2),[['UNKNOWN',null]]);
  assert.deepEqual([...store.rows.values()].map(r=>r.state),['FAILED','FAILED','UNKNOWN']);
 });
 

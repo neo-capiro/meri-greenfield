@@ -17,6 +17,13 @@ const EFFECTS=new Set(['none','unknown']),ownValue=(error,name)=>error!==null&&t
  * (400 invalid input, 401/403 identity or service authority, 404 conversation or route, 422 validation) and only ever
  * answers 201 after it. The preview edge answers 404 for a route it does not forward, so Core never saw the request. */
 const DEFINITE_REFUSALS=new Set([400,401,403,404,422]);
+/** Why the owner request never got an answer, as a closed token for the control log line (never a host, URL or message): the
+ * session owner's own constant before dispatch (`SESSION_UNAVAILABLE`), or the transport failure's own code after it
+ * (`ECONNREFUSED`, `ENOTFOUND`, `UNABLE_TO_VERIFY_LEAF_SIGNATURE`, `ERR_...`), else the error's name. */
+function transportReason(error,sent){
+ const token=[ownValue(error,'code'),ownValue(ownValue(error,'cause'),'code'),ownValue(error,'name')].find(value=>typeof value==='string'&&/^[A-Z][A-Z0-9_]{1,62}$/u.test(value)&&!['Error','TypeError'].includes(value));
+ return token===undefined?undefined:`${sent?'the proposal request got no answer':'the proposal request was not sent'} (${token})`;
+}
 /** The owner's own bounded refusal token (`{"error":"PREVIEW_ROUTE_NOT_FOUND"}` or a Nest `{"message":...}`), read within
  * the same lifetime from at most 1 KiB of the answer, so the explained refusal names who answered; anything else is dropped. */
 async function refusalToken(response,life){
@@ -61,7 +68,7 @@ export function createResearchActionCoreClient({origin,getCredentials,getService
    if((await borrow()).credential!==first.credential)refuse('ACCESS_DENIED',effect?'unknown':'none');life.check();return value;
   }catch(error){
    // A refusal that already names its effect (a definite 4xx answer above) keeps it; anything else after dispatch stays unknown.
-   const effectOf=ownValue(error,'effect'),detail=ownValue(error,'detail');
+   const effectOf=ownValue(error,'effect'),detail=ownValue(error,'detail')??transportReason(error,sent);
    throw intentFault(['ACCESS_DENIED','INVALID_ARGUMENTS','DEADLINE','CANCELLED','REFUSED'].includes(error?.code)?error.code:'UNAVAILABLE',EFFECTS.has(effectOf)?effectOf:sent&&effect?'unknown':'none',typeof detail==='string'?detail:undefined);
   }
   finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life.close();}
