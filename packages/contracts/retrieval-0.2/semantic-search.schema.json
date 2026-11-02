@@ -223,6 +223,12 @@
         "status": {
           "$ref": "#/$defs/SemanticNullableText"
         },
+        "responseDateDesc": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "openForApplications": {
+          "type": "boolean"
+        },
         "url": {
           "$ref": "#/$defs/SemanticNullableText"
         }
@@ -295,6 +301,9 @@
         "active": {
           "type": "boolean"
         },
+        "currentNotice": {
+          "type": "boolean"
+        },
         "url": {
           "$ref": "#/$defs/SemanticNullableText"
         }
@@ -315,6 +324,124 @@
         "responseDeadline",
         "active",
         "url"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticPassage": {
+      "type": "object",
+      "properties": {
+        "sourceTable": {
+          "anyOf": [
+            {
+              "enum": [
+                "federal_grant",
+                "sam_opportunity",
+                "opportunity_attachment"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceUrl": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "fileName": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "documentHash": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "chunkIndex": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "start": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "end": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "extractionMethod": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "truncated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "embeddedAt": {
+          "$ref": "#/$defs/SemanticNullableDateTime"
+        }
+      },
+      "required": [
+        "sourceTable",
+        "sourceUrl",
+        "fileName",
+        "documentHash",
+        "chunkIndex",
+        "start",
+        "end",
+        "extractionMethod",
+        "truncated",
+        "embeddedAt"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticDocumentCoverage": {
+      "type": "object",
+      "properties": {
+        "attachments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "withText": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "truncated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "indexed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "attachments",
+        "withText",
+        "truncated",
+        "indexed"
       ],
       "additionalProperties": false
     },
@@ -348,6 +475,12 @@
               "$ref": "#/$defs/SemanticContractOpportunityRecord"
             }
           ]
+        },
+        "passage": {
+          "$ref": "#/$defs/SemanticPassage"
+        },
+        "documents": {
+          "$ref": "#/$defs/SemanticDocumentCoverage"
         }
       },
       "required": [

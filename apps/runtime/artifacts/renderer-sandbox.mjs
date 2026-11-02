@@ -2,7 +2,7 @@
  * renderer probe must observe every required restriction through this same runner before any conversion is admitted. */
 import {realpath,lstat} from 'node:fs/promises';import {dirname,basename,join} from 'node:path';
 import {runArtifactProcess} from '../../artifacts/process.mjs';import {officeTransformArguments} from '../../artifacts/office-transform.mjs';
-import {RENDERER_PROBE_PATH,qualifyLibreOfficeRenderer} from '../../artifacts/renderer-qualification.mjs';
+import {RENDERER_PROBE_PATH,BWRAP_CHILD_ENV,qualifyLibreOfficeRenderer} from '../../artifacts/renderer-qualification.mjs';
 import {rendererFault} from './renderer-contract.mjs';
 import {RUNTIME_CREDENTIAL_PATHS} from '../credential-inventory.mjs';
 import {agentcoreRuntimePlatform} from '../agentcore-platform.mjs';
@@ -31,8 +31,9 @@ export async function runRendererSandbox(executable,args,options){
 }
 /** The renderer purpose composes on the same platform evidence as upload inspection: on the AgentCore microVM the
  * verified runtime environment plus the observed single-root cgroup attest `boundedResources`; elsewhere `platform` is
- * null and the finite-cgroup requirement is unchanged. */
+ * null and the finite-cgroup requirement is unchanged. Every child runs under bwrap, which always sets `PWD`, so the
+ * observed environment is judged against `BWRAP_CHILD_ENV` exactly as the upload children are. */
 export function qualifyRuntimeRenderer({imageDigest,deadlineMs,signal,environment=process.env}){
  return qualifyLibreOfficeRenderer({...RENDERER_IMAGE_PATHS,imageDigest,qualificationId:'runtime-renderer-'+imageDigest.slice(7),deadlineMs,signal,
-  credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],run:runRendererSandbox,platform:agentcoreRuntimePlatform(environment)});
+  credentialPaths:[...RUNTIME_CREDENTIAL_PATHS],run:runRendererSandbox,platform:agentcoreRuntimePlatform(environment),childEnv:BWRAP_CHILD_ENV});
 }

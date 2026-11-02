@@ -5,7 +5,7 @@ export function makeInertHierarchyPort({parents=true,existingHost=false,controll
  ignoreRemove=false,plusReadback=false,uid=0,euid=0,occupied=false,occupiedPath=null}={}){
  const nodes=new Map();
  let sequence=0;
- const add=(path,enabled='')=>nodes.set(path,{uid,ino:++sequence,enabled,procs:''});
+ const add=(path,enabled='')=>nodes.set(path,{uid,ino:++sequence,enabled,procs:'',limits:{}});
  add(mount,controllers);
  if(parents){add(`${mount}/meri`,controllers);add(`${mount}/meri/hosts`,controllers);}
  const parent=path=>path.slice(0,path.lastIndexOf('/'));
@@ -37,10 +37,15 @@ export function makeInertHierarchyPort({parents=true,existingHost=false,controll
     return `${state.plusReadback?node.enabled.split(' ').filter(Boolean).map(x=>`+${x}`).join(' '):node.enabled}\n`;
    if(name==='cgroup.procs')return node.procs;
    if(name==='cgroup.events')return 'populated 0\n';
+   if(['memory.max','pids.max','cpu.max'].includes(name)){if(!(name in node.limits))throw errno('ENOENT');return `${node.limits[name]}\n`;}
    throw errno('ENOENT');
   },
   writeFile(path,value){
    const directory=parent(path),node=get(directory);
+   const name=path.slice(directory.length+1);
+   // A real cgroup echoes a limit as written (cpu.max as "quota period"); a process write appends to the member list.
+   if(['memory.max','pids.max','cpu.max'].includes(name)){if(!/^[0-9]+( [0-9]+)?$/u.test(String(value)))throw errno('EINVAL');node.limits[name]=String(value);return;}
+   if(name==='cgroup.procs'){if(!/^[1-9][0-9]*$/u.test(String(value)))throw errno('EINVAL');node.procs+=`${value}\n`;return;}
    if(!path.endsWith('/cgroup.subtree_control'))throw Error('Unexpected write');
    if(directory!==state.mount&&node.procs.trim())throw errno('EBUSY');
    const available=port.readFile(`${directory}/cgroup.controllers`).trim().split(/\s+/u);

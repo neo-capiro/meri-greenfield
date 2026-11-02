@@ -1,4 +1,4 @@
-/** Control-owned original native host teardown over the EXISTING canonical owners.
+/** Control-owned original host teardown (native-processing and browser-only purposes) over the EXISTING canonical owners.
  *
  * The worker never receives Control's private client TLS or EC2 credentials. A closed control:true request names only
  * the canonical original binding/generation/host id; this owner reads that exact host row, creates the pinned private
@@ -58,7 +58,9 @@ export function createControlNativeHostTeardown({configuration,pool,owners={},no
  try{
   const expected=facts(host);
   if(host.observer!==undefined&&expected===null)throw fault('NATIVE_TEARDOWN_CONFIGURATION');
-  observer=host.observer===undefined?null:createNativeObserverRuntime({pool,now,requestMs,expected,
+  // Browser-only hosts run the same observer on their own AMI; every other placement fact is shared.
+  const placements=expected===null?null:[expected,...(host.browserDeployment===undefined?[]:[Object.freeze({...expected,amiId:host.browserDeployment.amiId})])];
+  observer=host.observer===undefined?null:createNativeObserverRuntime({pool,now,requestMs,expected:placements,
    ...(owners.createObserverSession?{createSession:owners.createObserverSession}:{})});
   writer=observer?.writer??createPostgresHostAllocationWriter({pool,now});
   async function ownerFor({binding,hostId,generation,signal}){

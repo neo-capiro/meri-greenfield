@@ -34,7 +34,11 @@ export async function nativeProcessingInputs(fixture){
    control:{endpoint:{address:'10.0.0.7',port:443,serverName:i.deployment.names.control_private},clientName:'native-control.synthetic.internal',
     serverCertificate:p.certs['control-private'].toString(),clientCertificate:material.controlClientCertificate.toString(),caCertificate:p.certs['server-ca'].toString(),policySha256:'d'.repeat(64)},
    issuerCaCertificate:material.issuerCaCertificate.toString()}};
- i.deployment.features={sourceEnabled:true,uploads:{enabled:true},nativeProcessing:{enabled:true,deployment,
+ // The browser-only host purpose: same placement, observer and control connection; its own ARM64 image, AMI and bootstrap.
+ const browserDeployment={...deployment,launch:{...deployment.launch,ImageId:'ami-0fedcba9876543210'},imageDigest:'sha256:'+'b'.repeat(64),bootstrapSha256:'f'.repeat(64),
+  bootstrapSpec:{...deployment.bootstrapSpec,document:{name:'synthetic-browser-bootstrap',version:'1',sha256:'f'.repeat(64),pluginName:'nativeBootstrap'},
+   programSha256:'e'.repeat(64),profileSha256:'d'.repeat(64),hostEndpoint:{port:9444,serverName:'browser.synthetic.internal'}}};
+ i.deployment.features={sourceEnabled:true,uploads:{enabled:true},nativeProcessing:{enabled:true,deployment,browserDeployment,
   watchdog:{stateMachineVersionArn:'arn:aws:states:us-east-1:967807252336:stateMachine:synthetic-native:4',
    definitionSha256:canonicalSha256(compileNativeWatchdogDefinition({physicalObserver:observer})),qualificationEvidenceSha256:'e'.repeat(64),
    definitionReadback:{stateMachineArn:'arn:aws:states:us-east-1:967807252336:stateMachine:synthetic-native:4',type:'STANDARD',status:'ACTIVE',revisionId:'synthetic-revision',

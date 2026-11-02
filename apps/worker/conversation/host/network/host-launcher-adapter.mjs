@@ -48,14 +48,15 @@ async function stop(child,ms){
  return Object.freeze({closed:true});
 }
 
-/** `forbiddenUids` must include SDK/browser and both namespace-local relay UIDs; a proxy UID must also be distinct
- * before future public mode. The returned function is the required `startHostRelayProcess` confinement port. */
+/** `forbiddenUids` lists every other unprivileged identity on the host the relay must never share: SDK and browser plus
+ * each namespace-local relay (two on the legacy D005 host, one on a browser-only host). The returned function is the
+ * required `startHostRelayProcess` confinement port. */
 export function createNativeHostRelayPort({allocation,binding,hostIdentity,helperPath,nodePath,uid:relayUid,gid:relayGid,
  forbiddenUids,forbiddenGids,authorize,signal,spawnNative=spawn,openGroup=openHostRelayGroup,readyMs=5000,stopMs=3000}={}){
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding);assertD005HostIdentity(hostIdentity,b,a);
  if(!absolute(helperPath)||!absolute(nodePath)||!uid(relayUid)||!uid(relayGid)||
-  !Array.isArray(forbiddenUids)||forbiddenUids.length<4||forbiddenUids.some(n=>!uid(n))||forbiddenUids.includes(relayUid)||
-  !Array.isArray(forbiddenGids)||forbiddenGids.length<4||forbiddenGids.some(n=>!uid(n))||forbiddenGids.includes(relayGid)||
+  !Array.isArray(forbiddenUids)||forbiddenUids.length<3||forbiddenUids.some(n=>!uid(n))||forbiddenUids.includes(relayUid)||
+  !Array.isArray(forbiddenGids)||forbiddenGids.length<3||forbiddenGids.some(n=>!uid(n))||forbiddenGids.includes(relayGid)||
   typeof authorize!=='function'||typeof spawnNative!=='function'||typeof openGroup!=='function'||signal!==undefined&&!(signal instanceof AbortSignal)||
   !Number.isSafeInteger(readyMs)||readyMs<100||readyMs>10000||!Number.isSafeInteger(stopMs)||stopMs<100||stopMs>10000)
   fail('HOST_NETWORK_HOST_RELAY_CONFIGURATION');

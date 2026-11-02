@@ -67,7 +67,9 @@ export function validateConfiguration(raw,role){
 
  if(c.nativeProvisioning!==undefined){
   requireValue(role==='temporal-worker','NATIVE_PROVISIONING_CONFIGURATION');
-  const p=c.nativeProvisioning;own(p,['enabled'],['databaseFile','issuerCaCertFile','issuerCaKeyFile','deployment','watchdog']);
+  // `browserDeployment` is the browser-only host purpose (image, launch, bootstrap) beside the native one; it shares the
+  // account, region and control policy digest, so one worker authority and one allocator serve both purposes.
+  const p=c.nativeProvisioning;own(p,['enabled'],['databaseFile','issuerCaCertFile','issuerCaKeyFile','deployment','watchdog','browserDeployment']);
   requireValue(typeof p.enabled==='boolean','NATIVE_PROVISIONING_CONFIGURATION');
   if(p.enabled){
    for(const k of ['databaseFile','issuerCaCertFile','issuerCaKeyFile','deployment','watchdog']){
@@ -75,9 +77,13 @@ export function validateConfiguration(raw,role){
    }
    own(p.watchdog,['stateMachineVersionArn','definitionSha256','qualificationEvidenceSha256']);
    for(const k of ['databaseFile','issuerCaCertFile','issuerCaKeyFile'])file(p[k]);
-   try{compileNativeDeployment(p.deployment);}catch{throw fault('NATIVE_PROVISIONING_CONFIGURATION');}
+   let d;try{d=compileNativeDeployment(p.deployment);}catch{throw fault('NATIVE_PROVISIONING_CONFIGURATION');}
+   if(p.browserDeployment!==undefined){
+    let b;try{b=compileNativeDeployment(p.browserDeployment);}catch{throw fault('NATIVE_PROVISIONING_CONFIGURATION');}
+    requireValue(b.accountId===d.accountId&&b.region===d.region&&b.bootstrapSpec.control.policySha256===d.bootstrapSpec.control.policySha256,'NATIVE_PROVISIONING_CONFIGURATION');
+   }
   }else requireValue(p.databaseFile===undefined&&p.issuerCaCertFile===undefined&&p.issuerCaKeyFile===undefined&&
-   p.deployment===undefined&&p.watchdog===undefined,'NATIVE_PROVISIONING_CONFIGURATION');
+   p.deployment===undefined&&p.watchdog===undefined&&p.browserDeployment===undefined,'NATIVE_PROVISIONING_CONFIGURATION');
  }
  // G1: source connectivity is an explicit boolean (decided: 10-15 #5, D015 #4a). The schedule worker stays source-disabled
  // (schedule-service-configuration.mjs); every source owner keeps its own enablement, authority and fail-closed checks.

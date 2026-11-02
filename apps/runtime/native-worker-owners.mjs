@@ -48,6 +48,11 @@ export async function createNativeWorkerOwners({configuration,native,owners={},n
  const p=configuration?.nativeProvisioning;
  if(p?.enabled!==true)return null;
  const deployment=compileNativeDeployment(p.deployment);
+ // The browser-only purpose shares the account, region, allocator, authority, issuer, SSM transport and watchdog; only
+ // its image, launch and bootstrap differ, so it gets its own launch port and provisioning coordinator.
+ const browserDeployment=p.browserDeployment===undefined?null:compileNativeDeployment(p.browserDeployment);
+ if(browserDeployment!==null&&(browserDeployment.accountId!==deployment.accountId||browserDeployment.region!==deployment.region||
+  browserDeployment.bootstrapSpec.control.policySha256!==deployment.bootstrapSpec.control.policySha256))throw fault('NATIVE_WORKER_OWNERS_CONFIGURATION');
  if(typeof native?.call!=='function')throw fault('NATIVE_WORKER_OWNERS_CONFIGURATION');
  const createPool=owners.createPool,createEc2Client=owners.createEc2Client,createSsmTransport=owners.createSsmTransport,
   createIssuer=owners.createIssuer,createMaterial=owners.createMaterial,createSfnClient=owners.createSfnClient,read=owners.readSecret??readSecret;
@@ -106,10 +111,13 @@ export async function createNativeWorkerOwners({configuration,native,owners={},n
   const readback=createManagedWatchdogReadback({...p.watchdog,now});
   watchdog=Object.freeze({makeIntent:args=>readback.makeIntent(args),arm:args=>readback.arm({...args,stepFunctions}),
    verify:args=>readback.verify({...args,stepFunctions}),readResult:args=>readback.readResult({...args,stepFunctions})});
-  const provisioner=createNativeHostProvisioning({writer,launch,material,deployment,watchdog,
-   authority:{async verify({binding,generation,signal,deadlineMs}){return authority.preflight({binding,signal,
-    deadlineMs:Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:now()+effectTimeoutMs,now()+effectTimeoutMs)});}},
+  const hostAuthority={async verify({binding,generation,signal,deadlineMs}){return authority.preflight({binding,signal,
+   deadlineMs:Math.min(Number.isSafeInteger(deadlineMs)?deadlineMs:now()+effectTimeoutMs,now()+effectTimeoutMs)});}};
+  const provisioner=createNativeHostProvisioning({writer,launch,material,deployment,watchdog,authority:hostAuthority,
    now,effectTimeoutMs,ownerId:owners.ownerId??undefined});
+  const browserProvisioner=browserDeployment===null?undefined:createNativeHostProvisioning({writer,
+   launch:createEc2NativeHostLaunchPort({ec2,launch:browserDeployment.launch}),material,deployment:browserDeployment,watchdog,
+   authority:hostAuthority,now,effectTimeoutMs,ownerId:owners.ownerId??undefined,hostMode:'browser-only'});
   // Control-owned original-host teardown over the existing control:true transport. The worker names only closed
   // original identity; Control resolves and settles the canonical row. No worker credential or local lifecycle owner.
   hostTeardown=async({binding,generation,hostId,signal}={})=>{
@@ -149,7 +157,7 @@ export async function createNativeWorkerOwners({configuration,native,owners={},n
     runtime:Object.freeze(runtime??{}),managed});
    throw Object.assign(fault('NATIVE_WORKER_HOST_CLEANUP_UNKNOWN'),{receipt:result});
   };
-  return Object.freeze({pool,authority,writer,launch,issuer,material,provisioner,hostTeardown,close,
+  return Object.freeze({pool,authority,writer,launch,issuer,material,provisioner,...(browserProvisioner===undefined?{}:{browserProvisioner}),hostTeardown,close,
    generationFor:binding=>{if(!binding||!Number.isSafeInteger(binding.writerFence)||binding.writerFence<1||
     !UUID.test(binding.conversationId))throw fault('NATIVE_WORKER_OWNERS_CONFIGURATION');return binding.writerFence;}});
  }catch(error){

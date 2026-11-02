@@ -71,9 +71,12 @@
         "totalRecords": 84115
       },
       "notes": [
-        "Nearest-meaning federal grant records by embedding similarity: the 200 closest vectors, then agency, status filters; similarity is not relevance. Date filters apply to the close date.",
+        "Nearest-meaning federal grant records by embedding similarity: the 200 closest description passages and the 200 closest attached-document passages, best passage per record, then agency, status filters; similarity is not relevance. Date filters apply to the close date.",
         "20595 of 84115 stored federal grant records are indexed for this read; a record without an index entry cannot be found here, so an empty page means no close match among the indexed records, never that none exists (63520 records are not indexed yet).",
-        "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
+        "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record.",
+        "passage is the cited text: sourceTable names the opportunity description or opportunity_attachment (an attached document, fileName); start and end are UTF-16 offsets into the normalized extracted text, not page numbers; documentHash is the text version. A passage is relevance evidence, not proof of eligibility. The record fields are current; a passage embedded (embeddedAt) before the opportunity last changed can describe earlier text.",
+        "openForApplications is status posted with a close date not yet passed or not set; a forecasted grant is announced and not yet accepting applications, so name it as forecasted. A null closeDate is an unknown deadline: read responseDateDesc before calling it continuous. awardCeiling is the most one award can receive and estimatedFunding the program total; neither is money awarded, and who received awards is in the federal awards data.",
+        "1 of these records have attached documents without searchable text, with truncated text or not indexed yet (see documents); a requirement missing from the passages is a coverage gap, not proof it is absent."
       ],
       "results": [
         {
@@ -94,7 +97,27 @@
             "openDate": "2026-09-01",
             "closeDate": "2027-01-15",
             "status": "posted",
+            "responseDateDesc": null,
+            "openForApplications": true,
             "url": "https://www.grants.gov/search-results-detail/000001"
+          },
+          "passage": {
+            "sourceTable": "opportunity_attachment",
+            "sourceUrl": "https://www.grants.gov/example/attachment/000001.pdf",
+            "fileName": "Notice of Funding Opportunity.pdf",
+            "documentHash": "0000000000000000000000000000000000000000000000000000000000000001",
+            "chunkIndex": 3,
+            "start": 16800,
+            "end": 22800,
+            "extractionMethod": "provider",
+            "truncated": null,
+            "embeddedAt": "2026-11-01T09:30:00.123Z"
+          },
+          "documents": {
+            "attachments": 4,
+            "withText": 3,
+            "truncated": 0,
+            "indexed": 3
           }
         }
       ]
@@ -119,9 +142,12 @@
         "totalRecords": 141350
       },
       "notes": [
-        "Nearest-meaning sam opportunity records by embedding similarity: the 200 closest vectors, then naics, dateFrom filters; similarity is not relevance. Date filters apply to the response deadline.",
+        "Nearest-meaning sam opportunity records by embedding similarity: the 200 closest description passages and the 200 closest attached-document passages, best passage per record, then naics, dateFrom filters; similarity is not relevance. Date filters apply to the response deadline.",
         "24165 of 141350 stored sam opportunity records are indexed for this read; a record without an index entry cannot be found here, so an empty page means no close match among the indexed records, never that none exists (117185 records are not indexed yet).",
-        "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
+        "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record.",
+        "passage is the cited text: sourceTable names the opportunity description or opportunity_attachment (an attached document, fileName); start and end are UTF-16 offsets into the normalized extracted text, not page numbers; documentHash is the text version. A passage is relevance evidence, not proof of eligibility. The record fields are current; a passage embedded (embeddedAt) before the opportunity last changed can describe earlier text.",
+        "currentNotice is the active flag with a response deadline not yet passed or not set. Whether offers are taken also depends on noticeType: a Solicitation or Combined Synopsis/Solicitation takes offers, Sources Sought and Presolicitation gather interest, an Award Notice announces a winner. A solicitation number can be shared by several notices of one procurement; cite the notice id.",
+        "1 of these records have attached documents without searchable text, with truncated text or not indexed yet (see documents); a requirement missing from the passages is a coverage gap, not proof it is absent."
       ],
       "results": [
         {
@@ -143,7 +169,26 @@
             "postedDate": "2026-10-20T14:00:00+00:00",
             "responseDeadline": "2026-11-30T21:00:00+00:00",
             "active": true,
+            "currentNotice": true,
             "url": "https://sam.gov/opp/00000005/view"
+          },
+          "passage": {
+            "sourceTable": "sam_opportunity",
+            "sourceUrl": "https://sam.gov/opp/00000005/view",
+            "fileName": null,
+            "documentHash": "0000000000000000000000000000000000000000000000000000000000000002",
+            "chunkIndex": 0,
+            "start": 0,
+            "end": 4883,
+            "extractionMethod": null,
+            "truncated": null,
+            "embeddedAt": "2026-10-21T04:20:00.000Z"
+          },
+          "documents": {
+            "attachments": 2,
+            "withText": 2,
+            "truncated": 1,
+            "indexed": 2
           }
         }
       ]

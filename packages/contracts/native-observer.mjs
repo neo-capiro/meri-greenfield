@@ -1,6 +1,7 @@
 /** Native /2 producer contract. Pure validation grants no authority or effect. */
 import {own,data} from './commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from './validate.mjs';
+import {PROVISIONED_HOST_MODES} from './native-lifecycle.mjs';
 
 export const NATIVE_OBSERVER_PROTOCOL='native-observer-around-managed/1';
 export const NATIVE_OBSERVER_ROUTE='/v1/execution/native/physical-observer';
@@ -35,7 +36,7 @@ export function assertNativeObserverPlacement(placement,launch){
 }
 export function nativeObserverLaunchTags({allocation,declaration}){
  if(declaration.schema!==NATIVE_DECLARATION_V2||declaration.launchTagPolicy!==NATIVE_OBSERVER_TAG_POLICY||
-  declaration.leaseDeadlineMs!==allocation.leaseDeadlineMs||allocation.hostMode!=='native-processing')fail();
+  declaration.leaseDeadlineMs!==allocation.leaseDeadlineMs||!PROVISIONED_HOST_MODES.includes(allocation.hostMode))fail();
  assertNativeObserver(declaration.physicalObserver,declaration);
  assertNativeObserverPlacement(declaration.placement,declaration.launch);
  if(!/^[0-9a-f]{64}$/u.test(declaration.token))fail();

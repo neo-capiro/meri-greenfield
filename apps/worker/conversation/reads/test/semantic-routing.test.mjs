@@ -33,7 +33,8 @@ test('the semantic routing sentence appears only with a mounted semantic read an
  for(const tool of semantic)assert.match(readPromptSentence(true,[tool]),/Bills, grants and contract opportunities by meaning:/);
  const all=readPromptSentence(true,[...sql,...semantic,prefix+'search_memory']);
  assert.ok(all.indexOf('Structured questions')<all.indexOf('by meaning:')&&all.indexOf('by meaning:')<all.indexOf('Saved knowledge'),'SQL, then semantic, then memory');
- assert.ok(all.length<3900,`${all.length} characters`);
+ // 4,400: the funding sentence (status, passage, coverage-gap and awards rules for grants and notices) added about 420 characters.
+ assert.ok(all.length<4400,`${all.length} characters`);
 });
 
 test('each semantic sample question carries a cue the sentence routes to the semantic reads, and none of the SQL cues',()=>{
@@ -75,4 +76,17 @@ test('the answer cites records and never names the method or tool; the family gu
  // The legacy cross-domain candidate search no longer advertises bills, grants or contract opportunities as its coverage.
  assert.doesNotMatch(READ_FAMILY_GUIDANCE['data-search'].covers,/outreach, bills, grants, awards/);
  assert.match(READ_FAMILY_GUIDANCE['data-search'].covers,/topic questions about bills, grants and contract opportunities go to the semantic reads/);
+});
+
+test('grants and contract notices combine both paths under the funding answer rules; structured funding questions go to SQL',()=>{
+ const prompt=readPromptSentence(true,[...sql,...semantic]),text=sentence(prompt);
+ assert.match(prompt,/filters over federal bills, cosponsors, members, program elements, budget positions, grants, contract notices, awards and forecasts/);
+ assert.match(text,/For grants and contract notices combine both: list each opportunity once/);
+ assert.match(text,/take status, deadline and amounts from the record or SQL \(forecasted is not open; a missing deadline is unknown\)/);
+ assert.match(text,/cite the passage and its document, treat similarity as relevance and never as eligibility/);
+ assert.match(text,/call missing or truncated document text a coverage gap, and answer who won from the awards data/);
+ const guidance=READ_FAMILY_GUIDANCE['semantic-search'];
+ // The per-result notes from Core carry the offset, status and coverage-gap rules; the family guidance only names the passage.
+ assert.match(guidance.covers,/with their attached documents/);
+ assert.match(guidance.returns,/funding results add a passage/);
 });

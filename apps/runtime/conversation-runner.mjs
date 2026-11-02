@@ -75,8 +75,9 @@ export function assembleConversationRunner({configuration,native,query,credentia
   else if(operation==='runner/runtime')stage=stages?.runtime;
   else if(operation==='runner/publish'&&startup){const state=input.event?.type==='run.status'?input.event.data?.state:null;
    stage=stages[state]??{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs};}
-  // Lifecycle calls share the existing session allowance and immutable execution cutoff.
-  else if(operation==='runner/outreach/complete'||operation==='runner/outreach/fail'||operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete'||operation==='runner/files/restore'||lifecycleOperations.has(operation))stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs}:undefined;
+  // Lifecycle calls and upload page reads share the existing session allowance and immutable execution cutoff: an upload
+  // page read crosses control's custody read twice plus its durable source observation, which live outlived the 3s default.
+  else if(operation==='runner/outreach/complete'||operation==='runner/outreach/fail'||operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete'||operation==='runner/files/restore'||operation==='runner/upload-source'||lifecycleOperations.has(operation))stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs}:undefined;
   const result=native.call(operation,{binding,...input},stage?{signal,deadlineMs:stage.expiresAtMs,...(operation==='runner/load'?{}:{maxRequestMs:stage.maxMs})}:{signal});
   if(operation!=='runner/load')return result;
   const loaded=value=>{markRunnerTelemetryStage('runner.load.done');return value;};return typeof result?.then==='function'?result.then(loaded):loaded(result);};

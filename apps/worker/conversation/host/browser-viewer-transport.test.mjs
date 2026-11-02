@@ -2,10 +2,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
+import https from 'node:https';
 import {X509Certificate} from 'node:crypto';
 import {createBrowserViewerHostClient,createBrowserViewerHostServer} from './browser-viewer-transport.mjs';
 import {createBrowserViewerRelay} from './browser-viewer-relay.mjs';
 import {BROWSER_VIEWER_SCHEMA as schema} from '../../../../packages/contracts/browser-viewer/receive.mjs';
+import {NATIVE_LIFECYCLE_PATH} from '../../../../packages/contracts/native-lifecycle.mjs';
 const issuer=String.raw`
 import json,base64
 from datetime import datetime,timedelta,timezone
@@ -37,14 +39,14 @@ const digest=b=>new X509Certificate(b).fingerprint256.replaceAll(':','').toLower
 const id=n=>`${String(n).padStart(8,'0')}-0000-4000-8000-000000000000`;
 const binding={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),attemptId:id(5),workerId:id(6),writerFence:1};
 const context={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),selectedClientId:null};
-async function fixture(t,{operationOwner,requestMs=2000}={}){
+async function fixture(t,{operationOwner,lifecycle,requestMs=2000}={}){
  const ownerInstanceId=id(7),hostId=id(8),until=Date.now()+120000,calls=[];let state='agent';
  const relay=createBrowserViewerRelay({ownerInstanceId,binding,expiresAtMs:until});
  await relay.bind({binding,pages:()=>[],controls:{readState:async()=>({state,leaseEpoch:1,leaseExpiresAtMs:until}),
   view:async()=>{throw Error('No page');},userInput:async()=>{calls.push('input');},handBack(){state='returning';},endLease(){state='returning';}}});
  const server=createBrowserViewerHostServer({bind:{address:'127.0.0.1',port:0},
   tls:{serverName:'browser.meri.internal',cert:material.hostCert,key:material.hostKey,clientCa:material.caCert},
-  peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay,requestMs,operationOwner,
+  peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay,requestMs,operationOwner,...(lifecycle?{lifecycle}:{}),
   custodyOwner:{async prepareResume({binding:source,custody}){assert.deepEqual(source,binding);calls.push('prepare');return {ownerInstanceId,leaseEpoch:custody.leaseEpoch+1,snapshotSha256:'f'.repeat(64)};}}});
  t.after(async()=>{await server.close();await relay.close();});const at=await server.start();
  const config={binding,ownerInstanceId,hostId,generation:1,endpoint:{address:at.address,port:at.port,serverName:'browser.meri.internal',serverFingerprintSha256:digest(material.hostCert)},
@@ -111,4 +113,27 @@ test('mTLS disconnect cancels pending browser owner work and cannot release late
  await started;controller.abort();await pending;
  for(let n=0;n<50&&!activeSignal.aborted;n++)await new Promise(resolve=>setTimeout(resolve,5));
  assert.equal(activeSignal.aborted,true);
+});
+
+test('the fixed Control lifecycle route shares the pinned listener, reaches only a configured handler and skips viewer admission',async t=>{
+ const seen=[];
+ const f=await fixture(t,{lifecycle:async(req,res)=>{seen.push(req.url);const body=Buffer.from('{"ok":true}');
+  res.writeHead(200,{'content-type':'application/json','content-length':String(body.length)});res.end(body);}});
+ const post=(config,path,identity={cert:material.controlCert,key:material.controlKey})=>new Promise((resolve,reject)=>{
+  const bytes=Buffer.from('{}');
+  const req=https.request({host:config.endpoint.address,port:config.endpoint.port,path,method:'POST',servername:'browser.meri.internal',...identity,ca:material.caCert,agent:false,
+   headers:{'content-type':'application/json','content-length':String(bytes.length),connection:'close'}},res=>{
+   const chunks=[];res.on('data',c=>chunks.push(c));res.on('end',()=>resolve({status:res.statusCode,body:Buffer.concat(chunks).toString()}));});
+  req.on('error',reject);req.end(bytes);});
+ const answered=await post(f.config,NATIVE_LIFECYCLE_PATH);
+ assert.equal(answered.status,200);assert.equal(answered.body,'{"ok":true}');assert.deepEqual(seen,[NATIVE_LIFECYCLE_PATH]);
+ // A listener without a lifecycle owner answers 503 and never invents one; the viewer path is unchanged.
+ const absent=await fixture(t);assert.equal((await post(absent.config,NATIVE_LIFECYCLE_PATH)).status,503);
+ assert.equal((await absent.client.read({binding})).admitted,true);
+ // A peer without a client certificate is refused at the TLS layer before any route is selected.
+ await assert.rejects(post(f.config,NATIVE_LIFECYCLE_PATH,{}));
+ assert.deepEqual(seen,[NATIVE_LIFECYCLE_PATH]);
+ assert.throws(()=>createBrowserViewerHostServer({bind:{address:'127.0.0.1',port:0},
+  tls:{serverName:'browser.meri.internal',cert:material.hostCert,key:material.hostKey,clientCa:material.caCert},
+  peer:{name:'control.meri.internal',fingerprintSha256:digest(material.controlCert)},relay:{execute(){},readAdmission(){}},lifecycle:'not-a-function'}));
 });

@@ -72,6 +72,7 @@ test('activity verifies the prompt ACK then requests canonical need and provisio
  const native={async call(method,input){calls.push(method);
   if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
   if(method==='execution/native/prerequisite')return {kind:'native-processing',hostMode:'native-processing',policySha256:'d'.repeat(64),uploadCount:1};
+  if(method==='execution/browser/prerequisite')return {kind:'none'};
   if(method==='execution/kickoff/status')return {binding:input.binding,executionId:input.executionId,state:calls.filter(x=>x.endsWith('status')).length>1?'completed':'executing',expiresAtMs:100000};
   if(method==='execution/kickoff/stop')return {stopped:true};
   throw Error(method);}};
@@ -83,11 +84,56 @@ test('activity verifies the prompt ACK then requests canonical need and provisio
  const polls=calls.filter(x=>x==='execution/kickoff/status').length;assert.ok(polls>=2);
  assert.ok(heartbeat>=polls,'every status poll heartbeats, so a long run is never stale against the 30 s heartbeatTimeout');
 });
+test('a browser-only need provisions through the browser coordinator after the native one, and both hosts are torn down',async()=>{
+ const calls=[],torn=[];
+ const native={async call(method,input){calls.push(method);
+  if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
+  if(method==='execution/native/prerequisite')return {kind:'native-processing',hostMode:'native-processing',policySha256:'d'.repeat(64),uploadCount:1};
+  if(method==='execution/browser/prerequisite')return {kind:'browser-only',hostMode:'browser-only'};
+  if(method==='execution/kickoff/status')return {binding:input.binding,executionId:input.executionId,state:'completed',expiresAtMs:100000};
+  throw Error(method);}};
+ const {nativeHostId}=await import('../native-host-provisioning.mjs');
+ const provisioner={async provision({binding:b,generation}){calls.push('provision');return {state:'created',hostId:nativeHostId({binding:b,generation}),generation};}};
+ const browserProvisioner={async provision({binding:b,generation}){calls.push('browser-provision');return {state:'created',hostId:nativeHostId({binding:b,generation,hostMode:'browser-only'}),generation};}};
+ const hostTeardown=async({hostId,generation})=>{torn.push(hostId);return {closed:true,verified:true,hostId,generation};};
+ const activity=createBrokerActivity({native,provisioner,browserProvisioner,hostTeardown,now:()=>1000,pollMs:10,context:()=>({cancellationSignal:new AbortController().signal,heartbeat(){}})});
+ assert.deepEqual(await activity({binding}),{state:'completed'});
+ assert.deepEqual(calls.slice(0,5),['execution/kickoff','execution/native/prerequisite','provision','execution/browser/prerequisite','browser-provision']);
+ assert.deepEqual(torn.sort(),[nativeHostId({binding,generation:1}),nativeHostId({binding,generation:1,hostMode:'browser-only'})].sort(),'both original hosts are torn down');
+});
+test('a browser-only need without a browser coordinator, or an unknown browser answer, is a refusal',async()=>{
+ const make=answer=>({async call(method,input){
+  if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
+  if(method==='execution/native/prerequisite')return {kind:'none'};
+  if(method==='execution/browser/prerequisite')return answer;
+  if(method==='execution/kickoff/stop')return {binding:input.binding,executionId:input.executionId,expiresAtMs:100000};
+  throw Error(method);}});
+ const context=()=>({cancellationSignal:new AbortController().signal,heartbeat(){}});
+ await assert.rejects(async()=>createBrokerActivity({native:make({kind:'browser-only',hostMode:'browser-only'}),now:()=>1000,context})({binding}),{code:'BROKER_BROWSER_PROVISION_UNAVAILABLE'});
+ await assert.rejects(async()=>createBrokerActivity({native:make({kind:'browser'}),now:()=>1000,context})({binding}),{code:'BROKER_BROWSER_PREREQUISITE_REFUSED'});
+ assert.throws(()=>createBrokerActivity({native:make({kind:'none'}),browserProvisioner:{},now:()=>1000,context}),{code:'BROKER_CONFIGURATION'});
+});
+test('a browser deployment composes a second coordinator on the shared owners; a foreign control policy digest refuses before material',async()=>{
+ const browserDeployment={...deployment,imageDigest:'sha256:'+'f'.repeat(64),launch:{...deployment.launch,ImageId:'ami-0fedcba9876543210'}};
+ const b=boundaries();
+ const value=await createNativeWorkerOwners({configuration:{...configuration,nativeProvisioning:{...configuration.nativeProvisioning,browserDeployment}},native:b.native,owners:b.owners});
+ assert.equal(typeof value.browserProvisioner.provision,'function');assert.notEqual(value.browserProvisioner,value.provisioner);
+ await value.close();
+ assert.deepEqual(b.calls,['pool-create','material-close','ssm-close','sfn-destroy','ec2-destroy','pool-end'],'one pool, one SSM transport, one EC2 client serve both purposes');
+ const without=await createNativeWorkerOwners({configuration,native:boundaries().native,owners:boundaries().owners});
+ assert.equal(without.browserProvisioner,undefined);await without.close();
+ for(const bad of [{...browserDeployment,bootstrapSpec:{...browserDeployment.bootstrapSpec,control:{...browserDeployment.bootstrapSpec.control,policySha256:'e'.repeat(64)}}}]){
+  const c=boundaries();
+  await assert.rejects(createNativeWorkerOwners({configuration:{...configuration,nativeProvisioning:{...configuration.nativeProvisioning,browserDeployment:bad}},native:c.native,owners:c.owners}),{code:'NATIVE_WORKER_OWNERS_CONFIGURATION'});
+  assert.deepEqual(c.reads,[]);assert.deepEqual(c.calls,[]);
+ }
+});
 test('ordinary non-native activity performs no allocation and needs no provisioner',async()=>{
  const calls=[];
  const native={async call(method,input){calls.push(method);
   if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
   if(method==='execution/native/prerequisite')return {kind:'none'};
+  if(method==='execution/browser/prerequisite')return {kind:'none'};
   if(method==='execution/kickoff/status')return {binding:input.binding,executionId:input.executionId,state:'completed',expiresAtMs:100000};
   throw Error(method);}};
  const activity=createBrokerActivity({native,now:()=>1000,pollMs:10,context:()=>({cancellationSignal:new AbortController().signal,heartbeat(){}})});
@@ -98,6 +144,7 @@ test('required native need without a provisioner is a refusal, not a no-native s
  const native={async call(method,input){
   if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
   if(method==='execution/native/prerequisite')return {kind:'native-processing',hostMode:'native-processing',policySha256:'d'.repeat(64),uploadCount:1};
+  if(method==='execution/browser/prerequisite')return {kind:'none'};
   if(method==='execution/kickoff/stop')return {binding:input.binding,executionId:input.executionId,expiresAtMs:100000};
   throw Error(method);}};
  const activity=createBrokerActivity({native,now:()=>1000,context:()=>({cancellationSignal:new AbortController().signal,heartbeat(){}})});
@@ -135,6 +182,7 @@ function activityNative(calls,{state='completed',prerequisite={kind:'native-proc
  return {async call(method,input){calls.push(method);
   if(method==='execution/kickoff')return {binding:input.binding,executionId:input.executionKey,expiresAtMs:100000};
   if(method==='execution/native/prerequisite')return prerequisite;
+  if(method==='execution/browser/prerequisite')return {kind:'none'};
   if(method==='execution/kickoff/status'){statusCalls++;const next=onStatus?onStatus(statusCalls):state;return {binding:input.binding,executionId:input.executionId,state:next,expiresAtMs:100000};}
   if(method==='execution/kickoff/stop')return {binding:input.binding,executionId:input.executionId,expiresAtMs:100000};
   throw Error(method);}};
