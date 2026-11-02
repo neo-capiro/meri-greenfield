@@ -11,6 +11,7 @@ import {preservationBytes} from '../../../artifacts/edit-sessions/test/preservat
 import {OFFICE_SCHEMA,receiveOfficeRequest,receiveOfficeResponse,receiveOfficeDownload} from '../../../../packages/contracts/dist/office-application.mjs';
 import {receiveDocumentRequest,receiveDocumentResponse} from '../../../../packages/contracts/dist/document-access-application.mjs';
 const encode=value=>new TextEncoder().encode(JSON.stringify(value));
+const withoutRetention=({retention,...options})=>options;
 async function fixture(t,{format='docx',discoveryFormat=format,baseBytes}={}){
  const f=await wopiFixture(t,{format,...(baseBytes?{baseBytes}:{})}),now=f.options.now;
  const state=Object.assign(f.state,{observations:[],phaseHook:null,modeDenied:null});
@@ -18,12 +19,13 @@ async function fixture(t,{format='docx',discoveryFormat=format,baseBytes}={}){
  const optionsOwner={async resolve(call){
   const required={'office-edit':'artifact.revise',inspect:'artifact.inspect',download:'artifact.download'}[call.intent];
   const authorize=async x=>{if(x.action!==required||state.modeDenied===call.intent)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return f.artifactOptions.authorize(x);};
-  return {documentOptions:{sessions:f.sessions,selectedClientId:f.claims.selectedClientId,artifactOptions:{...f.artifactOptions,now,authorize,ids:()=>({artifactId:id(960),versionId:id(961),objectId:id(962)})},now,limits,enabled:true},
+  // The production options owner composes artifact options without a retention gate; control supplies its own.
+  return {documentOptions:{sessions:f.sessions,selectedClientId:f.claims.selectedClientId,artifactOptions:{...withoutRetention(f.artifactOptions),now,authorize,ids:()=>({artifactId:id(960),versionId:id(961),objectId:id(962)})},now,limits,enabled:true},
    async recheck({phase}){state.observations.push({intent:call.intent,phase});await state.phaseHook?.(call.intent,phase);if(state.modeDenied===call.intent)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}};
  }};
  const discoveryBytes=Buffer.from(`<wopi-discovery><net-zone name="external-https"><app>${['edit','view'].map(mode=>`<action ext="${discoveryFormat}" name="${mode}" urlsrc="https://office.example.test/browser/synthetic/cool.html?"/>`).join('')}</app></net-zone></wopi-discovery>`);
  const launch=createCollaboraCodeLaunch({editorOrigin:'https://office.example.test',wopiOrigin:'https://wopi.example.test',discoveryBytes,codec:f.codec,now});
- const config={optionsOwner,sessions:f.sessions,now,limits,drafts:f.options.drafts,codec:f.codec,launch,generation:f.options.generation,browserOrigin:'https://app.example.test'};
+ const config={optionsOwner,sessions:f.sessions,now,limits,retention:f.artifactOptions.retention,drafts:f.options.drafts,codec:f.codec,launch,generation:f.options.generation,browserOrigin:'https://app.example.test'};
  const app=createRuntimeOfficeApplication(config),key={draftId:f.draft.draftId,versionId:f.first.version.versionId};
  const auth=()=>({credential:f.session.credential,deadlineMs:now()+5000});
  const execute=(route,extra={},chosen=auth())=>app.execute(route,{...key,...extra},chosen);
@@ -233,6 +235,15 @@ test('trusted CODE postmessage origin requires an exact HTTPS origin',async t=>{
  const f=await fixture(t);
  for(const browserOrigin of [undefined,'*','http://app.example.test','https://app.example.test/path','https://user:password@app.example.test'])
   assert.throws(()=>createRuntimeOfficeApplication({...f.config,browserOrigin}));
+});
+test('control supplies the retention gate the options owner leaves out: required at composition and consulted on open',async t=>{
+ const f=await fixture(t);
+ for(const retention of [undefined,{}])assert.throws(()=>createRuntimeOfficeApplication({...f.config,retention}),/OFFICE_CONFIGURATION/);
+ const consulted=[],gate={async assertServable(subject){consulted.push(subject.kind);return f.artifactOptions.retention.assertServable(subject);}};
+ const opened=await createRuntimeOfficeApplication({...f.config,retention:gate}).execute('open',f.key,f.auth());
+ assert.equal(opened.draft.sequence,0);assert.ok(consulted.length>0);
+ const suppressed={async assertServable(){throw Object.assign(Error('RETENTION_SUPPRESSED'),{code:'RETENTION_SUPPRESSED'});}};
+ await assert.rejects(createRuntimeOfficeApplication({...f.config,retention:suppressed}).execute('open',f.key,f.auth()));
 });
 test('an editor that crashes without Release is recovered once its lease lapses: plain acquire, saved private bytes served, crashed token dead',async t=>{
  const saved=preservationBytes('docx','after'),f=await fixture(t,{baseBytes:preservationBytes('docx')}),started=await f.start();
