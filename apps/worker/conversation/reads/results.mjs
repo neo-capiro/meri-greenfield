@@ -4,7 +4,7 @@
  * `guidance.mjs` owns one; none carries source detail, and no failure is ever rendered as a successful or empty result.
  * Successful SQL, memory and mail pages get one short orientation notice (counts, continuation, what an empty page
  * means, stale mailbox); the canonical result bytes and their hashes are never touched. */
-import {readGuidance} from './guidance.mjs';
+import {readGuidance,MAIL_COVERAGE_REASONS,MAIL_COVERAGE_UNKNOWN} from './guidance.mjs';
 import {SQL_TOOL_IDS} from './tools.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
 /** @type {Readonly<Record<string,(tool:string)=>string>>} */
@@ -72,7 +72,7 @@ function mailNotice(page){
   const parts=[`${n} stored message candidate(s)${Number.isInteger(page.totalMatches)?` of ${page.totalMatches} matching`:''}${page.hasMore===true&&Number.isInteger(page.nextOffset)?`; more exist, continue with offset ${page.nextOffset}`:''}.`];
   parts.push(n===0?'An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.'
    :'Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content.');
-  const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
+  parts.push(...coverageReasons(page));const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
   return parts.join(' ');
  }
  if(page?.kind==='mail-thread-source-page'){
@@ -83,10 +83,20 @@ function mailNotice(page){
   const parts=[`${messages.length} message(s) of ${Number.isInteger(page.totalMessages)?page.totalMessages:'an unknown number'} in this thread${page.hasMoreMessages===true&&Number.isInteger(page.nextMessageOffset)?`; more follow at messageOffset ${page.nextMessageOffset}`:''}.`];
   if(partial)parts.push(`${partial} body section(s) are incomplete: continue with the listed nextBodyOffsets before quoting, and say what was not read.`);
   if(absent)parts.push(`${absent} message body(ies) are not available in stored mail (missing or unknown): report that the body could not be read; nothing continues them.`);
-  const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
+  parts.push(...coverageReasons(page));const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
   return parts.join(' ');
  }
  return null;
+}
+/** Core's per-mailbox coverage reasons, carried in coverage.limitations as "Mailbox <address> has incomplete mail coverage:
+ * <reason>.", rendered as the closed user sentences; an unknown reason is reported without echoing its code. @param {any} page */
+function coverageReasons(page){
+ const limitations=Array.isArray(page?.coverage?.limitations)?page.coverage.limitations:[],sentences=new Set();
+ for(const limitation of limitations){
+  const reason=typeof limitation==='string'?/incomplete mail coverage: ([a-z_]+)\.?$/u.exec(limitation)?.[1]:undefined;
+  if(reason!==undefined)sentences.add(Object.hasOwn(MAIL_COVERAGE_REASONS,reason)?MAIL_COVERAGE_REASONS[reason]:MAIL_COVERAGE_UNKNOWN);
+ }
+ return sentences.size?["Mail coverage: "+[...sentences].join(" ")]:[];
 }
 /** One staleness sentence for a mail page, with the reconnect hint once: the contract's SourceState (freshness,
  * synchronizedAt), which an empty page carries too, and the mailbox connection states of the messages actually returned.

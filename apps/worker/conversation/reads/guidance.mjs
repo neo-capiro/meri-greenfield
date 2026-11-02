@@ -44,8 +44,25 @@ const PAGE_FAILURES=Object.freeze({
 });
 /** The three mail reads share one source, one candidate shape and the same mailbox and subject failures. */
 const MAIL_SOURCE='Stored mail of the user\'s connected mailbox (Microsoft 365 or Google Workspace) as last synchronized into Capiro: never the live inbox and never a send. subject is {kind:"personal"} in General (the user\'s own mailbox view) or {kind:"client", entityId:<the selected client\'s UUID>} in a selected-client conversation (mail associated with that client).';
-const MAIL_CANDIDATES='Result: messages[] newest first with subjectText, from {name, email}, to and cc (up to 8 each; toTruncated/ccTruncated), sentAt, receivedAt, preview.text (an incomplete excerpt, never the full body), threadId, messageId, clientId, connectionStatus and readHandle; totalMatches, hasMore and nextOffset (pass it as offset to continue); threadGroups groups a list page by thread. Read a thread\'s body with mail_read_thread using its threadId. connectionStatus is the mailbox connection state (connected, needs_configuration, error or disabled); anything but connected means the mailbox stopped synchronizing: say the mail may be stale and that the user can reconnect it in Capiro\'s mail integration settings.';
+const MAIL_CANDIDATES='Result: messages[] newest first with subjectText, from {name, email}, to and cc (up to 8 each; toTruncated/ccTruncated), sentAt, receivedAt, preview.text (an incomplete excerpt, never the full body), threadId, messageId, clientId, connectionStatus and readHandle; totalMatches, hasMore and nextOffset (pass it as offset to continue); threadGroups groups a list page by thread; coverage.limitations names each mailbox whose stored mail is incomplete and why (the notice translates the reason). Read a thread\'s body with mail_read_thread using its threadId. connectionStatus is the mailbox connection state (connected, needs_configuration, error or disabled); anything but connected means the mailbox stopped synchronizing: say the mail may be stale and that the user can reconnect it in Capiro\'s mail integration settings.';
 const MAIL_STORED='Candidates are previews of stored mail up to the mailbox\'s last synchronization; an empty or exhausted page is absence within that folder, window and filter only, never proof that no email or commitment exists.';
+/** Core's mail coverage reasons (capiro-backend apps/api/src/engagement/mail-sync-coverage.ts), which reach the page as
+ * "Mailbox <address> has incomplete mail coverage: <reason>." in coverage.limitations, rendered as sentences the user can act on. */
+export const MAIL_COVERAGE_REASONS=Object.freeze({
+ mailbox_not_connected:'The mailbox is not connected, so stored mail stops at its last synchronization.',
+ mail_sync_failed:'The last mail synchronization failed; recent messages may be missing.',
+ mail_sync_incomplete:'Mail synchronization has not finished; recent messages may still be missing.',
+ mail_never_synced:'This mailbox has never synchronized mail; there is no stored mail to search yet.',
+ mail_sync_coverage_unknown:'How much of this mailbox is stored is unknown.',
+ mail_capture_repair_required:'This mailbox\'s mail capture needs repair before its stored mail is complete.',
+ mail_replay_folder_unavailable:'Some mail folders could not be read during synchronization; their messages are missing.',
+ mail_messages_skipped_after_provider_errors:'Some messages were skipped after provider errors and are missing from stored mail.',
+ mail_folder_enumeration_incomplete:'Not all mail folders have been discovered yet; try again later.',
+ mail_folders_not_synced:'Mail folders have not finished syncing yet; try again later.',
+ mail_sync_timestamp_in_future:'The mailbox\'s synchronization time is unreliable; treat coverage as unknown.',
+ mail_sync_stale:'Stored mail has not synchronized recently; recent messages may be missing.',
+});
+export const MAIL_COVERAGE_UNKNOWN='Mail coverage for this mailbox is incomplete; say so in the user\'s terms without quoting a reason code.';
 const MAIL_FAILURES=Object.freeze({
  UNAVAILABLE:'No connected Microsoft 365 or Google Workspace mailbox is available for this user, or stored mail is not served in this conversation. Tell the user to connect their mailbox in Capiro\'s mail integration settings; do not say that no email exists.',
  ACCESS_DENIED:'This mailbox or client subject is not authorized for this conversation: use {kind:"personal"} in General and {kind:"client", entityId} only for the selected client. Do not retry with another client.',

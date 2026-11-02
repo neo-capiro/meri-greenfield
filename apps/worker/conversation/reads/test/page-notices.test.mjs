@@ -48,3 +48,19 @@ test('a stale source and stale message states produce one sentence with one reco
  const staleThread={...base,sources:[{...base.sources[0],freshness:'stale',synchronizedAt:null}],messages:[message({connectionStatus:'connected',bodyCompleteness:'full',section:{...base.messages[0].section,hasMore:false}})]};
  assert.equal(notice(staleThread),'Notice: 1 message(s) of 1 in this thread. The mail source reports its stored mail as stale (last synchronized at an unknown time); the user can reconnect the mailbox in Capiro\'s mail integration settings.');
 });
+
+test('a per-mailbox coverage reason from the source renders as a sentence, never as its code',()=>{
+ const search={id:'mail.search_messages'},page=createMailFixture('mail.search_messages').page();
+ const text=limitations=>readNotices(search,JSON.stringify({...page,coverage:{...page.coverage,limitations}}),{...page,coverage:{...page.coverage,limitations}})[0].text;
+ const folders=text([...page.coverage.limitations,'Mailbox a@example.invalid has incomplete mail coverage: mail_folders_not_synced.']);
+ assert.match(folders,/ Mail coverage: Mail folders have not finished syncing yet; try again later\. Mailbox connection status disabled/);
+ assert.doesNotMatch(folders,/mail_folders_not_synced|a@example\.invalid/);
+ const two=text(['Mailbox a@example.invalid has incomplete mail coverage: mail_sync_stale.','Mailbox b@example.invalid has incomplete mail coverage: mail_sync_stale.','Mailbox c@example.invalid has incomplete mail coverage: mail_never_synced.']);
+ assert.match(two,/Mail coverage: Stored mail has not synchronized recently; recent messages may be missing\. This mailbox has never synchronized mail; there is no stored mail to search yet\./);
+ const unknown=text(['Mailbox a@example.invalid has incomplete mail coverage: mail_new_reason_from_core.']);
+ assert.match(unknown,/Mail coverage: Mail coverage for this mailbox is incomplete; say so in the user's terms without quoting a reason code\./);
+ assert.doesNotMatch(unknown,/mail_new_reason_from_core/);
+ const thread={id:'mail.read_thread'},threadPage={...base,coverage:{...base.coverage,limitations:['Mailbox a@example.invalid has incomplete mail coverage: mail_folders_not_synced.']}};
+ assert.match(readNotices(thread,JSON.stringify(threadPage),threadPage)[0].text,/ Mail coverage: Mail folders have not finished syncing yet; try again later\./);
+ assert.equal(text(page.coverage.limitations).includes('Mail coverage:'),false,'a limitation without a reason adds nothing');
+});
