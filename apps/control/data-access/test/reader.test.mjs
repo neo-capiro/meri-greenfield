@@ -9,9 +9,10 @@ import {familyReads} from '../../../worker/conversation/reads/availability.mjs';
 import {RETAINED_PUBLIC_RELATIONS} from '../../../gateway/sources/capiro-data/handler.mjs';
 import {RETAINED_CAPIRO_PRIVATE_RELATIONS} from '../../../../packages/contracts/retrieval-0.2/capiro-data-validation.mjs';
 const NOW=Date.UTC(2026,10,1,12),CLIENT='00000000-0000-4000-8000-000000000901';
-/** Core's published public surface: the retained 0.2 default plus migrations 20281102100000 (awards), 20281102140000 (grants and SAM notices)
- * and 20281102150000 (Unified Agenda government forecasts). */
-const PUBLIC_RELATIONS=[...RETAINED_PUBLIC_RELATIONS,'federal_awards','federal_assistance_awards','federal_grants','sam_opportunities','government_forecasts'];
+/** Core's published public surface, in the order of Core's gate list: the retained 0.2 default plus migrations 20281102100000
+ * (awards), 20281102120000 (program element years), 20281102140000 (grants and SAM notices) and 20281102150000 (Unified Agenda
+ * government forecasts). */
+const PUBLIC_RELATIONS=[...RETAINED_PUBLIC_RELATIONS,'federal_awards','federal_assistance_awards','program_element_years','federal_grants','sam_opportunities','government_forecasts'];
 const rows=familyReads(),ops=family=>rows.filter(row=>row.family===family).map(row=>row.operation);
 const principal=(over={})=>({tenantId:'tenant',actorId:'actor',role:'standard_user',permissions:[],clientIds:[CLIENT],membershipRevision:'m1',...over});
 /** A policy that admits exactly the named families, with every installed operation active (the preview profile's shape). */
@@ -42,7 +43,7 @@ test('General (no client) turns client-required families and client_records rela
  const by=Object.fromEntries(general.families.map(row=>[row.family,row]));
  assert.equal(by['action-items-complete'].state,'client_required');assert.equal(by.mail.state,'available','optional client scope stays available');
  assert.deepEqual(general.relations.filter(r=>r.source==='public').map(r=>[r.name,r.state]),PUBLIC_RELATIONS.map(name=>[name,'available']));
- assert.equal(PUBLIC_RELATIONS.length,13);assert.equal(RETAINED_PUBLIC_RELATIONS.length,8,'the 0.2 pin stays at its eight names');
+ assert.equal(PUBLIC_RELATIONS.length,14);assert.equal(RETAINED_PUBLIC_RELATIONS.length,8,'the 0.2 pin stays at its eight names');
  assert.deepEqual(general.relations.filter(r=>r.source==='client_records').map(r=>r.state),RETAINED_CAPIRO_PRIVATE_RELATIONS.map(()=>'client_required'));
  const client=await s.read({clientId:CLIENT});assert(client.relations.every(r=>r.state==='available'));
  const noSql=setup({families:['mail']});assert((await noSql.read()).relations.every(r=>r.state==='policy_off'),'relations are off when every SQL family is off by policy');
