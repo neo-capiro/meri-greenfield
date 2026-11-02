@@ -142,13 +142,13 @@
     },
     {
       "path": "../../apps/control/intents/approval.mjs",
-      "sha256": "bc0f32133c6c8f37e6b396bb8468d692e24d555fb339dba654ca308e96bbcd41",
-      "bytes": 63155
+      "sha256": "1976176d0d015ae6dd78e51f2da7287eb2646a9e8c319c76d3ba7f85688a24fd",
+      "bytes": 64188
     },
     {
       "path": "../../apps/control/intents/faults.mjs",
-      "sha256": "5a3bc14571638a5721c3a8975eeaee0c9f610ebfd2812ed1c4bf2ea50f137f1f",
-      "bytes": 570
+      "sha256": "0bfd7271990b55ea36c907b7065a7dcba16700d638fc7f2f90f5ccd0a3bc678b",
+      "bytes": 1919
     },
     {
       "path": "../../apps/control/intents/http.mjs",

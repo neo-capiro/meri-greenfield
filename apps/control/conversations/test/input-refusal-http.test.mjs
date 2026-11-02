@@ -26,6 +26,15 @@ test('a reached tenant monthly cap answers 429 TENANT_MONTHLY_CAP_REACHED on adm
  assert.deepEqual(r.lines,[]);
 });
 
+test('an expired original input answers 409 INITIAL_INPUT_EXPIRED on admit, submit and allocate without a log line',async()=>{
+ // Preview 2 Nov 14:23Z: "Continue accepted request" after a reload re-admitted a first message whose allocation had expired;
+ // admit answered 502 CONVERSATION_UNAVAILABLE and the composer said Capiro was not reachable.
+ const r=routes(coded('INITIAL_INPUT_EXPIRED'));
+ for(const route of ['admit','submit'])assert.deepEqual(await answer(await r[route]()),{status:409,body:{error:{code:'INITIAL_INPUT_EXPIRED'}}},route);
+ assert.deepEqual(await answer(await r.allocate()),{status:409,body:{error:{code:'INITIAL_INPUT_EXPIRED',outcome:'NOT_DISPATCHED'}}});
+ assert.deepEqual(r.lines,[]);
+});
+
 test('an attachment admission refusal answers 400 INVALID_REQUEST; an upload outage stays unavailable and is logged',async()=>{
  for(const code of ['UPLOAD_EXTRACTION_UNAVAILABLE','UPLOAD_NOT_CLEAN','UPLOAD_ACCESS_DENIED','UPLOAD_NOT_FOUND','UPLOAD_EXPIRED']){
   const r=routes(coded(code));

@@ -74,8 +74,8 @@
     },
     {
       "path": "../../apps/control/settings/documents.mjs",
-      "sha256": "6b7849d7c1a91087ac2ff85853e3c3a332ea16475a4cc1775f7fc60149f9b503",
-      "bytes": 5099
+      "sha256": "59c229a4a6c410507066ae2b0a8a68aed61f7dd63739aded424e5c66205e6b45",
+      "bytes": 5313
     },
     {
       "path": "../../apps/control/settings/routes.mjs",

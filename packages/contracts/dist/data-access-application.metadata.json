@@ -69,8 +69,8 @@
     },
     {
       "path": "../../apps/control/data-access/reader.mjs",
-      "sha256": "d420a84947c869202ae530b527f21802b54db66b239e72c8c918a4776407bfb5",
-      "bytes": 5836
+      "sha256": "e55e63036250f6e49cab608b9902757f8f1b502fd4a1df1fd8833bd0cd3926ef",
+      "bytes": 6677
     },
     {
       "path": "../../apps/control/product-access/errors.mjs",
@@ -84,8 +84,8 @@
     },
     {
       "path": "../../apps/gateway/sources/capiro-data/handler.mjs",
-      "sha256": "64a2bb5a198b5b012a6be58a524cfa0ef553949c245619ea93099975c6f259ec",
-      "bytes": 4056
+      "sha256": "c63199c09b0bfb810bff805d96ef82c38266bcf7d12251e512d29391af327392",
+      "bytes": 4192
     },
     {
       "path": "../../apps/runtime/product-ports/capability-policy.mjs",
@@ -104,13 +104,13 @@
     },
     {
       "path": "../../apps/worker/conversation/reads/families.mjs",
-      "sha256": "4f2adc736443f5f27215c6f829aaf99040a28a59c300daf9e00caae99ccfaf47",
-      "bytes": 6006
+      "sha256": "7bd9f5f4f494bc6c9d7d5de33aa791ed31c2a7d9f2ec88181cda0a037c1ad78f",
+      "bytes": 6251
     },
     {
       "path": "../../apps/worker/conversation/reads/family-guidance.mjs",
-      "sha256": "ba56c23dad2daf07c81ef2bcab6fe591c24fc802f25a5e691794657bac9ad9e1",
-      "bytes": 30527
+      "sha256": "c3d3f7175bb485aa50d32a4653acb435e3a0654d84ce6b032f4d921ecd518daf",
+      "bytes": 30775
     },
     {
       "path": "data-access-application/protocol.mjs",

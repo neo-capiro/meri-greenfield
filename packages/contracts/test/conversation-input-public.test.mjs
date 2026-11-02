@@ -26,7 +26,7 @@ test('MP explicit choice correlates exactly with admitted/history request; omitt
 });
 
 test('input metadata preserves exact canonical statuses and byte limits',()=>{
- assert.equal(metadata.packageVersion,'0.1.9');assert.equal(metadata.inputVersion,'1.3.0');assert.equal(metadata.routes.admit.path,'/api/conversations/input/admit');assert.equal(metadata.routes.admit.method,'POST');
+ assert.equal(metadata.packageVersion,'0.1.10');assert.equal(metadata.inputVersion,'1.3.0');assert.equal(metadata.routes.admit.path,'/api/conversations/input/admit');assert.equal(metadata.routes.admit.method,'POST');
  assert.deepEqual(metadata.limits,{requestBytes:131072,responseBytes:2097152});assert.deepEqual(metadata.errorStatuses,conversationApplicationMetadata.errorStatuses);assert.equal(metadata.authentication.validationGrantsAuthority,false);assert.ok(Object.isFrozen(metadata.limits));
 });
 test('strict receipt agrees across internal server assertion and public receiver',async()=>{
@@ -87,13 +87,15 @@ test('canonical error statuses, request provenance, and bytes remain enforced',a
  for(const [status,body]of [[200,{error:{code:'CONVERSATION_UNAVAILABLE'}}],[299,receipt()],[500,{error:{code:'SESSION_REFUSED'}}],[502,{error:{code:'PRIVATE_FAILURE'}}]])await assert.rejects(receive(status,bytes(body),admitted,context));
  assert.deepEqual(metadata.errorStatuses.TENANT_MONTHLY_CAP_REACHED,[429]);assert.deepEqual(await receive(429,bytes({error:{code:'TENANT_MONTHLY_CAP_REACHED'}}),admitted,context),{error:{code:'TENANT_MONTHLY_CAP_REACHED'}});
  await assert.rejects(receive(502,bytes({error:{code:'TENANT_MONTHLY_CAP_REACHED'}}),admitted,context));
+ assert.deepEqual(metadata.errorStatuses.INITIAL_INPUT_EXPIRED,[409]);assert.deepEqual(await receive(409,bytes({error:{code:'INITIAL_INPUT_EXPIRED'}}),admitted,context),{error:{code:'INITIAL_INPUT_EXPIRED'}});
+ await assert.rejects(receive(502,bytes({error:{code:'INITIAL_INPUT_EXPIRED'}}),admitted,context));
  await assert.rejects(receive(403,bytes({error:{code:'SESSION_REFUSED'}}),structuredClone(admitted),context),/UNADMITTED_REQUEST/);
  for(const value of [new Uint8Array([255]),new TextEncoder().encode('{"__proto__":{}}'),bytes({...input,prompt:'\ud800'}),new Uint8Array(metadata.limits.requestBytes+1)])assert.throws(()=>request(value),ConversationInputResponseError);
  await assert.rejects(receive(200,new Uint8Array(metadata.limits.responseBytes+1),admitted,context),/BYTE_LIMIT/);let traps=0;assert.throws(()=>request(new Proxy({},{get(){traps++;throw Error('trap');}})));assert.equal(traps,0);
 });
 test('input-only generation records exact canonical provenance and one shared browser import',async()=>{
  const source=await readFile(new URL('../dist/conversation-input.mjs',import.meta.url),'utf8');assert.match(source,/from ["']\.\/conversation-application\.mjs["']/u);assert.doesNotMatch(source,/from ["']node:|require\(["']node:/u);
- const evidence=JSON.parse(await readFile(new URL('../dist/conversation-input.metadata.json',import.meta.url),'utf8'));assert.equal(evidence.packageVersion,'0.1.9');assert.equal(evidence.browserImports.length,1);assert.equal(evidence.browserImports[0].path,'./conversation-application.mjs');
+ const evidence=JSON.parse(await readFile(new URL('../dist/conversation-input.metadata.json',import.meta.url),'utf8'));assert.equal(evidence.packageVersion,'0.1.10');assert.equal(evidence.browserImports.length,1);assert.equal(evidence.browserImports[0].path,'./conversation-application.mjs');
  for(const row of evidence.sources){const raw=await readFile(new URL('../'+row.path,import.meta.url));assert.equal(createHash('sha256').update(raw).digest('hex'),row.sha256,row.path);}
  assert.equal(evidence.browserImports[0].sha256,evidence.sources.find(row=>row.path==='dist/conversation-application.mjs').sha256);
 });
@@ -102,6 +104,6 @@ test('offline public package preserves cross-entrypoint brands and private sourc
   const pkg=join(root,'node_modules/@capiro/meri-contracts');await mkdir(pkg,{recursive:true});for(const path of ['package.json','dist'])await cp(new URL('../'+path,import.meta.url),join(pkg,path),{recursive:true});
   const resolver=createRequire(pathToFileURL(join(root,'consumer.cjs'))),installed=await import(pathToFileURL(resolver.resolve('@capiro/meri-contracts/conversation-input'))),old=await import(pathToFileURL(resolver.resolve('@capiro/meri-contracts/conversation-application'))),admitted=installed.receiveConversationInputRequest(bytes(input)),body=receipt();
   const received=await installed.receiveConversationInputResponse(200,bytes(body),admitted,context);await old.receiveConversationResponse('submit',200,bytes(submitted(body)),admitted,installed.conversationInputView(received));
-  assert.equal(installed.conversationInputMetadata.packageVersion,'0.1.9');assert.equal(resolver.resolve('@capiro/meri-contracts/conversation-input/schema'),join(pkg,'dist','conversation-input.schema.json'));assert.throws(()=>resolver.resolve('@capiro/meri-contracts/conversation-input/validate.mjs'));
+  assert.equal(installed.conversationInputMetadata.packageVersion,'0.1.10');assert.equal(resolver.resolve('@capiro/meri-contracts/conversation-input/schema'),join(pkg,'dist','conversation-input.schema.json'));assert.throws(()=>resolver.resolve('@capiro/meri-contracts/conversation-input/validate.mjs'));
  }finally{if(!resolve(root).startsWith(resolve(tmpdir())+sep))throw Error('Unexpected cleanup target');await rm(root,{recursive:true,force:true});}
 });

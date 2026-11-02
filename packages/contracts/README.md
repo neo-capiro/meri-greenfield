@@ -184,3 +184,14 @@ of the token's expiry. The token never outlives the current native session (abou
 15 minutes remain, so a real TTL showed its "session will end" warning on every load and renewal. `expiresAtMs` is unchanged: it
 is the token's real expiry, enforced by the host frame and the WOPI handler, and the host renews before it. The receiver refuses
 any other TTL value.
+
+## Expired original input refusal — package 0.1.53
+
+`conversation-application` 0.1.18, `conversation-input` 0.1.10 and `conversation-initial-input` 0.1.13 are additive. A request whose
+conversation's original (first) input allocation has expired now answers its own public `409` `INITIAL_INPUT_EXPIRED` on admit and
+submit instead of collapsing to `502` `CONVERSATION_UNAVAILABLE`; allocate answers it as `409` with outcome `NOT_DISPATCHED`, and
+its earlier `408` stays admitted for older producers. Control answers it only for an allocation that was never accepted, so nothing
+was dispatched for that request and the UI may release it rather than saying Capiro is not reachable. A first input that was
+already accepted (and possibly dispatched) is never refused this way: admit and submit replay its accepted request, and allocate
+answers `503` `INITIAL_INPUT_UNAVAILABLE` with outcome `UNKNOWN`, also after a deploy changes the run versions. Validation grants
+no authority: control's original-input journal decides every value.
