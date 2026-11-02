@@ -22,8 +22,9 @@ const DEFINITE_REFUSALS=new Set([400,401,403,404,422]);
  * `PREVIEW_ROUTE_NOT_FOUND`): never a message, host, identifier or free text. */
 const TOKEN=/^[A-Z][A-Z0-9_]{1,62}$/u;
 const tokenOf=error=>[ownValue(error,'code'),ownValue(ownValue(error,'cause'),'code'),ownValue(error,'name')].find(value=>typeof value==='string'&&TOKEN.test(value));
-/** The answering owner's own constant (`{"error":"PREVIEW_ROUTE_NOT_FOUND"}`), read within the same lifetime from at most 1 KiB
- * of a definite refusal; a message, a host or anything not constant-shaped is dropped. */
+/** The parsed JSON body of a definite refusal, read within the same lifetime from at most 1 KiB. Two readers take from it: the log
+ * reason only the answering owner's own constant (`{"error":"PREVIEW_ROUTE_NOT_FOUND"}`, `refusalToken`), the detail only Core's plain
+ * one-line message (`refusalSaid`); a host, a value or anything else is dropped. */
 async function refusalBody(response,life){
  let reader;try{
   const stream=responseBody(response);if(!stream||!/^application\/json/iu.test(response.headers.get('content-type')??''))return undefined;

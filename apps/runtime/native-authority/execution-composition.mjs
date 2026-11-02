@@ -77,10 +77,15 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
   const first=await fresh(signal);
   // Core binds every Research Portfolio request (the ten governed actions and the two sharing intents) to the conversation's own
   // Research Portfolio receipt and refuses one from any other conversation (400 "This conversation is not scoped to a Research
-  // Portfolio"). A client conversation never carries that receipt (a research run with a selected client is refused at start,
-  // `agentcore-candidate.mjs`), so neither family is offered there: on 2 Nov (M37, a client conversation) both attempts to add a
-  // bill to a portfolio were refused by Core and left two "Not prepared" cards.
-  const portfolioConversation=first.selectedClientId===null;
+  // Portfolio"): on 2 Nov (M37, a client conversation) both attempts to add a bill to a portfolio were refused by Core and left two
+  // "Not prepared" cards. The live session's own subject says whether this run's conversation is one (the signal the run start and
+  // its current-authority reads use, `agentcore-candidate.mjs`); a client or General conversation offers neither family. Only the
+  // subject is read here: the credential stays with the clients that borrow it per call.
+  let portfolioConversation=false;
+  if(nativeCredentials&&configuration.intents.core&&first.selectedClientId===null){
+   try{portfolioConversation=(await nativeCredentials.nativeCredentialFor({binding,selectedClientId:null,signal,includeSubject:true}))?.scopeKind==='research_portfolio';}
+   catch{portfolioConversation=false;}
+  }
   // Availability is a description of composed preparers, but it still belongs to the same current authorized run: the execution
   // authenticated once above is the one whose current authority is read. Each preparation re-runs the full fresh/authority/fresh
   // check through `currentRights`, so nothing retained depends on authenticating again here.
