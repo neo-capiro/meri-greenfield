@@ -167,8 +167,11 @@ export async function readHostCgroup({readText=HOST_READ,before=undefined,platfo
  * evidence (`agentcoreRuntimePlatform`): with it, the AgentCore microVM's single unlimited root cgroup attests
  * `boundedResources` as `diagnostic.boundedBy:'agentcore-microvm'` (`platformBoundedCgroup`); without it, or on any
  * other shape, only finite observed bounds do (`'cgroup'`). */
-export function evaluateUploadSandbox(observation,{tempRoot,platform=null}={}){
+export function evaluateUploadSandbox(observation,{tempRoot,platform=null,credentialPaths=[]}={}){
  const o=observation!==null&&typeof observation==='object'&&!Array.isArray(observation)?observation:{};
+ // The only paths the diagnostic may name are the host-supplied inventory entries; a child-reported path outside
+ // that inventory is dropped, never echoed.
+ const inventory=new Set(Array.isArray(credentialPaths)?credentialPaths.filter(p=>typeof p==='string'):[]);
  const linux=o.schema===RENDERER_PROBE_SCHEMA&&o.platform==='linux';
  const caps=o.capabilities&&typeof o.capabilities==='object'?o.capabilities:{};
  const cg=o.cgroup&&typeof o.cgroup==='object'?o.cgroup:{};
@@ -202,7 +205,7 @@ export function evaluateUploadSandbox(observation,{tempRoot,platform=null}={}){
    checked:creds===null?0:creds.length,readable:creds===null?0:creds.filter(c=>c&&c.readable===true).length,
    // WHICH inventory entries the child could read: host-owned constant paths, never their contents, so an
    // unavailable event names the reachable path instead of leaving operators a count to guess from.
-   readablePaths:Object.freeze(creds===null?[]:creds.filter(c=>c&&c.readable===true&&typeof c.path==='string').map(c=>c.path))})
+   readablePaths:Object.freeze(creds===null?[]:creds.filter(c=>c&&c.readable===true&&typeof c.path==='string'&&inventory.has(c.path)).map(c=>c.path).slice(0,64))})
  });
  const findings=UPLOAD_SANDBOX_REQUIREMENTS.filter(k=>sandbox[k]!==true).map(requirement=>({requirement,reason:linux?'NOT_OBSERVED':'NOT_LINUX'}));
  return {sandbox:Object.freeze(sandbox),findings:Object.freeze(findings),diagnostic};
@@ -273,7 +276,7 @@ export async function qualifyNativeUploadSandbox({imageDigest,deadlineMs,signal,
   // falls back to the child's namespaced view, which inside bwrap is always one unlimited root (the same shape the
   // microVM shows), so the attestation would rest on the environment evidence alone; it is withheld instead.
   const hostResolved=host!==null&&host!==undefined&&Number.isSafeInteger(host?.levels)&&host.levels>0;
-  const evaluation=evaluateUploadSandbox(observation,{tempRoot:await realpath(tempRoot).catch(()=>null),platform:hostResolved?platform:null});
+  const evaluation=evaluateUploadSandbox(observation,{tempRoot:await realpath(tempRoot).catch(()=>null),platform:hostResolved?platform:null,credentialPaths});
   const missing=evaluation.findings.map(f=>f.requirement);
   const diagnostic=Object.freeze({...evaluation.diagnostic,
    cgroupHost:Object.freeze({resolved:hostResolved,levels:host?.levels??0,mountRootIsRoot:host?.mountRootIsRoot===true})});

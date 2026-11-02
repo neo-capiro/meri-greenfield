@@ -130,7 +130,8 @@ test('only trusted absolute configuration is accepted',async()=>{
  await assert.rejects(qualifyLibreOfficeRenderer(null),{code:'RENDERER_QUALIFICATION_CONFIGURATION'});
 });
 
-test('an inventory directory is readable only when it exposes more than the chain down to the child workspace',async()=>{
+test('an inventory directory is readable only when it exposes more than the chain down to the child workspace',
+ {skip:process.platform==='win32'?'directory-listing semantics are judged on the Linux sandbox host':false},async()=>{
  // bubblewrap materialises the bound workspace's ancestors inside the child's root, so an inventory root above the
  // workspace is always traversable; the probe must judge a directory by its content, not by whether it opens.
  const root=await mkdtemp(join(await realpath(tmpdir()),'meri-probe-chain-')),at=(...p)=>join(root,...p);
