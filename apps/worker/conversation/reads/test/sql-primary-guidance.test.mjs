@@ -9,14 +9,17 @@ const mail=['mail_list_messages','mail_search_messages','mail_read_thread'].map(
 
 test('SQL routing is admitted only with both actual query tools, and only as routing',()=>{
  for(const tools of [[],[describe],[query]])assert.doesNotMatch(readPromptSentence(true,tools),/Structured questions about Capiro data/);
- assert.equal(readPromptSentence(false,[describe,query]),`Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read. Never repeat internal status codes, capability names or words such as bounded, read-disabled or activity to the user: say what could not be read and what they can do next, and never recommend a third-party API or scraping as a workaround.`);
+ assert.equal(readPromptSentence(false,[describe,query]),`Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read. Never repeat internal status codes, capability, data set, table, column or layer names, SQL or words such as bounded, read-disabled or activity to the user: say what could not be read and what they can do next, and never recommend a third-party API or scraping as a workaround.`);
  const prompt=readPromptSentence(true,[describe,query]);
  assert.match(prompt,/Structured questions about Capiro data .* go to describe_capiro_data once per source and then query_capiro_data/);
  assert.match(prompt,/public is the default source and clientId only narrows access/);
- assert.match(prompt,/settle any ambiguity that changes the answer \(client, fiscal versus calendar period, units, budget cycle\)/);
+ assert.match(prompt,/Settle any ambiguity that changes the answer \(client, fiscal versus calendar period, units, budget cycle\) before querying\./);
  assert.match(prompt,/A refusal names its correction: fix the SQL and run it again, and never switch to another source/);
  assert.match(prompt,/Use a typed reader only when the described data sets do not cover the question/);
  assert.match(prompt,/query-bounded rows, not source completeness; generatedAt is query time/);
+ // 2 November acceptance: "89 bills" named no Congress, window or tracked set, and the typed-reader sentence invited "which path" talk.
+ assert.match(prompt,/A count states in one clause the bound it counted under \(Congress, date range, status or tracked set\)\./);
+ assert.doesNotMatch(prompt,/say which path you used|not source freshness|to evade a refusal/);
  // The retired contract envelope and the per-tool argument and result detail stay out of the prompt.
  assert.doesNotMatch(prompt,/contract grammar|rowLimitReached|byteTruncated|keyset|legacy global query tools|Use read_saved_record/);
  assert.ok(prompt.length<2600,`${prompt.length} characters`);
@@ -63,7 +66,7 @@ test('the user hears about disconnected or refused Capiro data in their own term
  assert.match(none,/^Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read\./);
  assert.match(mounted,/When a read answers that it is not connected or not permitted, tell the user in their own terms that this Capiro data is not connected or not permitted for this conversation, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read and what they can do next\./);
  assert.doesNotMatch(mounted,/general knowledge|prepares a proposal|Core /,'no invented client facts, no internals');
- for(const prompt of [none,mounted])assert.match(prompt,/Never repeat internal status codes, capability names or words such as bounded, read-disabled or activity to the user: say what could not be read and what they can do next, and never recommend a third-party API or scraping as a workaround\./);
+ for(const prompt of [none,mounted])assert.match(prompt,/Never repeat internal status codes, capability, data set, table, column or layer names, SQL or words such as bounded, read-disabled or activity to the user: say what could not be read and what they can do next, and never recommend a third-party API or scraping as a workaround\./);
  assert.doesNotMatch(none,/bounded session|read-disabled here|return UNAVAILABLE|ProPublica/);
  assert.equal(none.split(/\.\s/).length,2,'two sentences');
 });
