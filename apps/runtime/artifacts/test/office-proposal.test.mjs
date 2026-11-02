@@ -135,6 +135,7 @@ test('Apply and Reject observe Core at the effect boundary: revoked after admiss
  for(const choice of ['approved','rejected'])await assert.rejects(owner.decide({principal,request:decision(f,12,p,choice)}));
  assert.ok(f.state.observations.some(o=>o.phase==='effect'),'Core is observed before the write');
  assert.equal(f.state.puts,1,'nothing was published');assert.equal(f.sql.state.versions.size,1);
+ assert.equal((await owner.list({principal,request:{conversationId:f.binding.conversationId}})).intents[0].result.proposalStatus,'proposed','the refused Reject settled nothing');
 });
 test('the composed owner: a preparer only for a selected document, propose under revise authority, a named principal bound to the attended session, cross-conversation and revoked-authority refusals, expiry',async t=>{
  const f=await fixture(t),principal=principalOf(f),runArguments={binding:f.binding,scopes:f.scopes,selectedClientId:f.selectedClientId,deadlineMs:f.now()+30000,...f.rights};
