@@ -100,7 +100,7 @@ run 15 preexisting-container.log docker ps -aq --filter "name=^/$probe$"
 run 15 preexisting-image.log docker images -q "$image"
 [[ ! -s $evidence/preexisting-image.log ]] || exit 2
 owned_image=1
-# One build, one platform. The Node and Debian snapshot pins live in the Dockerfile.
+# One build, one platform. The Node, Wolfi base and package-closure pins live in the Dockerfile and its lock.
 run 1800 build.log docker build --platform linux/arm64 --label "org.opencontainers.image.revision=$SOURCE_COMMIT" -f "$dockerfile" -t "$image" --iidfile "$evidence/image.id" .
 run 15 image-inspect.json docker image inspect "$image" || exit 1
 image_id=$(python3 -I -B -S "$helper" inspect --inspect "$evidence/image-inspect.json" --commit "$SOURCE_COMMIT") || exit 1

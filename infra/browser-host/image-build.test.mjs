@@ -69,3 +69,19 @@ test('offline evidence readers: hashes, inspection, digest and scan result',()=>
   process.stdout.write(result.stdout);process.stdout.write(result.stderr);
   assert.equal(result.signal,null);assert.equal(result.status,0,result.error??result.stderr);
 });
+
+test('the exported image installs exactly the locked Wolfi closure, staged by URL and sha256 beside the retained signed index',async()=>{
+  const {createHash}=await import('node:crypto');
+  const lock=JSON.parse(readFileSync(new URL('./browser-host-packages.lock.json',import.meta.url),'utf8'));
+  const dockerfile=readFileSync(new URL('../../apps/runtime/Dockerfile.browser-host',import.meta.url),'utf8');
+  const index=readFileSync(new URL(`../../${lock.retainedSignedIndex}`,import.meta.url));
+  assert.equal(createHash('sha256').update(index).digest('hex'),lock.packageIndexSha256);
+  assert.match(lock.retainedSignedIndex,new RegExp(`^infra/product-preview/native-apk-index/aarch64-APKINDEX-${lock.packageIndexSha256}\.tar\.gz$`));
+  assert.ok(dockerfile.includes(`COPY ${lock.retainedSignedIndex} /tmp/meri-browser-host-repo/aarch64/APKINDEX.tar.gz`));
+  assert.ok(dockerfile.includes(`ARG HOST_IMAGE=${lock.hostImageUri}`));
+  const staged=[...dockerfile.matchAll(/^ADD --checksum=sha256:([0-9a-f]{64}) (\S+) \/tmp\/meri-browser-host-repo\/aarch64\/(\S+)$/gmu)].map(m=>({sha256:m[1],source:m[2],file:m[3]}));
+  assert.deepEqual(staged,lock.systemPackages.map(p=>({sha256:p.sha256,source:p.source,file:`${p.name}-${p.version}.apk`})));
+  const install=dockerfile.slice(dockerfile.indexOf('--repositories-file /dev/null --update-cache'),dockerfile.indexOf('apk info -v | sort'));
+  assert.deepEqual(install.match(/[A-Za-z0-9.+_-]+=[A-Za-z0-9.+_~-]+/gu),lock.systemPackages.map(p=>`${p.name}=${p.version}`));
+  assert.ok(!/apt-get|dpkg/u.test(dockerfile.slice(dockerfile.indexOf('AS host-repo-1'))),'no Debian package step after the build stage');
+});

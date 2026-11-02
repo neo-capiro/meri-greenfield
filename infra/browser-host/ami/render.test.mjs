@@ -35,7 +35,7 @@ test('the profile is the browser layout the host reads, bound to the build facts
 
 test('every identity and path of the profile is what the image actually creates',()=>{
  for(const [name,uid] of Object.entries({sdk:1001,browser:2002,hostRelay:3001,localRelay:3002,proxy:3003}))
-  assert.equal(ami.BROWSER_HOST_LAYOUT.identities[name].uid,uid),assert.match(dockerfile,new RegExp(`--uid ${uid} `,'u'));
+  assert.equal(ami.BROWSER_HOST_LAYOUT.identities[name].uid,uid),assert.match(dockerfile,new RegExp(`addgroup -g ${uid} \\S+ && adduser -D -H -u ${uid} `,'u'));
  assert.match(dockerfile,/\/opt\/meri\/meri-host-launcher/u);assert.match(dockerfile,/\/opt\/meri\/meri-host-relay-launcher/u);
  assert.match(dockerfile,/chromium-1247/u);assert.match(dockerfile,/PLAYWRIGHT_BROWSERS_PATH=\/opt\/meri\/browsers/u);
  assert.ok(dockerfile.includes(`ln -s /opt/meri/apps/runtime/native-processing-host/protected-bootstrap.mjs ${NATIVE_BOOTSTRAP_PROGRAM}`));
