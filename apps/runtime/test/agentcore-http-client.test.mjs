@@ -36,9 +36,9 @@ test('Stop reuses execution token and only acknowledges matching definitive resp
  const value=input(),calls=[],stop={binding,executionId:value.execution.executionId,runtimeSessionId:value.execution.runtimeSessionId};
  const c=client(async command=>{calls.push(command);return {$metadata:{httpStatusCode:200},statusCode:200,runtimeSessionId:stop.runtimeSessionId};});
  assert.deepEqual(await c.stop(stop),{...stop,stopped:true});assert.deepEqual(await c.stop(stop),{...stop,stopped:true});
- assert.equal(calls[0].constructor.name,'StopRuntimeSessionCommand');assert.equal(calls[0].input.clientToken,stop.executionId);assert.deepEqual(calls[0].input,calls[1].input);
- for(const result of [{statusCode:202,$metadata:{httpStatusCode:202},runtimeSessionId:stop.runtimeSessionId},{statusCode:200,$metadata:{httpStatusCode:200},runtimeSessionId:'foreign'},{}])await assert.rejects(client(async()=>result).stop(stop),{code:'AGENTCORE_STOP_UNKNOWN'});
- await assert.rejects(client(async()=>{throw Error('lost');}).stop(stop),{code:'AGENTCORE_STOP_UNKNOWN'});
+ assert.equal(calls[0].constructor.name,'StopRuntimeSessionCommand');assert.equal(calls[0].input.clientToken,stop.executionId);assert.equal(calls[0].input.agentRuntimeArn,arn);assert.equal(calls[0].input.qualifier,'preview');assert.deepEqual(calls[0].input,calls[1].input);
+ for(const result of [{statusCode:202,$metadata:{httpStatusCode:202},runtimeSessionId:stop.runtimeSessionId},{statusCode:200,$metadata:{httpStatusCode:200},runtimeSessionId:'foreign'},{}])await assert.rejects(client(async()=>result).stop(stop),{code:'AGENTCORE_STOP_UNKNOWN',reasonCode:'STOP_RESPONSE_REFUSED'});
+ await assert.rejects(client(async()=>{throw Error('lost');}).stop(stop),{code:'AGENTCORE_STOP_UNKNOWN',reasonCode:'STOP_TRANSPORT_UNKNOWN'});
 });
 test('HTTP keeps one query busy until cleanup settlement and permits same-conversation successor',async()=>{
  const finish=deferred(),value=input();let calls=0;const app=createAgentCoreApplication({execute:async value=>{calls++;if(calls===1)await finish.promise;return settlementFor(value.execution,'completed');}});
@@ -97,7 +97,22 @@ test('an execution that ended unsettled reaches control as AGENTCORE_EXECUTION_E
 test('Stop names the AgentCore "session not found or already terminated" answer; every other failure stays unknown',async()=>{
  const value=input(),stop={binding,executionId:value.execution.executionId,runtimeSessionId:value.execution.runtimeSessionId};
  const fail=(name,status)=>client(async()=>{throw Object.assign(Error('synthetic '+name),{name,$metadata:{httpStatusCode:status}});});
- await assert.rejects(fail('ResourceNotFoundException',404).stop(stop),{code:'AGENTCORE_SESSION_NOT_FOUND'});
- for(const [name,status] of [['ResourceNotFoundException',400],['ValidationException',404],['RetryableConflictException',409],['ThrottlingException',429],['InternalServerException',500]])
-  await assert.rejects(fail(name,status).stop(stop),{code:'AGENTCORE_STOP_UNKNOWN'});
+ await assert.rejects(fail('ResourceNotFoundException',404).stop(stop),{code:'AGENTCORE_SESSION_NOT_FOUND',reasonCode:'STOP_SESSION_NOT_FOUND'});
+ for(const [name,status,reasonCode] of [['ResourceNotFoundException',400,'STOP_PROVIDER_OTHER'],['ValidationException',404,'STOP_PROVIDER_OTHER'],
+  ['RetryableConflictException',409,'STOP_CONFLICT'],['ConflictException',409,'STOP_CONFLICT'],['ThrottlingException',429,'STOP_THROTTLED'],
+  ['InternalServerException',500,'STOP_SERVICE_ERROR'],['AccessDeniedException',403,'STOP_ACCESS_DENIED'],['UnauthorizedException',401,'STOP_UNAUTHORIZED'],
+  ['ValidationException',400,'STOP_VALIDATION_ERROR'],['RuntimeClientError',424,'STOP_RUNTIME_ERROR'],['ServiceQuotaExceededException',402,'STOP_QUOTA_EXCEEDED'],
+  ['private-provider-name',503,'STOP_PROVIDER_OTHER'],['private-provider-name',undefined,'STOP_TRANSPORT_UNKNOWN']])
+  await assert.rejects(fail(name,status).stop(stop),error=>{assert.equal(error.code,'AGENTCORE_STOP_UNKNOWN');assert.equal(error.reasonCode,reasonCode);
+   assert.doesNotMatch(JSON.stringify(error),/private-provider-name|synthetic/);assert.equal(error.cause,undefined);return true;});
+});
+
+test('Stop cancellation after dispatch is a local interruption, not a provider response or permission to retry',async()=>{
+ const value=input(),stop={binding,executionId:value.execution.executionId,runtimeSessionId:value.execution.runtimeSessionId};
+ const entered=deferred(),pending=deferred(),abort=new AbortController();let calls=0;
+ const c=client(async()=>{calls++;entered.resolve();return pending.promise;});
+ const result=c.stop({...stop,signal:abort.signal});await entered.promise;abort.abort();
+ await assert.rejects(result,{code:'AGENTCORE_STOP_UNKNOWN',reasonCode:'STOP_INTERRUPTED'});assert.equal(calls,1);
+ pending.resolve({$metadata:{httpStatusCode:200},statusCode:200,runtimeSessionId:stop.runtimeSessionId});
+ await assert.rejects(c.stop({...stop,signal:abort.signal}));assert.equal(calls,1,'pre-cancelled Stop does not dispatch');
 });
