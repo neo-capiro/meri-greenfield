@@ -75,6 +75,17 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
    return rights;
   }
   const first=await fresh(signal);
+  // Core binds every Research Portfolio request (the ten governed actions and the two sharing intents) to the conversation's own
+  // Research Portfolio receipt and refuses one from any other conversation (400 "This conversation is not scoped to a Research
+  // Portfolio"): on 2 Nov (M37, a client conversation) both attempts to add a bill to a portfolio were refused by Core and left two
+  // "Not prepared" cards. The live session's own subject says whether this run's conversation is one (the signal the run start and
+  // its current-authority reads use, `agentcore-candidate.mjs`); a client or General conversation offers neither family. Only the
+  // subject is read here: the credential stays with the clients that borrow it per call.
+  let portfolioConversation=false;
+  if(nativeCredentials&&configuration.intents.core&&first.selectedClientId===null){
+   try{portfolioConversation=(await nativeCredentials.nativeCredentialFor({binding,selectedClientId:null,signal,includeSubject:true}))?.scopeKind==='research_portfolio';}
+   catch{portfolioConversation=false;}
+  }
   // Availability is a description of composed preparers, but it still belongs to the same current authorized run: the execution
   // authenticated once above is the one whose current authority is read. Each preparation re-runs the full fresh/authority/fresh
   // check through `currentRights`, so nothing retained depends on authenticating again here.
@@ -117,8 +128,8 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
    ...(configuration.intents.core?[createNativeMailPreparer({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs,
     ...(resolveMailSender?{async resolveSender(value){await fresh(value.signal);return resolveMailSender({...value,binding,selectedClientId:first.selectedClientId});}}:{})}),...createNativeTaskPreparers({pool,binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,
     expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs,...(resolveClient?{async resolveClientReference(value){await fresh(value.signal);const result=await resolveClient({...value,binding,selectedClientId:first.selectedClientId});await fresh(value.signal);return result;}}:{})})]:[]),
-   ...(nativeSharing?createResearchSharingPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeSharing,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
-   ...(nativeResearchAction?createResearchActionPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeResearchAction,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
+   ...(nativeSharing&&portfolioConversation?createResearchSharingPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeSharing,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
+   ...(nativeResearchAction&&portfolioConversation?createResearchActionPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeResearchAction,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
    ...await officeIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,currentRights,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}),
    ...(configuration.memory?.enabled?memoryIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),
     async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};}}):[])];

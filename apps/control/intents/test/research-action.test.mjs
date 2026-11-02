@@ -135,9 +135,10 @@ test('a definite 4xx answer to the proposal POST settles FAILED with who answere
  const again=await f.prepare().catch(error=>error);assert.equal(again.code,'REFUSED');assert.equal(again.detail,refusal.detail);assert.equal(again.reason,undefined,'the journal replays the words, never the constant');
  const listed=await f.list();assert.equal(listed.intents.length,1);assert.equal(listed.intents[0].state,'failed');assert.equal(listed.intents[0].code,'REFUSED');
  // A Nest message, an HTML body or a host name is never a reason: the status is. Only a constant-shaped token names the answering owner.
- for(const [status,body,code,reason] of [[403,{message:'Forbidden'},'ACCESS_DENIED','HTTP_403'],[400,{message:'Action proposal request is invalid'},'REFUSED','HTTP_400'],[404,'<html>','REFUSED','HTTP_404'],[422,{error:'core.internal.example'},'REFUSED','HTTP_422']]){
+ // Core's own plain one-line message is the detail's account of the refusal; an HTML body or a dotted host never is.
+ for(const [status,body,code,reason,said] of [[403,{message:'Forbidden'},'ACCESS_DENIED','HTTP_403',': Forbidden'],[400,{message:'Action proposal request is invalid'},'REFUSED','HTTP_400',': Action proposal request is invalid'],[404,'<html>','REFUSED','HTTP_404',''],[422,{error:'core.internal.example'},'REFUSED','HTTP_422','']]){
   const g=setup('create_research_portfolio_snapshot');g.state.edge={status,body};const e=await g.prepare().catch(error=>error);
-  assert.equal(e.code,code,String(status));assert.equal(e.detail,'the proposal request was answered before any proposal was created (HTTP '+status+')',String(status));assert.equal(e.reason,reason,String(status));
+  assert.equal(e.code,code,String(status));assert.equal(e.detail,'the proposal request was answered before any proposal was created (HTTP '+status+said+')',String(status));assert.equal(e.reason,reason,String(status));
   assert.deepEqual([...g.store.rows.values()].map(r=>r.state),['FAILED'],String(status));
  }
  // A conflict or a server failure after dispatch may have left a proposal behind: those stay UNKNOWN and are never repeated.
@@ -154,6 +155,28 @@ test('a definite 4xx answer to the proposal POST settles FAILED with who answere
  assert.equal(released.state.prepares,1,'Core created the proposal');assert.deepEqual([...released.store.rows.values()].map(r=>r.state),['UNKNOWN']);
 });
 
+test("Core's plain refusal reaches the model and the journal, so a refused management field is corrected instead of retried blind",async()=>{
+ // 2 Nov M37: member_create with a model-guessed clientId in parameters; Core answered 400 in 1 ms twice and the model saw only
+ // "HTTP 400". Core's own words (field paths, never values) now name what to change, and the replay repeats them without Core.
+ const f=setup('manage_research_portfolio');f.state.edge={status:400,body:{message:'input.parameters.clientId is not supported',error:'Bad Request',statusCode:400}};
+ const call={...f.call,arguments:{...f.request,action:'member_create',parameters:{expectedRevision:3,targetKind:'federal_bill',targetId:'bill-1',clientId:id(5)}}};
+ const e=await f.prepare(call).catch(error=>error);
+ assert.equal(e.code,'REFUSED');assert.equal(e.detail,'the proposal request was answered before any proposal was created (HTTP 400: input.parameters.clientId is not supported)');assert.equal(e.reason,'HTTP_400');
+ assert.deepEqual([...f.store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'REFUSED',detail:e.detail}]]);
+ const again=await f.prepare(call).catch(error=>error);assert.equal(again.detail,e.detail);
+ // The canonical member_create request Core validates: the selected action's fields plus the delivery-derived idempotency key only.
+ const ok=setup('manage_research_portfolio'),parameters={expectedRevision:3,targetKind:'federal_bill',targetId:'bill-1',label:'H.R. 9495'};
+ await ok.prepare({...ok.call,arguments:{...ok.request,action:'member_create',parameters}});
+ const sent=ok.state.bodies.at(-1).proposal.input;
+ assert.deepEqual(Object.keys(sent).sort(),['action','confirmed','conversationId','parameters']);
+ assert.deepEqual(Object.keys(sent.parameters).sort(),['expectedRevision','idempotencyKey','label','targetId','targetKind']);
+ assert.match(sent.parameters.idempotencyKey,/^meri-rp-[a-f0-9]{64}$/u);
+ // Not scoped: the conversation is not a Research Portfolio's, said plainly. A line naming an identifier or a long number is dropped.
+ for(const [message,said] of [['This conversation is not scoped to a Research Portfolio',': This conversation is not scoped to a Research Portfolio'],[`Portfolio ${id(4)} was not found`,''],['Revision 1234567 is stale',''],['x'.repeat(201),'']]){
+  const g=setup('manage_research_portfolio');g.state.edge={status:400,body:{message}};const r=await g.prepare().catch(error=>error);
+  assert.equal(r.detail,'the proposal request was answered before any proposal was created (HTTP 400'+said+')',message.slice(0,40));
+ }
+});
 test('a proposal request that was never sent or never answered names its own reason for the control log, not a bare code',async()=>{
  // Before dispatch: the session owner has no relay-eligible session bound to this run (the 2 Nov new-conversation runs): nothing
  // was sent, the delivery settles FAILED UNAVAILABLE and the reason is the owner's constant.

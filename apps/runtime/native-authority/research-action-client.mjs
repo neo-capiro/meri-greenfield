@@ -22,8 +22,9 @@ const DEFINITE_REFUSALS=new Set([400,401,403,404,422]);
  * `PREVIEW_ROUTE_NOT_FOUND`): never a message, host, identifier or free text. */
 const TOKEN=/^[A-Z][A-Z0-9_]{1,62}$/u;
 const tokenOf=error=>[ownValue(error,'code'),ownValue(ownValue(error,'cause'),'code'),ownValue(error,'name')].find(value=>typeof value==='string'&&TOKEN.test(value));
-/** The answering owner's own constant (`{"error":"PREVIEW_ROUTE_NOT_FOUND"}`), read within the same lifetime from at most 1 KiB
- * of a definite refusal; a message, a host or anything not constant-shaped is dropped. */
+/** The parsed JSON body of a definite refusal, read within the same lifetime from at most 1 KiB. Two readers take from it: the log
+ * reason only the answering owner's own constant (`{"error":"PREVIEW_ROUTE_NOT_FOUND"}`, `refusalToken`), the detail only Core's plain
+ * one-line message (`refusalSaid`); a host, a value or anything else is dropped. */
 async function refusalBody(response,life){
  let reader;try{
   const stream=responseBody(response);if(!stream||!/^application\/json/iu.test(response.headers.get('content-type')??''))return undefined;
@@ -33,6 +34,12 @@ async function refusalBody(response,life){
  }catch{return undefined;}finally{try{reader?.releaseLock();}catch{}}
 }
 const refusalToken=parsed=>[parsed?.error,parsed?.message].find(value=>typeof value==='string'&&TOKEN.test(value));
+/** Core's own one-line account of a definite refusal (Nest's `message`: "input.parameters.clientId is not supported", "This
+ * conversation is not scoped to a Research Portfolio"), so the model corrects the request or explains it instead of retrying blind
+ * (2 Nov M37: two identical refusals, the model guessing which field was wrong). Field paths and fixed words only: a line with an
+ * identifier, a long number or anything outside plain punctuation is dropped. */
+const SAID=/^[A-Za-z][A-Za-z0-9 .,:;'()_-]{0,199}$/u,IDENTIFIER=/[0-9a-f]{8}-[0-9a-f]{4}|\d{5}/iu;
+const refusalSaid=parsed=>typeof parsed?.message==='string'&&SAID.test(parsed.message)&&!IDENTIFIER.test(parsed.message)?parsed.message:undefined;
 /** Core's own gate on the proposal POST (`MERIV2_ACTION_PROPOSALS_ENABLED`, `assertEnabled` in its action-proposal service)
  * answers 503 "MeriV2 action proposals are disabled." before any proposal is created: a definite refusal, not a lost answer
  * (2 Nov preview: every proposal card ended "Result uncertain" on that 1 ms answer). Any other 503 stays unknown. */
@@ -65,7 +72,10 @@ export function createResearchActionCoreClient({origin,getCredentials,getService
     // constant as the reason for the log line. Only this path decides its effect; a 409, a 5xx or a lost answer after dispatch
     // still may have created the proposal and keeps the unknown effect below.
     if(effect&&path===prefix&&method==='POST'){
-     if(DEFINITE_REFUSALS.has(status))throw Object.assign(intentFault(code,'none',`${kind} was answered before any proposal was created (HTTP ${status})`,refusalToken(await refusalBody(acquired,life))??`HTTP_${status}`),{definite:true});
+     if(DEFINITE_REFUSALS.has(status)){
+      const body=await refusalBody(acquired,life),said=refusalSaid(body);
+      throw Object.assign(intentFault(code,'none',`${kind} was answered before any proposal was created (HTTP ${status}${said?': '+said:''})`,refusalToken(body)??`HTTP_${status}`),{definite:true});
+     }
      if(status===503&&proposalsDisabled(await refusalBody(acquired,life)))throw Object.assign(intentFault('UNAVAILABLE','none',`${kind} was refused because proposals are switched off at the backend, so nothing was created (HTTP 503)`,'CORE_PROPOSALS_DISABLED'),{definite:true});
     }
     refuse(code);

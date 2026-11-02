@@ -28,7 +28,8 @@ function fixture({enabled=true,documents=true,tasks=false,general=false,retentio
  const transitionAuthority={async readCurrent(value){state.core++;assert.deepEqual(value.binding,binding);if(state.revoked)throw Error('revoked');await state.afterCore?.();return {binding,scopes,selectedClientId,policyRevision:current.policyRevision,checkedAtMs:state.now,expiresAtMs:state.now+30000};}};
  if(documents)registerDocumentIntentOwner(context,value=>{assert.deepEqual(value.clientResolution,{clientId:selectedClientId});return [{operation,owner:'document',binding,async prepare(){state.prepared++;await state.afterPrepare?.();return {status:'draft',version:{binding,scopes}};}}];});
  state.nativeCredential='synthetic-native';state.clientLookups=0;state.visibleClients=[id(5)];
- const nativeCredentials={nativeCredentialFor(){if(!state.nativeCredential)throw Error('no session');return {credential:state.nativeCredential,expiresAtMs:at+30000};}};
+ // The live session's subject: a Research Portfolio conversation's names its scope kind (only `scopeKind` is read by composition).
+ const nativeCredentials={nativeCredentialFor(input){if(!state.nativeCredential)throw Error('no session');return {credential:state.nativeCredential,expiresAtMs:at+30000,...(input?.includeSubject&&state.subject?state.subject:{})};}};
  async function fetchImpl(url,init){
   const path=new URL(url).pathname;assert.equal(init.headers.authorization,'Bearer '+state.nativeCredential);
   const identity={principal:{tenantId:binding.tenantId,actorId:binding.actorId},identityRevision:'a'.repeat(64),checkedAtMs:at,expiresAtMs:at+30000};
@@ -138,7 +139,25 @@ test('current native resolver advertises direct saved-note owner beside governed
  for(const operation of ['save_note','watch_action','save_business_development_brief','create_client','apply_legiwatch_suggestion','prepare_legiwatch_briefing','mail_send'])assert(ids.includes(operation),operation);
  assert.equal(f.sql.state.rows.size,0);
 });
-test('an availability snapshot may name every catalog intent (client scope mounts all 33); one more refuses',async()=>{
+test('Research Portfolio actions and sharing are offered only in a Research Portfolio conversation, where Core binds the portfolio',async()=>{
+ // Core refuses every Research Portfolio request from a conversation without the portfolio's receipt (2 Nov M37: two refused cards
+ // in a client conversation). The live session's subject names a Research Portfolio conversation; a client or General one offers
+ // neither family, and the other governed owners stay offered everywhere.
+ const {RESEARCH_ACTION_INTENTS}=await import('../../../../packages/contracts/retrieval-0.2/research-portfolio-action-validation.mjs');
+ const portfolio=[...RESEARCH_ACTION_INTENTS,'publish_research_portfolio_share_link','revoke_research_portfolio_share_link'];
+ const offered=async(general,research)=>{
+  const f=fixture({tasks:true,documents:false,general,resolveClients:true});
+  if(research)f.state.subject={scopeKind:'research_portfolio',scope:{kind:'research_portfolio'}};
+  const r=await f.post('availability');assert.equal(r.status,200,await r.clone().text());return (await r.json()).operations.map(row=>row.id);
+ };
+ const inPortfolio=await offered(true,true),general=await offered(true,false),client=await offered(false,false);
+ assert.deepEqual(portfolio.filter(id=>!inPortfolio.includes(id)),[]);
+ assert.deepEqual(portfolio.filter(id=>general.includes(id)),[]);
+ assert.deepEqual(portfolio.filter(id=>client.includes(id)),[]);
+ for(const ids of [inPortfolio,general])for(const operation of ['save_note','watch_action','mail_send'])assert(ids.includes(operation),operation);
+ for(const operation of ['save_note','watch_action','update_client_profile','mail_send'])assert(client.includes(operation),operation);
+});
+test('an availability snapshot may name every catalog intent once; one more refuses',async()=>{
  const {runnerIntentAvailability}=await import('../intents-client.mjs');
  const {INTENT_ROWS}=await import('../../../worker/conversation/intents/catalog.mjs');
  const operations=INTENT_ROWS.map(row=>({id:row.operation.id,version:row.operation.version}));
