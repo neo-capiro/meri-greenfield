@@ -75,10 +75,16 @@ test('the run reason vocabulary is a frozen public export and the typed skill re
  for(const status of [200,403,502])await assert.rejects(receiveConversationResponse('submit',status,utf8({error:{code:'SKILL_SOURCES_UNAVAILABLE',sources:['mail']}}),request));
 });
 test('a reached tenant monthly cap is its own 429 refusal on submit, never an unavailable 502',async()=>{
- assert.deepEqual(conversationApplicationMetadata.errorStatuses.TENANT_MONTHLY_CAP_REACHED,[429]);assert.equal(conversationApplicationMetadata.packageVersion,'0.1.17');
+ assert.deepEqual(conversationApplicationMetadata.errorStatuses.TENANT_MONTHLY_CAP_REACHED,[429]);assert.equal(conversationApplicationMetadata.packageVersion,'0.1.18');
  const request=receiveConversationRequest('submit',utf8(submit)),value={error:{code:'TENANT_MONTHLY_CAP_REACHED'}};
  assert.deepEqual(await receiveConversationResponse('submit',429,utf8(value),request),value);
  for(const status of [400,502,503])await assert.rejects(receiveConversationResponse('submit',status,utf8(value),request));
+});
+test('an expired original input is its own 409 refusal on submit, never an unavailable 502',async()=>{
+ assert.deepEqual(conversationApplicationMetadata.errorStatuses.INITIAL_INPUT_EXPIRED,[409]);
+ const request=receiveConversationRequest('submit',utf8(submit)),value={error:{code:'INITIAL_INPUT_EXPIRED'}};
+ assert.deepEqual(await receiveConversationResponse('submit',409,utf8(value),request),value);
+ for(const status of [408,502,503])await assert.rejects(receiveConversationResponse('submit',status,utf8(value),request));
 });
 test('all actual error/status pairs are strict and return content-free immutable errors',async()=>{const request=receiveConversationRequest('history',utf8({}));for(const [code,statuses]of Object.entries(conversationApplicationMetadata.errorStatuses))for(const status of statuses){const value={error:{code}};assert.deepEqual(await receiveConversationResponse('history',status,utf8(value),request),value);}for(const [status,value]of[[200,{error:{code:'SESSION_REFUSED'}}],[400,{error:{code:'SESSION_REFUSED'}}],[403,{error:{code:'SCOPE_REFUSED',credential:'private'}}],[502,{error:{code:'PRIVATE_FAILURE'}}]])await assert.rejects(receiveConversationResponse('history',status,utf8(value),request));await assert.rejects(receiveConversationResponse('events',200,utf8({}),receiveConversationRequest('events',utf8({command:{conversationId:binding.conversationId,intent:'view.subscribe'}}))),/STREAM_RESPONSE_REQUIRED/);});
 

@@ -176,3 +176,12 @@ finds this month's recorded spend at or above the tenant's `monthly_cap_micro_us
 `TENANT_MONTHLY_CAP_REACHED` on submit and admit (and on allocate, with outcome `NOT_DISPATCHED`) instead of collapsing to `502`
 `CONVERSATION_UNAVAILABLE`, so the UI can say the limit was reached rather than that Capiro is unreachable. Nothing is queued or
 dispatched. Validation grants no authority: tenant settings and control-plane admission decide every value.
+
+## Expired original input refusal — package 0.1.52
+
+`conversation-application` 0.1.18, `conversation-input` 0.1.10 and `conversation-initial-input` 0.1.13 are additive. A request whose
+conversation's original (first) input allocation has expired now answers its own public `409` `INITIAL_INPUT_EXPIRED` on admit and
+submit instead of collapsing to `502` `CONVERSATION_UNAVAILABLE`; allocate answers it as `409` with outcome `NOT_DISPATCHED`, and
+its earlier `408` stays admitted for older producers. Fresh authorization never extends an expired allocation, so the exact request
+can never be admitted again: the UI releases it and lets the person send the message again rather than saying Capiro is not
+reachable. Validation grants no authority: control's original-input journal decides every value.

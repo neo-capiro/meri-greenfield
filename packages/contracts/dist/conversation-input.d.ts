@@ -1128,7 +1128,8 @@ export interface Canonical_ConversationErrorResponse_4441F55D {
       | 'FEEDBACK_WRITE_UNKNOWN'
       | 'SKILL_SOURCES_UNAVAILABLE'
       | 'SKILL_SCOPE_REFUSED'
-      | 'TENANT_MONTHLY_CAP_REACHED';
+      | 'TENANT_MONTHLY_CAP_REACHED'
+      | 'INITIAL_INPUT_EXPIRED';
     sources?: Canonical_SkillRefusalSources_0F6C1274;
     requiredScope?: SkillRequiredScope;
   };
@@ -1142,7 +1143,7 @@ export type AdmittedConversationInputReceipt=Readonly<ConversationInputAdmittedR
 export type ConversationInputView=Readonly<ConversationHistoryResponse>&AdmittedConversationView;
 export declare class ConversationInputResponseError extends Error {readonly code:string;}
 export declare const conversationInputMetadata: {
-  "packageVersion": "0.1.9",
+  "packageVersion": "0.1.10",
   "inputVersion": "1.3.0",
   "schemaId": "urn:meri:conversation-input:1.3.0",
   "routes": {
@@ -1244,6 +1245,9 @@ export declare const conversationInputMetadata: {
     ],
     "TENANT_MONTHLY_CAP_REACHED": [
       429
+    ],
+    "INITIAL_INPUT_EXPIRED": [
+      409
     ]
   }
 };

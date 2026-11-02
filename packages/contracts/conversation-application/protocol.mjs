@@ -15,6 +15,10 @@ export const conversationErrorStatuses = freeze({
   // Run admission refused: this month's recorded spend reached the tenant's monthly cap. Decided before any run is queued;
   // only an administrator raising the cap (or the next month) admits another run.
   TENANT_MONTHLY_CAP_REACHED:[429],
+  // The conversation's original (first) input allocation expired before this request could be admitted or dispatched. Fresh
+  // authorization never extends it, so this exact request can never be admitted again: a definitive refusal, never an outage.
+  // A run already accepted for it stays visible in history and is settled by control.
+  INITIAL_INPUT_EXPIRED:[409],
 });
 /** The closed `run.status` `reasonCode` vocabulary a terminal or held run may carry (`null` on an ordinary transition).
  * The worker publishes the specific code for a fault it can name and `EXECUTION_FAILED` only for one it cannot. */
@@ -32,7 +36,7 @@ export const RUN_REASON_CODES=freeze([
   'OUTPUT_LIMIT',              // failed: the answer exceeded the run's output byte limit
 ]);
 export const conversationApplicationMetadata = freeze({
-  packageVersion:'0.1.17', schemaId:'urn:meri:conversation-application:0.4.0', wireContractVersion:'0.4.0',
+  packageVersion:'0.1.18', schemaId:'urn:meri:conversation-application:0.4.0', wireContractVersion:'0.4.0',
   routes:{
     submit:{method:'POST',path:'/api/conversations/submit',response:'json'},
     history:{method:'POST',path:'/api/conversations/history',response:'json'},

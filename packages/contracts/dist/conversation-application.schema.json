@@ -1713,7 +1713,8 @@
                 "FEEDBACK_WRITE_UNKNOWN",
                 "SKILL_SOURCES_UNAVAILABLE",
                 "SKILL_SCOPE_REFUSED",
-                "TENANT_MONTHLY_CAP_REACHED"
+                "TENANT_MONTHLY_CAP_REACHED",
+                "INITIAL_INPUT_EXPIRED"
               ]
             },
             "sources": {

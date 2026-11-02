@@ -1,5 +1,5 @@
 {
-  "packageVersion": "0.1.17",
+  "packageVersion": "0.1.18",
   "schemaId": "urn:meri:conversation-application:0.4.0",
   "sources": [
     {
@@ -9,8 +9,8 @@
     },
     {
       "path": "../../apps/control/conversations/http.mjs",
-      "sha256": "fca1460ae319d2abf55560f4c4bedb88f2b2747fc7044e7188ebb28d28836a5a",
-      "bytes": 7090
+      "sha256": "f62dfbcaa09c63a89a354b01af26072bd53540b276b8836bcc56aac4eefdf8cc",
+      "bytes": 7400
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
@@ -174,7 +174,7 @@
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "a8d07b199a93a0d35c1bcd5b403c870179c3ec357ccdb0510509fdc1c1eb1928",
+      "sha256": "993ba2acf4f1a818a6ea985ba0e1202c0eb8ebe575e2b2b9096d1db715dade15",
       "bytes": 5185
     },
     {
@@ -194,8 +194,8 @@
     },
     {
       "path": "conversation-application/protocol.mjs",
-      "sha256": "2e76b3744229525a768ae4f46d23aef8df4083823604ab6489dab16911485943",
-      "bytes": 4485
+      "sha256": "999ed651042933875e3c1bef2ff168c6d9bcbe951fd599eb3c6466ccb1f10a56",
+      "bytes": 4855
     },
     {
       "path": "conversation-application/receive.mjs",
@@ -313,7 +313,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "7d472d1b442c86266b049f959bb45c8f8f0c2ff6d691bec479ab145246067e06",
+  "schemaSha256": "5cf0a7a83794ad61b7a8133fb71cef19627086c27234adc10e8db7a59379fa2a",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",

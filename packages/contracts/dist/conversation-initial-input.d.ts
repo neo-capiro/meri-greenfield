@@ -100,7 +100,7 @@ export type AdmittedConversationInitialInputRequest=AdmittedConversationInputReq
 export type AdmittedConversationInitialInputReceipt=Readonly<ConversationInitialInputAllocatedResponse>&{readonly [initialInputReceipt]:true};
 export declare class ConversationInitialInputResponseError extends Error {readonly code:string;}
 export declare const conversationInitialInputMetadata: {
-  "packageVersion": "0.1.12",
+  "packageVersion": "0.1.13",
   "initialInputVersion": "1.3.0",
   "schemaId": "urn:meri:conversation-initial-input:1.3.0",
   "routes": {
@@ -192,7 +192,8 @@ export declare const conversationInitialInputMetadata: {
       409
     ],
     "INITIAL_INPUT_EXPIRED": [
-      408
+      408,
+      409
     ],
     "DEADLINE": [
       408

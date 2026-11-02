@@ -1427,7 +1427,7 @@ var initialInputErrorStatuses = freeze({
   STALE_WRITER: [403],
   INITIAL_INPUT_CONFLICT: [409],
   INITIAL_INPUT_ALREADY_EXISTS: [409],
-  INITIAL_INPUT_EXPIRED: [408],
+  INITIAL_INPUT_EXPIRED: [408, 409],
   DEADLINE: [408],
   CANCELLED: [408],
   INITIAL_INPUT_REQUIRED: [503],
@@ -1442,7 +1442,7 @@ var initialInputErrorStatuses = freeze({
 var initialInputUnknownCodes = Object.freeze(["DEADLINE", "CANCELLED", "INITIAL_INPUT_UNAVAILABLE", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_REQUIRED"]);
 var initialInputErrorOutcomes = freeze(Object.fromEntries(Object.keys(initialInputErrorStatuses).map((code) => [code, initialInputUnknownCodes.includes(code) ? "UNKNOWN" : "NOT_DISPATCHED"])));
 var conversationInitialInputMetadata = freeze({
-  packageVersion: "0.1.12",
+  packageVersion: "0.1.13",
   initialInputVersion: conversationInitialInputVersion,
   schemaId: "urn:meri:conversation-initial-input:1.3.0",
   routes: { allocate: { method: "POST", path: conversationInitialInputPath, response: "json" } },
