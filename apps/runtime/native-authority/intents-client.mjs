@@ -23,8 +23,8 @@ export const RUNNER_INTENT_PATHS=Object.freeze({availability:'/v1/runner/intents
 export const runnerIntentFault=code=>Object.assign(new Error(code),{code:Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:'UNAVAILABLE'});
 /** The closed code an error carries as an own data property, or null. Never runs accessors or proxy traps. */
 export const runnerIntentCode=error=>{const code=error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;return typeof code==='string'&&Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:null;};
-/** The bounded explanation an INVALID_ARGUMENTS answer may carry beside its code: the canonical schema's field paths and
- * keywords (never values), one line of printable text. Anything else is dropped, never widened into a second channel. */
+/** The bounded explanation a closed answer may carry beside its code: an INVALID_ARGUMENTS field path, or who refused and with
+ * what (never values), one line of printable text. Anything else is dropped, never widened into a second channel. */
 const DETAIL=/^[^\p{C}]{1,400}$/u;
 export const runnerIntentDetail=value=>typeof value==='string'&&DETAIL.test(value)?value:undefined;
 const errorDetail=error=>runnerIntentDetail(error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined);
@@ -91,7 +91,7 @@ export function createRunnerIntentsClient(configuration){
    const raw=data(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks))));
    if(get.status.call(response)!==200){own(raw,['error']);const answer=own(raw.error,['code'],['detail']),code=answer.code;
     if(typeof code!=='string'||!Object.hasOwn(RUNNER_INTENT_FAILURES,code)||RUNNER_INTENT_FAILURES[code]!==get.status.call(response))throw 0;
-    throw new ControlAnswer(code,code==='INVALID_ARGUMENTS'?runnerIntentDetail(answer.detail):undefined);}
+    throw new ControlAnswer(code,runnerIntentDetail(answer.detail));}
    life.check();return raw;
   }catch(error){
    // `layer` names where the closed failure was decided (control's answer or this client's own bound/transport); the worker's

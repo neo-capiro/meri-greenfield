@@ -19,6 +19,7 @@ import {failureResult,READ_FAILURE_CODES} from '../reads/results.mjs';
 import {GENERAL_READ_CEILINGS} from '../reads/budget.mjs';
 import {createIntentServer} from '../intents/server.mjs';
 import {INTENT_ROWS} from '../intents/catalog.mjs';
+import {intentFailureResult,INTENT_FAILURE_CODES as INTENT_CODES} from '../intents/results.mjs';
 import {userVocabulary} from '../user-vocabulary.mjs';
 import {createOriginalSkillServer} from '../skills/mcp.mjs';
 import {selectSkill} from '../../../../packages/skills/index.mjs';
@@ -99,6 +100,24 @@ test('every closed read failure text, with each read\'s own next step, is in the
  assert.equal(violations.length,before,violations.slice(before).join('\n'));
  assert.match(failureResult('UNAVAILABLE','mcp__meri_reads__read_bill_text').content[0].text,/could not be read right now and suggest trying again in a minute/u);
  assert.match(failureResult('SOURCE_UNAVAILABLE','mcp__meri_reads__read_bill_text').content[0].text,/not reachable right now and to try again in a minute/u);
+});
+
+test('every intent tool-result text, with the details the owners attach, is plain words after its closed code: no constant, key or code name',()=>{
+ // The leading `CODE: tool` is the fixed closed answer the model reads; everything after it reaches the user as words. The owners'
+ // own constants (SESSION_UNAVAILABLE, PREVIEW_ROUTE_NOT_FOUND, ROUTINES_STALE) travel as the fault's `reason` for the log only.
+ const details={INVALID_ARGUMENTS:["data must have required property 'title'",'not a canonical request for this conversation: derived keys (the idempotency and operation keys) and identity fields are never supplied','the schedule request is not a canonical request'],
+  REFUSED:['the proposal request was answered before any proposal was created (HTTP 404)','the proposal request was answered HTTP 4xx','the schedule service refused the request as it stands','the proposal request was answered with something other than a pending proposal'],
+  UNAVAILABLE:['could not check whether this request can be prepared right now: preparing a request for the user\'s approval did not get an answer in time, so nothing was prepared. This is temporary, not a disabled capability; ask the user to try again in a new message']};
+ const before=violations.length,tool='mcp__meri_intents__propose_research_portfolio_management';
+ for(const code of INTENT_CODES)for(const detail of [undefined,...(details[code]??[])]){
+  const text=intentFailureResult(code,tool,detail).content[0].text,words=text.replace(new RegExp('^'+code+': (whether )?'+tool+' ','u'),'');
+  assert.notEqual(words,text,code+' starts with its code and the tool');
+  check(words.replace(/\bACCESS_DENIED\b/u,'access denied'),code+(detail===undefined?'':' with detail'));
+  assert.doesNotMatch(words,/\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b/u,code+' carries a constant: '+words);
+  assert.doesNotMatch(words,/\b[a-z]+(?:[A-Z][a-z0-9]+)+\b/u,code+' carries a key name: '+words);
+  assert.doesNotMatch(words,/mcp__/u,code+' names the tool again');
+ }
+ assert.equal(violations.length,before,violations.slice(before).join('\n'));
 });
 
 test('the vocabulary projection is a closed map: catalog bytes are untouched and argument or field names never change',()=>{
