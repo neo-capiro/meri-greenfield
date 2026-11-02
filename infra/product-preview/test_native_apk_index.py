@@ -524,10 +524,14 @@ class RetainedNativeApkIndex(unittest.TestCase):
                            "%s/aarch64/%s-%s.apk" % (package["sha256"], package["name"], package["version"],
                                                       PIP_REPO_DIR, package["name"], package["version"])
                            for package in LOCK["uploadNativeProvenance"]["pythonSecurityCorrection"]["packages"]]
+        expat = LOCK["uploadNativeProvenance"]["expatSecurityCorrection"]["package"]
+        expat_archive = ["ADD --checksum=sha256:%s https://packages.wolfi.dev/os/aarch64/%s-%s.apk "
+                         "%s/aarch64/%s-%s.apk" % (expat["sha256"], expat["name"], expat["version"],
+                                                    PIP_REPO_DIR, expat["name"], expat["version"])]
         self.assertEqual(distribution["instructions"],
                          [index_copy] + ["COPY --from=%s %s %s" % (name, REPO_DIR, REPO_DIR)
                                          for name in staging if name.startswith("native-repo-")]
-                         + [pip_copy] + python_archives + pip_archives
+                         + [pip_copy] + python_archives + pip_archives + expat_archive
                          + [instruction for instruction in distribution["instructions"]
                             if instruction.startswith("RUN --network=none set -e; for apk in /tmp/meri-native-repo")],
                          "the runtime repository stage does not assemble the retained index and each distribution "

@@ -98,7 +98,6 @@ ADD --checksum=sha256:46ce3328e2372eadeb71ef1dc179e2427cefa2264bc0e90e8749e4fee7
 ADD --checksum=sha256:e7e46a09271baccf16553997096d72a9059437a527f10331a12fc6a2f18c5d45 https://packages.wolfi.dev/os/aarch64/libcom_err-1.47.4-r5.apk /tmp/meri-native-repo/aarch64/libcom_err-1.47.4-r5.apk
 ADD --checksum=sha256:40c7bfd615a69e8747d3a5d0ca9a37dc2a8b169bcd4c2df4b387922d9fe5b553 https://packages.wolfi.dev/os/aarch64/libcrypt1-2.44-2.44-r10.apk /tmp/meri-native-repo/aarch64/libcrypt1-2.44-2.44-r10.apk
 ADD --checksum=sha256:1cd0edb0d40aaeb5281566f4c4d17583447b77b74e1bc3281de642e8e9493bf1 https://packages.wolfi.dev/os/aarch64/libcurl-openssl4-8.23.0-r2.apk /tmp/meri-native-repo/aarch64/libcurl-openssl4-8.23.0-r2.apk
-ADD --checksum=sha256:abeeb0ffa21b3ca6175cb997d9919920a26a2f50aaa61116f03ed40b1cfd764f https://packages.wolfi.dev/os/aarch64/libexpat1-2.9.0-r0.apk /tmp/meri-native-repo/aarch64/libexpat1-2.9.0-r0.apk
 ADD --checksum=sha256:df5cab585fd544ce671305dc8b8187bb1ed0c8ac016e995dd129d8d6dd9c556b https://packages.wolfi.dev/os/aarch64/libffi-3.8.0-r2.apk /tmp/meri-native-repo/aarch64/libffi-3.8.0-r2.apk
 ADD --checksum=sha256:8398cda32dab892a680226feacac1165ab080df1102fc2972f3795af25bda8dc https://packages.wolfi.dev/os/aarch64/libfontconfig1-2.18.3-r4.apk /tmp/meri-native-repo/aarch64/libfontconfig1-2.18.3-r4.apk
 ADD --checksum=sha256:c782296bb6afa9c6e183ef51bc14367e55768ba2acdbc822fccc96ac82257220 https://packages.wolfi.dev/os/aarch64/libgcc-16.2.0-r2.apk /tmp/meri-native-repo/aarch64/libgcc-16.2.0-r2.apk
@@ -460,16 +459,18 @@ COPY --from=native-repo-2 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-3 /tmp/meri-native-repo /tmp/meri-native-repo
 COPY --from=native-repo-4 /tmp/meri-native-repo /tmp/meri-native-repo
 # Second, separate offline repository: the officially signed Wolfi index that carries the fixed pip
-# trio and Python security pair. The frozen 5c84 index above stays authoritative for the rest of the locked closure (the new
+# trio, the Python security pair and the fixed libexpat1. The frozen 5c84 index above stays authoritative for the rest of the locked closure (the new
 # index omits gst-plugins-base 1.29.2-r3 and gstreamer 1.29.2-r4), and no index is edited, merged or
 # synthesized: both are the vendor's own signed bytes, staged by their exact content hash.
-COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-d0b9dba15872808df79eaaefec9d51e26359c61d0f0ff155300ab136118bd5a3.tar.gz /tmp/meri-native-pip-repo/aarch64/APKINDEX.tar.gz
+COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-d6f8b212573cb558a4476d29eea5279c3de8a6e0b5bcc6361715bd70932a8e64.tar.gz /tmp/meri-native-pip-repo/aarch64/APKINDEX.tar.gz
 # CVE-2026-115557: authenticated fixed interpreter and stdlib pair, shared by compiler and runtime.
 ADD --checksum=sha256:cf02deba28610c4d886c7efddb286bb26855f2c4a23fe56ca9cea0dc5c70cbf2 https://packages.wolfi.dev/os/aarch64/python-3.13-3.13.18_git20261030-r0.apk /tmp/meri-native-pip-repo/aarch64/python-3.13-3.13.18_git20261030-r0.apk
 ADD --checksum=sha256:d6984fe10393415db29b3778d3514cea81ab343465d98c7984c6fc035e93208f https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk /tmp/meri-native-pip-repo/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk
 ADD --checksum=sha256:3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93 https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3-pip-wheel-26.2.2-r1.apk
 ADD --checksum=sha256:34a962e6d79bf3bfd9eca4f73ea8c2688a5535316d27e9f41d01d49f31dfd800 https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3.13-pip-26.2.2-r1.apk
 ADD --checksum=sha256:66b1b058b55b931e1a925961099d251f0d35ab2958269dc07de76721e7f8983a https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r1.apk /tmp/meri-native-pip-repo/aarch64/py3.13-pip-base-26.2.2-r1.apk
+# CVE-2026-113351 and CVE-2026-115506: fixed libexpat1, requested by exact version in the first runtime install.
+ADD --checksum=sha256:68d2212a36051d122200630086b3f9f3edae4785b4700599ac47edb92364e8c5 https://packages.wolfi.dev/os/aarch64/libexpat1-2.10.0-r0.apk /tmp/meri-native-pip-repo/aarch64/libexpat1-2.10.0-r0.apk
 
 # apk merges every named repository's index. When two repositories advertise the same package and
 # version, apk takes the entry from the later index and then looks for that archive inside THAT
@@ -707,11 +708,13 @@ RUN --mount=type=bind,from=native-repository,source=tmp/meri-native-repo,target=
     apk --version && \
     apk add --no-cache --no-network --repository /tmp/meri-native-repo --repository /tmp/meri-native-pip-repo --repositories-file /dev/null --update-cache \
       bash=5.3-r14 libatomic=16.2.0-r1 libstdc++=16.2.0-r1 python-3.13=3.13.18_git20261030-r0 libuuid=2.42.4-r1 \
+      libexpat1=2.10.0-r0 libbz2-1=1.0.8-r28 ncurses=6.6.20261024-r0 ncurses-terminfo-base=6.6.20261024-r0 \
       py3.13-pip=26.2.2-r1 py3.13-pip-base=26.2.2-r1 py3-pip-wheel=26.2.2-r1 \
       glibc-2.44=2.44-r10 glibc-2.44-iconv=2.44-r10 glibc-2.44-locale-posix=2.44-r10 ld-linux-2.44=2.44-r10 libcrypt1-2.44=2.44-r10 && \
     test "$(python3.13 --version)" = 'Python 3.13.18' && \
     apk info -v | grep -qx glibc-2.44-iconv-2.44-r10 && \
     apk info -v | grep -qx py3-pip-wheel-26.2.2-r1 && \
+    apk info -v | grep -qx libexpat1-2.10.0-r0 && \
     test -x /usr/bin/iconv && \
     test -r /usr/lib/gconv/gconv-modules && \
     for module in SJIS UTF-16 UTF-32; do \
