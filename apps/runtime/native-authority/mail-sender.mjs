@@ -1,4 +1,4 @@
-/** Resolve the sending mailbox of a mail proposal from the actor's own connected Core mailboxes. Core rechecks the
+/** Resolve the sending mailbox of a mail proposal from the actor's own Core sending mailboxes. Core rechecks the
  * mailbox owner and address at approval and again at send; this only selects the exact sender the user will review. */
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -7,13 +7,15 @@ import {createNativeToolAuthorityClient} from '../read-context/core-client.mjs';
 import {intentFault} from '../../control/intents/faults.mjs';
 import {nativeReadFailureCode} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 const deny=()=>{throw intentFault('ACCESS_DENIED','none');};
-/** Plain field-path details the model can act on; never an address or identifier. */
+/** Plain field-path details the model can act on. The candidate addresses are the user's own sending addresses, listed so the
+ * model can ask a closed question; identifiers never appear. */
+const addresses=list=>{const text=list.join(', ');return text.length>240?`${text.slice(0,237)}...`:text;};
 export const MAIL_SENDER_REFUSALS=Object.freeze({
- none:'senderEmail: no connected mailbox can send; ask the user to connect Outlook or Gmail in Settings, Connections',
- unknown:'senderEmail: no connected mailbox sends from this address; omit it to use the connected mailbox or ask the user which address to use',
- several:'senderEmail: several mailboxes are connected; ask the user which address to send from and supply it',
+ none:()=>'senderEmail: no connected mailbox can send; ask the user to connect Outlook or Gmail in Settings, Connections',
+ unknown:list=>`senderEmail: no connected mailbox sends from this address; connected sending addresses: ${addresses(list)}. Ask the user which one to use`,
+ several:list=>`senderEmail: several mailboxes are connected (${addresses(list)}); ask the user which address to send from and supply it`,
 });
-const refuse=reason=>{throw intentFault('INVALID_ARGUMENTS','none',MAIL_SENDER_REFUSALS[reason]);};
+const refuse=(reason,list=[])=>{throw intentFault('INVALID_ARGUMENTS','none',MAIL_SENDER_REFUSALS[reason](list));};
 export function createNativeMailSenderResolver({origin,nativeCredentials,fetchImpl=globalThis.fetch,now=Date.now,maxRequestMs=3000}){
  if(typeof nativeCredentials?.nativeCredentialFor!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1)throw intentFault('UNAVAILABLE');
  return async function resolveMailSender(raw){
@@ -26,13 +28,14 @@ export function createNativeMailSenderResolver({origin,nativeCredentials,fetchIm
    const first=borrow(),call={credential:first.credential,deadlineMs:Math.min(v.deadlineMs,first.expiresAtMs,now()+Math.min(maxRequestMs,3000))};
    const core=createNativeToolAuthorityClient({origin,fetchImpl,now,enabled:true,maxRequestMs:Math.min(maxRequestMs,3000),binding:v.binding,selectedClientId:v.selectedClientId});
    const current=await life.run(signal=>core.readCurrent({...call,signal}));
-   const mailboxes=await life.run(signal=>core.readMailboxes({...call,signal}));
+   // Core's own sending predicate: connected, owned by the caller, holding a token and an address.
+   const sending=await life.run(signal=>core.readSendingMailboxes({...call,signal}));
    if(hash(current.principal)!==hash({tenantId:v.binding.tenantId,actorId:v.binding.actorId})||borrow().credential!==first.credential)deny();
-   const sending=mailboxes.filter(m=>m.status==='connected'&&m.accountEmail);
    const wanted=v.senderEmail?.trim().toLowerCase(),matches=wanted===undefined?sending:sending.filter(m=>m.accountEmail===wanted);
+   const candidates=[...new Set(sending.map(m=>m.accountEmail))];
    if(!sending.length)refuse('none');
-   if(!matches.length)refuse('unknown');
-   if(matches.length>1)refuse('several');
+   if(!matches.length)refuse('unknown',candidates);
+   if(matches.length>1)refuse('several',candidates);
    life.check();
    return data({senderConnectionId:matches[0].id,senderEmail:matches[0].accountEmail});
   }catch(error){
