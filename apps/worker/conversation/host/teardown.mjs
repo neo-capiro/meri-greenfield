@@ -21,6 +21,14 @@ const MAX_PHASE_MS=130000;
 const fault=(code,receipt)=>Object.assign(new Error(code),{code,...(receipt?{receipt}:{})});
 const fail=code=>{throw fault(code);};
 const method=(port,name)=>{if(typeof port?.[name]!=='function')fail('HOST_TEARDOWN_CONFIGURATION');return port[name].bind(port);};
+const REASONS=Object.freeze(['conversation-end','cancelled','failed','revoked','lease-expired']);
+/** One bounded cleanup phase on an independent lifetime: a refusal, timeout or malformed answer is `false`, never a throw. */
+const boundedWith=now=>async(operation,accept,deadlineMs)=>{
+ if(!Number.isSafeInteger(now())||now()>=deadlineMs)return false;
+ let life;try{life=createOperationLifetime({deadlineMs,now,errorFactory:code=>fault(code)});
+  return accept(await life.run(signal=>operation(signal)),now())===true;
+ }catch{return false;}finally{life?.close();}
+};
 
 /** Only an authenticated host-control process observer may produce this record. Shape checks detect stale or
  * cross-run answers; they cannot authenticate the port or establish that its OS observation is sound. */
@@ -79,12 +87,7 @@ async function nativeTeardown({a,b,i,raw,now,localCleanupMs,hostCleanupMs,reason
   processScope:'native-processing-descendants',processes:'unknown',browserState:'not-applicable',
   cgroup:'unknown',networkNamespace:'unknown',hostDestroy:'unknown',hostAbsence:'unknown',status:'UNKNOWN'};
  const request=()=>({allocation:structuredClone(a),binding:structuredClone(b),hostIdentity:structuredClone(i)});
- async function bounded(operation,accept,deadlineMs){
-  if(!Number.isSafeInteger(now())||now()>=deadlineMs)return false;
-  let life;try{life=createOperationLifetime({deadlineMs,now,errorFactory:code=>fault(code)});
-   return accept(await life.run(signal=>operation(signal)),now())===true;
-  }catch{return false;}finally{life?.close();}
- }
+ const bounded=boundedWith(now);
  const localDeadline=startedAtMs+localCleanupMs;
  // The native owner QUIESCES first (stop new work, cancel and settle owned operations) inside the ONE local deadline.
  const quiesced=await bounded(signal=>quiesce(request(),{signal}),r=>r?.closed===true,localDeadline);
@@ -136,12 +139,7 @@ async function remoteBrowserTeardown({a,b,i,raw,now,localCleanupMs,hostCleanupMs
   hostIdentitySha256:canonicalSha256(i),reason,startedAtMs,browserEgress:'unknown',bashEgress:'not-applicable',processScope,
   processes:'unknown',browserState:'unknown',hostDestroy:'unknown',hostAbsence:'unknown',status:'UNKNOWN'};
  const request=()=>({allocation:structuredClone(a),binding:structuredClone(b),hostIdentity:structuredClone(i)});
- async function bounded(operation,accept,deadlineMs){
-  if(!Number.isSafeInteger(now())||now()>=deadlineMs)return false;
-  let life;try{life=createOperationLifetime({deadlineMs,now,errorFactory:code=>fault(code)});
-   return accept(await life.run(signal=>operation(signal)),now())===true;
-  }catch{return false;}finally{life?.close();}
- }
+ const bounded=boundedWith(now);
  const localDeadline=startedAtMs+localCleanupMs;
  // The host closes first: grant revoked, proxy closed, session destroyed, profile disposed; it says what it settled.
  const closed=await bounded(signal=>close(request(),{signal}),r=>{
@@ -165,7 +163,52 @@ async function remoteBrowserTeardown({a,b,i,raw,now,localCleanupMs,hostCleanupMs
  return frozen;
 }
 
+/* Host-local browser-only settlement on a PROVISIONED host (`ports` exactly `{browser,processes}`): the host owns its egress
+ * grant, its browser-host descendants and its private profile, and verifies only those. The instance, root volume and ENI
+ * are destroyed and read back by Control over the lifecycle route (the remote twin above), so this receipt reports them
+ * not-applicable instead of claiming or faking a physical proof. */
+async function localBrowserTeardown({a,b,i,raw,paths,browserPolicySha256,now,localCleanupMs,reason}){
+ const revoke=method(raw.browser,'revoke'),close=method(raw.browser,'close'),waitForExit=method(raw.processes,'waitForExit');
+ const bounded=boundedWith(now),startedAtMs=now(),processScope='browser-host-descendants';
+ const receipt={schema:HOST_TEARDOWN_SCHEMA,allocationSha256:canonicalSha256(a),bindingSha256:canonicalSha256(b),
+  hostIdentitySha256:canonicalSha256(i),reason,startedAtMs,browserEgress:'unknown',bashEgress:'not-applicable',processScope,
+  processes:'unknown',browserState:'not-attempted',hostDestroy:'not-applicable',hostAbsence:'not-applicable',status:'UNKNOWN'};
+ const localDeadline=startedAtMs+localCleanupMs,quarter=Math.floor(localCleanupMs/4);
+ const revoked=await bounded(signal=>revoke({binding:structuredClone(b),policySha256:browserPolicySha256},{signal}),r=>r?.revoked===true,Math.min(localDeadline,now()+quarter));
+ const closed=await bounded(signal=>close({signal}),r=>r?.closed===true,Math.min(localDeadline,now()+quarter));
+ if(revoked&&closed)receipt.browserEgress='closed';
+ const afterProcessMs=now();
+ if(await bounded(signal=>waitForExit({allocation:structuredClone(a),binding:structuredClone(b),hostIdentity:structuredClone(i),profile:paths.profile,scope:processScope},{signal}),
+  (r,checkedAt)=>processAbsent(r,{allocation:a,binding:b,identity:i,afterMs:afterProcessMs,nowMs:checkedAt,processScope}),localDeadline)){
+  receipt.processes='exited';
+  receipt.browserState=await bounded(signal=>disposeBrowserState(paths,{signal}),r=>r?.disposed===true,localDeadline)?'disposed':'unknown';
+ }
+ if(receipt.browserEgress==='closed'&&receipt.processes==='exited'&&receipt.browserState==='disposed')receipt.status='VERIFIED';
+ const frozen=Object.freeze(receipt);
+ if(frozen.status!=='VERIFIED')throw fault('HOST_TEARDOWN_UNKNOWN',frozen);
+ return frozen;
+}
+
 export function createConversationHostTeardown({allocation,binding,hostIdentity,cwd,browserPolicySha256,ports,now=Date.now,localCleanupMs=30000,hostCleanupMs=30000,hostMode}={}){
+ if(allocation?.hostMode==='browser-only'&&ports?.host===undefined&&ports?.remote===undefined){
+  if(hostMode!==undefined&&hostMode!=='browser-only')fail('HOST_TEARDOWN_CONFIGURATION');
+  let la,lb,li,lraw;
+  try{la=assertHostAllocation(allocation);lb=assertHostRunBinding(la,binding);li=assertD005HostIdentity(hostIdentity,lb,la);
+   lraw=own(ports,['browser','processes']);
+   lraw=Object.freeze({browser:Object.freeze({revoke:method(lraw.browser,'revoke'),close:method(lraw.browser,'close')}),
+    processes:Object.freeze({waitForExit:method(lraw.processes,'waitForExit')})});}
+  catch{fail('HOST_TEARDOWN_CONFIGURATION');}
+  if(typeof cwd!=='string'||!posix.isAbsolute(cwd)||posix.resolve(cwd)!==cwd||cwd.includes(' ')||!cwd.endsWith('/'+lb.conversationId)||
+   typeof browserPolicySha256!=='string'||!HEX.test(browserPolicySha256)||typeof now!=='function'||
+   !Number.isSafeInteger(localCleanupMs)||localCleanupMs<4||localCleanupMs>MAX_PHASE_MS)fail('HOST_TEARDOWN_CONFIGURATION');
+  const paths=browserPaths(cwd);
+  let settledLocal;
+  return Object.freeze({settle({reason}={}){
+   if(!REASONS.includes(reason))return Promise.reject(fault('HOST_TEARDOWN_CONFIGURATION'));
+   settledLocal??=localBrowserTeardown({a:la,b:lb,i:li,raw:lraw,paths,browserPolicySha256,now,localCleanupMs,reason});
+   return settledLocal;
+  }});
+ }
  if(allocation?.hostMode==='browser-only'&&ports?.remote!==undefined){
   if(hostMode!==undefined&&hostMode!=='browser-only')fail('HOST_TEARDOWN_CONFIGURATION');
   let ra,rb,ri,rraw;
@@ -180,7 +223,7 @@ export function createConversationHostTeardown({allocation,binding,hostIdentity,
    fail('HOST_TEARDOWN_CONFIGURATION');
   let settledRemote;
   return Object.freeze({settle({reason}={}){
-   if(!['conversation-end','cancelled','failed','revoked','lease-expired'].includes(reason))
+   if(!REASONS.includes(reason))
     return Promise.reject(fault('HOST_TEARDOWN_CONFIGURATION'));
    settledRemote??=remoteBrowserTeardown({a:ra,b:rb,i:ri,raw:rraw,now,localCleanupMs,hostCleanupMs,reason});
    return settledRemote;
@@ -202,7 +245,7 @@ export function createConversationHostTeardown({allocation,binding,hostIdentity,
    fail('HOST_TEARDOWN_CONFIGURATION');
   let settledNative;
   return Object.freeze({settle({reason}={}){
-   if(!['conversation-end','cancelled','failed','revoked','lease-expired'].includes(reason))
+   if(!REASONS.includes(reason))
     return Promise.reject(fault('HOST_TEARDOWN_CONFIGURATION'));
    settledNative??=nativeTeardown({a:na,b:nb,i:ni,raw:nraw,now,localCleanupMs,hostCleanupMs,reason});
    return settledNative;
@@ -222,12 +265,7 @@ export function createConversationHostTeardown({allocation,binding,hostIdentity,
  const waitForExit=method(raw.processes,'waitForExit'),destroy=method(raw.host,'destroy'),observeAbsent=method(raw.host,'observeAbsent');
  const paths=browserPaths(cwd),context=Object.freeze({allocation:a,binding:b,hostIdentity:i});
  let settled;
- async function bounded(operation,accept,deadlineMs){
-  if(!Number.isSafeInteger(now())||now()>=deadlineMs)return false;
-  let life;try{life=createOperationLifetime({deadlineMs,now,errorFactory:code=>fault(code)});
-   return accept(await life.run(signal=>operation(signal)),now())===true;
-  }catch{return false;}finally{life?.close();}
- }
+ const bounded=boundedWith(now);
  const request=()=>({allocation:structuredClone(a),binding:structuredClone(b),hostIdentity:structuredClone(i)});
  async function run(reason){
   const startedAtMs=now();
@@ -268,7 +306,7 @@ export function createConversationHostTeardown({allocation,binding,hostIdentity,
   return frozen;
  }
  return Object.freeze({settle({reason}={}){
-  if(!['conversation-end','cancelled','failed','revoked','lease-expired'].includes(reason))return Promise.reject(fault('HOST_TEARDOWN_CONFIGURATION'));
+  if(!REASONS.includes(reason))return Promise.reject(fault('HOST_TEARDOWN_CONFIGURATION'));
   settled??=run(reason);return settled;
  }});
 }

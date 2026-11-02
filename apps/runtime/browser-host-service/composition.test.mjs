@@ -9,6 +9,7 @@ import {createBrowserViewerHostServer} from '../../worker/conversation/host/brow
 import {createConversationHostTeardown} from '../../worker/conversation/host/teardown.mjs';
 import {assertBrowserOnlyServiceInputs, composeBrowserOnlyHostService} from './composition.mjs';
 import {allocation, hostIdentity, policySha256, cwd, paths, serviceFixture, workspaceReadback, PEER, FIXTURE_NOW_MS} from './fixture.mjs';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 
 // ------------------------------------------------------------ A. real owner refusals
 test('real browser-only launcher refuses a conversation allocation', t => {
@@ -264,4 +265,42 @@ test('a session owner that never opened is skipped, and an unconfirmed destructi
   const outcome = await service.destroy().then(value => value, error => error);
   assert.equal(outcome?.code, 'BROWSER_HOST_SERVICE_CLEANUP_UNKNOWN');
   assert.ok(incomplete.events.includes('physical-destroy'), 'physical teardown still runs');
+});
+
+// ------------------------------------------------------------ D. provisioned host (Control destroys the instance)
+test('without a host port the service settles locally through the real host-local browser-only teardown and never needs a cloud destroy', async () => {
+  const f = serviceFixture();
+  const {host, ...input} = f.input;
+  const processes = {...input.processes, async waitForExit() {
+    f.events.push('observe-processes');
+    return {schema: 'meri-d005-process-absence/1', allocationSha256: canonicalSha256(allocation), bindingSha256: canonicalSha256(binding),
+      hostIdentitySha256: canonicalSha256(hostIdentity), observedAtMs: FIXTURE_NOW_MS, scope: 'browser-host-descendants', exited: true, remainingPids: []};
+  }};
+  const service = composeBrowserOnlyHostService({...input, processes}, f.deps);
+  await service.start();
+  const receipt = await service.destroy({reason: 'conversation-end', retainListener: true});
+  assert.equal(receipt.status, 'VERIFIED');
+  assert.deepEqual([receipt.browserEgress, receipt.processes, receipt.browserState, receipt.hostDestroy, receipt.hostAbsence], ['closed', 'exited', 'disposed', 'not-applicable', 'not-applicable']);
+  assert.equal(f.events.includes('physical-destroy'), false);
+  assert.equal(f.events.includes('viewer-close'), false, 'the listener stays up for the Control answer');
+  assert.deepEqual(await service.closeListener(), {closed: true});
+  assert.equal(f.events.filter(event => event === 'viewer-close').length, 1);
+  assert.equal(await service.destroy(), receipt, 'a later destroy returns the settled receipt');
+});
+
+test('the retirement port is required and is handed to the session host; a lifecycle handler must be a function and reaches the listener', async () => {
+  const f = serviceFixture();
+  assert.throws(() => assertBrowserOnlyServiceInputs({...f.input, retirement: {prepare() {}, wait() {}}}), error => error?.code === 'BROWSER_HOST_SERVICE_RETIREMENT_UNBOUND');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...f.input, lifecycle: 'route'}), error => error?.code === 'BROWSER_HOST_SERVICE_CONFIGURATION');
+  assert.throws(() => assertBrowserOnlyServiceInputs({...f.input, host: {destroy() {}}}), error => error?.code === 'BROWSER_HOST_SERVICE_HOST_UNBOUND');
+  let sessionInput, viewerInput;
+  const lifecycle = async () => {};
+  f.deps.sessionHost = input => { sessionInput = input; return f.sessions; };
+  const original = f.deps.viewer;
+  f.deps.viewer = input => { viewerInput = input; return original(input); };
+  const service = composeBrowserOnlyHostService({...f.input, lifecycle}, f.deps);
+  await service.start();
+  assert.equal(sessionInput.retirement, f.input.retirement);
+  assert.equal(viewerInput.lifecycle, lifecycle);
+  await service.destroy();
 });

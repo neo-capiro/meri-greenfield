@@ -17,7 +17,7 @@ import {createServer} from 'node:https';
 import {nativeProcessingConfig} from './config.mjs';
 import {readInstalledTls,createBootstrapStateStore} from './protected-bootstrap.mjs';
 import {createInspectionHandler,NATIVE_INSPECTION_PATH} from './service.mjs';
-import {createLifecycleHandler} from './lifecycle-http.mjs';
+import {createLifecycleHandler,createControlPeerAuthenticator,readBoundedBody} from './lifecycle-http.mjs';
 import {NATIVE_LIFECYCLE_PATH,NATIVE_LIFECYCLE_BODY_BYTES} from './lifecycle-contract.mjs';
 import {createNativeProcessingVerifier} from './verifier.mjs';
 import {createHostCurrentnessClient} from '../../worker/conversation/host/control/client.mjs';
@@ -30,7 +30,7 @@ import {prepareHostHierarchy,releaseOwnedHierarchy,realHierarchyPort} from './hi
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {HOST_ALLOCATION_SCHEMA,D005_HOST_IDENTITY_SCHEMA} from '../../worker/conversation/host/binding.mjs';
 import {createDefinitionSnapshotOwner} from './definitions-owner.mjs';
-import {checkedCertificate,dnsName,fingerprint,privateAddress,sha256Der,tlsBytes} from '../../worker/conversation/host/control/tls.mjs';
+import {dnsName,privateAddress,tlsBytes} from '../../worker/conversation/host/control/tls.mjs';
 
 export function nativeProcessingReadiness({config,verifyCustody}){
  const missing=[];
@@ -212,33 +212,8 @@ export async function startNativeProcessingHost({env=globalThis.process?.env??{}
  let startupError=null,startupState=null;
  try{
   // ONE Control peer authenticator and ONE bounded body reader, shared by inspection and lifecycle handlers.
-  const authenticateControl=authenticatePeer??(async({socket})=>{
-   if(socket.encrypted!==true)return {verified:false};
-   const raw=socket.getPeerCertificate?.(true);
-   if(!raw||!Buffer.isBuffer(raw.raw))return {verified:false};
-   const print=sha256Der(raw.raw);
-   if(fingerprint(print)!==config.tls.peerFingerprint)return {verified:false};
-   const checked=checkedCertificate(raw.raw,{name:config.tls.peerSan,nowMs:Date.now(),
-    maxLifetimeMs:config.tls.maxPeerLifetimeMs,notAfterMs:config.tls.peerNotAfterMs});
-   return {verified:true,fingerprintSha256:checked.fingerprintSha256,notAfterMs:checked.notAfterMs};
-  });
-  const readBoundedBody=(req,limit,deadline,signal)=>new Promise((resolve,reject)=>{
-   let total=0,finished=false;const chunks=[];
-   const refuseBody=()=>Object.assign(Error('UPLOAD_INSPECTION_REQUEST_REFUSED'),
-    {code:'UPLOAD_INSPECTION_REQUEST_REFUSED'});
-   const detachBody=()=>{clearTimeout(timer);signal?.removeEventListener('abort',onAbort);
-    req.removeListener?.('data',onData);req.removeListener?.('end',onEnd);req.removeListener?.('error',onError);};
-   const finish=(error,value)=>{if(finished)return;finished=true;detachBody();error?reject(error):resolve(value);};
-   const timer=setTimeout(()=>{req.destroy?.();finish(refuseBody());},Math.max(1,deadline-Date.now()));
-   const onAbort=()=>finish(refuseBody());
-   const onData=chunk=>{if(finished)return;total+=chunk.length;
-    if(total>limit){req.destroy?.();finish(refuseBody());return;}chunks.push(chunk);};
-   const onEnd=()=>finish(null,Buffer.concat(chunks));
-   const onError=error=>finish(error);
-   signal?.addEventListener('abort',onAbort,{once:true});
-   req.on('data',onData);req.on('end',onEnd);req.on('error',onError);
-   if(signal?.aborted){onAbort();return;}
-  });
+  const authenticateControl=authenticatePeer??createControlPeerAuthenticator({peerSan:config.tls.peerSan,
+   peerFingerprint:config.tls.peerFingerprint,maxPeerLifetimeMs:config.tls.maxPeerLifetimeMs,peerNotAfterMs:config.tls.peerNotAfterMs});
   const handler=createInspectionHandler({
    admission:()=>admission.closed!==true,
    authenticate:authenticateControl,

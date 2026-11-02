@@ -1,11 +1,14 @@
-/** Closed native host-local lifecycle contract + producer (finite72-75). NOT public authority: the trusted Control peer is
- * authenticated by the existing native TLS listener in the next pass. Proof comes from ACTUAL Linux cgroup/boot observation and
- * exact path readback; every wait is bounded by the existing operation lifetime. No sockets/TLS/cloud/child processes. */
+/** Closed host-local lifecycle contract + producer (finite72-75) for the two provisioned purposes. NOT public authority: the
+ * trusted Control peer is authenticated by the host's TLS listener. Proof comes from ACTUAL Linux cgroup/boot observation and
+ * exact path readback; every wait is bounded by the existing operation lifetime. No sockets/TLS/cloud/child processes.
+ * A browser-only host answers `close` with what its quiesce settled (`browserEgress`, `browserState`) and `processes` under
+ * the browser-host scope; `observe` is the native processing compartment readback and refuses for any other purpose. */
 import {lstatSync} from 'node:fs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createLinuxHostCgroupPorts} from '../../worker/conversation/host/host-wide-process-observer.mjs';
-import {assertNativeProcessingAllocation,assertHostRunBinding,assertD005HostIdentity} from '../../worker/conversation/host/binding.mjs';
+import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity} from '../../worker/conversation/host/binding.mjs';
+import {PROVISIONED_HOST_MODES} from '../../../packages/contracts/native-lifecycle.mjs';
 import {createNetworkPlan} from '../../worker/conversation/host/network/plan.mjs';
 import {parseCgroupEvents} from '../../worker/conversation/host/process-observer.mjs';
 import {HOST_PROCESS_ABSENCE_SCHEMA} from '../../worker/conversation/host/teardown.mjs';
@@ -43,9 +46,10 @@ export async function openNativeLifecycle({config,quiesce,ports,lstat=lstatSync,
  if(c===null||typeof c!=='object')refuse('NATIVE_LIFECYCLE_CONFIGURATION');
  let allocation,binding,hostIdentity;
  try{
-  allocation=assertNativeProcessingAllocation({schema:'meri-conversation-host-allocation/1',
+  allocation=assertHostAllocation({schema:'meri-conversation-host-allocation/1',
    tenantId:c.tenantId,conversationId:c.conversationId,generation:c.generation,hostId:c.hostId,
    imageDigest:config.image.digest,leaseDeadlineMs:c.leaseDeadlineMs,hostMode:c.hostMode});
+  if(!PROVISIONED_HOST_MODES.includes(allocation.hostMode))refuse('NATIVE_LIFECYCLE_CONFIGURATION');
   binding=assertHostRunBinding(allocation,config.binding);
   hostIdentity=assertD005HostIdentity({schema:'meri-d005-host-identity/1',instanceId:c.instanceId,bootId:c.bootId,
    conversationId:c.conversationId,hostId:c.hostId},binding,allocation);
@@ -53,7 +57,8 @@ export async function openNativeLifecycle({config,quiesce,ports,lstat=lstatSync,
  // Immutable validated copy; later caller mutation cannot retarget requests or paths.
  const trusted=Object.freeze({allocation:Object.freeze({...allocation}),binding:Object.freeze({...binding}),
   hostIdentity:Object.freeze({...hostIdentity}),imageDigest:config.image.digest});
- const groupPath=hostGroupPath(trusted.allocation);
+ const groupPath=hostGroupPath(trusted.allocation),browserOnly=trusted.allocation.hostMode==='browser-only',
+  processScope=browserOnly?'browser-host-descendants':'native-processing-descendants';
  const privileged=ports===undefined?createLinuxHostCgroupPorts():ports;
  if(typeof privileged?.openGroup!=='function'||typeof privileged.readBootId!=='function')
   refuse('NATIVE_LIFECYCLE_CONFIGURATION');
@@ -121,9 +126,11 @@ export async function openNativeLifecycle({config,quiesce,ports,lstat=lstatSync,
   quiescePromise=Promise.resolve()
    .then(()=>cleanLife.run(signal=>quiesce({signal,deadlineMs:cleanLife.deadline()})))
    .then(result=>{quiesceResult=result;
-    closeState=Object.freeze({status:result?.closed===true?'closed':'unknown',quiescedAtMs:now()});return result;},
+    closeState=Object.freeze({status:result?.closed===true?'closed':'unknown',quiescedAtMs:now(),
+     ...(browserOnly?{browserEgress:result?.browserEgress==='closed'?'closed':'unknown',
+      browserState:result?.browserState==='disposed'?'disposed':'unknown'}:{})});return result;},
     ()=>{quiesceResult=Object.freeze({closed:false});
-     closeState=Object.freeze({status:'unknown',quiescedAtMs:now()});return quiesceResult;})
+     closeState=Object.freeze({status:'unknown',quiescedAtMs:now(),...(browserOnly?{browserEgress:'unknown',browserState:'unknown'}:{})});return quiesceResult;})
    .finally(()=>cleanLife.close());
   return quiescePromise;
  }
@@ -171,7 +178,8 @@ export async function openNativeLifecycle({config,quiesce,ports,lstat=lstatSync,
     afterAwait(life);
     if(closeState===null)fault('NATIVE_LIFECYCLE_UNKNOWN');
     return Object.freeze({schema:NATIVE_LIFECYCLE_SCHEMA,action:'close',...digests(record),
-     status:closeState.status,quiescedAtMs:closeState.quiescedAtMs});
+     status:closeState.status,quiescedAtMs:closeState.quiescedAtMs,
+     ...(browserOnly?{browserEgress:closeState.browserEgress,browserState:closeState.browserState}:{})});
    }finally{life.close();}
   },
   async processes(request,options){
@@ -183,7 +191,7 @@ export async function openNativeLifecycle({config,quiesce,ports,lstat=lstatSync,
     const bootAfter=await life.run(()=>privileged.readBootId());afterAwait(life);
     if(bootAfter!==trusted.hostIdentity.bootId)fault('NATIVE_LIFECYCLE_UNKNOWN');
     return Object.freeze({schema:HOST_PROCESS_ABSENCE_SCHEMA,...digests(record),observedAtMs:now(),
-     scope:'native-processing-descendants',exited:true,remainingPids:Object.freeze([])});
+     scope:processScope,exited:true,remainingPids:Object.freeze([])});
    }finally{life.close();}
   },
   async observe(request,options){
@@ -191,6 +199,7 @@ export async function openNativeLifecycle({config,quiesce,ports,lstat=lstatSync,
    const life=lifeFor({signal:combined(options?.signal),deadlineMs:options?.deadlineMs},now,timeoutMs);
    try{
     const record=await targetFor(request,'observe',life);
+    if(browserOnly)refuse('NATIVE_LIFECYCLE_REFUSED');   // no processing leaf or empty netns exists on a browser host
     await proofInputs(life);
     const leafPath=`${groupPath}/${canonicalSha256(trusted.binding)}/processing`;
     const plan=createNetworkPlan({allocation:trusted.allocation,binding:trusted.binding,kind:'processing',routes:[]});

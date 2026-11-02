@@ -1,4 +1,4 @@
-/** Guest generation/run cgroup hierarchy owned by the native processing host.
+/** Guest generation/run cgroup hierarchy owned by a provisioned host (native processing or browser-only).
  *
  *  Derived ONLY from protected validated configuration:
  *    /sys/fs/cgroup/meri/hosts/{hostId}-{generation}                      (generation root, protected receipt)
@@ -9,8 +9,9 @@
  *  Only directories THIS invocation created are owned and removable; borrowed parents are validated and never rewritten. */
 import {lstatSync,mkdirSync,readdirSync,rmdirSync,readFileSync,writeFileSync,realpathSync,statfsSync} from 'node:fs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
-import {assertNativeProcessingAllocation,assertHostRunBinding,HOST_ALLOCATION_SCHEMA} from
+import {assertHostAllocation,assertHostRunBinding,HOST_ALLOCATION_SCHEMA} from
  '../../worker/conversation/host/binding.mjs';
+import {PROVISIONED_HOST_MODES} from '../../../packages/contracts/native-lifecycle.mjs';
 
 export const CGROUP_ROOT='/sys/fs/cgroup';
 export const HIERARCHY_BASE=`${CGROUP_ROOT}/meri/hosts`;
@@ -69,9 +70,11 @@ const childDirectories=async(port,path)=>{
 const canonicalAllocation=config=>{
  const a=config?.allocation;
  if(a===null||typeof a!=='object'||typeof config?.image?.digest!=='string')fault('HOST_HIERARCHY_CONFIGURATION');
- return assertNativeProcessingAllocation({schema:HOST_ALLOCATION_SCHEMA,tenantId:a.tenantId,
+ const allocation=assertHostAllocation({schema:HOST_ALLOCATION_SCHEMA,tenantId:a.tenantId,
   conversationId:a.conversationId,generation:a.generation,hostId:a.hostId,imageDigest:config.image.digest,
   leaseDeadlineMs:a.leaseDeadlineMs,hostMode:a.hostMode});
+ if(!PROVISIONED_HOST_MODES.includes(allocation.hostMode))fault('HOST_HIERARCHY_CONFIGURATION');
+ return allocation;
 };
 const canonicalBinding=(allocation,binding)=>{
  if(binding===null||typeof binding!=='object')fault('HOST_HIERARCHY_CONFIGURATION');
