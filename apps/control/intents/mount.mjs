@@ -12,6 +12,7 @@
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
+import {INTENT_SETTLE_MS} from '../../../packages/runtime/runner-load-budget.mjs';
 import {createIntentJournal} from './journal.mjs';
 import {intentFault,intentFaultDetail,intentFaultReason,INTENT_FAILURE_CODES,INTENT_DETAIL_MAX} from './faults.mjs';
 import {isDeclaredFormats} from '../../../packages/runtime/intent-formats.mjs';
@@ -79,6 +80,10 @@ export function createIntentMount(configuration){
    if(!preparer||v.operation.version!==preparer.operation.version)throw intentFault('UNAVAILABLE');
    if(typeof v.deliveryId!=='string'||!DELIVERY.test(v.deliveryId)||v.arguments===null||typeof v.arguments!=='object'||Array.isArray(v.arguments))throw intentFault('INVALID_ARGUMENTS');
    const record=data({operation:preparer.operation,argumentsSha256:canonicalSha256(v.arguments)}),life=lifetime(signal),key={binding,deliveryId:v.deliveryId,record};
+   // A claimed row is settled on its own short allowance, never on the preparation's: a preparation that ran out its deadline (or
+   // whose caller left) still records FAILED, UNKNOWN or PREPARED instead of leaving the row PENDING behind an expired lifetime.
+   const settle=(state,outcome)=>{const settling=createOperationLifetime({deadlineMs:c.now()+INTENT_SETTLE_MS,now:c.now,errorFactory:code=>intentFault(code)});
+    return settling.run(s=>journal.settle({...key,state,outcome,signal:s})).finally(()=>settling.close());};
    try{
     // Pure management reads use fresh result-release authority and never create an approval/journal row. A request the canonical
     // validators refuse outright is journaled FAILED INVALID_ARGUMENTS with the schema's field-path detail below, after the
@@ -107,7 +112,7 @@ export function createIntentMount(configuration){
     // (the 0002 CHECK admitted only {code}: on 2 Nov every explained refusal rolled back and the deliveries stayed PENDING, cards
     // "Preparing" for good) still settles the code alone, so a refused delivery never stays PENDING.
     const settleFailed=async(code,detail)=>{
-     const attempt=outcome=>life.run(s=>journal.settle({...key,state:'FAILED',outcome,signal:s}));
+     const attempt=outcome=>settle('FAILED',outcome);
      try{await attempt(detail===undefined?{code}:{code,detail});}catch{if(detail!==undefined)try{await attempt({code});}catch{}}
     };
     if(refusedArguments!==undefined){
@@ -116,7 +121,7 @@ export function createIntentMount(configuration){
     }
     let result,original;
     try{original=await release.capture(selected);}catch(error){
-     const code=closed(error?.code);try{await life.run(s=>journal.settle({...key,state:'FAILED',outcome:{code},signal:s}));}catch{}throw error;
+     const code=closed(error?.code);try{await settle('FAILED',{code});}catch{}throw error;
     }
     try{result=data(await life.run(s=>preparer.prepare({arguments:v.arguments,deliveryId:v.deliveryId,signal:s})));}
     catch(error){
@@ -125,12 +130,12 @@ export function createIntentMount(configuration){
      // from the trusted run), else the canonical schema's; any other refusal keeps the owner's own bounded detail (who answered,
      // and with what), so the journal names what happened and its replay explains itself too.
      const none=error?.effect==='none',code=none?closed(error.code):'UNKNOWN',detail=(code==='INVALID_ARGUMENTS'?intentFaultDetail(error)??explain(preparer.operation,v.arguments):intentFaultDetail(error))?.slice(0,INTENT_DETAIL_MAX);
-     if(none)await settleFailed(code,detail);else try{await life.run(s=>journal.settle({...key,state:'UNKNOWN',outcome:null,signal:s}));}catch{}
+     if(none)await settleFailed(code,detail);else try{await settle('UNKNOWN',null);}catch{}
      throw intentFault(code,undefined,detail,intentFaultReason(error));
     }
     // A lost settlement acknowledgement leaves the delivery PENDING: the result is withheld as UNKNOWN, never retried.
     // Custody is durable, but release still requires fresh authority and the original expiry. A refused release never redispatches.
-    try{await life.run(s=>journal.settle({...key,state:'PREPARED',outcome:{result,release:original},signal:s}));}catch{throw intentFault('UNKNOWN');}
+    try{await settle('PREPARED',{result,release:original});}catch{throw intentFault('UNKNOWN');}
     const released=await release.release({...selected,owner:preparer.owner,result,original});
     await publish(result);
     return released;

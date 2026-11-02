@@ -43,11 +43,15 @@ export const INTENT_AVAILABILITY_WORKER_MS=INTENT_AVAILABILITY_RUNNER_MS+RUNNER_
 // Governed-intent preparation: worker `intents/server.mjs` (the SDK tool's 60 s cap) -> runner `intents-client.mjs` -> control
 // `intents-http.mjs` -> the owner. The slowest owner is a document preparation that renders PDF: generation, a renderer session on
 // a new AgentCore microVM (about 30 s cold, 1 s warm) and LibreOffice's first start on a fresh profile, plus the current-authority
-// checks before and after. It keeps DOCUMENT_PREPARATION_MS; each enclosing hop keeps one control margin above the hop it encloses,
-// so the owner settles its own journal first and control still answers the runner. With both hops at 30 s the runner gave up
-// exactly when control did, and a document owner bounded by control's 25 s request budget could not hold a cold renderer at all.
-export const DOCUMENT_PREPARATION_MS=50000;
-export const INTENT_PREPARE_CONTROL_MS=DOCUMENT_PREPARATION_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
+// checks before and after. It keeps DOCUMENT_PREPARATION_MS. The conversation intent mount (`apps/control/intents/mount.mjs`)
+// encloses it with one control margin for its journal claim and release, and settles a refused or uncertain delivery on its own
+// INTENT_SETTLE_MS allowance afterwards, so an expired preparation never leaves its journal row PENDING. Control's route encloses
+// the mount and its settlement, and the runner encloses control by one margin. With both hops at 30 s the runner gave up exactly
+// when control did, and the document owner and the mount were bounded by control's 25 s request budget, below a cold renderer.
+export const DOCUMENT_PREPARATION_MS=46000;
+export const INTENT_MOUNT_PREPARE_MS=DOCUMENT_PREPARATION_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
+export const INTENT_SETTLE_MS=2000;
+export const INTENT_PREPARE_CONTROL_MS=INTENT_MOUNT_PREPARE_MS+INTENT_SETTLE_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
 export const INTENT_PREPARE_RUNNER_MS=INTENT_PREPARE_CONTROL_MS+RUNNER_LOAD_CONTROL_MARGIN_MS;
 
 // General-read availability: worker `reads/runtime.mjs` -> runner `reads-client.mjs` -> control `reads-http.mjs`/`reads-owner.mjs`.
