@@ -21,7 +21,7 @@ import {researchActionValidators,officeEditValidators} from '../../../../package
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {INTENT_SERVER_NAME,INTENT_TOOL_PREFIX,intentToolName} from './catalog.mjs';
 import {defineIntentTool} from './tools.mjs';
-import {conversationBound} from './schema.mjs';
+import {conversationBound,intentRowBinding} from './schema.mjs';
 import {assertPreparedResult} from './prepared.mjs';
 import {intentFailureCode,intentFailureResult,preparedResult} from './results.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
@@ -70,6 +70,10 @@ export function createIntentServer(c){
  // must never choose one (the 2 Nov new-conversation runs failed in the worker on a guessed id before any port call).
  const bound=new Map(registered.map(r=>[r,conversationBound(r)]));
  const bind=(/** @type {import('./catalog.mjs').IntentRow} */row,/** @type {unknown} */args)=>bound.get(row)&&args!==null&&typeof args==='object'&&!Array.isArray(args)?{...args,conversationId:binding.conversationId}:args;
+ // A bound row's plain fields are completed into the owner's canonical request here, after the hook correlated the model's
+ // own arguments and the SDK admitted them against the advertised fields; the port (and its journal) receives the completed request.
+ const completions=new Map(registered.map(r=>[r,intentRowBinding(r)]));
+ const complete=(/** @type {import('./catalog.mjs').IntentRow} */row,/** @type {unknown} */args)=>{const fn=completions.get(row);return fn?fn(args):args;};
  /** @type {import('@anthropic-ai/claude-agent-sdk').HookCallback} */
  const hook=async(raw,toolUseID,options)=>{try{
   if(closed||options?.signal?.aborted)throw fault('CANCELLED');
@@ -94,7 +98,7 @@ export function createIntentServer(c){
    // Only a request the canonical validators admit as a read skips the journal. A request they refuse is still sent to the port,
    // which journals and explains the INVALID_ARGUMENTS refusal; it is never an INTERNAL_ERROR decided here without a row.
    try{started=!(row.owner==='research-action'&&researchActionValidators.isManagementRead(row.operation.id,args,{binding})||row.owner==='office'&&officeEditValidators.isRead(args));}catch{started=true;}
-   const result=await life.run(signal=>c.prepare({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));life.check();
+   const result=await life.run(signal=>c.prepare({operation:row.operation,arguments:complete(row,args),deliveryId:entry.deliveryId,signal}));life.check();
    const prepared=assertPreparedResult(row.owner,row.operation,result,binding,{scopes:c.scopes,nowMs:c.now()}),json=JSON.stringify(prepared.value);
    // A read answers the exact arguments it was asked with: the office read is the one closed `{action:'read'}`.
    if(prepared.status==='read'&&canonicalSha256(row.owner==='office'?{action:'read'}:prepared.value.request)!==entry.argumentsSha256)throw fault('INVALID_RESULT');
