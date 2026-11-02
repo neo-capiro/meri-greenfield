@@ -4,8 +4,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {tmpdir} from 'node:os';
-import {join} from 'node:path';
-import {realpath,stat,writeFile} from 'node:fs/promises';
+import {join,relative,sep} from 'node:path';
+import {realpath,stat,writeFile,mkdtemp,mkdir,rm} from 'node:fs/promises';
 import {runArtifactProcess} from '../process.mjs';
 import {RENDERER_SANDBOX_REQUIREMENTS,admittedConverter} from '../renderer.mjs';
 import {evaluateRendererSandbox,parseLibreOfficeVersion,qualifyLibreOfficeRenderer,RENDERER_PROBE_PATH,RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../renderer-qualification.mjs';
@@ -130,8 +130,31 @@ test('only trusted absolute configuration is accepted',async()=>{
  await assert.rejects(qualifyLibreOfficeRenderer(null),{code:'RENDERER_QUALIFICATION_CONFIGURATION'});
 });
 
+test('an inventory directory is readable only when it exposes more than the chain down to the child workspace',
+ {skip:process.platform==='win32'?'directory-listing semantics are judged on the Linux sandbox host':false},async()=>{
+ // bubblewrap materialises the bound workspace's ancestors inside the child's root, so an inventory root above the
+ // workspace is always traversable; the probe must judge a directory by its content, not by whether it opens.
+ const root=await mkdtemp(join(await realpath(tmpdir()),'meri-probe-chain-')),at=(...p)=>join(root,...p);
+ const cwd=at('material','scratch','meri-renderer-probe-abc123');
+ const paths=[at('material'),at('material','scratch'),cwd,at('empty'),at('other'),at('other','key'),at('absent')];
+ const observe=async()=>Object.fromEntries(JSON.parse((await runArtifactProcess(process.execPath,[RENDERER_PROBE_PATH],
+  {cwd,input:Buffer.from(JSON.stringify({credentialPaths:paths})),deadlineMs:Date.now()+30000})).stdout.toString('utf8'))
+  .credentialPathsReadable.map(c=>[relative(root,c.path).split(sep).join('/'),c.readable]));
+ try{
+  await mkdir(cwd,{recursive:true});await mkdir(at('empty'));await mkdir(at('other'));await writeFile(at('other','key'),'');
+  assert.deepEqual(await observe(),{material:false,'material/scratch':false,'material/scratch/meri-renderer-probe-abc123':true,
+   empty:true,other:true,'other/key':true,absent:false},
+   'an empty ancestor chain is unreadable; the workspace itself, any other existing directory and any file are readable');
+  await writeFile(at('material','control.json'),'{}');
+  assert.deepEqual((await observe()).material,true,'content beside the chain makes the ancestor readable');
+  await rm(at('material','control.json'));await mkdir(at('material','scratch','meri-renderer-probe-other'));
+  const sibling=await observe();
+  assert.deepEqual([sibling.material,sibling['material/scratch']],[true,true],'a sibling workspace is content beyond the bound chain at every level above it');
+ }finally{await rm(root,{recursive:true,force:true});}
+});
+
 test('the real probe child runs through the real spawn path and reports this host (attests nothing off Linux)',async()=>{
- const root=await realpath(tmpdir()),{mkdtemp,rm}=await import('node:fs/promises'),cwd=await mkdtemp(join(root,'meri-renderer-probe-'));
+ const root=await realpath(tmpdir()),cwd=await mkdtemp(join(root,'meri-renderer-probe-'));
  try{
   const run=await runArtifactProcess(process.execPath,[RENDERER_PROBE_PATH],{cwd,input:Buffer.from(JSON.stringify({credentialPaths:[RENDERER_PROBE_PATH]})),deadlineMs:Date.now()+30000});
   const o=JSON.parse(run.stdout.toString('utf8'));
