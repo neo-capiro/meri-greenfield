@@ -81,6 +81,20 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
    if(error?.code==='AGENTCORE_EXECUTION_ENDED'&&reconcileEnded)try{await reconcileEnded({binding:execution.binding,signal:observation.signal});}catch{}
   }finally{pending.delete(execution.executionId);}
  }
+ /** Provider stop for the run reconciler. AgentCore answers AGENTCORE_SESSION_NOT_FOUND ("not found or already terminated") for a
+  * session it no longer holds. Once the run's lease has passed, the session's execution credential is refused everywhere and the
+  * session cannot still be doing this run's work, so that answer is a confirmed stop; before then (or for any other record) it
+  * stays unknown, as every other stop failure does. Without this, a reconciled run whose session had already ended stayed
+  * `stopping` and blocked the conversation's next turn for good. */
+ async function stopExecution(input){
+  try{return await provider.stop(input);}
+  catch(error){
+   if(error?.code!=='AGENTCORE_SESSION_NOT_FOUND')throw error;
+   const record=(await existing(input.binding,input.signal)).record;
+   if(!record||record.executionId!==input.executionId||record.runtimeSessionId!==input.runtimeSessionId||!Number.isSafeInteger(record.expiresAtMs)||record.expiresAtMs>now())refuse('AGENTCORE_STOP_UNKNOWN');
+   return {binding:input.binding,executionId:input.executionId,runtimeSessionId:input.runtimeSessionId,stopped:true};
+  }
+ }
  async function nativePrerequisite({binding,executionId,signal}){
   validateShape('RunBinding',binding);
   const saved=await existing(binding,signal),record=saved.record;
@@ -160,6 +174,6 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
   return {execution,state,settled:true};
  }
  return Object.freeze({kickoff,status,nativePrerequisite,browserPrerequisite,authenticate,admitted,settle,
-  stopExecution:input=>provider.stop(input),
+  stopExecution,
   async close(){closed=true;observation.abort();await Promise.allSettled(pending.values());}});
 }

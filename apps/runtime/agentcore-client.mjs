@@ -17,6 +17,10 @@ async function readSettlement(stream,contentType,life){
  const lines=events[0].split('\n').filter(line=>line&&!line.startsWith(':'));
  if(lines.length!==1||!lines[0].startsWith('data: '))throw agentcoreFault('AGENTCORE_RESULT_REFUSED');return JSON.parse(lines[0].slice(6));
 }
+/** AgentCore's definitive answer that it holds no such session: 404 ResourceNotFoundException, documented for StopRuntimeSession
+ * as "Session not found or already terminated" (an idle-terminated, ended or never-started session). It does not say the
+ * session was never running, so only the execution owner, which knows the run's lease, may treat it as stopped. */
+const sessionNotFound=error=>error?.name==='ResourceNotFoundException'&&error?.$metadata?.httpStatusCode===404;
 export function createAgentCoreClient(configuration){
  const c=own(configuration,['region','agentRuntimeArn','qualifier'],['client','now']),now=c.now??Date.now;
  if(typeof c.region!=='string'||! /^[a-z]{2}(?:-[a-z]+)+-\d$/u.test(c.region)||typeof c.agentRuntimeArn!=='string'||! /^arn:aws:bedrock-agentcore:[a-z0-9-]+:\d{12}:runtime\/[A-Za-z0-9_-]+$/u.test(c.agentRuntimeArn)||c.agentRuntimeArn.split(':')[3]!==c.region||typeof c.qualifier!=='string'||! /^[A-Za-z][A-Za-z0-9_-]{0,47}$/u.test(c.qualifier)||typeof now!=='function')throw agentcoreFault('AGENTCORE_CONFIGURATION');
@@ -37,7 +41,7 @@ export function createAgentCoreClient(configuration){
    const life=createOperationLifetime({now,signal:v.signal,deadlineMs:now()+23000,errorFactory:agentcoreFault});let dispatched=false;
    try{life.check();const result=await life.run(abortSignal=>{dispatched=true;return client.send(new StopRuntimeSessionCommand({agentRuntimeArn:c.agentRuntimeArn,qualifier:c.qualifier,runtimeSessionId:v.runtimeSessionId,clientToken:v.executionId}),{abortSignal});});
     life.check();if(result.statusCode!==200||result.$metadata?.httpStatusCode!==200||result.runtimeSessionId!==v.runtimeSessionId)throw agentcoreFault('AGENTCORE_STOP_REFUSED');return {binding,executionId:v.executionId,runtimeSessionId:v.runtimeSessionId,stopped:true};
-   }catch(error){if(dispatched)throw agentcoreFault('AGENTCORE_STOP_UNKNOWN');throw error;}finally{life.close();}
+   }catch(error){if(dispatched)throw agentcoreFault(sessionNotFound(error)?'AGENTCORE_SESSION_NOT_FOUND':'AGENTCORE_STOP_UNKNOWN');throw error;}finally{life.close();}
   },
   close(){if(c.client===undefined)client.destroy();},
  });

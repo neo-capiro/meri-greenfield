@@ -93,3 +93,11 @@ test('an execution that ended unsettled reaches control as AGENTCORE_EXECUTION_E
  for(const event of [{error:{code:'EXECUTION_UNKNOWN',detail:'x'}},{error:{code:'OTHER'}}])
   await assert.rejects(client(async()=>response(value,{response:body(event)})).invoke(value),{code:'AGENTCORE_OUTCOME_UNKNOWN'});
 });
+
+test('Stop names the AgentCore "session not found or already terminated" answer; every other failure stays unknown',async()=>{
+ const value=input(),stop={binding,executionId:value.execution.executionId,runtimeSessionId:value.execution.runtimeSessionId};
+ const fail=(name,status)=>client(async()=>{throw Object.assign(Error('synthetic '+name),{name,$metadata:{httpStatusCode:status}});});
+ await assert.rejects(fail('ResourceNotFoundException',404).stop(stop),{code:'AGENTCORE_SESSION_NOT_FOUND'});
+ for(const [name,status] of [['ResourceNotFoundException',400],['ValidationException',404],['RetryableConflictException',409],['ThrottlingException',429],['InternalServerException',500]])
+  await assert.rejects(fail(name,status).stop(stop),{code:'AGENTCORE_STOP_UNKNOWN'});
+});
