@@ -274,11 +274,15 @@ export function createActionSessionOwner(configuration){
   managementOwners.set(owner,Object.freeze({issue:issueManagement,authenticate:authenticateManagement,nativeCredentialFor:managementCredential}));
  }
  runBorrowers.set(owner,input=>{
-  const {binding,selectedClientId,signal}=own(input,['binding','selectedClientId'],['signal']);validateShape('RunBinding',binding);nativeSignal(signal);const at=active(signal);
+  const {binding,selectedClientId,signal,sessionSha256}=own(input,['binding','selectedClientId'],['signal','sessionSha256']);validateShape('RunBinding',binding);nativeSignal(signal);const at=active(signal);
+  if(sessionSha256!==undefined&&(typeof sessionSha256!=='string'||!/^[0-9a-f]{64}$/u.test(sessionSha256)))deny();
   // The live session was bound before the worker took the run, so its attempt/worker/fence predate the runner's; those are
   // enforced by the admitted run row (task verifier). Borrowing matches the same run identity as nativeCredentialFor.
   const keys=['tenantId','actorId','conversationId','runId'];
-  let best;for(const r of sessions.values())if(r.relayEligible===true&&r.expiresAtMs>at&&keys.every(k=>r.context.binding?.[k]===binding[k])&&r.context.selectedClientId===selectedClientId&&(!best||r.expiresAtMs>best.expiresAtMs))best=r;
+  // A caller holding a digest of one authenticated session (an Office WOPI token) borrows exactly that session: another live
+  // session for the same run (the chat or the library issued later) must not displace it, and a replaced session stays gone.
+  const matches=r=>sessionSha256===undefined||canonicalSha256({principal:{sessionId:r.sessionId,...Object.fromEntries(keys.map(k=>[k,r.context.binding[k]]))},sessionRevision:r.sessionRevision})===sessionSha256;
+  let best;for(const r of sessions.values())if(r.relayEligible===true&&r.expiresAtMs>at&&keys.every(k=>r.context.binding?.[k]===binding[k])&&r.context.selectedClientId===selectedClientId&&matches(r)&&(!best||r.expiresAtMs>best.expiresAtMs))best=r;
   if(!best)deny('SESSION_UNAVAILABLE');valid(best,signal);const b=best.context.binding;
   return assertActionSessionReceipt({credential:credentials.get(best),expiresAtMs:best.expiresAtMs,context:publicContext(b,best.context.selectedClientId,best.context)},at,{research:best.context.scopeKind==='research_portfolio'});
  });

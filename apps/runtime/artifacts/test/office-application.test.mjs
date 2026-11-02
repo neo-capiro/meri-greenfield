@@ -266,3 +266,13 @@ test('an editor that crashes without Release is recovered once its lease lapses:
  assert.equal((await f.wopi(reopened.launch,'lock',{lock:'CODE-2'})).status,200);
  assert.equal(f.state.puts,1);assert.equal(f.sql.state.versions.size,1,'recovery publishes nothing');
 });
+test('a later session for the same run (routine renewal, another view) does not displace the token session',async t=>{
+ const f=await fixture(t),started=await f.start();
+ // The browser renews its session about 45 s before expiry, right after launch returns, and the earlier session stays live.
+ // The newer session outlives the one the token was launched under; WOPI must keep borrowing that exact session.
+ f.state.clock+=1000;await f.sessions.issue({identityCredential:'synthetic-parallel-native'});
+ assert.equal((await f.wopi(started.launch)).status,200);
+ assert.equal((await f.wopi(started.launch,'getFile')).status,200);
+ f.sessions.revoke(f.session.credential);
+ assert.equal((await f.wopi(started.launch,'getFile')).status,404);
+});
