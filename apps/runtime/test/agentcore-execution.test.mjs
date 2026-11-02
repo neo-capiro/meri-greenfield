@@ -4,7 +4,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {binding,versions} from '../../control/conversations/test/store-fixture.mjs';
 import {createAgentCoreExecutionOwner} from '../agentcore-execution.mjs';
 
-function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation,browserNeed,browserReady,reconcileEnded}={}){
+function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation,browserNeed,browserReady,reconcileEnded,stop,now=()=>1000}={}){
  const run={binding:targetBinding,versions,scopes:[],policyRevision:'policy-v1',state:'queued'};
  let record=null,invocations=0,admissions=0,call;
  const response=Promise.withResolvers(),entered=Promise.withResolvers();
@@ -14,9 +14,9 @@ function fixture({predecessor,invokeError,targetBinding=binding,beforeInvocation
   async record(value){record={...record,phase:value.phase,native:value.native};return {run,record};}},
   nextRuns:{async readTarget(){return predecessor?{source:predecessor.run.binding,facts:{execution:{recordSha256:hash(predecessor.record)}}}:null;}}};
  const owner=createAgentCoreExecutionOwner({store,versions,plan:{runtimeVersion:'qualified-v1'},credentialSecret:'synthetic-control-secret-'.repeat(3),
-  now:()=>1000,newId:()=> 'c'.repeat(64),contextFor:async()=>({selectedClientId:null}),...(beforeInvocation?{beforeInvocation}:{}),...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),
+  now,newId:()=> 'c'.repeat(64),contextFor:async()=>({selectedClientId:null}),...(beforeInvocation?{beforeInvocation}:{}),...(browserNeed?{browserNeed}:{}),...(browserReady?{browserReady}:{}),
   admit:async()=>{admissions++;return {run,expiresAtMs:61000};},...(reconcileEnded?{reconcileEnded}:{}),
-  provider:{async invoke(input){invocations++;call=input;entered.resolve();if(invokeError)throw invokeError;return response.promise;},stop:async()=>{throw Error('Stop should not run in these controls');}}});
+  provider:{async invoke(input){invocations++;call=input;entered.resolve();if(invokeError)throw invokeError;return response.promise;},stop:stop??(async()=>{throw Error('Stop should not run in these controls');})}});
  return {owner,run,store,response,entered:entered.promise,call:()=>call,counts:()=>({invocations,admissions}),record:()=>record,
   reorderRecord:()=>{record=Object.fromEntries(Object.entries(record).reverse());}};
 }
@@ -107,4 +107,22 @@ test('an unready browser host withholds the invocation exactly like an unready n
  await ready.owner.kickoff({binding,executionKey:hash(binding)});await ready.entered;
  assert.equal(ready.counts().invocations,1);
  ready.response.resolve({execution:ready.call().execution,state:'completed',settled:true});
+});
+
+test('a session AgentCore no longer holds counts as stopped only once the run lease has passed',async()=>{
+ // StopRuntimeSession answers 404 ResourceNotFoundException ("Session not found or already terminated"). The reconciler fences a
+ // run, then needs a confirmed stop; an unconfirmed one keeps the record `stopping` and the conversation's next turn waits.
+ const clock={now:1000},notFound=Object.assign(Error('AGENTCORE_SESSION_NOT_FOUND'),{code:'AGENTCORE_SESSION_NOT_FOUND'});let failure=notFound;
+ const f=fixture({invokeError:Error('LOST_RESPONSE'),now:()=>clock.now,stop:async()=>{throw failure;}});
+ await f.owner.kickoff({binding,executionKey:hash(binding)});await new Promise(resolve=>setTimeout(resolve,20));
+ const record=f.record(),stop={binding,executionId:record.executionId,runtimeSessionId:record.runtimeSessionId};
+ // Inside the lease the session may still be serving this run: the answer stays unknown.
+ await assert.rejects(f.owner.stopExecution(stop),{code:'AGENTCORE_STOP_UNKNOWN'});
+ clock.now=record.expiresAtMs;
+ assert.deepEqual(await f.owner.stopExecution(stop),{...stop,stopped:true});
+ // Never for another session of the record, and never for any other stop failure.
+ await assert.rejects(f.owner.stopExecution({...stop,runtimeSessionId:'d'.repeat(64)}),{code:'AGENTCORE_STOP_UNKNOWN'});
+ failure=Object.assign(Error('AGENTCORE_STOP_UNKNOWN'),{code:'AGENTCORE_STOP_UNKNOWN'});
+ await assert.rejects(f.owner.stopExecution(stop),{code:'AGENTCORE_STOP_UNKNOWN'});
+ await f.owner.close();
 });
