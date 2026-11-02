@@ -5,8 +5,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {mkdtemp,rm,realpath} from 'node:fs/promises';
-import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV} from '../../../artifacts/renderer-qualification.mjs';
+import {mkdtemp,rm,realpath,mkdir,writeFile} from 'node:fs/promises';
+import {RENDERER_PROBE_SCHEMA,RENDERER_CHILD_ENV,RENDERER_PROBE_PATH} from '../../../artifacts/renderer-qualification.mjs';
+import {runArtifactProcess} from '../../../artifacts/process.mjs';
+import {RUNTIME_CREDENTIAL_PATHS} from '../../credential-inventory.mjs';
 import {UPLOAD_SANDBOX_REQUIREMENTS,UPLOAD_ROLE_PREFIX,UPLOAD_IMAGE_PATHS,UPLOAD_CHILD_ENV,UPLOAD_CPU_SECONDS,evaluateUploadSandbox,qualifyNativeUploadSandbox,
  resolveEffectiveCgroup,combineCgroupBounds,parseCgroupPath,parseCgroupMountRoot,readHostCgroup,
  uploadSandboxArguments,uploadScanArguments,uploadExtractArguments,runUploadSandbox} from '../native-sandbox.mjs';
@@ -88,15 +90,48 @@ test('the unqualified diagnostic carries numeric cgroup bounds and fixed credent
   credentialPathsReadable:[{path:'/run/meri/core-secret',readable:true},{path:'/run/meri/other',readable:false}]});
  const {diagnostic}=evaluateUploadSandbox(observation,{tempRoot:ROOT});
  assert.deepEqual(diagnostic.resources,{memoryMax:0,pidsMax:64,cpuMax:50000});
- assert.deepEqual(diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length+1,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:false,checked:2,readable:1});
+ assert.deepEqual(diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length+1,allowedCount:UPLOAD_CHILD_ENV.length,envAllowed:false,checked:2,readable:1,
+  readablePaths:['/run/meri/core-secret']});
  // A present-but-unlimited cgroup entry (0) is distinguishable from an absent one (null), which is what the event needs.
  const absent=evaluateUploadSandbox(sandboxed(cwd,{cgroup:{}}),{tempRoot:ROOT}).diagnostic;
  assert.deepEqual(absent.resources,{memoryMax:null,pidsMax:null,cpuMax:null});
  const unlimited=evaluateUploadSandbox(sandboxed(cwd,{cgroup:{memoryMax:'max',pidsMax:'max',cpuMax:'max 100000'}}),{tempRoot:ROOT}).diagnostic;
  assert.deepEqual(unlimited.resources,{memoryMax:0,pidsMax:0,cpuMax:0});
  const text=JSON.stringify(diagnostic);
- assert.equal(text.includes('/run/meri'),false,'no credential path is emitted');
+ assert.equal(text.includes('/run/meri/other'),false,'an unreadable inventory path is not emitted');
  assert.equal(text.includes('AWS_REGION'),false,'no environment name is emitted');
+});
+
+test('the live AgentCore inventory shape: the bound scratch under /run/meri is traversable, never readable, and a leak is named',async()=>{
+ // Reproduces the deployed observation (6 checked, 1 readable) on this host through the real probe: its working
+ // directory is the bound workspace /run/meri/upload-scratch/<probe>, so bubblewrap materialises the inventory root
+ // /run/meri as that workspace's ancestor inside the child's private root, and nothing else from the inventory exists.
+ const root=await mkdtemp(join(await realpath(tmpdir()),'meri-inventory-')),at=p=>join(root,p),inventory=RUNTIME_CREDENTIAL_PATHS.map(at);
+ const cwd=at(ROOT+'/'+UPLOAD_ROLE_PREFIX.probe+'abc123'),linuxCwd=ROOT+'/'+UPLOAD_ROLE_PREFIX.probe+'abc123';
+ const probe=async()=>JSON.parse((await runArtifactProcess(process.execPath,[RENDERER_PROBE_PATH],{cwd,input:Buffer.from(JSON.stringify({credentialPaths:inventory})),deadlineMs:Date.now()+30000})).stdout.toString('utf8'));
+ const evaluate=o=>evaluateUploadSandbox(sandboxed(linuxCwd,{credentialPathsReadable:o.credentialPathsReadable}),{tempRoot:ROOT});
+ try{
+  await mkdir(cwd,{recursive:true});
+  const clean=await probe();
+  assert.deepEqual(clean.credentialPathsReadable,inventory.map(path=>({path,readable:false})),'an empty ancestor chain exposes no content');
+  const admitted=evaluate(clean);
+  assert.equal(admitted.sandbox.noCredentials,true);assert.deepEqual(admitted.diagnostic.credentials.readablePaths,[]);
+  // Protected content beside the chain (the material root's own configuration) makes that root readable, and the
+  // diagnostic names the path (never the content) so the event says WHICH inventory entry leaked.
+  await writeFile(at('/run/meri/control.json'),'{}');
+  const leaked=await probe();
+  assert.deepEqual(leaked.credentialPathsReadable.filter(c=>c.readable).map(c=>c.path),[at('/run/meri')]);
+  const refused=evaluate(leaked);
+  assert.equal(refused.sandbox.noCredentials,false);
+  assert.deepEqual(refused.diagnostic.credentials,{...refused.diagnostic.credentials,checked:inventory.length,readable:1,readablePaths:[at('/run/meri')]});
+  assert.equal(JSON.stringify(refused.diagnostic).includes('control.json'),false,'no content or child name is emitted');
+  await rm(at('/run/meri/control.json'));
+  // A credential FILE that exists is readable wherever the workspace lives.
+  await mkdir(at('/home/node/.aws'),{recursive:true});await writeFile(at('/home/node/.aws/credentials'),'[default]\n');
+  const file=await probe();
+  assert.deepEqual(file.credentialPathsReadable.filter(c=>c.readable).map(c=>c.path),[at('/home/node/.aws/credentials')]);
+  assert.equal(evaluate(file).sandbox.noCredentials,false);
+ }finally{await rm(root,{recursive:true,force:true});}
 });
 
 test('the upload allowlist admits the PWD that bwrap always sets, and nothing else',()=>{

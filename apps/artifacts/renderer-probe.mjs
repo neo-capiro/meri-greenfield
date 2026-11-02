@@ -4,11 +4,11 @@
  *
  * It only reads: its own /proc status and limits, its own cgroup membership plus the selected cgroup2 mount and visible
  * ancestors, mount table and network devices, its own environment variable NAMES (never values), its working directory,
- * and whether each trusted credential path named on stdin can be opened for reading (opened and closed, never read).
- * It opens no socket, spawns nothing and writes nothing outside stdout. Every unreadable source is reported as null; the
- * owner treats null as not attested. */
-import {readFileSync,readSync,statSync,openSync,closeSync} from 'node:fs';
-import {isAbsolute} from 'node:path';
+ * and whether each trusted credential path named on stdin exposes content to it (a file is opened and closed, never
+ * read; a directory is listed by name only, see `readable`). It opens no socket, spawns nothing and writes nothing
+ * outside stdout. Every unreadable source is reported as null; the owner treats null as not attested. */
+import {readFileSync,readSync,statSync,openSync,closeSync,fstatSync,readdirSync} from 'node:fs';
+import {isAbsolute,relative,sep,join} from 'node:path';
 import {observeProbeCgroup,parseProcLimits,readBoundedInput} from './renderer-probe-observation.mjs';
 const SCHEMA='meri-renderer-sandbox-observation/1';
 const MAX_INPUT_BYTES=65536;
@@ -30,7 +30,27 @@ function interfaces(){
  * ancestor above the visible namespace root is absent. */
 function cgroup(){return observeProbeCgroup({read:text});}
 function processLimits(){return parseProcLimits(text('/proc/self/limits'));}
-function readable(path){try{const fd=openSync(path,'r');closeSync(fd);return true;}catch{return false;}}
+/** Whether a protected path's CONTENT is reachable from this child. A path that cannot be opened is unreadable, and a
+ * file (anything that opens and is not a directory) is readable. A directory is judged by what it lists: bubblewrap
+ * materialises the ancestors of the bound workspace inside the child's private root, so an inventory root above the
+ * workspace (the upload scratch lives under `/run/meri`) is always traversable while none of its protected content is
+ * present. Such an ancestor is unreadable only when every level from it down to the working directory lists exactly
+ * the next component of that chain; a directory that is not an ancestor, a failed listing, or any other entry on the
+ * chain is readable. Names are compared and never reported; nothing is read. */
+function readable(path){
+ let fd;try{fd=openSync(path,'r');}catch{return false;}
+ let directory=false;try{directory=fstatSync(fd).isDirectory();}catch{}finally{closeSync(fd);}
+ if(!directory)return true;
+ const chain=relative(path,process.cwd());
+ if(chain===''||chain.startsWith('..')||isAbsolute(chain))return true;
+ let level=path;
+ for(const next of chain.split(sep)){
+  let names;try{names=readdirSync(level);}catch{return true;}
+  if(names.length!==1||names[0]!==next)return true;
+  level=join(level,next);
+ }
+ return false;
+}
 function workspace(){try{const s=statSync(process.cwd());return {mode:s.mode&0o7777,uid:s.uid};}catch{return null;}}
 /** Exact-cap stdin consumption through the pure bounded port. The established shared-renderer default remains valid:
  * zero bytes means no configured credential paths, not malformed input. Over-cap, read failure, malformed JSON or a

@@ -95,7 +95,7 @@ test('the unqualified startup handle carries the bounded numeric and credential 
  // `noCredentials` is attested, so only the two observed gaps remain.
  assert.deepEqual(probes,[[...RUNTIME_CREDENTIAL_PATHS]],'exactly one probe, bound to the image inventory');
  assert.deepEqual(handle.diagnostic.credentials,{networkIsolated:true,envCount:UPLOAD_CHILD_ENV.length,allowedCount:UPLOAD_CHILD_ENV.length,
-  envAllowed:true,checked:RUNTIME_CREDENTIAL_PATHS.length,readable:0});
+  envAllowed:true,checked:RUNTIME_CREDENTIAL_PATHS.length,readable:0,readablePaths:[]});
  assert.deepEqual(handle.requirements,['noNewPrivileges','boundedResources']);
 });
 

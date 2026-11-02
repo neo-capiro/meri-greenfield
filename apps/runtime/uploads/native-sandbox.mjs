@@ -24,7 +24,9 @@ export const RENDERER_PROBE_HELPER_PATH=join(dirname(RENDERER_PROBE_PATH),'rende
 /** Fixed owned paths. `/run/meri` is the declared task-local writable VOLUME seeded by apps/runtime/Dockerfile; the
  * definitions owner lives under it because a freshclam staging/refresh area must be genuinely writable at runtime,
  * which a directory merely created inside the image filesystem is not. Scratch and the definitions root are owned by
- * the pinned node UID, mode 0700, and are read-only bind entries for every child. */
+ * the pinned node UID, mode 0700, and are read-only bind entries for every child. Because the scratch lives beneath the
+ * inventory root `/run/meri`, every child's private root also contains that root as an empty ancestor chain down to
+ * the bound workspace; the shared probe counts such a chain as traversable, not readable (`renderer-probe.mjs`). */
 export const UPLOAD_NATIVE_SCRATCH='/run/meri/upload-scratch';
 export const UPLOAD_DEFINITIONS_ROOT='/run/meri/upload-definitions';
 export const UPLOAD_EXTRACTOR_PATH='/opt/meri/apps/control/uploads/native/extract.py';
@@ -197,7 +199,10 @@ export function evaluateUploadSandbox(observation,{tempRoot,platform=null}={}){
   boundedBy:finite?'cgroup':bound?.boundedBy??null,
   credentials:Object.freeze({networkIsolated:sandbox.noNetwork,envCount:env===null?0:env.length,
    allowedCount:UPLOAD_CHILD_ENV.length,envAllowed,
-   checked:creds===null?0:creds.length,readable:creds===null?0:creds.filter(c=>c&&c.readable===true).length})
+   checked:creds===null?0:creds.length,readable:creds===null?0:creds.filter(c=>c&&c.readable===true).length,
+   // WHICH inventory entries the child could read: host-owned constant paths, never their contents, so an
+   // unavailable event names the reachable path instead of leaving operators a count to guess from.
+   readablePaths:Object.freeze(creds===null?[]:creds.filter(c=>c&&c.readable===true&&typeof c.path==='string').map(c=>c.path))})
  });
  const findings=UPLOAD_SANDBOX_REQUIREMENTS.filter(k=>sandbox[k]!==true).map(requirement=>({requirement,reason:linux?'NOT_OBSERVED':'NOT_LINUX'}));
  return {sandbox:Object.freeze(sandbox),findings:Object.freeze(findings),diagnostic};
