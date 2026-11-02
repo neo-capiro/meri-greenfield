@@ -5,12 +5,19 @@
 import {tool} from '@anthropic-ai/claude-agent-sdk';
 import {z} from 'zod';
 import {intentDescriptor,intentToolName} from './catalog.mjs';
-import {intentToolArguments} from './schema.mjs';
+import {intentToolArguments,offeredDocumentFormats} from './schema.mjs';
 import {userVocabulary} from '../user-vocabulary.mjs';
 const MAX_DESCRIPTION=4096;
 export const INTENT_ANNOTATIONS=Object.freeze({readOnlyHint:false,destructiveHint:false,idempotentHint:true,openWorldHint:false});
-/** @param {readonly import('./catalog.mjs').IntentRow[]} rows */
-function description(rows){
+/** The Word row's model-facing routing for the formats this run offers. The catalog calls it "a Word document", so without this
+ * line a request for a PDF never reaches it (2 Nov: the model went looking for a command line instead). A PDF has no separate
+ * export operation: it is the same typed content requested with format "pdf".
+ * @param {readonly string[]} offered */
+const wordFormats=offered=>offered.includes('pdf')
+ ?`  Formats: ${offered.join(', ')}. For a PDF, use this operation with format "pdf" and the same content as a Word document; the user receives a PDF file. To give a document already drafted here as a PDF, request it again with format "pdf".`
+ :`  Formats: ${offered.join(', ')}. PDF is not available right now; offer a Word document instead.`;
+/** @param {readonly import('./catalog.mjs').IntentRow[]} rows @param {Map<string,readonly string[]>} [formats] */
+function description(rows,formats){
  const lines=[rows.every(row=>row.owner==='note')?'Save the requested note once through the current Core owner. A static PASS may write immediately; there is no approval step. Report only the returned saved, withheld, blocked, unknown or failed outcome. Never retry an unknown save.':rows.every(row=>row.owner==='memory')?'Prepare the exact memory text and destination scope for review. Preparation does not create a memory candidate or publish memory. The user can approve submission of this exact proposal; successful submission is pending review, not publication.':'Prepare a request for the user\'s approval. This never applies a change: it returns an immutable proposal that the user must approve in Meri, or an immutable draft version.'];
  for(const r of rows){const d=intentDescriptor(r.operation);
   if(r.operation.id==='manage_research_portfolio')lines.push('Management lists and gets return current owner data directly with no approval. Changes, including rule preview which persists a record, still prepare a proposal for approval.',
@@ -19,10 +26,12 @@ function description(rows){
   if(r.operation.id==='mail_send')lines.push('Write the email the user asked for, then propose it: mode "send", to, cc, bcc, subject, bodyHtml (plain HTML paragraphs), files [] and original null. The sending mailbox and client come from the connected account of the user; give senderEmail only when the user says which of several addresses to send from. To reply, reply all or forward, read the thread with mail_read_thread and copy one of its nativeActions exactly (mode, senderEmail, to, cc, subject, original; not originalBodyText), adding bodyHtml. To attach a client file, give attachmentId (the document id), fileName, contentType, bytes (its byteSize) and sha256 (its contentHash) from read_client_documents. The user approves the exact message in the approval card: until the result says the provider accepted it, say it is ready to send, never that it was sent. If the refusal says no mailbox is connected, tell the user to connect Outlook or Gmail in Settings.');
   lines.push(`operation "${r.operation.id}": ${d.displayName}. ${d.whenToUse}`);
   for(const example of d.negativeExamples??[])lines.push(`  Do not: ${example}`);
+  if(r.operation.id==='create_word')lines.push(wordFormats(offeredDocumentFormats(r.operation,formats)));
   if(r.operation.id==='schedule_task'){
    lines.push('  Give only: taskInstruction (what to do on each run, in full, including which client, portfolio, committee or topic), cadence ("daily", "weekdays", "weekly" or "monthly"), day (weekly: the weekday name; monthly: the day of the month, 1 to 28; omit otherwise), time (24-hour "HH:MM") and timezone (IANA name such as "America/New_York"; UTC when omitted). Each run\'s result goes to the user\'s Meri inbox; the trusted run sets the schedule policy and run limits.');
    lines.push(`  the trusted run completes these into canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}; the owner validates the completed request.`);
   }else lines.push(`  arguments follow canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}; the owner validates them.`);}
+ if(rows.some(r=>r.owner==='document'))lines.push('Word, PDF, Excel and PowerPoint files for the user come only from this tool; never create them with a command line.');
  lines.push('Supply literal arguments only; identity, tenant, approval, permissions and client selection come from the trusted run, never from arguments. Where a schema names conversationId, the trusted run binds this conversation\'s id; you may omit it, and any value you supply is replaced.');
  // Catalog bytes stay frozen; the model-facing text is projected into the user's vocabulary (`user-vocabulary.mjs`).
  const text=userVocabulary(lines.join('\n'));return text.length>MAX_DESCRIPTION?text.slice(0,MAX_DESCRIPTION):text;
@@ -35,5 +44,5 @@ export function defineIntentTool(name,rows,handler,formats){
  // never an untyped object: an untyped object tells the model nothing and accepts calls the owner must refuse.
  const shape={operation:z.enum(ids),arguments:intentToolArguments(rows,formats).arguments.describe('The request object for the selected operation'),
   _meriInvocation:z.string().optional().describe('Reserved correlation supplied only by the trusted SDK hook')};
- return Object.freeze({name:intentToolName(name),definition:tool(name,description(rows),shape,handler,{annotations:INTENT_ANNOTATIONS,alwaysLoad:true})});
+ return Object.freeze({name:intentToolName(name),definition:tool(name,description(rows,formats),shape,handler,{annotations:INTENT_ANNOTATIONS,alwaysLoad:true})});
 }

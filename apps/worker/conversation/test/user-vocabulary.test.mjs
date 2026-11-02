@@ -62,7 +62,7 @@ test('the full system prompt of a reads+intents run, both server instructions an
   const o=buildConversationOptions(runtime(),new AbortController(),undefined,undefined,undefined,m.readOptions,m.intentOptions);
   assert.deepEqual(Object.keys(o.mcpServers),['meri_reads','meri_intents']);
   check(o.systemPrompt.append,'the system prompt');
-  assert.ok(RESPONSE_STYLE.includes('Describe capabilities by what they do for the user, never by their internal name; when something is unavailable say what the user can do next.'));
+  assert.ok(RESPONSE_STYLE.includes('Describe capabilities by what they do for the user, never by their internal name, and never mention a tool you lack (a shell, command line or file tool); when something is unavailable say what the user can do next.'));
   assert.ok(o.systemPrompt.append.includes(RESPONSE_VOICE));
   const reads=await listed(m.reads.server),intents=await listed(m.intents.server),skill=await listed(m.skill.server);
   assert.ok(reads.tools.length>=100&&intents.tools.length>=20&&skill.tools.length>=1,`${reads.tools.length} reads, ${intents.tools.length} intents, ${skill.tools.length} skill reads`);
@@ -121,6 +121,14 @@ test('every intent tool-result text, with the details the owners attach, is plai
   assert.doesNotMatch(words,/mcp__/u,code+' names the tool again');
  }
  assert.equal(violations.length,before,violations.slice(before).join('\n'));
+});
+
+test('an access refusal tells the model to report it plainly, never to guess a cause or send the user to another conversation',()=>{
+ // 2 Nov: a PDF request in a client conversation was refused and the model, reading "not permitted for this user, client or
+ // conversation", told the user PDFs need a General conversation. No such rule exists; the owner's reason stays in control's log.
+ const text=intentFailureResult('ACCESS_DENIED','mcp__meri_intents__request_document').content[0].text;
+ assert.equal(text,'ACCESS_DENIED: mcp__meri_intents__request_document was refused by the current permission check, so nothing was prepared. Nothing has been changed. Tell the user it could not be prepared; do not guess a cause or send them to another conversation.');
+ assert.doesNotMatch(text,/client or conversation/u);
 });
 
 test('the vocabulary projection is a closed map: catalog bytes are untouched and argument or field names never change',()=>{

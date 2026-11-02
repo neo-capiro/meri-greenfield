@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createIntentMount} from '../mount.mjs';
+import {intentFaultReason} from '../faults.mjs';
 import {assertPreparedResult} from '../../../worker/conversation/intents/prepared.mjs';
 const NOW=1900000000000,id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={tenantId:'tenant',actorId:'actor',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
@@ -25,7 +26,8 @@ test('fresh and retained results both reauthorize; replay preserves immutable ou
 });
 test('revoked client on retained release is denied without changing custody or repeating preparation',async()=>{
  const f=fixture(),m=f.mount();await m.prepare(call);const saved=hash(f.state.entry);
- f.state.scopes=[{...scope,resourceId:id(9)}];await assert.rejects(m.prepare(call),denied);
+ // A release refusal is told apart from the owner's own in control's log line.
+ f.state.scopes=[{...scope,resourceId:id(9)}];await assert.rejects(m.prepare(call),e=>denied(e)&&intentFaultReason(e)==='RESULT_RELEASE_REFUSED');
  assert.equal(hash(f.state.entry),saved);assert.equal(f.state.prepares,1);
 });
 test('original authority expiry cannot be extended on replay',async()=>{

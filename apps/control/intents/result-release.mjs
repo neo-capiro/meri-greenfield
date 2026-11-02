@@ -5,7 +5,8 @@ import {savedNoteValidators,researchActionValidators,officeEditValidators} from 
 import {data,own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {intentFault} from './faults.mjs';
 import {assertMemoryReviewResult} from '../../../packages/contracts/commands-0.2/memory-review-result.mjs';
-const deny=()=>{throw intentFault('ACCESS_DENIED');};
+// The reason reaches control's log line only (`intents-http.mjs`), so a release refusal is told apart from the owner's own.
+const deny=()=>{throw intentFault('ACCESS_DENIED',undefined,undefined,'RESULT_RELEASE_REFUSED');};
 const conversation=(a,b)=>['tenantId','actorId','conversationId'].every(k=>a?.[k]===b?.[k]);
 function scopes(raw,binding){
  if(!Array.isArray(raw)||!raw.length||raw.length>100)deny();

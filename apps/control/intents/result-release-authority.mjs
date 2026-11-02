@@ -15,7 +15,7 @@
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {intentFault} from './faults.mjs';
-const deny=()=>{throw intentFault('ACCESS_DENIED');};
+const deny=()=>{throw intentFault('ACCESS_DENIED',undefined,undefined,'RELEASE_AUTHORITY_REFUSED');};
 const SHA=/^[a-f0-9]{64}$/u;
 export function createIntentResultReleaseAuthority(configuration){
  const c=own(configuration,['binding','currentRun','currentRights','now'],['maxFactBytes']),binding=data(c.binding),maxFactBytes=c.maxFactBytes??131072;
