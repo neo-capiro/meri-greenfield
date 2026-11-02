@@ -4,6 +4,8 @@ import {capiroDataCase} from './fixture.mjs';
 
 const original=['congress_bills','congress_bill_subjects','congress_bill_cosponsors','congress_members',
  'program_elements','program_element_projects','program_element_budget_positions','program_element_project_budget_positions'];
+/** Core's surface after migration 20281102100000_capiro_data_federal_awards_surface; `expanded` is a synthetic wider one. */
+const published=[...original,'federal_awards','federal_assistance_awards'];
 const expanded=[...original,'state_bills','committee_hearings','committee_hearing_bills','legislative_agenda_items','state_bill_calendar_events','federal_grants','sam_opportunities'];
 function descriptions(f,names){f.page.relations=names.map(name=>({...structuredClone(f.page.relations[0]),name}));}
 
@@ -13,7 +15,7 @@ test('retained default public description requests its eight names at Core',asyn
  assert.deepEqual(result.result.relations.map(row=>row.name),original);
  assert.deepEqual(f.wire[0].body,{relations:original});assert.equal(result.operation.version,'0.2.0');
 });
-for(const names of [original,expanded])test(`successor works with published surfaces (${names.length} public relations)`,async()=>{
+for(const names of [original,published,expanded])test(`successor works with published surfaces (${names.length} public relations)`,async()=>{
  const f=capiroDataCase('describe_capiro_data',{version:'0.3.0',request:{}});descriptions(f,names);
  const result=JSON.parse(await f.handler()(f.call()));
  assert.deepEqual(result.result,f.page);assert.equal(result.operation.version,'0.3.0');
@@ -48,6 +50,8 @@ test('both versions preserve unavailable/errors and malformed results never beco
 });
 
 test('retained default never post-filters a producer that ignores the explicit selection',async()=>{
- const f=capiroDataCase('describe_capiro_data',{request:{}});descriptions(f,expanded);
- await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});assert.deepEqual(f.wire[0].body,{relations:original});
+ for(const names of [published,expanded]){
+  const f=capiroDataCase('describe_capiro_data',{request:{}});descriptions(f,names);
+  await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});assert.deepEqual(f.wire[0].body,{relations:original});
+ }
 });
