@@ -27,8 +27,9 @@ const fail=(code,field=null)=>{throw new ProductError(code,null,field);};
 const REQUIREMENTS=Object.freeze({mail:'mailbox'});
 /** The text-to-SQL families: the published relations are readable when any of them is. */
 const SQL_FAMILIES=Object.freeze(['capiro-data','capiro-data-v3','capiro-data-v4','capiro-data-v5']);
-// Core publishes no relation list the control reads; the two awards relations come from Core migration 20281102100000_capiro_data_federal_awards_surface.
-const PUBLISHED_PUBLIC_RELATIONS=Object.freeze([...RETAINED_PUBLIC_RELATIONS,'federal_awards','federal_assistance_awards']);
+// Core publishes no relation list the control reads; the two awards relations come from Core migration 20281102100000_capiro_data_federal_awards_surface
+// and the grant and SAM notice relations from 20281102140000_capiro_data_grants_notices_surface.
+const PUBLISHED_PUBLIC_RELATIONS=Object.freeze([...RETAINED_PUBLIC_RELATIONS,'federal_awards','federal_assistance_awards','federal_grants','sam_opportunities']);
 const rank=state=>DATA_ACCESS_STATES.indexOf(state);
 /** The registry rows grouped by family, sorted, each with its guidance. Computed once: the catalog and guidance are static. */
 function registry(){
