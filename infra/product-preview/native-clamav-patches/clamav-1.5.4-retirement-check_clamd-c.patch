@@ -1,0 +1,198 @@
+ClamAV 1.5.4 check_clamd-only retirement synchronization
+Target: unit_tests/check_clamd.c
+Before SHA256: e6aadde86c533ceb0a7f0e73733bb5c5bfacc39d2f1d993ee8aa484b1aa942bd
+After SHA256: 3afa6df2518040e306559804cbeeff69bf599280c549aa5675157aeed64e8f52
+No test skip, retry, timeout increase or installed daemon behavior change.
+--- a/unit_tests/check_clamd.c
++++ b/unit_tests/check_clamd.c
+@@ -1216,136 +1216,173 @@
+                   "STATS held the global pool lock while writing to a slow client");
+     ck_assert_msg(stats_contains_filename,
+                   "STATS response did not include the complete active task filename");
+     ck_assert_msg(stats_has_end_marker,
+                   "STATS response was truncated or contained data after its END marker");
+ }
+ END_TEST
+ 
+ struct stats_worker_retirement_test_state {
+     pthread_mutex_t mutex;
+     pthread_cond_t cond;
+     unsigned handled;
++    int allow_first_handler_finish;
++    int worker_retiring;
++    int allow_stats_snapshot;
+ };
++
++/* These hooks exist only in the check_clamd copy of thrmgr.c. Install them
++ * before creating the worker and clear them after all threads have joined. */
++extern void (*thrmgr_test_stats_locked_hook)(void);
++extern void (*thrmgr_test_retiring_hook)(void);
++static struct stats_worker_retirement_test_state *retirement_state;
++
++static void stats_retirement_snapshot_locked(void)
++{
++    struct stats_worker_retirement_test_state *state = retirement_state;
++    pthread_mutex_lock(&state->mutex);
++    state->allow_first_handler_finish = 1;
++    pthread_cond_broadcast(&state->cond);
++    while (!state->allow_stats_snapshot)
++        pthread_cond_wait(&state->cond, &state->mutex);
++    pthread_mutex_unlock(&state->mutex);
++}
++
++static void stats_retirement_worker_checkpoint(void)
++{
++    struct stats_worker_retirement_test_state *state = retirement_state;
++    pthread_mutex_lock(&state->mutex);
++    state->worker_retiring = 1;
++    pthread_cond_broadcast(&state->cond);
++    pthread_mutex_unlock(&state->mutex);
++}
+ 
+ static void stats_worker_retirement_test_handler(void *data)
+ {
+     struct stats_worker_retirement_test_state *state = data;
+ 
+     pthread_mutex_lock(&state->mutex);
+     state->handled++;
+     pthread_cond_broadcast(&state->cond);
++    /* No idle timeout can begin until STATS actually owns pools_lock. */
++    while (state->handled == 1 && !state->allow_first_handler_finish)
++        pthread_cond_wait(&state->cond, &state->mutex);
+     pthread_mutex_unlock(&state->mutex);
+ }
+ 
+ static void stats_test_sleep_millisecond(void)
+ {
+ #ifdef _WIN32
+     Sleep(1);
+ #else
+     struct timespec delay = { .tv_sec = 0, .tv_nsec = 1000000L };
+     nanosleep(&delay, NULL);
+ #endif
+ }
+ 
+ START_TEST(test_stats_does_not_strand_work_during_worker_retirement)
+ {
+     struct stats_worker_retirement_test_state state;
+     struct stats_print_thread_state print_state;
+-    struct task_desc *desc;
+     threadpool_t *threadpool;
+     pthread_t print_thread;
+     char *stats;
+     size_t stats_len;
+     unsigned i;
+     int sockets[2];
+     int worker_is_retiring = 0;
+     int second_job_handled = 0;
+ 
+     memset(&state, 0, sizeof(state));
+     ck_assert_int_eq(pthread_mutex_init(&state.mutex, NULL), 0);
+     ck_assert_int_eq(pthread_cond_init(&state.cond, NULL), 0);
+ 
++    retirement_state = &state;
++    thrmgr_test_stats_locked_hook = stats_retirement_snapshot_locked;
++    thrmgr_test_retiring_hook = stats_retirement_worker_checkpoint;
+     threadpool = thrmgr_new(1, 1, 2, stats_worker_retirement_test_handler);
+     ck_assert_ptr_nonnull(threadpool);
+     ck_assert_int_ne(thrmgr_dispatch(threadpool, &state), 0);
+ 
+     pthread_mutex_lock(&state.mutex);
+     while (state.handled < 1)
+         pthread_cond_wait(&state.cond, &state.mutex);
+     pthread_mutex_unlock(&state.mutex);
+-
+-    /* Wait until the worker has returned to its timed idle wait, then hold
+-     * its task descriptor so STATS retains pools_lock while snapshotting it. */
+-    pthread_mutex_lock(&threadpool->pool_mutex);
+-    while (threadpool->thr_idle < 1)
+-        pthread_cond_wait(&threadpool->idle_cond, &threadpool->pool_mutex);
+-    desc = threadpool->tasks;
+-    ck_assert_ptr_nonnull(desc);
+-    ck_assert_int_eq(pthread_mutex_lock(&desc->mutex), 0);
+-    pthread_mutex_unlock(&threadpool->pool_mutex);
+ 
+     create_tcp_socket_pair(sockets);
+     memset(&print_state, 0, sizeof(print_state));
+     print_state.socket_fd = sockets[1];
+     ck_assert_int_eq(pthread_mutex_init(&print_state.mutex, NULL), 0);
+     ck_assert_int_eq(pthread_cond_init(&print_state.cond, NULL), 0);
+     ck_assert_int_eq(pthread_create(&print_thread, NULL, stats_print_thread, &print_state), 0);
+ 
+     pthread_mutex_lock(&print_state.mutex);
+     while (!print_state.started)
+         pthread_cond_wait(&print_state.cond, &print_state.mutex);
+     pthread_mutex_unlock(&print_state.mutex);
+ 
+-    /* Once idle is zero but the sole worker is still alive, its timeout has
+-     * fired and it is waiting for the global STATS lock before retiring. */
++    /* STATS releases the first handler only after acquiring pools_lock, and
++     * keeps that lock until the second job is queued. The retirement hook is
++     * persistent, unlike a momentary idle counter, so scheduling cannot make
++     * the test mistake the first handler for a worker about to retire. */
+     for (i = 0; i < 5000; i++) {
+-        pthread_mutex_lock(&threadpool->pool_mutex);
+-        worker_is_retiring = threadpool->thr_alive == 1 && threadpool->thr_idle == 0;
+-        pthread_mutex_unlock(&threadpool->pool_mutex);
++        pthread_mutex_lock(&state.mutex);
++        worker_is_retiring = state.worker_retiring;
++        pthread_mutex_unlock(&state.mutex);
++        if (worker_is_retiring) {
++            pthread_mutex_lock(&threadpool->pool_mutex);
++            worker_is_retiring = threadpool->thr_alive == 1 && threadpool->thr_idle == 0;
++            pthread_mutex_unlock(&threadpool->pool_mutex);
++        }
+         if (worker_is_retiring)
+             break;
+         stats_test_sleep_millisecond();
+     }
+     ck_assert_msg(worker_is_retiring,
+                   "Worker did not reach the retirement checkpoint while STATS held the pool list lock");
+ 
+     /* The dispatcher sees the retiring worker as alive and therefore does
+      * not create a replacement. The worker must recheck the queue before it
+      * commits to exit. */
+     ck_assert_int_ne(thrmgr_dispatch(threadpool, &state), 0);
+-    ck_assert_int_eq(pthread_mutex_unlock(&desc->mutex), 0);
++    pthread_mutex_lock(&state.mutex);
++    state.allow_stats_snapshot = 1;
++    pthread_cond_broadcast(&state.cond);
++    pthread_mutex_unlock(&state.mutex);
+ 
+     for (i = 0; i < 5000; i++) {
+         pthread_mutex_lock(&state.mutex);
+         second_job_handled = state.handled == 2;
+         pthread_mutex_unlock(&state.mutex);
+         if (second_job_handled)
+             break;
+         stats_test_sleep_millisecond();
+     }
+ 
+     stats = recvfull(sockets[0], &stats_len);
+     close_socket(sockets[0]);
+     ck_assert_int_eq(pthread_join(print_thread, NULL), 0);
+ 
+     ck_assert_msg(second_job_handled,
+                   "Work dispatched during worker retirement remained queued without a worker");
+     ck_assert_int_eq(print_state.result, 0);
+     ck_assert_ptr_nonnull(stats);
+     ck_assert_msg(stats_len >= 4 && memcmp(stats + stats_len - 4, "END\n", 4) == 0,
+                   "STATS response was truncated during worker retirement:\n%s", stats);
+     free(stats);
+ 
+     thrmgr_destroy(threadpool);
++    thrmgr_test_stats_locked_hook = NULL;
++    thrmgr_test_retiring_hook = NULL;
++    retirement_state = NULL;
+     pthread_cond_destroy(&print_state.cond);
+     pthread_mutex_destroy(&print_state.mutex);
+     pthread_cond_destroy(&state.cond);
+     pthread_mutex_destroy(&state.mutex);
+ }
+ END_TEST
+ 
+ struct stats_queue_churn_test_state {
+     pthread_mutex_t mutex;
+     pthread_cond_t cond;
+     unsigned handled;
+ };

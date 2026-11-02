@@ -604,8 +604,14 @@ RUN --network=none \
     mkdir -p /usr/src && tar -xzf /tmp/meri-native-source/clamav-1.5.4.tar.gz -C /usr/src && \
     echo "a63cff029d1487ccb4f78e8b63d720cfbb8d57722177ed0c913b7492af2dbc53  /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch" > /tmp/clamav-compat.sha256 && \
     echo "6dea945d4a6a6abca9ef76428525f183ca22658910746bcfabe84b91dab23bf1  /tmp/meri-clamav-patches/apply-pinned-patch.py" >> /tmp/clamav-compat.sha256 && \
+    echo "ae1b75bdf6d8666296299fce8c488c26c62157651351f3f413a640ff033da456  /tmp/meri-clamav-patches/clamav-1.5.4-retirement-thrmgr-c.patch" >> /tmp/clamav-compat.sha256 && \
+    echo "4582b2ae524b4149cdc601bd74f604b443f85d55592e76b875e1d12f0ca40371  /tmp/meri-clamav-patches/clamav-1.5.4-retirement-check_clamd-c.patch" >> /tmp/clamav-compat.sha256 && \
+    echo "79c88cad06eb69efd3e0a5e278c1b5eadf9ff35adb8102ed493e3b7c74f80c41  /tmp/meri-clamav-patches/clamav-1.5.4-retirement-CMakeLists-txt.patch" >> /tmp/clamav-compat.sha256 && \
     sha256sum -c /tmp/clamav-compat.sha256 && \
     python3.13 /tmp/meri-clamav-patches/apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-openssl4-asn1-time.patch /usr/src/clamav-1.5.4/libclamav/crypto.c 6cfefd0ca043a922ddfda11c364f4995daf8a12317ce22f6c839b8c95a069dcc 26bdec0a22b4feb6927a4ef292e6f2d1896d11d2d92ffabc9a466bbb6884f036 && \
+    python3.13 /tmp/meri-clamav-patches/apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-retirement-thrmgr-c.patch /usr/src/clamav-1.5.4/clamd/thrmgr.c 27575374e4676b65f73f2559b8c2a1af784b8f9bcafaf04de9ffe2cd78b3a13e a71fc25c1698a056925d9dff1ef3398d330645a99f7ba9be123f6c5d4e39052f && \
+    python3.13 /tmp/meri-clamav-patches/apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-retirement-check_clamd-c.patch /usr/src/clamav-1.5.4/unit_tests/check_clamd.c e6aadde86c533ceb0a7f0e73733bb5c5bfacc39d2f1d993ee8aa484b1aa942bd 3afa6df2518040e306559804cbeeff69bf599280c549aa5675157aeed64e8f52 && \
+    python3.13 /tmp/meri-clamav-patches/apply-pinned-patch.py /tmp/meri-clamav-patches/clamav-1.5.4-retirement-CMakeLists-txt.patch /usr/src/clamav-1.5.4/unit_tests/CMakeLists.txt f3551b2595d5902dde127d44a6f411b9989cc091e5e5b6616c5b3c9383245b12 87848f0fee2b5135370c6beb70bda07d9145dda1b65ea28aadd200c20e669883 && \
     cmake -S /usr/src/clamav-1.5.4 -B /tmp/clamav-build \
       -D CMAKE_BUILD_TYPE=RelWithDebInfo -D CMAKE_INSTALL_PREFIX=/usr -D APP_CONFIG_DIRECTORY=/etc -D CVD_CERTS_DIRECTORY=/usr/etc/certs -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_INSTALL_SBINDIR=bin \
       -D ENABLE_APP=ON -D ENABLE_MILTER=ON -D ENABLE_CLAMONACC=ON -D ENABLE_UNRAR=ON -D ENABLE_TESTS=ON \
