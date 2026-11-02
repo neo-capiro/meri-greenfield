@@ -8,6 +8,7 @@ import {createControlRouteApplications} from '../control-route-boundary.mjs';
 import {createNativeFileApplication,NATIVE_FILE_PATHS} from '../artifacts/native-files-http.mjs';
 import {nativeFileBindingHeader} from '../../../packages/contracts/runtime-0.2/files.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {MAX_RUN_WALL_CLOCK_MS} from '../../../packages/contracts/run-limits.mjs';
 import {agentcoreConfig} from './agentcore-fixture.mjs';
 import {binding,versions,id} from '../../control/conversations/test/application-fixture.mjs';
 import {createControlReadsComposer} from '../reads-composer.mjs';
@@ -97,7 +98,7 @@ test('the private expiry sweep reaches only the bound control retention owner',a
 test('one real Core current admission and durable execution; private callbacks do not multiply Core observations',async()=>{
  const f=fixture();await f.kickoff();assert.equal(f.counts().coreCalls,1);assert.equal(f.coreInput().headers.authorization,'Bearer actual-user-bearer');
  assert.deepEqual(f.coreInput().body,{conversationId:binding.conversationId,clientId});
- assert.equal(f.record().expiresAtMs,at+900000,'execution lifetime is the reviewed run window, not action-session TTL');
+ assert.equal(f.record().expiresAtMs,at+MAX_RUN_WALL_CLOCK_MS,'execution lifetime is the platform wall-clock ceiling, not the 900000 ms fact window or the action-session TTL');
  const v=await f.waitForInvocation();await f.candidate.execution.admitted({credential:v.credential,execution:v.execution,versions});
  await f.kickoff();assert.equal(f.counts().invocations,1);assert.equal(f.counts().coreCalls,1);
  await f.finish();
@@ -116,7 +117,7 @@ test('no configured original can replace the required durable binding',async()=>
 test('Stop uses canonical fencing and exact provider session; unknown is not acknowledged',async()=>{
  for(const stopUnknown of [false,true]){const f=fixture({stopUnknown});await f.kickoff();
   const call=f.candidate.native.call('execution/kickoff/stop',{binding,executionId:hash(binding)});
-  if(stopUnknown)await assert.rejects(call,/EXECUTION_STOP_UNKNOWN/u);else assert.deepEqual(await call,{binding,executionId:hash(binding),expiresAtMs:at+900000});
+  if(stopUnknown)await assert.rejects(call,/EXECUTION_STOP_UNKNOWN/u);else assert.deepEqual(await call,{binding,executionId:hash(binding),expiresAtMs:at+MAX_RUN_WALL_CLOCK_MS});
   assert.equal(f.run.state,'failed');assert.equal(f.counts().stops,1);
   f.pending.reject(Error('stopped transport'));await f.candidate.close();
  }
@@ -189,7 +190,7 @@ test('candidate mounts real runtime preparation and refuses unclaimed credential
  try{
   assert.equal((await f.candidate.application.handle(request('unclaimed'))).status,503);assert.equal(forwarded,0);
   await f.kickoff();await f.waitForInvocation();const response=await f.candidate.application.handle(request(f.invocation().credential));assert.equal(response.status,200);
-  assert.deepEqual(await response.json(),{binding,versions,deadlineMs:at+900000,maxOutputBytes:262144,sdkSessionKey:null,objective:null,outreach:null,automaticClientContext:automaticContextFixture(binding,clientId,at)});assert.equal(forwarded,0);assert.equal(f.counts().coreCalls,2);
+  assert.deepEqual(await response.json(),{binding,versions,deadlineMs:at+MAX_RUN_WALL_CLOCK_MS,maxOutputBytes:262144,sdkSessionKey:null,objective:null,outreach:null,automaticClientContext:automaticContextFixture(binding,clientId,at)});assert.equal(forwarded,0);assert.equal(f.counts().coreCalls,2);
   await f.finish();
  }finally{f.pending.resolve(null);await f.candidate.close();}
 });

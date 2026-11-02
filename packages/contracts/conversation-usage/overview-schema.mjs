@@ -1,3 +1,4 @@
+import {MAX_RUN_TURNS} from '../run-limits.mjs';
 import {USAGE_OVERVIEW_SCHEMA,usageOverviewMetadata,overviewStates,USAGE_OVERVIEW_SCHEMA_V2,usageOverviewMetadataV2,usageOverviewBases,usageOverviewCounterNames,usageOverviewLineageClasses,usageOverviewLineageBasis,usageOverviewCostCategories,usageOverviewDenominators,usageOverviewJobInterface,usageOverviewJobStates,usageOverviewJobWindow,usageOverviewJobWindowEdge,usageOverviewJobDefinition,usageOverviewJobLineage,usageOverviewJobClosure} from './overview-protocol.mjs';
 const object=properties=>({type:'object',properties,required:Object.keys(properties),additionalProperties:false});
 const nullable=schema=>({anyOf:[schema,{type:'null'}]});
@@ -28,7 +29,7 @@ const wholeJobsV2=object({basis:{const:usageOverviewDenominators.sustainedJobs},
  coverage:object({jobsWithRecordedUsage:count,jobsWithUnavailableUsage:count,revisionsWithRootOutsideWindow:count,chargeAttribution:{const:'whole-job-lineage-at-root-revision-window'},
   windowEdge:{const:usageOverviewJobWindowEdge},providerBilledMicroUsd:{type:'null'},completeJobCost:{const:'estimated'}})});
 const denominatorsV2=object({attempts:{const:usageOverviewDenominators.attempts},conversationThreads:{const:usageOverviewDenominators.conversationThreads},sustainedJobs:{const:usageOverviewDenominators.sustainedJobs}});
-const policy={oneOf:[object({status:{const:'configured'},revision:{...count,minimum:1},monthlyCapMicroUsd:{...count,minimum:1},maxTurns:{type:'integer',minimum:1,maximum:100},maxBudgetMicroUsd:{...count,minimum:1}}),object({status:{const:'unavailable'},revision:{type:'null'},monthlyCapMicroUsd:{type:'null'},maxTurns:{type:'null'},maxBudgetMicroUsd:{type:'null'}})]};
+const policy={oneOf:[object({status:{const:'configured'},revision:{...count,minimum:1},monthlyCapMicroUsd:{...count,minimum:1},maxTurns:{type:'integer',minimum:1,maximum:MAX_RUN_TURNS},maxBudgetMicroUsd:{...count,minimum:1}}),object({status:{const:'unavailable'},revision:{type:'null'},monthlyCapMicroUsd:{type:'null'},maxTurns:{type:'null'},maxBudgetMicroUsd:{type:'null'}})]};
 const admission=object({startInclusive:date,knownChargeMicroUsd:count,unavailableRecordedAttempts:count,remainingKnownMicroUsd:nullable(count),reached:nullable({type:'boolean'})});
 const queue=object({basis:{const:'recorded-run-state'},states,physicalConcurrency:{type:'null'},availableCapacity:{type:'null'},capacityStatus:{const:'unavailable'}});
 /** The successor request/response definitions live ONLY in the successor's own resolvable document

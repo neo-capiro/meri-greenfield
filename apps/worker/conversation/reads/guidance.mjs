@@ -67,6 +67,19 @@ const MAIL_FAILURES=Object.freeze({
  UNAVAILABLE:'No connected Microsoft 365 or Google Workspace mailbox is available for this user, or stored mail is not served in this conversation. Tell the user to connect their mailbox, or run Sync now (or Retry sync) for it, under Capiro Settings > Integrations, or to try again in a minute if the mailbox is already connected; do not say that no email exists.',
  ACCESS_DENIED:'This mailbox or client subject is not authorized for this conversation: use {kind:"personal"} in General and {kind:"client", entityId} only for the selected client. Do not retry with another client.',
 });
+// Core answers a stored-mail read that ran out of its own 10 s query budget (a large mailbox, a cold database) with the same
+// 5xx as a refusal, which the gateway reports as SOURCE_UNAVAILABLE; neither is a mailbox connection or network fault
+// (2 November 2026: "summarize yesterday's email" spent the budget on a 37k-message mailbox and Meri told the user the mail
+// source did not respond and to reconnect). The user is never sent to reconnect or resync for a slow or refused read.
+const MAIL_NOT_CONNECTION='The mailbox connection and the network are not what failed, so do not call this an outage or a connectivity problem and do not tell the user to reconnect or resync.';
+const MAIL_CANDIDATE_FAILURES=Object.freeze({...MAIL_FAILURES,
+ SOURCE_UNAVAILABLE:`The stored-mail store did not complete this read: most often the search ran out of its time budget on a large mailbox, otherwise Core refused it. ${MAIL_NOT_CONNECTION} Retry once with a narrower read (a smaller withinDays, one folder, or a from/participant filter); if that fails too, tell the user stored mail could not be searched right now and that no email was found or ruled out.`,
+ DEADLINE:`The stored-mail read did not finish within Meri's time limit. ${MAIL_NOT_CONNECTION} Retry once with a narrower read (a smaller withinDays, one folder, or a from/participant filter); if that fails too, tell the user stored mail could not be searched right now and that no email was found or ruled out.`,
+});
+const MAIL_THREAD_FAILURES=Object.freeze({...MAIL_FAILURES,
+ SOURCE_UNAVAILABLE:`The stored-mail store did not complete this thread read (its time budget, or a Core refusal). ${MAIL_NOT_CONNECTION} Retry once with a smaller limit or maxCharacters; if that fails too, tell the user this thread could not be read right now.`,
+ DEADLINE:`The thread read did not finish within Meri's time limit. ${MAIL_NOT_CONNECTION} Retry once with a smaller limit or maxCharacters; if that fails too, tell the user this thread could not be read right now.`,
+});
 /** @type {Readonly<Record<string,ReadGuidance>>} */
 export const READ_GUIDANCE=Object.freeze({
  search_public_web:Object.freeze({
@@ -127,7 +140,7 @@ export const READ_GUIDANCE=Object.freeze({
    MAIL_CANDIDATES,
   ]),
   limitations:Object.freeze([MAIL_STORED]),
-  failures:Object.freeze({...MAIL_FAILURES,INVALID_ARGUMENTS:'mail_list_messages takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), folder (all, inbox or sent), withinDays (1-3650 or null), limit (1-50), offset (0-10000) and asOf (ISO date-time).'}),
+  failures:Object.freeze({...MAIL_CANDIDATE_FAILURES,INVALID_ARGUMENTS:'mail_list_messages takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), folder (all, inbox or sent), withinDays (1-3650 or null), limit (1-50), offset (0-10000) and asOf (ISO date-time).'}),
  }),
  mail_search_messages:Object.freeze({
   usage:Object.freeze([
@@ -136,7 +149,7 @@ export const READ_GUIDANCE=Object.freeze({
    MAIL_CANDIDATES,
   ]),
   limitations:Object.freeze([MAIL_STORED]),
-  failures:Object.freeze({...MAIL_FAILURES,INVALID_ARGUMENTS:'mail_search_messages takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), at least one filter among query (1-200 characters), from, participant, withinDays (1-3650) or folder (inbox or sent), plus limit (1-50), offset (0-10000) and asOf (ISO date-time).'}),
+  failures:Object.freeze({...MAIL_CANDIDATE_FAILURES,INVALID_ARGUMENTS:'mail_search_messages takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), at least one filter among query (1-200 characters), from, participant, withinDays (1-3650) or folder (inbox or sent), plus limit (1-50), offset (0-10000) and asOf (ISO date-time).'}),
  }),
  mail_read_thread:Object.freeze({
   usage:Object.freeze([
@@ -145,7 +158,7 @@ export const READ_GUIDANCE=Object.freeze({
    'Result: messages[] oldest first, each with from, to, cc, sentAt or receivedAt, bodyCompleteness (full, preview, truncated, missing or unknown) and section {start, endExclusive, totalCodeUnits, text, hasMore}; nextMessageOffset and nextBodyOffsets continue a bounded read and coverage.truncated declares one. Quote or summarize only text that was returned; a missing or truncated body is reported, never inferred.',
   ]),
   limitations:Object.freeze([MAIL_STORED]),
-  failures:Object.freeze({...MAIL_FAILURES,INVALID_ARGUMENTS:'mail_read_thread takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), threadId (UUID), optional messageId (UUID), messageOffset (0-10000), limit (1-10), bodyOffset (0-10000000) and maxCharacters (1-6000).'}),
+  failures:Object.freeze({...MAIL_THREAD_FAILURES,INVALID_ARGUMENTS:'mail_read_thread takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), threadId (UUID), optional messageId (UUID), messageOffset (0-10000), limit (1-10), bodyOffset (0-10000000) and maxCharacters (1-6000).'}),
  }),
  describe_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'describe_capiro_data takes optional relations: 1-15 unique lowercase table names, plus source (one of the listed sources) and clientId (UUID, client_records only).',

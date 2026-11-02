@@ -4,6 +4,7 @@ import {buildConversationOptions,RESPONSE_STYLE,RESPONSE_VOICE} from '../options
 import {PRODUCT_DEFINITIONS} from '../product-definitions.mjs';
 import {binding,versions} from '../../../control/conversations/test/application-fixture.mjs';
 import {BEDROCK_MODEL} from '../provider.mjs';
+import {MAX_RUN_TURNS} from '../../../../packages/contracts/run-limits.mjs';
 const runtime=extra=>({binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:20,maxCostMicroUSD:2000000,maxOutputBytes:1024,...extra});
 test('full native preset, supported task tools and owned 5m cache basis reach the SDK directly',()=>{
  const o=buildConversationOptions(runtime(),new AbortController());
@@ -18,9 +19,10 @@ test('canonical native limits and output schema remain intact without a model pr
  const r=runtime(),format={type:'json_schema',schema:{type:'object',properties:{answer:{type:'string'}},required:['answer'],additionalProperties:false}};
  const o=buildConversationOptions(r,new AbortController(),undefined,undefined,undefined,undefined,undefined,undefined,format);
  assert.equal(o.model,BEDROCK_MODEL);assert.equal(o.maxBudgetUsd,2);assert.equal(o.maxTurns,20);assert.deepEqual(o.outputFormat,format);
+ assert.equal(buildConversationOptions(runtime({maxTurns:MAX_RUN_TURNS}),new AbortController()).maxTurns,1000,'the shared platform ceiling itself reaches the SDK');
 });
 test('old proxy/CA/hash controls and malformed native limits refuse before querying',()=>{
- for(const extra of [{proxyUrl:'https://synthetic.invalid'},{proxyCredential:'synthetic-only'},{sdkCaFile:'/tmp/ca'},{sdkOptionsSha256:'a'.repeat(64)},{model:'other'},{region:'eu-west-1'},{maxTurns:101},{maxCostMicroUSD:0},{maxOutputTokens:0}])assert.throws(()=>buildConversationOptions(runtime(extra),new AbortController()));
+ for(const extra of [{proxyUrl:'https://synthetic.invalid'},{proxyCredential:'synthetic-only'},{sdkCaFile:'/tmp/ca'},{sdkOptionsSha256:'a'.repeat(64)},{model:'other'},{region:'eu-west-1'},{maxTurns:MAX_RUN_TURNS+1},{maxCostMicroUSD:0},{maxOutputTokens:0}])assert.throws(()=>buildConversationOptions(runtime(extra),new AbortController()));
 });
 test('quality adjustment is one short native append, without a validation loop',()=>{
  const o=buildConversationOptions(runtime(),new AbortController());const append=o.systemPrompt.append;

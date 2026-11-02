@@ -16,6 +16,7 @@ import {USER_QUESTION_TOOL} from './capabilities/questions.mjs';
 import {PRODUCT_DEFINITIONS} from './product-definitions.mjs';
 import {sdkProviderEnvironment,NATIVE_CACHE_SETTINGS} from './provider.mjs';
 import {NATIVE_TASK_LIST_ID} from '../../../packages/contracts/runtime-0.2/files.mjs';
+import {MAX_RUN_TURNS} from '../../../packages/contracts/run-limits.mjs';
 /** @returns {never} */
 const fail=()=>{throw Error('RUNTIME_CONFIGURATION');};
 /** The claude_code preset is a terminal coding harness and tells the model to keep replies short. Meri answers people in a chat
@@ -29,7 +30,7 @@ export function buildConversationOptions(value,abortController,continuationConte
  // Per-task SDK configuration directories come only from the admitted preparation intent (remote task path); both or neither.
  const directories=[r.sdkConfigDirectory,r.sdkSecureStorageDirectory];if(directories.some(d=>d!==undefined)){if(directories.some(d=>typeof d!=='string'||!isAbsolute(d)||d.includes('/../')||d.endsWith('/')||d.includes('\0'))||r.sdkConfigDirectory===r.sdkSecureStorageDirectory||r.sdkConfigDirectory.startsWith(r.sdkSecureStorageDirectory+'/')||r.sdkSecureStorageDirectory.startsWith(r.sdkConfigDirectory+'/'))fail();}
  if(r.versions.sdk!=='0.3.295'||r.versions.cli!=='2.1.295')fail();
- if(!isAbsolute(r.cwd)||!r.cwd.endsWith(`/${r.binding.conversationId}`)||r.cwd.includes('/../')||['maxTurns','maxCostMicroUSD','maxOutputBytes','deadlineMs'].some(k=>!Number.isSafeInteger(r[k])||r[k]<1)||r.maxTurns>100||r.maxOutputBytes>1048576||typeof r.sessionStore?.load!=='function'||typeof r.sessionStore?.append!=='function')fail();
+ if(!isAbsolute(r.cwd)||!r.cwd.endsWith(`/${r.binding.conversationId}`)||r.cwd.includes('/../')||['maxTurns','maxCostMicroUSD','maxOutputBytes','deadlineMs'].some(k=>!Number.isSafeInteger(r[k])||r[k]<1)||r.maxTurns>MAX_RUN_TURNS||r.maxOutputBytes>1048576||typeof r.sessionStore?.load!=='function'||typeof r.sessionStore?.append!=='function')fail();
  // The immutable skill plugin image path is a runtime fact consumed by the capability layer, never discovered from cwd.
  if(r.skillPluginDirectory!==undefined)assertSkillPluginDirectory(r.skillPluginDirectory,r.cwd);
  // The Bash sandbox attestation is a runtime-preparation fact consumed by the capability layer (bash-sandbox.mjs).
