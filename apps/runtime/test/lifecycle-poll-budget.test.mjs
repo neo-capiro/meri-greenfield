@@ -11,10 +11,12 @@ import {SDK_MODEL_CONFIGURATION} from '../../control/conversations/usage.mjs';
 const origin='https://native.synthetic.invalid',credential='synthetic-task-capability',pollMs=3200;
 const delay=(ms,signal)=>new Promise((resolve,reject)=>{const timer=setTimeout(resolve,ms);signal?.addEventListener('abort',()=>{clearTimeout(timer);reject(signal.reason);},{once:true});});
 const lifecycleOperations=['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint'];
+// An upload page read crosses control's custody read twice and records its source observation before answering. Live
+// 2026-11-02 11:30Z the first Read of a fresh upload hit the 3s default (runner run-owner counter: one timeout) and failed the run.
 
-test('lifecycle control exchanges accept the lease-bounded session allowance; without it the 3s default still applies',async()=>{
+test('lifecycle control exchanges and upload page reads accept the lease-bounded session allowance; without it the 3s default still applies',async()=>{
  let at=Date.now();const start=at,client=createNativeCapabilityClient({configuration:{origin,maxResponseBytes:131072},credential,fetch:async()=>{at=start+3500;return Response.json({ok:true});},now:()=>at});
- for(const operation of lifecycleOperations){
+ for(const operation of [...lifecycleOperations,'runner/upload-source']){
   at=start;assert.deepEqual(await client.call(operation,{},{maxRequestMs:23000,deadlineMs:start+23000}),{ok:true});
   at=start;await assert.rejects(client.call(operation,{}),/DEADLINE/);
  }
