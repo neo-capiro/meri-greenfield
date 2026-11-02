@@ -33,6 +33,12 @@ mock.module('../control-ca-bundle.mjs',{namedExports:{
   cliState.order.push('composite');await cliState.composite?.();
  }
 }});
+mock.module('../material-receipt.mjs',{namedExports:{
+ async materializeMaterialReceipt(input){
+  assert.deepEqual(input,{expected:cliState.expected});
+  cliState.order.push('receipt');await cliState.receiptWrite?.();
+ }
+}});
 const {runMaterialInitCli}=await import('../material-init-cli.mjs');
 
 function cli(role='control'){
@@ -54,13 +60,21 @@ for(const role of ['control','schedule-worker'])test(`${role} ready is emitted a
  const state=cli(role);
  state.beforeMaterialized=async()=>{assert.equal(state.out,'');};
  state.composite=async()=>{assert.equal(state.out,'');assert.deepEqual(state.order,['materialize','materialized','composite']);};
+ state.receiptWrite=async()=>{assert.equal(state.out,'');assert.deepEqual(state.order,['materialize','materialized','composite','receipt']);};
  assert.equal(await runMaterialInitCli(['write','--control-node-ca'],state.ports),0);
- assert.deepEqual(state.order,['materialize','materialized','composite','ready']);
+ assert.deepEqual(state.order,['materialize','materialized','composite','receipt','ready']);
  assert.deepEqual(JSON.parse(state.out),{ready:true,role,fileCount:2});assert.equal(state.error,'');
  assert.doesNotMatch(state.out,new RegExp(canary));
 });
 
-test('composite refusal releases the exact static receipt, emits no ready and hides private error text',async()=>{
+test('receipt refusal after the composite releases the exact static receipt and emits no ready',async()=>{
+ const state=cli();state.receiptWrite=async()=>{throw Object.assign(Error(canary),{code:'STATIC_INIT_RECEIPT_REFUSED'});};
+ assert.equal(await runMaterialInitCli(['write','--control-node-ca'],state.ports),78);
+ assert.deepEqual(state.order,['materialize','materialized','composite','receipt','release']);assert.equal(state.out,'');
+ assert.equal(state.error,'STATIC_INIT_RECEIPT_REFUSED\n');assert.doesNotMatch(state.error,new RegExp(canary));
+});
+
+test('composite refusal releases the exact static receipt, writes no material receipt, emits no ready and hides private error text',async()=>{
  const state=cli();state.composite=async()=>{throw Object.assign(Error(canary),{code:'STATIC_INIT_CONTROL_CA_REFUSED'});};
  assert.equal(await runMaterialInitCli(['write','--control-node-ca'],state.ports),78);
  assert.deepEqual(state.order,['materialize','materialized','composite','release']);assert.equal(state.out,'');
