@@ -1,31 +1,46 @@
 /** Cohesive Control-side browser execution prerequisite, beside the native one (native-execution-prerequisite.mjs).
  *
- * Need: while control's compiled browser activation record is open, every run is admitted with `browser.enabled` and
- * the runtime mounts the browser port, whose preparation resolves this run's browser-only host; so the need is the
- * activation record itself, not a per-run read. Readiness is the browser allocation reader's read-only answer for this
- * run (`createPostgresHostAllocationReader.ready`): absent, not-ready, or ready with the canonical run's browserAdmitted
- * currentness. Every dependency await is raced against one owned operation lifetime bounded by the original execution
- * deadline and the provisioning effect allowance; polling never holds a transaction.
+ * Need: control's compiled browser activation record must be open AND the run's resolved browser policy (platform
+ * record, tenant settings, the actor's current role: the same `readBrowserPolicy` the host facts use) must be enabled.
+ * A tenant or role with the browser off gets no host and never waits for one; a held activation is an explicit none.
+ * Readiness is the browser allocation reader's read-only answer for this run (`createPostgresHostAllocationReader.ready`):
+ * absent, not-ready, or ready with the canonical run's browserAdmitted currentness. Every dependency await is raced
+ * against one owned operation lifetime bounded by the original execution deadline and the provisioning effect
+ * allowance; polling never holds a transaction.
  */
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {activationOpen} from '../worker/conversation/browser/activation.mjs';
+import {validateBrowserPolicy} from '../worker/conversation/browser/policy.mjs';
 
 const CODE='EXECUTION_BROWSER_PREREQUISITE_REFUSED';
 const fail=()=>{throw Object.assign(Error(CODE),{code:CODE});};
 const finite=value=>Number.isSafeInteger(value)&&value>0;
 export const BROWSER_NEED=Object.freeze({kind:'browser-only',hostMode:'browser-only'});
 
-export function createBrowserExecutionPrerequisite({allocations,activation,now=Date.now,requestTimeoutMs,effectTimeoutMs}){
- if(typeof allocations?.ready!=='function'||typeof now!=='function'||!finite(requestTimeoutMs)||!finite(effectTimeoutMs))fail();
+export function createBrowserExecutionPrerequisite({allocations,activation,policy,now=Date.now,requestTimeoutMs,effectTimeoutMs}){
+ if(typeof allocations?.ready!=='function'||typeof policy?.read!=='function'||typeof now!=='function'||!finite(requestTimeoutMs)||!finite(effectTimeoutMs))fail();
  const open=activationOpen(activation);
  const lifeFor=(deadlineMs,outerSignal,allowance)=>{
   const limit=Math.min(finite(deadlineMs)?deadlineMs:now()+allowance,now()+allowance);
   if(limit<=now())fail();
   return createOperationLifetime({now,deadlineMs:limit,signal:outerSignal,errorFactory:()=>Object.assign(Error(CODE),{code:CODE})});
  };
- async function need({signal}={}){signal?.throwIfAborted();return open?BROWSER_NEED:Object.freeze({kind:'none'});}
+ /** The run's resolved browser policy, read within one request budget; a failed or malformed read refuses (never "none"). */
+ async function enabled({binding,signal,deadlineMs}){
+  if(!open)return false;
+  const life=lifeFor(deadlineMs,signal,requestTimeoutMs);
+  try{
+   let resolved;
+   try{resolved=validateBrowserPolicy(await life.run(s=>policy.read({binding,signal:s,deadlineMs:life.deadline()})));}catch{fail();}
+   return resolved.enabled===true;
+  }finally{life.close();}
+ }
+ async function need({binding,signal,deadlineMs}={}){
+  signal?.throwIfAborted();
+  return await enabled({binding,signal,deadlineMs})?BROWSER_NEED:Object.freeze({kind:'none'});
+ }
  async function ready({binding,signal,deadlineMs}){
-  if(!open)return Object.freeze({status:'none'});
+  if(!await enabled({binding,signal,deadlineMs}))return Object.freeze({status:'none'});
   const life=lifeFor(deadlineMs,signal,effectTimeoutMs);
   try{
    for(;;){

@@ -297,9 +297,16 @@ export function assembleControl(options){
   effectTimeoutMs:NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS});
  const nativeNeed=nativePrerequisite?.need,nativeReady=nativePrerequisite?.ready;
  // A declared browser-host family also owns the run's browser-only host prerequisite: the need is control's open activation
- // record; readiness is the browser allocation reader over the same canonical currentness the router uses.
- const browserPrerequisite=browserHosts===null?undefined:createBrowserExecutionPrerequisite({allocations:browserHosts.allocations,
-  activation:compileBrowserActivation(configuration.browserActivation),now,requestTimeoutMs:configuration.limits.requestMs,effectTimeoutMs:NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS});
+ // record AND the run's resolved browser policy (the saved run's scopes, the actor's current role, the same readBrowserPolicy
+ // the host facts use); readiness is the browser allocation reader over the same canonical currentness the router uses.
+ // Without a role reader the policy cannot be resolved, so the prerequisite is not mounted and the broker's call refuses.
+ const browserPrerequisite=browserHosts===null||readCapabilityRole===undefined?undefined:createBrowserExecutionPrerequisite({allocations:browserHosts.allocations,
+  activation:compileBrowserActivation(configuration.browserActivation),now,requestTimeoutMs:configuration.limits.requestMs,effectTimeoutMs:NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS,
+  policy:{async read({binding,signal,deadlineMs}){
+   const saved=await store.read(binding,{after:0,limit:1},()=>signal?.throwIfAborted());
+   const role=await readCapabilityRole({binding,signal,deadlineMs});
+   return readBrowserPolicy({binding,scopes:saved.run.scopes,actorRole:role.actorRole,signal,deadlineMs});
+  }}});
  const browserNeed=browserPrerequisite?.need,browserReady=browserPrerequisite?.ready;
  const basic=createConversationService({uploadInputSource,sessions,store,dispatcher,versions:configuration.versions,modelCatalog:configuration.models,now,maxRequestMs:configuration.limits.requestMs,...(capabilityPolicy?{capabilityPolicy,readCapabilityRole}:{}),...(ports.selectedSkillAdmission?{selectedSkillAdmission:ports.selectedSkillAdmission}:{}),...(ports.selectedOutputPublication?{selectedOutputPublication:ports.selectedOutputPublication}:{}),...(ports.procedureAdmission?{procedureAdmission:ports.procedureAdmission}:{}),...(ports.siteWorkflowAdmission?{siteWorkflowAdmission:ports.siteWorkflowAdmission}:{}),...(retention?{retention:retention.gate}:{})});
  const rawService=createConversationLifecycleService({service:basic,...(ports.browserHosts?{browserHosts:ports.browserHosts}:{}),store,dispatcher,sessions,now,maxRequestMs:configuration.limits.requestMs,reconcileOriginal:createOriginalReconciler({native,now,timeoutMs:configuration.limits.requestMs}),nativeAdmission:ports.continuationAdmission,approvals:ports.approvals,retention:retention?retention.gate:null});
