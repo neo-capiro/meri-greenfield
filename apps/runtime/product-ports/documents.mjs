@@ -28,7 +28,7 @@ import {storageMethod} from '../../artifacts/storage/boundary.mjs';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {createRuntimeArtifactStorage,createRuntimeDocumentOptionsComposer} from '../artifacts/composition.mjs';
 import {createRuntimePreviewCustody} from '../artifacts/preview-custody.mjs';
-import {isRendererPort} from '../../artifacts/renderer.mjs';
+import {admittedConverter,isRendererPort} from '../../artifacts/renderer.mjs';
 import {compileRuntimeArtifactsConfiguration} from '../artifacts/configuration.mjs';
 import {registerDocumentsSessionBinder,bindDocumentsSessions} from '../artifacts/session-binding.mjs';
 import {createDocumentRevisionRunOwner} from '../artifacts/revision-composition.mjs';
@@ -112,7 +112,9 @@ export function documentsFamily(owners={}){
    const bound=late.current(),selectedClientId=value.clientResolution?.clientId;
    if(!bound||retention&&!bound.retention||!(selectedClientId===null||typeof selectedClientId==='string'))return [];
    const selection=await revision.selectionFor({binding:value.binding,signal:value.signal});
-   const documents=createRuntimeDocumentIntentPreparers({binding:value.binding,selectedClientId,sessions:bound.sessions,optionsOwner:late.owner,nativeCredentials:o.nativeCredentials,now,
+   // PDF is admitted for intents exactly as for the document application: the explicit switch AND an available renderer port.
+   const admitPdf=declared.pdfAdmission===true&&o.renderer!==undefined&&admittedConverter(o.renderer)!==null;
+   const documents=createRuntimeDocumentIntentPreparers({binding:value.binding,selectedClientId,sessions:bound.sessions,optionsOwner:late.owner,nativeCredentials:o.nativeCredentials,now,admitPdf,
     limits,...(selection?{revision:selection}:{}),...(bound.retention?{retention:bound.retention}:{})});
    if(!filing||selectedClientId===null||typeof value.readCurrent!=='function')return documents;
    return [...documents,createRuntimeAttachmentFilingPreparer({pool,binding:value.binding,scopes:value.scopes,selectedClientId,policyRevision:value.policyRevision,expiresAtMs:value.expiresAtMs,

@@ -37,7 +37,9 @@ const registered=(/** @type {{id:string,version:string}} */operation)=>{try{reso
  * `originals`/`disposition` data, so this is the same authority, not a copied list. */
 const declaredOriginals=new Set(catalog.originals.filter(o=>o.disposition==='deferred').map(o=>o.id));
 const admissible=(/** @type {{id:string,version:string}} */operation)=>registered(operation)||declaredOriginals.has(operation.id);
-const OPERATION=/^[a-z][a-z_]{0,62}$/u;
+const OPERATION=/^[a-z][a-z_]{0,62}$/u,FORMAT=/^[a-z0-9]{1,8}$/u;
+/** A document operation's declared formats in the offer: the owner's own admission (PDF only when its composition admits it). */
+const declaredFormats=value=>Array.isArray(value)&&value.length>=1&&value.length<=8&&value.every(f=>typeof f==='string'&&FORMAT.test(f))&&new Set(value).size===value.length;
 const key=(/** @type {{id:string,version:string}} */o)=>canonicalSha256({id:o.id,version:o.version});
 /** The closed fact of a failed offer, shared with the general-read snapshot (`capabilities/availability-failure.mjs`). */
 const offerFailure=availabilityFailure;
@@ -46,15 +48,16 @@ const offerFailure=availabilityFailure;
  * composed), and an absent port, ACCESS_DENIED or a malformed offer is decided: those keep the plain "not available" wording and
  * never invite a retry. @param {{code:string,layer:string}} failure */
 const transient=failure=>failure.code==='DEADLINE'||failure.code==='CANCELLED'||failure.code==='UNAVAILABLE'&&failure.layer==='runner';
-/** Validate the port's availability facts for this run; anything malformed, foreign or stale refuses.
- * @param {unknown} raw @param {any} binding @param {number} at @returns {Set<string>} */
+/** Validate the port's availability facts for this run; anything malformed, foreign or stale refuses. The result is keyed by
+ * exact `id@version` and carries each operation's declared formats (document rows), or undefined.
+ * @param {unknown} raw @param {any} binding @param {number} at @returns {Map<string,readonly string[]|undefined>} */
 export function assertIntentAvailability(raw,binding,at){
  try{
   const s=/** @type {any} */(data(own(raw,['binding','operations','checkedAtMs','expiresAtMs'])));
   if(canonicalSha256(s.binding)!==canonicalSha256(binding)||!Array.isArray(s.operations)||s.operations.length>INTENT_ROWS.length||
    !Number.isSafeInteger(s.checkedAtMs)||!Number.isSafeInteger(s.expiresAtMs)||s.checkedAtMs>at||s.expiresAtMs<=at)throw 0;
-  const keys=new Set();
-  for(const o of s.operations){own(o,['id','version']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible(o)||keys.has(key(o)))throw 0;keys.add(key(o));}
+  const keys=new Map();
+  for(const o of s.operations){own(o,['id','version'],['formats']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible({id:o.id,version:o.version})||keys.has(key(o))||o.formats!==undefined&&!declaredFormats(o.formats))throw 0;keys.set(key(o),o.formats===undefined?undefined:Object.freeze([...o.formats]));}
   return keys;
  }catch{throw fault('INTENT_AVAILABILITY_REFUSED');}
 }
@@ -86,6 +89,8 @@ export async function createIntentRuntime(configuration){
  try{initial=await read(c.signal);}catch(error){if(!profile)return null;unchecked=transient(report(error,started));}
  const available=gates(initial);if(!profile&&!available.length)return null;
  const exposed=new Set(available.map(r=>key(r.operation)));
+ /** The offered document formats by exact operation: the tool advertises these (never wider than the canonical request). */
+ const formats=new Map([...initial].filter(([k,value])=>value!==undefined&&exposed.has(k)));
  // Mid-run revocation or a narrowed composition makes a listed intent unavailable; it is never widened mid-run. A mid-run offer
  // loss is reported the same way; when transient this one call answers "could not be checked" instead of "not available".
  const stillAvailable=async(/** @type {{id:string,version:string}} */operation,/** @type {AbortSignal} */signal)=>{
@@ -94,7 +99,7 @@ export async function createIntentRuntime(configuration){
   try{offered=await read(signal);}catch(error){if(signal.aborted)throw fault('CANCELLED');if(transient(report(error,started)))throw Object.assign(fault('UNAVAILABLE'),{unchecked:true});return false;}
   return gates(offered).some(r=>key(r.operation)===key(operation));
  };
- const server=createIntentServer({available,...(mounted?{mounted,unchecked}:{}),binding,scopes,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,
+ const server=createIntentServer({available,...(mounted?{mounted,unchecked}:{}),...(formats.size?{formats}:{}),binding,scopes,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,
   prepare:call=>port.prepare.call(c.port,call)});
  return Object.freeze({available:Object.freeze(available.map(r=>r.operation)),
   sdkOptions:Object.freeze({mcpServers:Object.freeze({[INTENT_SERVER_NAME]:server.server}),allowedTools:server.allowedTools,canUseTool:server.canUseTool,hooks:server.hooks}),

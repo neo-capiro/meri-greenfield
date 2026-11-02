@@ -52,12 +52,15 @@ export function runnerIntentRequest(route,value){
  }
  return v;
 }
+/** A document operation's declared formats (the owner's own admission for this composition): a short closed list of lowercase tokens. */
+const FORMAT=/^[a-z0-9]{1,8}$/u;
+export const declaredFormats=value=>Array.isArray(value)&&value.length>=1&&value.length<=8&&value.every(f=>typeof f==='string'&&FORMAT.test(f))&&new Set(value).size===value.length;
 /** The availability facts a mount may release: this run's binding, closed operations, an unexpired window. Anything else refuses. */
 export function runnerIntentAvailability(raw,binding,at){
  try{
   const s=data(own(raw,['binding','operations','checkedAtMs','expiresAtMs']));
   if(hash(s.binding)!==hash(binding)||!Array.isArray(s.operations)||s.operations.length>MAX_OPERATIONS||!Number.isSafeInteger(s.checkedAtMs)||!Number.isSafeInteger(s.expiresAtMs)||s.checkedAtMs>at||s.expiresAtMs<=at)throw 0;
-  for(const o of s.operations){own(o,['id','version']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible(o))throw 0;}
+  for(const o of s.operations){own(o,['id','version'],['formats']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible({id:o.id,version:o.version})||o.formats!==undefined&&!declaredFormats(o.formats))throw 0;}
   return s;
  }catch{throw runnerIntentFault('UNAVAILABLE');}
 }

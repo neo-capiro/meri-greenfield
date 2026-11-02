@@ -92,3 +92,23 @@ test('an owner that completed the request from the trusted run explains its own 
  for(let i=0;i<2;i++)await assert.rejects(call(m),e=>e.code==='INVALID_ARGUMENTS'&&e.detail===detail);
  assert.equal(calls,1,'the refused delivery is answered from the journal');
 });
+
+test('a document draft is published to the conversation once (never on replay), the offer carries the owner\'s formats, and a lost publication keeps the draft',async()=>{
+ const c=commandComposition(),scopes=[{tenantId:c.binding.tenantId,kind:'private-user',resourceId:c.binding.actorId,policyRevision:'r1'}];
+ const version={artifactId:'7'.repeat(8)+'-7777-4777-8777-'+'7'.repeat(12),versionId:'8'.repeat(8)+'-8888-4888-8888-'+'8'.repeat(12),binding:c.binding,scopes};
+ const published=[];let prepared=0,down=false;
+ const preparer={binding:c.binding,operation:{id:'create_word',version:'0.2.0'},owner:'document',formats:['docx','txt','xml','pdf'],async prepare(){prepared++;return {status:'draft',version};}};
+ const authority={async check({selection,selectionSha256}){return {authorized:true,selectionSha256,binding:selection.binding,scopes,checkedAtMs:NOW,expiresAtMs:NOW+60000};}};
+ const build=(store,publishDraft)=>createIntentMount({binding:c.binding,preparers:[preparer],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000},enabled:true,resultRelease:authority,...(publishDraft?{publishDraft}:{})});
+ const store=createMemoryJournalStore(),m=build(store,async({version:v,signal})=>{assert.ok(signal instanceof AbortSignal);published.push(v);if(down)throw Error('conversation store down');});
+ const word=extra=>m.prepare({operation:{id:'create_word',version:'0.2.0'},arguments:{operation:'create_word',format:'docx',title:'Note',content:{blocks:[]}},deliveryId:delivery(3),...extra});
+ const out=await word();assert.equal(out.status,'draft');assert.deepEqual(out.version,version);
+ assert.deepEqual(published,[version],'published exactly once from the first preparation');
+ assert.deepEqual(await word(),out);assert.equal(prepared,1);assert.deepEqual(published,[version],'a replay is answered from the journal and publishes nothing');
+ down=true;const second=await word({deliveryId:delivery(4)});assert.equal(second.status,'draft');assert.equal(published.length,2,'the publication was attempted');
+ assert.deepEqual([...store.rows.values()].map(r=>r.state),['PREPARED','PREPARED'],'a failed publication never withdraws the prepared draft');
+ const availability=await m.readAvailability();assert.deepEqual(availability.operations,[{id:'create_word',version:'0.2.0',formats:['docx','txt','xml','pdf']}]);
+ const plain=build(createMemoryJournalStore());assert.equal((await plain.prepare({operation:{id:'create_word',version:'0.2.0'},arguments:{operation:'create_word'},deliveryId:delivery(5)})).status,'draft','no publication port: the draft is still prepared');
+ for(const formats of [[],['DOCX'],['docx','docx'],'docx'])assert.throws(()=>createIntentMount({binding:c.binding,preparers:[{...preparer,formats}],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000}}),code('INTENT_CONFIGURATION'),JSON.stringify(formats));
+ assert.throws(()=>createIntentMount({binding:c.binding,preparers:[preparer],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000},publishDraft:'yes'}),code('INTENT_CONFIGURATION'));
+});

@@ -41,18 +41,26 @@ const closed=code=>CODES.has(code)?code:'UNKNOWN';
  * registered with the canonical validator. */
 const explain=(operation,value)=>{try{return describeInputProblem(resolveOperationContract(operation).descriptor.inputSchema.id,value)?.slice(0,INTENT_DETAIL_MAX);}catch{return undefined;}};
 const detailOf=error=>{const d=error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined;return typeof d==='string'?d:undefined;};
-/** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */
+/** A document preparer may declare the formats its owner admits for this composition (`formats`), so the offer tells the
+ * worker exactly what the tool may advertise (PDF only when the document application admits it). Lowercase tokens only. */
+const FORMAT=/^[a-z0-9]{1,8}$/u;
+const declaredFormats=p=>{if(p.formats===undefined)return undefined;if(!Array.isArray(p.formats)||!p.formats.length||p.formats.length>8||p.formats.some(f=>typeof f!=='string'||!FORMAT.test(f))||new Set(p.formats).size!==p.formats.length)throw intentFault('INTENT_CONFIGURATION');return Object.freeze([...p.formats]);};
+/** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object,
+ *  publishDraft?:(value:{version:object,signal?:AbortSignal})=>Promise<unknown>}} configuration
+ *  `publishDraft`: the trusted composition's conversation publication for a document draft the owner just created (the run's
+ *  `artifact.available` event, so the transcript shows the file). Called once per first preparation, never on a replay; a
+ *  publication failure never withdraws the draft, which the intent journal and the library already hold. */
 export function createIntentMount(configuration){
- const c=own(configuration,['binding','preparers','journalStore','now','limits'],['enabled','resultRelease']),binding=data(c.binding),limits=data(c.limits);
+ const c=own(configuration,['binding','preparers','journalStore','now','limits'],['enabled','resultRelease','publishDraft']),binding=data(c.binding),limits=data(c.limits);
  validateShape('RunBinding',binding);own(limits,['maxRequestMs']);
- if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>60000||!Array.isArray(c.preparers))throw intentFault('INTENT_CONFIGURATION');
+ if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>60000||!Array.isArray(c.preparers)||c.publishDraft!==undefined&&typeof c.publishDraft!=='function')throw intentFault('INTENT_CONFIGURATION');
  const journal=createIntentJournal(c.journalStore),release=createIntentResultRelease({authority:c.resultRelease,binding,now:c.now}),byOperation=new Map();
  for(const p of c.preparers){
   // Only owner kinds with a canonical prepare-only path, for this run's exact binding, one preparer per operation.
   if(!OWNER_OPERATIONS[p?.owner]?.includes(p.operation?.id)||!(p.owner==='schedule'?scheduleOperationDeclared(p.operation?.version):VERSION.test(p.operation?.version))||typeof p.prepare!=='function'||canonicalSha256(p.binding)!==canonicalSha256(binding)||byOperation.has(p.operation.id))throw intentFault('INTENT_CONFIGURATION');
   byOperation.set(p.operation.id,p);
  }
- const operations=Object.freeze([...byOperation.values()].map(p=>p.operation));
+ const operations=Object.freeze([...byOperation.values()].map(p=>{const formats=declaredFormats(p);return Object.freeze({...p.operation,...(formats?{formats}:{})});}));
  const lifetime=signal=>createOperationLifetime({deadlineMs:c.now()+limits.maxRequestMs,now:c.now,signal,errorFactory:code=>intentFault(code)});
  return Object.freeze({
   async readAvailability(value={}){
@@ -100,6 +108,8 @@ export function createIntentMount(configuration){
     // A lost settlement acknowledgement leaves the delivery PENDING: the result is withheld as UNKNOWN, never retried.
     // Custody is durable, but release still requires fresh authority and the original expiry. A refused release never redispatches.
     try{await life.run(s=>journal.settle({...key,state:'PREPARED',outcome:{result,release:original},signal:s}));}catch{throw intentFault('UNKNOWN');}
+    // The draft now exists durably; its conversation event is a projection of it, so a lost publication is not a lost draft.
+    if(c.publishDraft&&preparer.owner==='document'&&result?.status==='draft'){try{await life.run(s=>c.publishDraft({version:result.version,signal:s}));}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}}
     return await release.release({...selected,owner:preparer.owner,result,original});
    }catch(error){const code=closed(error?.code);throw intentFault(code,undefined,code==='INVALID_ARGUMENTS'?detailOf(error):undefined);}finally{life.close();}
   },
