@@ -6,7 +6,7 @@ import {RETENTION_SWEEP_BUDGET} from '../../../packages/runtime/retention-sweep-
 const control='synthetic-control-secret-'.repeat(3),run='synthetic-run-credential';
 
 test('control and runtime routes use separate credentials and closed request shapes',async()=>{
- const calls=[];const owner=Object.fromEntries(['readiness','kickoff','status','stop','admitted','settle','retentionSweep'].map(name=>[name,async value=>{
+ const calls=[];const owner=Object.fromEntries(['readiness','kickoff','status','stop','admitted','settle','retentionSweep','browserPrerequisite'].map(name=>[name,async value=>{
   if(['admitted','settle'].includes(name)&&value.credential!==run)throw Object.assign(Error('denied'),{code:'EXECUTION_AUTHORITY_REFUSED'});
   calls.push({name,value});return {accepted:true};}]));
  const app=createAgentCoreControlApplication({owner,controlCredential:control});
@@ -23,6 +23,10 @@ test('control and runtime routes use separate credentials and closed request sha
  assert.equal((await post('/v1/retention/sweep',{after:null},run)).status,403);assert.equal(calls.length,3);
  assert.equal((await post('/v1/retention/sweep',{after:null,subject:binding},control)).status,400);assert.equal(calls.length,3);
  assert.equal((await post('/v1/retention/sweep',{after:null},control)).status,200);assert.equal(calls[3].name,'retentionSweep');assert.equal(calls[3].value.credential,undefined);
+ const prerequisite={binding,executionId:'b'.repeat(64)};
+ assert.equal((await post('/v1/execution/browser/prerequisite',prerequisite,run)).status,403);assert.equal(calls.length,4);
+ assert.equal((await post('/v1/execution/browser/prerequisite',{...prerequisite,hostMode:'browser-only'},control)).status,400);assert.equal(calls.length,4);
+ assert.equal((await post('/v1/execution/browser/prerequisite',prerequisite,control)).status,200);assert.equal(calls[4].name,'browserPrerequisite');assert.equal(calls[4].value.credential,undefined);
  assert.equal(await app.handle(new Request('https://control.example.test/unrelated')),null);
 });
 

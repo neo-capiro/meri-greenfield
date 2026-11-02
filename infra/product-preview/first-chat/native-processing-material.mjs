@@ -21,7 +21,7 @@ const keys=Object.keys(NATIVE_PATHS);
 export function parseNativeProcessing(raw){
  if(raw===undefined)return undefined;
  try{
-  const v=own(raw,['enabled'],['deployment','watchdog','observerKeyId','maxRequestMs','materialSha256']);
+  const v=own(raw,['enabled'],['deployment','watchdog','observerKeyId','maxRequestMs','materialSha256','browserDeployment']);
   if(typeof v.enabled!=='boolean')fail();
   if(!v.enabled){if(Object.keys(v).length!==1)fail();return {enabled:false};}
   const d=compileNativeDeployment(v.deployment),w=own(v.watchdog,['stateMachineVersionArn','definitionSha256','qualificationEvidenceSha256','definitionReadback']);
@@ -37,7 +37,14 @@ export function parseNativeProcessing(raw){
    typeof v.observerKeyId!=='string'||!/^[A-Za-z0-9_-]{1,64}$/u.test(v.observerKeyId)||
    !Number.isSafeInteger(v.maxRequestMs)||v.maxRequestMs<1||v.maxRequestMs>30000)fail();
   const pins=own(v.materialSha256,keys);if(keys.some(k=>!HEX.test(pins[k])))fail();
-  return structuredClone({...v,deployment:d,watchdog:w,materialSha256:pins});
+  // The browser-only host purpose: its own image, launch and bootstrap document on the SAME account, placement, observer
+  // and control connection (certificates, endpoint, policy digest) as the native host, so one worker authority serves both.
+  const b=v.browserDeployment===undefined?undefined:compileNativeDeployment(v.browserDeployment);
+  if(b!==undefined&&(b.accountId!==d.accountId||b.region!==d.region||canonicalJson(b.placement)!==canonicalJson(d.placement)||
+   canonicalJson(b.physicalObserver)!==canonicalJson(d.physicalObserver)||canonicalJson(b.bootstrapSpec.control)!==canonicalJson(d.bootstrapSpec.control)||
+   b.bootstrapSpec.issuerCaCertificate!==d.bootstrapSpec.issuerCaCertificate||b.sourceCommit!==d.sourceCommit||b.imageDigest===d.imageDigest||
+   b.launch.ImageId===d.launch.ImageId))fail();
+  return structuredClone({...v,deployment:d,watchdog:w,materialSha256:pins,...(b===undefined?{}:{browserDeployment:b})});
  }catch{fail();}
 }
 const cert=b=>new X509Certificate(b);
@@ -76,10 +83,11 @@ export function composeNativeProcessing({feature,material={},deployment,pki,nowM
    maxRequestMs:f.maxRequestMs,observer:{keyId:f.observerKeyId,keyPath:NATIVE_PATHS.observerKey},
    deployment:{accountId:d.accountId,region:d.region,amiId:d.launch.ImageId,vpcId:d.placement.vpcId,subnetId:d.placement.subnetId,
     securityGroupId:d.placement.securityGroupIds[0],rootDeviceName:'/dev/xvda'},
+   ...(f.browserDeployment===undefined?{}:{browserDeployment:{amiId:f.browserDeployment.launch.ImageId}}),
   }}};
   const {definitionReadback,...watchdog}=f.watchdog;
   const worker={enabled:true,databaseFile:NATIVE_PATHS.databaseConnection,issuerCaCertFile:NATIVE_PATHS.issuerCaCertificate,
-   issuerCaKeyFile:NATIVE_PATHS.issuerCaKey,deployment:d,watchdog};
+   issuerCaKeyFile:NATIVE_PATHS.issuerCaKey,deployment:d,...(f.browserDeployment===undefined?{}:{browserDeployment:f.browserDeployment}),watchdog};
   const entries=names=>names.map(k=>[NATIVE_PATHS[k],Buffer.from(m[k])]);
   return {control,worker,files:{control:entries(['issuerCaCertificate','controlClientCertificate','controlClientKey','observerKey']),
    worker:entries(['databaseConnection','issuerCaCertificate','issuerCaKey'])},pins:{...f.materialSha256},materialNotAfterMs:client.validToDate.getTime(),

@@ -31,7 +31,7 @@ function fixture(t,options={}){
  const lifecycle=new EventEmitter(),frame={locator(){return {async evaluateAll(){return structuredClone(state.fields);}};}};
  const page={url:()=>state.url,frames:()=>[frame],mainFrame:()=>frame,isClosed:()=>false,viewportSize:()=>({width:800,height:600}),
   on:(...args)=>lifecycle.on(...args),off:(...args)=>lifecycle.off(...args),
-  keyboard:{async insertText(text){await state.onInput?.(text);},async press(key){await state.onInput?.(key);}},
+  keyboard:{async insertText(text){await state.onInput?.(text);},async down(key){await state.onInput?.(key);},async up(){}},
   async screenshot(){const png=Buffer.alloc(33);Buffer.from([137,80,78,71,13,10,26,10]).copy(png);png.write('IHDR',12);png.writeUInt32BE(800,16);png.writeUInt32BE(600,20);return png;},
   async ariaSnapshot(){await options.capture?.(state);return state.text;}};
  const context={pages:()=>[page],async close(){state.events.push('context');}};
@@ -109,8 +109,8 @@ test('user relay values are masked on resume and a released lease cannot send in
  const x=fixture(t),session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
  const lease=await displayed(session,x.page);let inputs=0;
  x.state.onInput=async text=>{inputs++;x.state.fields=[{...secret(text),type:'text',autocomplete:''}];x.state.text=text;};
- await session.userInput({...lease,page:x.page,input:{kind:'text',text:'POST-LEASE-VALUE'}});
- session.handBack();await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}}),/STALE_LEASE/);
+ await session.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'text',text:'POST-LEASE-VALUE'}]}});
+ session.handBack();await assert.rejects(session.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'key',action:'down',key:'Enter'}]}}),/STALE_LEASE/);
  await assert.rejects(session.resume({explicit:false}),/RESUME_REFUSED/);
  const response=await session.resume({explicit:true});assert.doesNotMatch(JSON.stringify(response),/POST-LEASE-VALUE/);
  assert.equal(inputs,1);assert.equal(session.state().state,'agent');
@@ -130,19 +130,19 @@ test('cancelled or invalid takeover admission leaves the next valid takeover ava
 test('native input uses one per-lease event bucket and refuses a whole over-budget press before injection',async t=>{
  let clock=0,inputs=0;const x=fixture(t,{now:()=>clock}),session=await createPinnedBrowserSession(x.args);
  t.after(()=>session.destroy({trigger:'conversation-end'}));x.state.onInput=async()=>{inputs++;};
- const lease=await displayed(session,x.page),press=()=>session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});
+ const lease=await displayed(session,x.page),press=()=>session.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'key',action:'down',key:'Enter'},{type:'key',action:'up',key:'Enter'}]}});
  for(let n=0;n<60;n++)await press();assert.equal(inputs,60);
  await assert.rejects(press(),/RATE_LIMITED/);assert.equal(inputs,60);assert.equal(session.state().state,'user');
  clock+=1000;for(let n=0;n<30;n++)await press();await assert.rejects(press(),/RATE_LIMITED/);assert.equal(inputs,90);
  session.handBack();await assert.rejects(press(),/STALE_LEASE/);await session.resume({explicit:true});
- const next=await displayed(session,x.page);await session.userInput({...next,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,91);
+ const next=await displayed(session,x.page);await session.userInput({...next,page:x.page,input:{leaseEpoch:next.leaseEpoch,events:[{type:'key',action:'down',key:'Enter'},{type:'key',action:'up',key:'Enter'}]}});assert.equal(inputs,91);
 });
 
 test('hand-back during input authority checks prevents the delayed native event',async t=>{
  let handingBack=false,inputs=0,session;const x=fixture(t,{capture:()=>{if(handingBack){handingBack=false;session.handBack();}}});
  session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
  const lease=await displayed(session,x.page);x.state.onInput=async()=>{inputs++;};handingBack=true;
- await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'text',text:'Synthetic private value'}]}}),/USER_INPUT_UNKNOWN/);
  assert.equal(inputs,0);
 });
 
@@ -150,9 +150,9 @@ test('invalid input cannot refresh idle control or leave admission busy after an
  let clock=0,inputs=0;const x=fixture(t,{now:()=>clock});x.args.deadlineMs=700000;
  const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
  const lease=await displayed(session,x.page);x.state.onInput=async()=>{inputs++;};
- await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'},signal:{}}));
- await session.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}});assert.equal(inputs,1);
- clock=599999;await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:''}}));
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'key',action:'down',key:'Enter'}]},signal:{}}));
+ await session.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'key',action:'down',key:'Enter'}]}});assert.equal(inputs,1);
+ clock=599999;await assert.rejects(session.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'text',text:''}]}}));
  clock=600001;assert.equal(session.state().state,'returning');
 });
 
@@ -172,7 +172,7 @@ test('revocation during native input preflight prevents keyboard dispatch',async
  let preflight=false,performed=false;const x=fixture(t,{capture:state=>{if(preflight)state.refused=true;}});
  const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
  const lease=await displayed(session,x.page);x.state.onInput=async()=>{performed=true;};preflight=true;
- await assert.rejects(session.userInput({...lease,page:x.page,input:{kind:'text',text:'Synthetic private value'}}),/USER_INPUT_UNKNOWN/);
+ await assert.rejects(session.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'text',text:'Synthetic private value'}]}}),/USER_INPUT_UNKNOWN/);
  assert.equal(performed,false);
 });
 test('source revocation blocks page dispatch',async t=>{
@@ -229,7 +229,7 @@ test('host workflow disablement denies takeover and leased user input without in
   const x=hostedWorkflow(t),session=await x.open();t.after(()=>session.destroy({trigger:'conversation-end'}));
   const lease=leased?await displayed(x.state.user,x.page):null;
   x.state.answer.enabled=false;let performed=false;x.native.onInput=async()=>{performed=true;};
-  await assert.rejects(leased?x.state.user.userInput({...lease,page:x.page,input:{kind:'key',key:'Enter'}}):x.state.user.takeover(),/BROWSER_(AUTHORITY_REFUSED|USER_INPUT_UNKNOWN)/);
+  await assert.rejects(leased?x.state.user.userInput({...lease,page:x.page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'key',action:'down',key:'Enter'}]}}):x.state.user.takeover(),/BROWSER_(AUTHORITY_REFUSED|USER_INPUT_UNKNOWN)/);
   assert.equal(performed,false);await session.destroy({trigger:'revocation'});
  }
 });

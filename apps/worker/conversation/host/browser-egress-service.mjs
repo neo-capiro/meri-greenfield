@@ -16,9 +16,9 @@ const refuse=code=>Object.freeze({ok:false,code});
  * bounded active lease. `maxFreshMs`/`refreshEveryMs` are required reviewed deployment inputs; the module imposes a
  * 30 s ceiling, not a product revocation SLO. No proxy route is safe until the host launcher separately proves that
  * the browser user can reach only this proxy and that its own namespace cannot reach trusted control or metadata. */
-export async function startBrowserHostEgressService({allocation,binding,readCurrent,resolve,now=Date.now,maxFreshMs,refreshEveryMs,onDecision}={}){
+export async function startBrowserHostEgressService({allocation,binding,readCurrent,resolve,now=Date.now,maxFreshMs,refreshEveryMs,onDecision,startProxy=startEgressProxy}={}){
  const host=assertHostAllocation(allocation),run=assertHostRunBinding(host,binding);
- if(typeof readCurrent!=='function'||typeof resolve!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxFreshMs)||maxFreshMs<2||maxFreshMs>MAX_HOST_CURRENTNESS_MS||!Number.isSafeInteger(refreshEveryMs)||refreshEveryMs<1||refreshEveryMs>Math.floor(maxFreshMs/2)||onDecision!==undefined&&typeof onDecision!=='function')throw fault('HOST_EGRESS_CONFIGURATION');
+ if(typeof startProxy!=='function'||typeof readCurrent!=='function'||typeof resolve!=='function'||typeof now!=='function'||!Number.isSafeInteger(maxFreshMs)||maxFreshMs<2||maxFreshMs>MAX_HOST_CURRENTNESS_MS||!Number.isSafeInteger(refreshEveryMs)||refreshEveryMs<1||refreshEveryMs>Math.floor(maxFreshMs/2)||onDecision!==undefined&&typeof onDecision!=='function')throw fault('HOST_EGRESS_CONFIGURATION');
  let proxy,control,grantDigest,grantExpiresAtMs=0,untilMs=0,leaseMonoDeadline=0,revoked=false,closing,refreshTimer,expiryTimer,refreshInFlight;
  // A wall-clock rollback cannot add time to a lease after the control read. Keep the largest observed wall time
  // advancing by elapsed monotonic time, including the interval between receipt validation and timer scheduling.
@@ -41,7 +41,9 @@ export async function startBrowserHostEgressService({allocation,binding,readCurr
    return decision;},
   revoke(){control?.revoke();},
  });
- proxy=await startEgressProxy({control:gate,httpPort:0,...(onDecision?{onDecision}:{})});
+ // In production the proxy is a separate process under its own uid (`egress/proxy-process.mjs`); it asks this gate.
+ proxy=await startProxy({control:gate,httpPort:0,...(onDecision?{onDecision}:{})});
+ if(!Number.isSafeInteger(proxy?.ports?.http)||typeof proxy?.close!=='function')throw fault('HOST_EGRESS_CONFIGURATION');
  const endpoint=`http://127.0.0.1:${proxy.ports.http}`;
  const current=async(policySha256,signal)=>{
   const at=effectiveNow(),deadline=Math.min(maxFreshMs,host.leaseDeadlineMs-at,grantExpiresAtMs-at,
@@ -72,7 +74,7 @@ export async function startBrowserHostEgressService({allocation,binding,readCurr
    finally{refreshInFlight=undefined;}})();
   return refreshInFlight;
  }
- return Object.freeze({endpoint,
+ return Object.freeze({endpoint,...(Number.isSafeInteger(proxy.pid)?{pid:proxy.pid}:{}),
   async grant(grant,{signal}={}){
    if(revoked||control||grantDigest)throw fault('HOST_GRANT_REFUSED');
    let candidate,pinned;try{pinned=data(grant);candidate=createEgressControl({grant:pinned,resolve,now});}catch{terminate();throw fault('HOST_GRANT_REFUSED');}

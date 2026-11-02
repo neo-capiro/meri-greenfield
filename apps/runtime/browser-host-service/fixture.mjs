@@ -45,6 +45,7 @@ export function baseInput(events = [], overrides = {}) {
     allocation, binding, hostIdentity, cwd, deadlineMs: FIXTURE_NOW_MS + 60000, now: () => FIXTURE_NOW_MS,
     policy, installation: contextInstallation, upstream: {createConnection() {}}, controls: {bind() {}},
     current: async () => ({binding}), siteWorkflows: {}, hold: async () => ({}), dispose: async () => ({disposed: true}),
+    retirement: {async prepare() { events.push('retirement-prepare'); }, async wait() { events.push('retirement-wait'); }, async retain() { events.push('retirement-retain'); }},
     browserClient: {async readCurrent() { events.push('current'); return {allocation, binding, policySha256, phase: 'active', checkedAtMs: FIXTURE_NOW_MS, currentUntilMs: FIXTURE_NOW_MS + 1000}; }},
     maxFreshMs: 1000,
     workspaceOwnership: {sdkUid: 1001, sdkGid: 1001, browserUid: 2002, browserGid: 2002},

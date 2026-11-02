@@ -9,7 +9,8 @@ import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity} from '
 import {hostWideCgroup} from '../host-wide-process-observer.mjs';
 import {parseProcCgroup} from '../process-observer.mjs';
 
-export const NATIVE_SDK_READBACK_SCHEMA='meri-d005-sdk-kernel-readback/1';
+export const LEADER_KERNEL_READBACK_SCHEMA='meri-d005-leader-kernel-readback/1';
+const LEADER_KINDS=Object.freeze(['sdk','browser']);
 const fault=(code,cause)=>Object.assign(new Error(code),{code,...(cause?{cause}:{})});
 const fail=code=>{throw fault(code);};
 const pidOk=pid=>Number.isSafeInteger(pid)&&pid>1&&pid<=2147483647;
@@ -36,7 +37,8 @@ const startTicks=raw=>{
  const values=raw.slice(end+2).trim().split(/\s+/u),value=values[19];
  if(!/^\d+$/u.test(value))fail('HOST_NATIVE_READBACK_UNKNOWN');return value;
 };
-const hiddenCgroupfs=raw=>{
+/** The launcher's hidden cgroupfs view: ONE read-only tmpfs over /sys/fs/cgroup and no cgroup2 mount in the process. */
+export const assertHiddenCgroupfs=raw=>{
  const mounts=raw.trim().split('\n').filter(Boolean).map(line=>{
   const halves=line.split(' - ');if(halves.length!==2)fail('HOST_NATIVE_READBACK_UNKNOWN');
   const left=halves[0].split(' '),right=halves[1].split(' ');
@@ -51,21 +53,23 @@ const hiddenCgroupfs=raw=>{
 /** Default filesystem readback. The injection seam is for focused tests only; production uses procfs and sysfs. */
 export function createLinuxNativeReadbackPorts(){return Object.freeze({readFile,stat});}
 
-/** Measure one paused or running SDK leader against the pinned allocation, cgroup and namespace. Snapshot checks
- * before and after the reads reject observed PID replacement. A successful result is partial diagnostic evidence,
+/** Measure one paused or running leader (the SDK child of a legacy host, or the browser child of a browser-only host)
+ * against the pinned allocation, its exact run cgroup leaf and its network namespace. Snapshot checks before and after
+ * the reads reject observed PID replacement. A successful result is partial diagnostic evidence about ONE process,
  * deliberately not a HOST_CGROUP_CONFINEMENT_SCHEMA authority receipt. */
-export async function readSdkLeaderKernelFacts({allocation,binding,hostIdentity,sdkLeaderPid,networkProof,
+export async function readLeaderKernelFacts({allocation,binding,hostIdentity,leaderKind,leaderPid,networkProof,
  expectedUid,expectedGid,groupIdentity,ports=createLinuxNativeReadbackPorts(),now=Date.now}={}){
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding),i=assertD005HostIdentity(hostIdentity,b,a);
  const group=hostWideCgroup({allocation:a,binding:b,hostIdentity:i}),aSha=canonicalSha256(a),bSha=canonicalSha256(b);
- if(!pidOk(sdkLeaderPid)||!uidOk(expectedUid)||!uidOk(expectedGid)||typeof now!=='function'||
+ if(!LEADER_KINDS.includes(leaderKind)||!pidOk(leaderPid)||!uidOk(expectedUid)||!uidOk(expectedGid)||typeof now!=='function'||
   typeof ports?.readFile!=='function'||typeof ports?.stat!=='function'||
-  networkProof?.verified!==true||networkProof.kind!=='sdk'||networkProof.allocationSha256!==aSha||
+  networkProof?.verified!==true||networkProof.kind!==leaderKind||networkProof.allocationSha256!==aSha||
   networkProof.bindingSha256!==bSha||!/^[0-9]+$/u.test(networkProof.namespaceDev)||
   !/^[0-9]+$/u.test(networkProof.namespaceIno)||
   typeof groupIdentity?.dev!=='string'||typeof groupIdentity?.ino!=='string')
   fail('HOST_NATIVE_READBACK_CONFIGURATION');
- const proc=`/proc/${sdkLeaderPid}`;
+ const leaderRelative=leaderKind==='sdk'?group.sdkLeaderRelative:`${group.relative}/${bSha}/browser`;
+ const proc=`/proc/${leaderPid}`;
  try{
   const before=startTicks(await ports.readFile(`${proc}/stat`,'utf8'));
   const [boot,status,cgroup,mounts,netns,mntns,hostMntns,groupStat]=await Promise.all([
@@ -75,18 +79,18 @@ export async function readSdkLeaderKernelFacts({allocation,binding,hostIdentity,
    ports.stat('/proc/self/ns/mnt'),ports.stat(group.path),
   ]);
   const after=startTicks(await ports.readFile(`${proc}/stat`,'utf8'));
-  if(before!==after||boot.trim()!==i.bootId||parseProcCgroup(cgroup)!==group.sdkLeaderRelative||
+  if(before!==after||boot.trim()!==i.bootId||parseProcCgroup(cgroup)!==leaderRelative||
    String(groupStat.dev)!==groupIdentity.dev||String(groupStat.ino)!==groupIdentity.ino||
    String(netns.dev)!==networkProof.namespaceDev||String(netns.ino)!==networkProof.namespaceIno||
    canonicalSha256(nsIdentity(mntns))===canonicalSha256(nsIdentity(hostMntns)))
    fail('HOST_NATIVE_READBACK_REFUSED');
   fourIds(status,'Uid',expectedUid);fourIds(status,'Gid',expectedGid);noCaps(status);
   if(exactLine(status,'NoNewPrivs')!=='1')fail('HOST_NATIVE_READBACK_REFUSED');
-  hiddenCgroupfs(mounts);
+  assertHiddenCgroupfs(mounts);
   const observedAtMs=now();if(!Number.isSafeInteger(observedAtMs))fail('HOST_NATIVE_READBACK_UNKNOWN');
-  return Object.freeze({schema:NATIVE_SDK_READBACK_SCHEMA,allocationSha256:aSha,bindingSha256:bSha,
-   hostIdentitySha256:canonicalSha256(i),sdkLeaderPid,processStartTicks:before,
-   cgroupRelative:group.sdkLeaderRelative,groupIdentitySha256:canonicalSha256(groupIdentity),
+  return Object.freeze({schema:LEADER_KERNEL_READBACK_SCHEMA,allocationSha256:aSha,bindingSha256:bSha,
+   hostIdentitySha256:canonicalSha256(i),leaderKind,leaderPid,processStartTicks:before,
+   cgroupRelative:leaderRelative,groupIdentitySha256:canonicalSha256(groupIdentity),
    networkNamespaceDev:networkProof.namespaceDev,networkNamespaceIno:networkProof.namespaceIno,
    mountNamespaceDev:String(mntns.dev),mountNamespaceIno:String(mntns.ino),uid:expectedUid,gid:expectedGid,
    zeroCapabilities:true,noNewPrivs:true,cgroupfsUnavailable:true,observedAtMs,
@@ -100,8 +104,8 @@ export async function readSdkLeaderKernelFacts({allocation,binding,hostIdentity,
 export function createFailClosedNativeVerifier({allocation,binding,hostIdentity,sdkNetwork,sdkUid,sdkGid,
  ports=createLinuxNativeReadbackPorts(),now=Date.now}={}){
  const a=assertHostAllocation(allocation),b=assertHostRunBinding(a,binding),i=assertD005HostIdentity(hostIdentity,b,a);
- const inspectSdkLeader=request=>readSdkLeaderKernelFacts({allocation:a,binding:b,hostIdentity:i,
-  sdkLeaderPid:request.sdkLeaderPid,networkProof:sdkNetwork.proof,expectedUid:sdkUid,
+ const inspectSdkLeader=request=>readLeaderKernelFacts({allocation:a,binding:b,hostIdentity:i,leaderKind:'sdk',
+  leaderPid:request.sdkLeaderPid,networkProof:sdkNetwork.proof,expectedUid:sdkUid,
   expectedGid:sdkGid,groupIdentity:request.groupIdentity,ports,now});
  return Object.freeze({
   inspectSdkLeader,

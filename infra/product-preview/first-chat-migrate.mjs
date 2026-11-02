@@ -167,6 +167,8 @@ export const PLAN=Object.freeze([
  // Ordinal 85: a FAILED preparation may keep the owner's bounded plain-words detail beside its code (the 0002 outcome CHECK admitted
  // only {code}; on 2 Nov every explained refusal rolled back and stayed PENDING). Same constraint name; no data, grant or index change.
  ['migration','apps/control/intents/migrations/0006_failed_outcome_detail.sql','3e29055f13282aa0cc590639662d533f06a152df2d9e3bde2723540228b52ef6','integration'],
+ // Ordinal 86: browser-only hosts join the provisioned lifecycle (reserve/dispatch/bootstrap/admit) on the unchanged table.
+ ['migration','apps/control/browser-hosts/migrations/0008_browser_only_provisioning.sql','ed9163245b8aaa7a04a9c51b1a3bfeeca0b3f4defa78a85f9b7b8019cd2c3414','integration'],
 ].map(([kind,path,pinned,declaredStage],index)=>Object.freeze({ordinal:index+1,kind,path,pinned,
  name:kind==='migration'?path:`${path}#${kind.slice(6)}`,
  stage:declaredStage??(kind==='phase:temporal_grants'?'temporal':'meri')})));

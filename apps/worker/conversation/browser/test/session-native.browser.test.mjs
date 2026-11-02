@@ -53,11 +53,11 @@ test('pinned native MCP snapshots resist hostile page prototypes and retain mask
   });
   const view=await session.view({...lease,page});
   assert.equal(view.image.mimeType,'image/png');assert.ok(Buffer.from(view.image.data,'base64').length>100);
-  await session.userInput({...lease,frameId:view.frameId,page,input:{kind:'text',text:'PRIVATE_LEASE'}});
+  await session.userInput({...lease,frameId:view.frameId,page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'text',text:'PRIVATE_LEASE'}]}});
   assert.equal(await page.locator('input').count(),0,'Page removed the credential field synchronously');
   session.handBack();await assert.rejects(session.resume({explicit:false}),/RESUME_REFUSED/);
   const resumed=JSON.stringify(await session.resume({explicit:true}));assert.doesNotMatch(resumed,/PRIVATE_LEASE/);
-  await assert.rejects(session.userInput({...lease,frameId:view.frameId,page,input:{kind:'key',key:'Enter'}}),/STALE_LEASE/);
+  await assert.rejects(session.userInput({...lease,frameId:view.frameId,page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'key',action:'down',key:'Enter'}]}}),/STALE_LEASE/);
   await assert.rejects(session.call({requestId:'image',tool:'browser_take_screenshot',args:{}}),/IMAGES_WITHHELD/);
   current=false;await assert.rejects(capture('revoked'),/BROWSER_CALL_REFUSED/);
  }finally{if(session)await session.destroy({trigger:'conversation-end'});else await context.close();await browser.close();}
@@ -74,7 +74,7 @@ test('native same-URL reload during current-authority checks cannot receive queu
    current:async()=>{if(reload){reload=false;await page.reload();assert.equal(page.mainFrame(),frame);assert.equal(page.url(),url);reloaded=true;}},
    hold:async()=>({outcome:'APPLIED'}),ports:{waitForExit:async()=>{await browser.close();return {exited:true};},dispose:async()=>({disposed:true})}});
   const lease=await session.takeover(),view=await session.view({...lease,page});reload=true;
-  await assert.rejects(session.userInput({...lease,frameId:view.frameId,page,input:{kind:'text',text:'SYNTHETIC_PRIVATE_INPUT'}}),/USER_INPUT_UNKNOWN/);
+  await assert.rejects(session.userInput({...lease,frameId:view.frameId,page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'text',text:'SYNTHETIC_PRIVATE_INPUT'}]}}),/USER_INPUT_UNKNOWN/);
   assert.equal(reloaded,true);assert.equal(inputs,0);
  }finally{if(session)await session.destroy({trigger:'conversation-end'});else await context.close();await browser.close();}
 });
@@ -88,10 +88,10 @@ test('native input refuses a displayed document after reload before admission, t
    policy:{tools:['browser_snapshot'],timeouts:{actionMs:5000,navigationMs:5000}},now:Date.now,deadlineMs:Date.now()+30000,
    current:async()=>{},hold:async()=>({outcome:'APPLIED'}),ports:{waitForExit:async()=>{await browser.close();return {exited:true};},dispose:async()=>({disposed:true})}});
   const lease=await session.takeover(),old=await session.view({...lease,page});await page.reload();
-  await assert.rejects(session.userInput({...lease,frameId:old.frameId,page,input:{kind:'text',text:'DO_NOT_INJECT'}}),/FRAME_REFUSED/);
+  await assert.rejects(session.userInput({...lease,frameId:old.frameId,page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'text',text:'DO_NOT_INJECT'}]}}),/FRAME_REFUSED/);
   assert.equal(inputs,0);assert.equal(session.state().state,'user');
   const fresh=await session.view({...lease,page});assert.notEqual(old.frameId,fresh.frameId);
-  await session.userInput({...lease,frameId:fresh.frameId,page,input:{kind:'text',text:'SYNTHETIC_PRIVATE'}});assert.equal(inputs,1);
+  await session.userInput({...lease,frameId:fresh.frameId,page,input:{leaseEpoch:lease.leaseEpoch,events:[{type:'text',text:'SYNTHETIC_PRIVATE'}]}});assert.equal(inputs,1);
   session.handBack();assert.doesNotMatch(JSON.stringify(await session.resume({explicit:true})),/SYNTHETIC_PRIVATE/);
  }finally{if(session)await session.destroy({trigger:'conversation-end'});else await context.close();await browser.close();}
 });

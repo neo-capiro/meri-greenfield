@@ -1,19 +1,24 @@
 /** Interaction classification over a scripted page: structural facts only, fail toward asking. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {classifyInteraction,INTERACTION_CLASSES} from '../interaction-classifier.mjs';
+import vm from 'node:vm';
+import {classifyInteraction,INTERACTION_CLASSES,inspectTargets} from '../interaction-classifier.mjs';
+/** The page function as Playwright runs it: compiled from its source text in an empty context, so a reference to any
+ * module constant throws exactly as it does in Chromium. */
+const pageFunction=vm.runInNewContext(`(${inspectTargets.toString()})`,{});
 
 /** A page whose frames answer `aria-ref=<ref>` with the given element facts (already in utility-world shape). */
-function page(refs,{frames=1,throwing=false}={}){
- const frame={locator(selector){const ref=selector.replace(/^aria-ref=/u,'');return {async evaluateAll(fn,selectors,options){
-  if(throwing)throw Error('frame detached');
-  assert.equal(options?.world,'utility','inspection runs in the pristine utility world');
-  const nodes=refs[ref]??[];return fn(nodes.map(describe),selectors);}};}};
+function page(refs,{frames=1,throwing=false,focused=[]}={}){
+ const frame={locator(selector){const ref=selector===':focus'?null:selector.replace(/^aria-ref=/u,'');const nodes=()=>ref===null?focused:refs[ref]??[];
+  return {async count(){if(throwing)throw Error('frame detached');return nodes().length;},
+   async evaluate(_fn,argument){if(throwing)throw Error('frame detached');
+    // The page function runs as in the browser: recompiled from its source, with no module scope.
+    const list=nodes();if(list.length!==1)throw Error('strict mode violation');return pageFunction(describe(list[0]),argument);}};}};
  return {frames:()=>Array.from({length:frames},()=>frame)};
 }
 /** Builds a DOM-like node from a terse description: {tag,type?,autocomplete?,form?:{fields:[...]},owner?:{fields:[...]}}
  * `form` is the enclosing form (closest), `owner` the IDL form owner (a control outside its form that names it via form=). */
 function describe(d){
- const attrs={type:d.type,autocomplete:d.autocomplete};
+ const attrs={type:d.type,autocomplete:d.autocomplete,name:d.name,id:d.id,inputmode:d.inputmode,maxlength:d.maxlength,placeholder:d.placeholder,'aria-label':d.label};
  const node={tagName:d.tag.toUpperCase(),getAttribute:name=>attrs[name]??null,matches:selector=>d.matches===selector,closest:selector=>selector==='form'&&d.form?form(d.form):null,
   ...(['button','input','textarea','select'].includes(d.tag)?{form:d.owner?form(d.owner):d.form?form(d.form):null}:{})};
  return node;
@@ -66,4 +71,41 @@ test('anything that cannot be inspected asks: unknown ref, duplicate ref across 
  assert.equal(await classifyInteraction({tool:'browser_navigate',input:{url:'https://x.example'},pages:[p]}),'submission','non-interaction tools never reach the classifier; a stray call asks');
  const aborted=new AbortController();aborted.abort();
  await assert.rejects(classifyInteraction({tool:'browser_click',input:{ref:'a1'},pages:[p],signal:aborted.signal}));
+});
+
+test('Enter aliases and line breaks submit: "\\n" and "\\r" keys, and typed or filled text containing a line break',async()=>{
+ const p=page({e2:[{tag:'input',type:'text',form:searchForm}]});
+ for(const key of ['\n','\r','Control+\n'])
+  assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key},pages:[p]}),'submission',JSON.stringify(key));
+ for(const text of ['budget\n','a\rb','line one\r\nline two'])
+  assert.equal(await classifyInteraction({tool:'browser_type',input:{ref:'e2',text},pages:[p]}),'submission',JSON.stringify(text));
+ assert.equal(await classifyInteraction({tool:'browser_fill_form',input:{fields:[{ref:'e2',value:'x\n'}]},pages:[p]}),'submission');
+ assert.equal(await classifyInteraction({tool:'browser_type',input:{ref:'e2',text:'no break'},pages:[p]}),'routine');
+});
+test('a key pressed while a credential field is focused is refused like typing into it, in any frame; an uninspectable focus asks',async()=>{
+ for(const field of [pw,{tag:'input',type:'text',autocomplete:'one-time-code'}]){
+  for(const key of ['a','1','Enter','Tab'])
+   assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key},pages:[page({},{focused:[field],frames:2})]}),'credential',`${JSON.stringify(field)} ${key}`);
+ }
+ assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key:'a'},pages:[page({},{focused:[{tag:'input',type:'search'}]})]}),'routine');
+ assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key:'Enter'},pages:[page({},{focused:[{tag:'input',type:'search'}]})]}),'submission');
+ assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key:'a'},pages:[page({},{throwing:true})]}),'submission');
+});
+test('one-time-code fields without autocomplete are credentials by name, id, label or a short numeric "code" field',async()=>{
+ const p=page({o1:[{tag:'input',type:'text',name:'otp'}],o2:[{tag:'input',type:'text',id:'verification-code'}],o3:[{tag:'input',type:'text',inputmode:'numeric',maxlength:'6',placeholder:'Enter code'}],
+  o4:[{tag:'input',type:'tel',label:'Authentication code'}],n1:[{tag:'input',type:'text',inputmode:'numeric',maxlength:'5',name:'zip'}],n2:[{tag:'input',type:'text',name:'promo-code'}]});
+ for(const ref of ['o1','o2','o3','o4'])assert.equal(await classifyInteraction({tool:'browser_type',input:{ref,text:'123456'},pages:[p]}),'credential',ref);
+ for(const ref of ['n1','n2'])assert.equal(await classifyInteraction({tool:'browser_type',input:{ref,text:'12345'},pages:[p]}),'routine',ref);
+});
+
+test('the page function uses only its arguments: compiled with no module scope it inspects ordinary and credential elements',()=>{
+ const isolated=vm.runInNewContext(`(${inspectTargets.toString()})`,{});
+ const facts=[describe({tag:'a'}),describe({tag:'input',type:'text',autocomplete:'cc-number'}),describe({tag:'input',type:'text'})].map(node=>isolated(node,{selectors:[],autocomplete:['cc-number']}));
+ assert.deepEqual(facts.map(f=>f.credential),[false,true,false]);
+ assert.throws(()=>vm.runInNewContext('CREDENTIAL_AUTOCOMPLETE',{}),/not defined/,'a module constant would throw in the page');
+});
+test('Space in any chord asks; other modified keys stay routine',async()=>{
+ const p=page({});
+ for(const key of ['Control+Space','Alt+Space','Meta+Space','Shift+Space'])assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key},pages:[p]}),'submission',key);
+ for(const key of ['Control+a','Alt+ArrowLeft'])assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key},pages:[p]}),'routine',key);
 });

@@ -4,9 +4,13 @@
  * Nothing is pre-loaded (no storage state, secrets file, extension or saved session). `disposeBrowserState` removes
  * the profile, HOME and output directories and verifies that none remains; the per-conversation host destruction
  * required by D005 is the backstop. Nothing is created on import or by `browserPaths`. */
-import {join} from 'node:path';
+import {join,posix} from 'node:path';
 import {lstat,realpath,rm} from 'node:fs/promises';
-export const browserPaths=cwd=>Object.freeze({root:join(cwd,'.browser'),profile:join(cwd,'.browser','profile'),output:join(cwd,'.browser','output'),home:join(cwd,'.browser','home')});
+/** Host workspaces are Linux paths: a posix-absolute cwd keeps posix separators on every development host, so the posix
+ * checks of the host observers see the same path the workspace owners build; a platform path (Windows test directories)
+ * keeps the platform's own joins and normalization. */
+const joinUnder=cwd=>(...parts)=>(cwd.startsWith('/')?posix.join:join)(cwd,...parts);
+export const browserPaths=cwd=>{const j=joinUnder(cwd);return Object.freeze({root:j('.browser'),profile:j('.browser','profile'),output:j('.browser','output'),home:j('.browser','home')});};
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const gone=async path=>{try{await lstat(path);return false;}catch(e){if(e?.code==='ENOENT')return true;throw e;}};
 /** Removes all browser state of one conversation. Call after the Playwright MCP process has exited. Refuses when the

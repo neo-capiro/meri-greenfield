@@ -1,7 +1,7 @@
 /** Retained /2 state must pass semantic joins as well as canonical-byte integrity. */
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
-import {assertNativeHostAllocation,assertHostRunBindingPin} from '../../../packages/contracts/native-lifecycle.mjs';
+import {assertProvisionedHostAllocation,assertHostRunBindingPin} from '../../../packages/contracts/native-lifecycle.mjs';
 import {assertNativeDeclaration,assertNativeObserverAllocationJoin} from './native-reservations.mjs';
 import {NATIVE_DECLARATION_V2} from '../../../packages/contracts/native-observer.mjs';
 import {readPhysicalSlots,initialPhysicalContexts,beginOrdinaryPhysical,emptyPhysicalJournal,assertPhysicalRequest,
@@ -19,7 +19,7 @@ export function physicalKey(raw){
   !['originalBindingSha256','declarationSha256'].every(n=>/^[0-9a-f]{64}$/u.test(k[n])))fail();return k;
 }
 export function readNativePhysicalRow(row,key){
- const a=assertNativeHostAllocation(row.allocation_json),b=assertHostRunBindingPin(a,row.original_binding_json),
+ const a=assertProvisionedHostAllocation(row.allocation_json),b=assertHostRunBindingPin(a,row.original_binding_json),
   d=assertNativeDeclaration(row.declaration_json);
  if(d.schema!==NATIVE_DECLARATION_V2||row.host_id!==key.hostId||Number(row.generation)!==key.generation||
   a.hostId!==key.hostId||a.generation!==key.generation||hash(a)!==row.allocation_sha256||

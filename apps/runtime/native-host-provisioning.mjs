@@ -11,6 +11,7 @@ import {createOperationLifetime} from '../../packages/runtime/operation-lifetime
 import {NATIVE_PHYSICAL_OPERATION_MS} from '../../packages/contracts/native-physical-absence.mjs';
 import {assertNativeLaunch,compileNativeDeployment} from './native-deployment-configuration.mjs';
 import {NATIVE_DECLARATION_V2,nativeObserverLaunchRequest,nativeObserverLaunchTags,nativeObserverDeadline} from '../../packages/contracts/native-observer.mjs';
+import {PROVISIONED_HOST_MODES} from '../../packages/contracts/native-lifecycle.mjs';
 export {assertNativeLaunch};
 
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
@@ -21,8 +22,11 @@ const requiredLaunch=['ImageId','InstanceType','SubnetId','SecurityGroupIds','Ia
 const optionalLaunch=['UserData','MetadataOptions','BlockDeviceMappings','EbsOptimized'];
 const allowedLaunch=new Set([...requiredLaunch,...optionalLaunch]);
 
-export function nativeHostId({binding,generation}){
- const h=hash({schema:'meri-native-host-provision/1',binding,generation});
+/** Deterministic host identity per provisioned purpose: the two purposes of one conversation run never share a host id. */
+const HOST_ID_SCHEMA=Object.freeze({'native-processing':'meri-native-host-provision/1','browser-only':'meri-browser-host-provision/1'});
+export function nativeHostId({binding,generation,hostMode='native-processing'}){
+ const schema=HOST_ID_SCHEMA[hostMode];if(schema===undefined)throw fault('NATIVE_HOST_PROVISION_REFUSED');
+ const h=hash({schema,binding,generation});
  return `${h.slice(0,8)}-${h.slice(8,12)}-4${h.slice(13,16)}-8${h.slice(17,20)}-${h.slice(20,32)}`;
 }
 /** Acyclic: token hashes only the protected pre-token intent (never token, tags or declaration digest). */
@@ -96,8 +100,10 @@ export function createEc2NativeHostLaunchPort({ec2,launch}){
 }
 
 export const NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS=90000;
+/** `hostMode` selects the provisioned purpose this coordinator owns; `deployment` is that purpose's protected record. */
 export function createNativeHostProvisioning({writer,launch,material,deployment,authority,watchdog,now=Date.now,
- effectTimeoutMs=NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS,ownerId=randomUUID}){
+ effectTimeoutMs=NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS,ownerId=randomUUID,hostMode='native-processing'}){
+ if(!PROVISIONED_HOST_MODES.includes(hostMode))throw fault('NATIVE_HOST_PROVISION_CONFIGURATION');
  if(!writer||typeof writer.reserveNativeHost!=='function'||typeof writer.claimNativeHostDispatch!=='function'||
   typeof writer.recordNativeHostInstance!=='function'||typeof writer.readNativeReservation!=='function'||
   typeof writer.admit!=='function')throw fault('NATIVE_HOST_PROVISION_CONFIGURATION');
@@ -114,7 +120,7 @@ export function createNativeHostProvisioning({writer,launch,material,deployment,
  const launchSpec=d.launch,placement=d.placement,maxLifetimeMs=d.maxLifetimeMs;
 
  function verifyReservation(reservation,binding,generation,hostId){
-  if(reservation.allocation.hostId!==hostId||reservation.allocation.generation!==generation||
+  if(reservation.allocation.hostMode!==hostMode||reservation.allocation.hostId!==hostId||reservation.allocation.generation!==generation||
    hash(reservation.originalBinding)!==hash(binding)||reservation.declaration.imageDigest!==d.imageDigest||
    reservation.declaration.bootstrapSha256!==d.bootstrapSha256||
    (reservation.declaration.nativeHelperSha256??undefined)!==(d.nativeHelperSha256??undefined)||
@@ -171,7 +177,7 @@ export function createNativeHostProvisioning({writer,launch,material,deployment,
     !UUID.test(binding.conversationId)||!UUID.test(binding.runId)||!Number.isSafeInteger(binding.writerFence)||
     binding.writerFence<1||!Number.isSafeInteger(generation)||generation<1)
     throw fault('NATIVE_HOST_PROVISION_REFUSED');
-   const hostId=nativeHostId({binding,generation});
+   const hostId=nativeHostId({binding,generation,hostMode});
    const life=createOperationLifetime({deadlineMs:Math.min(now()+effectTimeoutMs,...(Number.isSafeInteger(requestDeadline)?[requestDeadline]:[])),now,signal:callerSignal,
     errorFactory:code=>fault(code==='CANCELLED'?'NATIVE_HOST_PROVISION_CANCELLED':
      code==='DEADLINE'?'NATIVE_HOST_PROVISION_DEADLINE':code)});
@@ -236,7 +242,7 @@ export function createNativeHostProvisioning({writer,launch,material,deployment,
     if(!Number.isSafeInteger(leaseDeadlineMs)||leaseDeadlineMs<=now()||leaseDeadlineMs>now()+900000)throw fault('NATIVE_HOST_PROVISION_REFUSED');
     life.limitDeadline(leaseDeadlineMs);
     const allocation=Object.freeze({schema:'meri-conversation-host-allocation/1',tenantId:binding.tenantId,
-     conversationId:binding.conversationId,generation,hostId,hostMode:'native-processing',imageDigest:d.imageDigest,
+     conversationId:binding.conversationId,generation,hostId,hostMode,imageDigest:d.imageDigest,
      leaseDeadlineMs});
     const placementSha256=hash(placement),allocationSha256=hash(allocation);
     const intent=Object.freeze({binding,generation,hostId,ownerInstanceId,leaseDeadlineMs,accountId:d.accountId,
