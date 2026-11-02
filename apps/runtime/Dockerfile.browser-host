@@ -1,26 +1,34 @@
 # syntax=docker/dockerfile:1
 # Provisioned browser-only host image (linux/arm64, c7g). It carries the host service sources, Playwright MCP 0.0.83 with
 # its pinned playwright-core and Chromium build, the two root-only C helpers compiled from this tree, and the network
-# tools the per-run compartment and the proxy-uid nft guard need (iproute2, nftables). Identities: sdk 1001 (workspace
-# owner only), browser 2002, host relay 3001, local relay 3002, egress proxy 3003. Build once per source commit, push to
-# meri-greenfield/browser-host, scan the digest (0 HIGH/CRITICAL), then bake the browser host AMI from it exactly as the
-# native host AMI is baked from the runtime image. The host service runs as root on the instance (it owns cgroups, network
-# namespaces and the helpers); every browser, relay and workspace process is dropped to its fixed unprivileged identity by
-# the helpers, never by this image.
+# tools the per-run compartment and the proxy-uid nft guard need (iproute2, nftables, procps). Identities: sdk 1001
+# (workspace owner only), browser 2002, host relay 3001, local relay 3002, egress proxy 3003. Build once per source commit,
+# push to meri-greenfield/browser-host, scan the digest (0 HIGH/CRITICAL), then bake the browser host AMI from it exactly as
+# the native host AMI is baked from the runtime image. The host service runs as root on the instance (it owns cgroups,
+# network namespaces and the helpers); every browser, relay and workspace process is dropped to its fixed unprivileged
+# identity by the helpers, never by this image.
 #
 # Pins:
 #  - NODE_IMAGE is the same immutable linux/arm64 Node 24.22.1 trixie-slim child manifest the runtime image uses
-#    (infra/product-preview/runtime-packages.lock.json: nodeImageUri).
-#  - DEBIAN_SNAPSHOT fixes every apt candidate, and the base image's own packages are upgraded to it (security fixes
-#    such as expat and brotli land in the base packages); versions are recorded from the real build (dpkg inventory below)
-#    instead of being guessed per architecture here. Bump the snapshot deliberately and re-scan.
+#    (infra/product-preview/runtime-packages.lock.json: nodeImageUri). It is the build stage only: npm, the helper
+#    compiler and the Chromium download run there, and its Debian packages are never part of the exported image.
+#  - HOST_IMAGE is the same immutable Wolfi base the runtime image uses (runtimeImageUri). The exported image is Wolfi
+#    glibc with the official Node binary copied from the build stage, as the runtime image does.
+#  - DEBIAN_SNAPSHOT fixes the build stage's apt candidates (the helper compiler).
+#  - infra/browser-host/browser-host-packages.lock.json pins the exported image's whole Wolfi closure: every archive by
+#    exact URL and sha256, resolved from the retained vendor-signed index the runtime image also installs from
+#    (infra/product-preview/native-apk-index; replacing that index means re-resolving this closure). The archives are
+#    staged below as one local apk repository and installed offline exactly as the runtime image installs its native
+#    closure from runtime-packages.lock.json. Re-resolve the closure from a newer signed index deliberately and re-scan.
 #  - The browser-host lockfile (apps/runtime/browser-host-service/image/package-lock.json) pins @playwright/mcp 0.0.83,
 #    playwright and playwright-core 1.64.0-alpha-1790635538000 by registry integrity; regenerate it only with
 #    `npm install --package-lock-only --ignore-scripts` in that directory when image/package.json changes.
 ARG NODE_IMAGE=public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8
+ARG HOST_IMAGE=cgr.dev/chainguard/wolfi-base@sha256:4e354e15b41a49dc249d07a4e38974c4ef6db8a4cc70059c4d625f5cdaa92657
 ARG DEBIAN_SNAPSHOT=20261102T000000Z
 
-FROM ${NODE_IMAGE} AS snapshot
+# ---------------------------------------------------------------- build: dependencies, helpers, Chromium
+FROM ${NODE_IMAGE} AS builder
 ARG DEBIAN_SNAPSHOT
 RUN test "$(uname -m)" = aarch64 && test "$(node --version)" = v24.22.1
 # Signed historical snapshot, HTTP first only to obtain ca-certificates, then HTTPS for everything else (as in
@@ -35,12 +43,8 @@ RUN set -eux; \
       > /etc/apt/sources.list.d/meri-snapshot.sources; \
     apt-get update; apt-get install -y --no-install-recommends --no-remove ca-certificates; \
     sed -i 's#http://snapshot.debian.org#https://snapshot.debian.org#g' /etc/apt/sources.list.d/meri-snapshot.sources; \
-    apt-get update; apt-get upgrade -y --no-install-recommends; \
+    apt-get update; apt-get install -y --no-install-recommends --no-remove gcc libc6-dev make; \
     apt-get clean; rm -rf /var/lib/apt/lists/*
-
-# ---------------------------------------------------------------- build: dependencies, helpers, Chromium
-FROM snapshot AS builder
-RUN set -eux; apt-get update; apt-get install -y --no-install-recommends --no-remove gcc libc6-dev make; apt-get clean; rm -rf /var/lib/apt/lists/*
 WORKDIR /opt/meri
 # The host service imports shared worker and runtime modules; their locked dependency sets are installed exactly as the
 # runtime image installs them (the Claude Agent SDK package arrives as a module dependency of shared worker modules and is
@@ -84,17 +88,161 @@ RUN set -eux; \
     test "$(wc -l < /opt/meri/browser-host/chromium-hashes.txt)" = 2; cat /opt/meri/browser-host/chromium-hashes.txt; \
     test -z "$(find /opt/meri/browsers -perm /6000 -type f -print)"
 
+# ---------------------------------------------------------------- the pinned Wolfi closure as one local apk repository
+# Every archive of infra/browser-host/browser-host-packages.lock.json, by exact URL and sha256, in two staging stages
+# (Docker's layer chain limit, as in the runtime image), assembled beside the retained vendor-signed index in a build-only
+# stage. The host stage reads it through a read-only mount, so the archives never become image layers.
+FROM ${HOST_IMAGE} AS host-repo-1
+ADD --checksum=sha256:ad05c3a03fd0f7711bf614b0cdb971f045986f2e63396587bb7f7900d7f5d6b6 https://packages.wolfi.dev/os/aarch64/alsa-lib-1.2.16.1-r5.apk /tmp/meri-browser-host-repo/aarch64/alsa-lib-1.2.16.1-r5.apk
+ADD --checksum=sha256:258840eec648177fc224de417203101b0f77b813e8abb79749a367e9858ca3c5 https://packages.wolfi.dev/os/aarch64/at-spi2-core-2.62.1-r0.apk /tmp/meri-browser-host-repo/aarch64/at-spi2-core-2.62.1-r0.apk
+ADD --checksum=sha256:9cefe4bc29a914b6cd104d3130fa1efee96e029094427f15aa77e9366eff8649 https://packages.wolfi.dev/os/aarch64/avahi-libs-0.9_rc5-r3.apk /tmp/meri-browser-host-repo/aarch64/avahi-libs-0.9_rc5-r3.apk
+ADD --checksum=sha256:d2a458ae71b3f6f65302a8dd61c35f75f3eef87aeb5583a3f97523e99698cf49 https://packages.wolfi.dev/os/aarch64/ca-certificates-bundle-20261020-r0.apk /tmp/meri-browser-host-repo/aarch64/ca-certificates-bundle-20261020-r0.apk
+ADD --checksum=sha256:e101b8329bc777d7de8a03d755d9b31e409f500b3717d16d6d5f6b807c94a4fa https://packages.wolfi.dev/os/aarch64/cairo-1.18.6-r1.apk /tmp/meri-browser-host-repo/aarch64/cairo-1.18.6-r1.apk
+ADD --checksum=sha256:0d4deeb0c6f70a4afca1241a8250c5be5252a50bba72acff28d5f36dad9610d9 https://packages.wolfi.dev/os/aarch64/cups-libs-2.4.20-r0.apk /tmp/meri-browser-host-repo/aarch64/cups-libs-2.4.20-r0.apk
+ADD --checksum=sha256:557291f896a68fb812ccfcb1c69f464e0436b2ba12984d586bdd360c3dbba6c9 https://packages.wolfi.dev/os/aarch64/db-2026.10.8-r0.apk /tmp/meri-browser-host-repo/aarch64/db-2026.10.8-r0.apk
+ADD --checksum=sha256:a1958aa73cf8bc63c7710c1c2d1530d08efb9e264df0067d00076a0ba29d2baa https://packages.wolfi.dev/os/aarch64/dbus-libs-1.16.2-r11.apk /tmp/meri-browser-host-repo/aarch64/dbus-libs-1.16.2-r11.apk
+ADD --checksum=sha256:2f0ff74cd04a5c9c6a43404bb058e6fcf6e02b64d24d7f9f29740fee51372cd2 https://packages.wolfi.dev/os/aarch64/font-liberation-2.1.5-r6.apk /tmp/meri-browser-host-repo/aarch64/font-liberation-2.1.5-r6.apk
+ADD --checksum=sha256:3965bc3f28e389169f80c38d1c5943e01c7f4294bb3995906d36de623d7ac45f https://packages.wolfi.dev/os/aarch64/fontconfig-config-2.18.3-r5.apk /tmp/meri-browser-host-repo/aarch64/fontconfig-config-2.18.3-r5.apk
+ADD --checksum=sha256:6a1c8ee704ddabfce02d9de61162337295c96ed929c68254206878790115c492 https://packages.wolfi.dev/os/aarch64/freetype-2.14.3-r7.apk /tmp/meri-browser-host-repo/aarch64/freetype-2.14.3-r7.apk
+ADD --checksum=sha256:10e9f02a52182bb0a205d03de175d8b92956dd242b397634c51b75bc959cff45 https://packages.wolfi.dev/os/aarch64/fribidi-1.0.18-r2.apk /tmp/meri-browser-host-repo/aarch64/fribidi-1.0.18-r2.apk
+ADD --checksum=sha256:7c809eeb4a0a2a7ecbbbe92a70abecfccfc5c17ea40144798e8b389dc25ac7e8 https://packages.wolfi.dev/os/aarch64/gdbm-1.26-r9.apk /tmp/meri-browser-host-repo/aarch64/gdbm-1.26-r9.apk
+ADD --checksum=sha256:9e6b26ea422fff211c7316042ee1a2dd1c1a6092100095c889969442ee2e876e https://packages.wolfi.dev/os/aarch64/glib-2.90.1-r1.apk /tmp/meri-browser-host-repo/aarch64/glib-2.90.1-r1.apk
+ADD --checksum=sha256:d7e9265b9fe468e044b9118355516d5fbdbaa8ff4dfc79674da5353165830b64 https://packages.wolfi.dev/os/aarch64/glibc-2.44-2.44-r11.apk /tmp/meri-browser-host-repo/aarch64/glibc-2.44-2.44-r11.apk
+ADD --checksum=sha256:1797c9cb5086b454d297a3031185f57fea2dbb42b27f811e89329bcc586b9c4e https://packages.wolfi.dev/os/aarch64/glibc-2.44-locale-posix-2.44-r11.apk /tmp/meri-browser-host-repo/aarch64/glibc-2.44-locale-posix-2.44-r11.apk
+ADD --checksum=sha256:b38a6630cf85f3d726b36d8a9544c3d2a643b30d182af30e0ff634a8e000e2c7 https://packages.wolfi.dev/os/aarch64/gmp-6.3.0-r12.apk /tmp/meri-browser-host-repo/aarch64/gmp-6.3.0-r12.apk
+ADD --checksum=sha256:f5d946497eb9b022ae41ccf8f14a8662e27ddba20b2b4e4e0b445f2f29a1c258 https://packages.wolfi.dev/os/aarch64/graphite2-1.3.15-r6.apk /tmp/meri-browser-host-repo/aarch64/graphite2-1.3.15-r6.apk
+ADD --checksum=sha256:ee71c3eefb6a1b2ed56ca0093e45c352abf565b1c5ba4f06ba835fa4bc4f2f32 https://packages.wolfi.dev/os/aarch64/harfbuzz-15.0.0-r3.apk /tmp/meri-browser-host-repo/aarch64/harfbuzz-15.0.0-r3.apk
+ADD --checksum=sha256:1d905d5460c86353803641efef68921fcf7484a7dc2e22e9190631128329bac1 https://packages.wolfi.dev/os/aarch64/iproute2-7.3.0-r0.apk /tmp/meri-browser-host-repo/aarch64/iproute2-7.3.0-r0.apk
+ADD --checksum=sha256:6e24a043a86356a6bd557d360bcebfa666c5ac2f67235ade1d4a34155d76aefc https://packages.wolfi.dev/os/aarch64/iptables-1.8.13-r5.apk /tmp/meri-browser-host-repo/aarch64/iptables-1.8.13-r5.apk
+ADD --checksum=sha256:34dbe1e783a3522aeeef8991547288ee7e1cbb079bf1d7da5806ef36ee0cb73b https://packages.wolfi.dev/os/aarch64/jansson-2.15.1-r4.apk /tmp/meri-browser-host-repo/aarch64/jansson-2.15.1-r4.apk
+ADD --checksum=sha256:fc8f8f28e6472244ebad031f585fcb86a0b870c4f4e5f1415943b76afbf3e4b0 https://packages.wolfi.dev/os/aarch64/keyutils-libs-1.6.3-r41.apk /tmp/meri-browser-host-repo/aarch64/keyutils-libs-1.6.3-r41.apk
+ADD --checksum=sha256:6a933ca1514f76081d839361a01313cae7c5381a5a9e8130ef38cb75d00b20f0 https://packages.wolfi.dev/os/aarch64/krb5-conf-1.0-r10.apk /tmp/meri-browser-host-repo/aarch64/krb5-conf-1.0-r10.apk
+ADD --checksum=sha256:bde3fb18cc946f07cde48c022c690650ba8476f27fa973a1cbaa7a4deea36c39 https://packages.wolfi.dev/os/aarch64/krb5-libs-1.22.2-r5.apk /tmp/meri-browser-host-repo/aarch64/krb5-libs-1.22.2-r5.apk
+ADD --checksum=sha256:a69b97f4e99dc564709b7987a1f58241c201e9b4237bfcfce8427a7423a0d530 https://packages.wolfi.dev/os/aarch64/ld-linux-2.44-2.44-r11.apk /tmp/meri-browser-host-repo/aarch64/ld-linux-2.44-2.44-r11.apk
+ADD --checksum=sha256:5abe496100e40e784f0a7bb642706470a5f088e886e0145e91c3181020cd3264 https://packages.wolfi.dev/os/aarch64/libLLVM-23-23.1.4-r1.apk /tmp/meri-browser-host-repo/aarch64/libLLVM-23-23.1.4-r1.apk
+ADD --checksum=sha256:0ee271413c53d5e92d080bdc78e3c0889327beca7881573792ef7441e13e8b66 https://packages.wolfi.dev/os/aarch64/libatk-1.0-2.62.1-r0.apk /tmp/meri-browser-host-repo/aarch64/libatk-1.0-2.62.1-r0.apk
+ADD --checksum=sha256:b0fdf40685ec4239a38a0cbd91af1778c4759221b03c3b167c4109a9b6238c05 https://packages.wolfi.dev/os/aarch64/libatk-bridge-2.0-2.62.1-r0.apk /tmp/meri-browser-host-repo/aarch64/libatk-bridge-2.0-2.62.1-r0.apk
+ADD --checksum=sha256:efad3885bf5dc52dc3642c980b69c4c1674bfa663f19cbdd6b2da84eeecb57a7 https://packages.wolfi.dev/os/aarch64/libblkid-2.42.4-r2.apk /tmp/meri-browser-host-repo/aarch64/libblkid-2.42.4-r2.apk
+ADD --checksum=sha256:bda1160fbce0dfc1427cae05e34043b3d9ce38b9dc4791ea27ba927b6f9753ed https://packages.wolfi.dev/os/aarch64/libbpf-1.8.0-r0.apk /tmp/meri-browser-host-repo/aarch64/libbpf-1.8.0-r0.apk
+ADD --checksum=sha256:06c2952c9cf5e70b6124062e43e03fc595de6a53a664ddea7844244490ac9811 https://packages.wolfi.dev/os/aarch64/libbrotlicommon1-1.2.1-r3.apk /tmp/meri-browser-host-repo/aarch64/libbrotlicommon1-1.2.1-r3.apk
+ADD --checksum=sha256:71d31cd2059f16addb085309f144ba6792761c9fb9dcd820e4b11b1c30c85264 https://packages.wolfi.dev/os/aarch64/libbrotlidec1-1.2.1-r3.apk /tmp/meri-browser-host-repo/aarch64/libbrotlidec1-1.2.1-r3.apk
+ADD --checksum=sha256:3a71344800a9f31cb353536ee66832cd1f2af9873945fcf3ddc1ff9c599bcdaf https://packages.wolfi.dev/os/aarch64/libbrotlienc1-1.2.1-r3.apk /tmp/meri-browser-host-repo/aarch64/libbrotlienc1-1.2.1-r3.apk
+ADD --checksum=sha256:a9e79bd18c35207c76a6c82d5e45ac928b9e3c00910ce49f6d7253040fbe3fcf https://packages.wolfi.dev/os/aarch64/libbz2-1-1.0.8-r29.apk /tmp/meri-browser-host-repo/aarch64/libbz2-1-1.0.8-r29.apk
+ADD --checksum=sha256:4939ccc2819c60faa5d75013dea87886f6eeadd37f0f9116582372cd40a5cd7b https://packages.wolfi.dev/os/aarch64/libcap-2.78-r4.apk /tmp/meri-browser-host-repo/aarch64/libcap-2.78-r4.apk
+ADD --checksum=sha256:e7e46a09271baccf16553997096d72a9059437a527f10331a12fc6a2f18c5d45 https://packages.wolfi.dev/os/aarch64/libcom_err-1.47.4-r5.apk /tmp/meri-browser-host-repo/aarch64/libcom_err-1.47.4-r5.apk
+ADD --checksum=sha256:66e3eefaa50f1e6cfddefd246b0e3a23e20829527e149b4f0d5145bd8c5dbfc4 https://packages.wolfi.dev/os/aarch64/libcrypt1-2.44-2.44-r11.apk /tmp/meri-browser-host-repo/aarch64/libcrypt1-2.44-2.44-r11.apk
+ADD --checksum=sha256:c53cc7f7580442b29f93a8827fbc67598b7542c0ce4f6db125b90b3d80e50562 https://packages.wolfi.dev/os/aarch64/libdrm-libs-2.4.134-r5.apk /tmp/meri-browser-host-repo/aarch64/libdrm-libs-2.4.134-r5.apk
+ADD --checksum=sha256:9770863d1476c24a11ae86cb73366eabfd4310421b51fd1c08da9b5c5fa335c3 https://packages.wolfi.dev/os/aarch64/libedit-3.1-r20.apk /tmp/meri-browser-host-repo/aarch64/libedit-3.1-r20.apk
+ADD --checksum=sha256:69f82b62b1bdd38532d6a57b462d4e35780e1683b03ba98f67097e4edd4e2373 https://packages.wolfi.dev/os/aarch64/libelf-0.197-r0.apk /tmp/meri-browser-host-repo/aarch64/libelf-0.197-r0.apk
+ADD --checksum=sha256:68d2212a36051d122200630086b3f9f3edae4785b4700599ac47edb92364e8c5 https://packages.wolfi.dev/os/aarch64/libexpat1-2.10.0-r0.apk /tmp/meri-browser-host-repo/aarch64/libexpat1-2.10.0-r0.apk
+ADD --checksum=sha256:df5cab585fd544ce671305dc8b8187bb1ed0c8ac016e995dd129d8d6dd9c556b https://packages.wolfi.dev/os/aarch64/libffi-3.8.0-r2.apk /tmp/meri-browser-host-repo/aarch64/libffi-3.8.0-r2.apk
+ADD --checksum=sha256:1d4d186bb217900d076607c8e1762df2c3399d6f6b98829be748b22ee81100fa https://packages.wolfi.dev/os/aarch64/libfontconfig1-2.18.3-r5.apk /tmp/meri-browser-host-repo/aarch64/libfontconfig1-2.18.3-r5.apk
+ADD --checksum=sha256:c782296bb6afa9c6e183ef51bc14367e55768ba2acdbc822fccc96ac82257220 https://packages.wolfi.dev/os/aarch64/libgcc-16.2.0-r2.apk /tmp/meri-browser-host-repo/aarch64/libgcc-16.2.0-r2.apk
+ADD --checksum=sha256:032e5b2779dfedd065f0d7241757b79a47394e03babe2feb1833c92e2a2755dc https://packages.wolfi.dev/os/aarch64/libglvnd-1.7.0-r12.apk /tmp/meri-browser-host-repo/aarch64/libglvnd-1.7.0-r12.apk
+ADD --checksum=sha256:c1be9a88258f1d81ef6fff7a0bbde098a570cde8fde68a4a871fbf8840e9d8e5 https://packages.wolfi.dev/os/aarch64/libmnl-1.0.5-r10.apk /tmp/meri-browser-host-repo/aarch64/libmnl-1.0.5-r10.apk
+ADD --checksum=sha256:e95dc49d85b2f95edcead03755d6dd4d4d9aa0fa06284ca4347b66607db23eb4 https://packages.wolfi.dev/os/aarch64/libmount-2.42.4-r2.apk /tmp/meri-browser-host-repo/aarch64/libmount-2.42.4-r2.apk
+ADD --checksum=sha256:8bc7a2e02f1d9d0fb89a6539f3a5de5ab23b4155a8a2eaef722b18c94942382f https://packages.wolfi.dev/os/aarch64/libnftnl-1.3.2-r3.apk /tmp/meri-browser-host-repo/aarch64/libnftnl-1.3.2-r3.apk
+ADD --checksum=sha256:27d2e35ce2aaec77b75095e66cb1fe5044126af66fc6bdc87a03cf5f8a5ab21d https://packages.wolfi.dev/os/aarch64/libnspr-4.40-r2.apk /tmp/meri-browser-host-repo/aarch64/libnspr-4.40-r2.apk
+ADD --checksum=sha256:c4579616a2056cd55cb50cd3d9041b6580aa44de09959efe17bcc7f6c7bf1156 https://packages.wolfi.dev/os/aarch64/libnss-3.132-r0.apk /tmp/meri-browser-host-repo/aarch64/libnss-3.132-r0.apk
+ADD --checksum=sha256:87f746c3cf1f1fbb7890939848a6e1cfc52512eef47bd4b93893342b77a01ed7 https://packages.wolfi.dev/os/aarch64/libpcre2-8-0-10.49-r2.apk /tmp/meri-browser-host-repo/aarch64/libpcre2-8-0-10.49-r2.apk
+ADD --checksum=sha256:dd92a9ba7ea2e31ef890c63df0b46538c845465ae46f8369b23710fc0d21d2be https://packages.wolfi.dev/os/aarch64/libpng16-16-1.6.59-r1.apk /tmp/meri-browser-host-repo/aarch64/libpng16-16-1.6.59-r1.apk
+ADD --checksum=sha256:c392dc75da4ccb9f93adbb931b964046855c594f236d8bee93cf35dce4f1e577 https://packages.wolfi.dev/os/aarch64/libproc-2-0-4.0.7-r3.apk /tmp/meri-browser-host-repo/aarch64/libproc-2-0-4.0.7-r3.apk
+FROM ${HOST_IMAGE} AS host-repo-2
+ADD --checksum=sha256:6c96ee48b1ed094dd58598f3df0b2ae678a78d343b3d6f6cf25e6a59a685eea9 https://packages.wolfi.dev/os/aarch64/libselinux-3.11-r2.apk /tmp/meri-browser-host-repo/aarch64/libselinux-3.11-r2.apk
+ADD --checksum=sha256:d44df089fbd2260bba1ecc62e6cff0fa7f22382a86718fdb3f79e0f9086a92ae https://packages.wolfi.dev/os/aarch64/libsepol-3.11-r3.apk /tmp/meri-browser-host-repo/aarch64/libsepol-3.11-r3.apk
+ADD --checksum=sha256:a004dfb5d3a07f49e3e281947f64b434a4ee683c6c597ef191bb39f749eadacc https://packages.wolfi.dev/os/aarch64/libstdc++-16.2.0-r2.apk /tmp/meri-browser-host-repo/aarch64/libstdc++-16.2.0-r2.apk
+ADD --checksum=sha256:c4fff8d71ea9799d12d5aa87732fa73d19a2190358d02393d7ad59517d02ccc8 https://packages.wolfi.dev/os/aarch64/libsystemd-262.1-r4.apk /tmp/meri-browser-host-repo/aarch64/libsystemd-262.1-r4.apk
+ADD --checksum=sha256:3031bc3e2df92a99a0edc3f31a0ed8cc39779857d9f95ad1a4c7423b6bed8c17 https://packages.wolfi.dev/os/aarch64/libsystemd-compression-libs-262.1-r4.apk /tmp/meri-browser-host-repo/aarch64/libsystemd-compression-libs-262.1-r4.apk
+ADD --checksum=sha256:d9bbf96f9ced2655e9c64866c8ae12d16f5e93fd18507fc2d84c58ce79e8cabc https://packages.wolfi.dev/os/aarch64/libtirpc-1.3.8-r0.apk /tmp/meri-browser-host-repo/aarch64/libtirpc-1.3.8-r0.apk
+ADD --checksum=sha256:7b36502b4311ed6092d079cbd5929f13e8146469c4bfd55404601600201fd859 https://packages.wolfi.dev/os/aarch64/libudev-262.1-r4.apk /tmp/meri-browser-host-repo/aarch64/libudev-262.1-r4.apk
+ADD --checksum=sha256:cd4cf2c67c9fe2545f06a8658ff0dd7d6b8ad0f62372a8f0dd95b12c1c738f23 https://packages.wolfi.dev/os/aarch64/libuuid-2.42.4-r2.apk /tmp/meri-browser-host-repo/aarch64/libuuid-2.42.4-r2.apk
+ADD --checksum=sha256:864750d72131a29f2f383e53adad5a3e4d32f70ffb3aef6282c0276ccfa8693d https://packages.wolfi.dev/os/aarch64/libverto-0.3.2-r11.apk /tmp/meri-browser-host-repo/aarch64/libverto-0.3.2-r11.apk
+ADD --checksum=sha256:35acc2b4584f7c7f5ff7260c186ccf07e59855e01c75c14441397d6319437763 https://packages.wolfi.dev/os/aarch64/libx11-6-1.8.14-r4.apk /tmp/meri-browser-host-repo/aarch64/libx11-6-1.8.14-r4.apk
+ADD --checksum=sha256:59a1f381bc47d5e8a10d8999597932b55a34edabe73c9f01247c44c9de21815d https://packages.wolfi.dev/os/aarch64/libx11-data-1.8.14-r4.apk /tmp/meri-browser-host-repo/aarch64/libx11-data-1.8.14-r4.apk
+ADD --checksum=sha256:b8268af6684959baa32f2f2919dae55173ceff3267b6c85d11a6142ce63f0d49 https://packages.wolfi.dev/os/aarch64/libx11-xcb1-1.8.14-r4.apk /tmp/meri-browser-host-repo/aarch64/libx11-xcb1-1.8.14-r4.apk
+ADD --checksum=sha256:84cb602ad9ca286eeff476d10839daf71770626f2cd88a27c422fd14b5522a5c https://packages.wolfi.dev/os/aarch64/libxau-1.0.12-r11.apk /tmp/meri-browser-host-repo/aarch64/libxau-1.0.12-r11.apk
+ADD --checksum=sha256:7348db0c22354d4da06d1c9d685c5deed50945dc03a7cb4a365a7c151fc162f0 https://packages.wolfi.dev/os/aarch64/libxcb-1.17.0-r19.apk /tmp/meri-browser-host-repo/aarch64/libxcb-1.17.0-r19.apk
+ADD --checksum=sha256:c604bda0a2e9b9f983bf1a4ffd19c1cad21e7fa66075f3f2b483b11d6d823241 https://packages.wolfi.dev/os/aarch64/libxcomposite-0.4.7-r5.apk /tmp/meri-browser-host-repo/aarch64/libxcomposite-0.4.7-r5.apk
+ADD --checksum=sha256:ee98718ce716517e174bb1c4bd6f17095b062219f9cc54a6bf88165c031b484a https://packages.wolfi.dev/os/aarch64/libxcrypt-4.5.2-r7.apk /tmp/meri-browser-host-repo/aarch64/libxcrypt-4.5.2-r7.apk
+ADD --checksum=sha256:ca6696f9c6342d1d0f04e945dbc249fd0447794bbf24c580a047832dd94ec6ba https://packages.wolfi.dev/os/aarch64/libxdamage-1.1.7-r5.apk /tmp/meri-browser-host-repo/aarch64/libxdamage-1.1.7-r5.apk
+ADD --checksum=sha256:82fc03408c016403bc203ee75f70ff371ba332951fd4cda0575a91cfe85a0794 https://packages.wolfi.dev/os/aarch64/libxdmcp-1.1.5-r14.apk /tmp/meri-browser-host-repo/aarch64/libxdmcp-1.1.5-r14.apk
+ADD --checksum=sha256:2600d306077463baacc36019da109b17af9f3a3bf68ad7a25645861b7e5dfe9d https://packages.wolfi.dev/os/aarch64/libxext6-1.3.7-r5.apk /tmp/meri-browser-host-repo/aarch64/libxext6-1.3.7-r5.apk
+ADD --checksum=sha256:168a1625abdf2d6b6544498a5a740d5cd0424b1057b208c067320c44083c29de https://packages.wolfi.dev/os/aarch64/libxfixes-6.0.2-r4.apk /tmp/meri-browser-host-repo/aarch64/libxfixes-6.0.2-r4.apk
+ADD --checksum=sha256:b1103383c2263bc5722bc48cd6e722333e753030e279f2800bded732924c8a08 https://packages.wolfi.dev/os/aarch64/libxft-2.3.9-r8.apk /tmp/meri-browser-host-repo/aarch64/libxft-2.3.9-r8.apk
+ADD --checksum=sha256:439ad3ec91dc297ba4a199fc712c663a1e13276330f33f83f499c5665d376de3 https://packages.wolfi.dev/os/aarch64/libxi6-1.8.4-r1.apk /tmp/meri-browser-host-repo/aarch64/libxi6-1.8.4-r1.apk
+ADD --checksum=sha256:895d413f7fab456176e58657ced82d58ddd16863c46f848c7db8e70b3df4b064 https://packages.wolfi.dev/os/aarch64/libxkbcommon-1.13.2-r4.apk /tmp/meri-browser-host-repo/aarch64/libxkbcommon-1.13.2-r4.apk
+ADD --checksum=sha256:8976f366254c3c94a2c7693398d4138d1109b2b0d6ef4a864fc741b889456bb9 https://packages.wolfi.dev/os/aarch64/libxml2-16-2.15.4-r2.apk /tmp/meri-browser-host-repo/aarch64/libxml2-16-2.15.4-r2.apk
+ADD --checksum=sha256:2e142c6cfb00809a0aafe9d5c43db73087fd44ff038d546b430351ca053c5673 https://packages.wolfi.dev/os/aarch64/libxrandr-1.5.5-r7.apk /tmp/meri-browser-host-repo/aarch64/libxrandr-1.5.5-r7.apk
+ADD --checksum=sha256:f1f9191c1167ac5a012ddd5189436ce19f4e25cb38ec825cb536573243198742 https://packages.wolfi.dev/os/aarch64/libxrender1-0.9.13-r1.apk /tmp/meri-browser-host-repo/aarch64/libxrender1-0.9.13-r1.apk
+ADD --checksum=sha256:99bdc871e29629ebdb15ef1c8c4cef3b46080a12e894e55bef38db803bafe047 https://packages.wolfi.dev/os/aarch64/libxshmfence-1.3.3-r7.apk /tmp/meri-browser-host-repo/aarch64/libxshmfence-1.3.3-r7.apk
+ADD --checksum=sha256:ec006bf3671563b791bef432c02076b24d475ee0b03cc46ea681a875e5f51fb5 https://packages.wolfi.dev/os/aarch64/libxtst6-1.2.6-r1.apk /tmp/meri-browser-host-repo/aarch64/libxtst6-1.2.6-r1.apk
+ADD --checksum=sha256:a0aadd388083463bfa53994dcbb5f040de7357fce11031b0f47fcf1c2dcf46a2 https://packages.wolfi.dev/os/aarch64/libzstd1-1.5.7-r13.apk /tmp/meri-browser-host-repo/aarch64/libzstd1-1.5.7-r13.apk
+ADD --checksum=sha256:a0c906aa90527563085358e86c63d6ac58cc3b41729d10511982d6f9cae0a51d https://packages.wolfi.dev/os/aarch64/linux-pam-1.7.3-r3.apk /tmp/meri-browser-host-repo/aarch64/linux-pam-1.7.3-r3.apk
+ADD --checksum=sha256:47a25dc521b3381c2e4445b096424180a74598deec0cb347e99ad0d1068b1b02 https://packages.wolfi.dev/os/aarch64/lz4-1.10.0-r12.apk /tmp/meri-browser-host-repo/aarch64/lz4-1.10.0-r12.apk
+ADD --checksum=sha256:01383f298f195ed808b55c93c78a90e8340736f362358666d472b403dec9178a https://packages.wolfi.dev/os/aarch64/mesa-gbm-26.2.6-r0.apk /tmp/meri-browser-host-repo/aarch64/mesa-gbm-26.2.6-r0.apk
+ADD --checksum=sha256:dec34fd3bb617e52112b4dc8f18941f2a7ac6a89b0a0d569327bdec21a9ed3bd https://packages.wolfi.dev/os/aarch64/mesa-libgallium-26.2.6-r0.apk /tmp/meri-browser-host-repo/aarch64/mesa-libgallium-26.2.6-r0.apk
+ADD --checksum=sha256:a2b0c0508b07d4e0187d7c9bd231b71d56f195a528b55815e89735d9fa8caef7 https://packages.wolfi.dev/os/aarch64/mpdecimal-4.0.1-r6.apk /tmp/meri-browser-host-repo/aarch64/mpdecimal-4.0.1-r6.apk
+ADD --checksum=sha256:bc65d1bf39f2ea1b4b0a903b75dac97be4e4827535273e6d383d1a8552d1d4a3 https://packages.wolfi.dev/os/aarch64/ncurses-6.6.20261031-r0.apk /tmp/meri-browser-host-repo/aarch64/ncurses-6.6.20261031-r0.apk
+ADD --checksum=sha256:52fb47aed373ab3bc8e338d822ae0001b0641dd8e0d092226073a0d2b4461696 https://packages.wolfi.dev/os/aarch64/ncurses-terminfo-base-6.6.20261031-r0.apk /tmp/meri-browser-host-repo/aarch64/ncurses-terminfo-base-6.6.20261031-r0.apk
+ADD --checksum=sha256:d5f734921ef2fb937b4613d8365032ec1032d32cf3ea0a893c73fcea27f3a11c https://packages.wolfi.dev/os/aarch64/nftables-1.1.7-r0.apk /tmp/meri-browser-host-repo/aarch64/nftables-1.1.7-r0.apk
+ADD --checksum=sha256:8a509f24f834724ea1927d5a37cd6e8fba5d7c98d0ea8fdea7689b27852e05fc https://packages.wolfi.dev/os/aarch64/openssl-4.0-libcrypto-4.0.3-r8.apk /tmp/meri-browser-host-repo/aarch64/openssl-4.0-libcrypto-4.0.3-r8.apk
+ADD --checksum=sha256:0dd48c2a58466c6787d0df2ff2254623c8f470faa6d986975a4c123ef04c6a9c https://packages.wolfi.dev/os/aarch64/openssl-4.0-libssl-4.0.3-r8.apk /tmp/meri-browser-host-repo/aarch64/openssl-4.0-libssl-4.0.3-r8.apk
+ADD --checksum=sha256:22313fca19b8143db5d239bd14c5251416a2e35ba7418b23b64ece7701bc9785 https://packages.wolfi.dev/os/aarch64/openssl-provider-legacy-allowed-4.1.0-r0.apk /tmp/meri-browser-host-repo/aarch64/openssl-provider-legacy-allowed-4.1.0-r0.apk
+ADD --checksum=sha256:cb8d36205e4d4fb099f82e8c94b172f419e964a62460f2eb435fa855095479d5 https://packages.wolfi.dev/os/aarch64/pango-1.58.2-r1.apk /tmp/meri-browser-host-repo/aarch64/pango-1.58.2-r1.apk
+ADD --checksum=sha256:a8cf3dcdca2012d1af78f22b31bb2abf4a656392b4f47f2bbdef1a959663ca81 https://packages.wolfi.dev/os/aarch64/pixman-0.46.4-r9.apk /tmp/meri-browser-host-repo/aarch64/pixman-0.46.4-r9.apk
+ADD --checksum=sha256:19b4085fbb42af957ce29188416e56a9402ae9b07ce8951516cd774e2b7d5371 https://packages.wolfi.dev/os/aarch64/procps-4.0.7-r3.apk /tmp/meri-browser-host-repo/aarch64/procps-4.0.7-r3.apk
+ADD --checksum=sha256:6dcca154f23de54db689ec2006bb65c67de74d556f55f8836bf5d438da8b8ee1 https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r2.apk /tmp/meri-browser-host-repo/aarch64/py3-pip-wheel-26.2.2-r2.apk
+ADD --checksum=sha256:d6984fe10393415db29b3778d3514cea81ab343465d98c7984c6fc035e93208f https://packages.wolfi.dev/os/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk /tmp/meri-browser-host-repo/aarch64/python-3.13-base-3.13.18_git20261030-r0.apk
+ADD --checksum=sha256:8d4ae6286e3fdc2b50fdd911fe1aa474c771c5708184e721e2255283ec6d7e4e https://packages.wolfi.dev/os/aarch64/readline-8.3-r3.apk /tmp/meri-browser-host-repo/aarch64/readline-8.3-r3.apk
+ADD --checksum=sha256:158a9e84fd8b3addfca5f3abfb02b754012d6e1d173d4467627d67541c5eafae https://packages.wolfi.dev/os/aarch64/sqlite-libs-3.54.1-r0.apk /tmp/meri-browser-host-repo/aarch64/sqlite-libs-3.54.1-r0.apk
+ADD --checksum=sha256:9f4aa9d7dc9f3857bf4eb35bec9e41931edaabd5a63fbab5d0557c78aa9268d2 https://packages.wolfi.dev/os/aarch64/wayland-libs-client-1.26.0-r3.apk /tmp/meri-browser-host-repo/aarch64/wayland-libs-client-1.26.0-r3.apk
+ADD --checksum=sha256:c0952e61400170d6e9925d70be7d3c5161b266ac942818a992f71d94078c8571 https://packages.wolfi.dev/os/aarch64/wolfi-baselayout-20230201-r31.apk /tmp/meri-browser-host-repo/aarch64/wolfi-baselayout-20230201-r31.apk
+ADD --checksum=sha256:8b0d57d91b572c8e44dd6fc96e388673a5f5c5d16410c50488b968e1805b8d32 https://packages.wolfi.dev/os/aarch64/xkeyboard-config-2.49-r0.apk /tmp/meri-browser-host-repo/aarch64/xkeyboard-config-2.49-r0.apk
+ADD --checksum=sha256:d2c12615a9601d34f1500a782c38177d18417c576fe7b145e4e88b0165681874 https://packages.wolfi.dev/os/aarch64/xz-5.8.4-r0.apk /tmp/meri-browser-host-repo/aarch64/xz-5.8.4-r0.apk
+ADD --checksum=sha256:94eeec2403d0a8515362ba8ce6ce53d16f905d0b4f69ecf710d34db40cc1381a https://packages.wolfi.dev/os/aarch64/zlib-1.3.2.1_rc20260921-r1.apk /tmp/meri-browser-host-repo/aarch64/zlib-1.3.2.1_rc20260921-r1.apk
+ADD --checksum=sha256:aa62a950020c39d7b0f99f4fa4af955249c667531b08142ae9355ffdf5eb2832 https://packages.wolfi.dev/os/aarch64/zstd-1.5.7-r13.apk /tmp/meri-browser-host-repo/aarch64/zstd-1.5.7-r13.apk
+FROM ${HOST_IMAGE} AS host-repository
+COPY infra/product-preview/native-apk-index/aarch64-APKINDEX-d6f8b212573cb558a4476d29eea5279c3de8a6e0b5bcc6361715bd70932a8e64.tar.gz /tmp/meri-browser-host-repo/aarch64/APKINDEX.tar.gz
+COPY --from=host-repo-1 /tmp/meri-browser-host-repo /tmp/meri-browser-host-repo
+COPY --from=host-repo-2 /tmp/meri-browser-host-repo /tmp/meri-browser-host-repo
+
 # ---------------------------------------------------------------- host image
-FROM snapshot AS host
-RUN set -eux; apt-get update; \
-    apt-get install -y --no-install-recommends --no-remove \
-      iproute2 nftables procps \
-      libnss3 libnspr4 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
-      libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2t64 libatspi2.0-0t64 libx11-6 libxcb1 libxext6 \
-      libglib2.0-0t64 libexpat1 libdbus-1-3 fonts-liberation fonts-noto-core; \
-    apt-get clean; rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/partial; \
-    userdel --remove node
+FROM ${HOST_IMAGE} AS host
+USER root
+# apk verifies the index signature with the vendor keys of the pinned base and installs exactly the locked name=version
+# set from the staged bytes only: no network, no untrusted-file exception, no configured repository
+# (--repositories-file /dev/null). Naming every member supersedes the base's world pins for the packages it upgrades.
+RUN --mount=type=bind,from=host-repository,source=tmp/meri-browser-host-repo,target=/tmp/meri-browser-host-repo,readonly \
+    test "$(uname -m)" = aarch64 && apk --version && \
+    apk add --no-cache --no-network --repository /tmp/meri-browser-host-repo --repositories-file /dev/null --update-cache \
+      alsa-lib=1.2.16.1-r5 at-spi2-core=2.62.1-r0 avahi-libs=0.9_rc5-r3 ca-certificates-bundle=20261020-r0 \
+      cairo=1.18.6-r1 cups-libs=2.4.20-r0 db=2026.10.8-r0 dbus-libs=1.16.2-r11 font-liberation=2.1.5-r6 \
+      fontconfig-config=2.18.3-r5 freetype=2.14.3-r7 fribidi=1.0.18-r2 gdbm=1.26-r9 glib=2.90.1-r1 \
+      glibc-2.44=2.44-r11 glibc-2.44-locale-posix=2.44-r11 gmp=6.3.0-r12 graphite2=1.3.15-r6 harfbuzz=15.0.0-r3 \
+      iproute2=7.3.0-r0 iptables=1.8.13-r5 jansson=2.15.1-r4 keyutils-libs=1.6.3-r41 krb5-conf=1.0-r10 \
+      krb5-libs=1.22.2-r5 ld-linux-2.44=2.44-r11 libLLVM-23=23.1.4-r1 libatk-1.0=2.62.1-r0 \
+      libatk-bridge-2.0=2.62.1-r0 libblkid=2.42.4-r2 libbpf=1.8.0-r0 libbrotlicommon1=1.2.1-r3 libbrotlidec1=1.2.1-r3 \
+      libbrotlienc1=1.2.1-r3 libbz2-1=1.0.8-r29 libcap=2.78-r4 libcom_err=1.47.4-r5 libcrypt1-2.44=2.44-r11 \
+      libdrm-libs=2.4.134-r5 libedit=3.1-r20 libelf=0.197-r0 libexpat1=2.10.0-r0 libffi=3.8.0-r2 \
+      libfontconfig1=2.18.3-r5 libgcc=16.2.0-r2 libglvnd=1.7.0-r12 libmnl=1.0.5-r10 libmount=2.42.4-r2 \
+      libnftnl=1.3.2-r3 libnspr=4.40-r2 libnss=3.132-r0 libpcre2-8-0=10.49-r2 libpng16-16=1.6.59-r1 \
+      libproc-2-0=4.0.7-r3 libselinux=3.11-r2 libsepol=3.11-r3 libstdc++=16.2.0-r2 libsystemd=262.1-r4 \
+      libsystemd-compression-libs=262.1-r4 libtirpc=1.3.8-r0 libudev=262.1-r4 libuuid=2.42.4-r2 libverto=0.3.2-r11 \
+      libx11-6=1.8.14-r4 libx11-data=1.8.14-r4 libx11-xcb1=1.8.14-r4 libxau=1.0.12-r11 libxcb=1.17.0-r19 \
+      libxcomposite=0.4.7-r5 libxcrypt=4.5.2-r7 libxdamage=1.1.7-r5 libxdmcp=1.1.5-r14 libxext6=1.3.7-r5 \
+      libxfixes=6.0.2-r4 libxft=2.3.9-r8 libxi6=1.8.4-r1 libxkbcommon=1.13.2-r4 libxml2-16=2.15.4-r2 \
+      libxrandr=1.5.5-r7 libxrender1=0.9.13-r1 libxshmfence=1.3.3-r7 libxtst6=1.2.6-r1 libzstd1=1.5.7-r13 \
+      linux-pam=1.7.3-r3 lz4=1.10.0-r12 mesa-gbm=26.2.6-r0 mesa-libgallium=26.2.6-r0 mpdecimal=4.0.1-r6 \
+      ncurses=6.6.20261031-r0 ncurses-terminfo-base=6.6.20261031-r0 nftables=1.1.7-r0 openssl-4.0-libcrypto=4.0.3-r8 \
+      openssl-4.0-libssl=4.0.3-r8 openssl-provider-legacy-allowed=4.1.0-r0 pango=1.58.2-r1 pixman=0.46.4-r9 \
+      procps=4.0.7-r3 py3-pip-wheel=26.2.2-r2 python-3.13-base=3.13.18_git20261030-r0 readline=8.3-r3 \
+      sqlite-libs=3.54.1-r0 wayland-libs-client=1.26.0-r3 wolfi-baselayout=20230201-r31 xkeyboard-config=2.49-r0 \
+      xz=5.8.4-r0 zlib=1.3.2.1_rc20260921-r1 zstd=1.5.7-r13 && \
+    apk info -v | sort
+# Wolfi glibc runs the official Node binary from the build stage, as in the runtime image.
+COPY --from=builder /usr/local/bin/node /usr/local/bin/node
 COPY --from=builder /opt/meri /opt/meri
+RUN test "$(node --version)" = v24.22.1
 # The network executables the host service runs are checked at the exact paths its source names (confinement.mjs
 # NETWORK_TOOLS), so a package that moves one fails this build instead of the first run on an instance.
 RUN node --input-type=module -e "import {accessSync,constants} from 'node:fs';import {NETWORK_TOOLS} from '/opt/meri/apps/worker/conversation/host/network/confinement.mjs';for(const file of Object.values(NETWORK_TOOLS)){accessSync(file,constants.X_OK);console.log(file);}"
@@ -104,20 +252,24 @@ RUN set -eux; \
     ln -s /opt/meri/apps/runtime/native-processing-host/protected-bootstrap.mjs /opt/meri/native-bootstrap.mjs; \
     chown root:root /opt/meri/meri-host-launcher /opt/meri/meri-host-relay-launcher; \
     chmod 0700 /opt/meri/meri-host-launcher /opt/meri/meri-host-relay-launcher; \
-    groupadd --gid 1001 meri-sdk && useradd --uid 1001 --gid 1001 --no-create-home --shell /usr/sbin/nologin meri-sdk; \
-    groupadd --gid 2002 meri-browser && useradd --uid 2002 --gid 2002 --no-create-home --shell /usr/sbin/nologin meri-browser; \
-    groupadd --gid 3001 meri-host-relay && useradd --uid 3001 --gid 3001 --no-create-home --shell /usr/sbin/nologin meri-host-relay; \
-    groupadd --gid 3002 meri-local-relay && useradd --uid 3002 --gid 3002 --no-create-home --shell /usr/sbin/nologin meri-local-relay; \
-    groupadd --gid 3003 meri-proxy && useradd --uid 3003 --gid 3003 --no-create-home --shell /usr/sbin/nologin meri-proxy; \
+    test -x /sbin/nologin; \
+    addgroup -g 1001 meri-sdk && adduser -D -H -u 1001 -G meri-sdk -s /sbin/nologin meri-sdk; \
+    addgroup -g 2002 meri-browser && adduser -D -H -u 2002 -G meri-browser -s /sbin/nologin meri-browser; \
+    addgroup -g 3001 meri-host-relay && adduser -D -H -u 3001 -G meri-host-relay -s /sbin/nologin meri-host-relay; \
+    addgroup -g 3002 meri-local-relay && adduser -D -H -u 3002 -G meri-local-relay -s /sbin/nologin meri-local-relay; \
+    addgroup -g 3003 meri-proxy && adduser -D -H -u 3003 -G meri-proxy -s /sbin/nologin meri-proxy; \
     mkdir -p /var/lib/meri/browser-workspaces /var/lib/meri/native-bootstrap /run/netns; \
     chmod 0755 /var/lib/meri/browser-workspaces; chmod 0700 /var/lib/meri/native-bootstrap
-# Privilege-bit reduction and inventory: no SUID/SGID regular file anywhere, exact package set recorded from the real build.
-# Nothing is left that root without capabilities cannot read (the build probe searches every file): the base image's unused
-# node account with its private home and apt's private partial directory are removed above.
+# Privilege-bit reduction and inventory: no SUID/SGID regular file anywhere, exact package set recorded from the real
+# build (apk's installed database), nothing left that root without capabilities cannot read (the build probe searches
+# every file): the base layout's empty, unused service directories owned by other accounts (/var/mail, /var/spool/lpd,
+# /home/nonroot and the like) are removed, and any such directory that is not empty fails the build.
 RUN set -eux; \
+    find / -xdev \( -path /proc -o -path /sys -o -path /dev -o -path /run \) -prune -o -type d ! -user root ! -perm -005 -print | sort -r | while IFS= read -r d; do rmdir "$d"; done; \
+    test -z "$(find / -xdev \( -path /proc -o -path /sys -o -path /dev -o -path /run \) -prune -o -type d ! -user root ! -perm -005 -print)"; \
     find / -xdev \( -path /proc -o -path /sys -o -path /dev -o -path /run \) -prune -o -type f -perm /6000 -print | while IFS= read -r f; do chmod u-s,g-s "$f"; done; \
     test -z "$(find / -xdev \( -path /proc -o -path /sys -o -path /dev -o -path /run \) -prune -o -type f -perm /6000 -print)"; \
-    dpkg-query -W -f='${Package}=${Version}\n' | sort > /opt/meri/browser-host/os-installed-packages.txt; \
+    awk -F: '/^P:/{p=$2} /^V:/{print p "=" $2}' /lib/apk/db/installed | sort > /opt/meri/browser-host/os-installed-packages.txt; \
     test -s /opt/meri/browser-host/os-installed-packages.txt; \
     node --version > /opt/meri/browser-host/runtime-versions.txt; \
     sha256sum /opt/meri/apps/runtime/native-processing-host/protected-bootstrap.mjs >> /opt/meri/browser-host/helper-hashes.txt; \
