@@ -571,13 +571,13 @@
     },
     {
       "name": "libexpat1",
-      "version": "2.9.0-r0",
+      "version": "2.10.0-r0",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/libexpat1-2.9.0-r0.apk",
-      "sha256": "abeeb0ffa21b3ca6175cb997d9919920a26a2f50aaa61116f03ed40b1cfd764f",
-      "bytes": 106888,
+      "source": "https://packages.wolfi.dev/os/aarch64/libexpat1-2.10.0-r0.apk",
+      "sha256": "68d2212a36051d122200630086b3f9f3edae4785b4700599ac47edb92364e8c5",
+      "bytes": 113820,
       "origin": "expat",
-      "role": "pinned transitive native dependency of the upload scanner/OCR layer; without this pin the rolling live index would choose the provider revision at build time"
+      "role": "pinned shared XML parser library (python-3.13-base pyexpat, fontconfig); fixed revision for CVE-2026-113351 and CVE-2026-115506, staged from the fixedPipIndex and requested by exact version in the first runtime install"
     },
     {
       "name": "libffi",
@@ -3346,13 +3346,26 @@
         ],
         "qualification": "Authenticated source/index/package closure only; actual ARM image execution and zero-HIGH/CRITICAL scan required."
       },
+      "expatSecurityCorrection": {
+        "cves": ["CVE-2026-113351", "CVE-2026-115506"],
+        "failedScan": "CodeBuild ecbaecbd-cdf4-440b-96f6-dc9ff8826f2e, ECR basic scan: 4 HIGH on expat/libexpat1 2.9.0-r0",
+        "affectedVersion": "2.9.0-r0",
+        "fixedVersion": "2.10.0-r0",
+        "vendorAdvisory": "https://packages.wolfi.dev/os/security.json lists both CVEs under expat secfixes 2.10.0-r0",
+        "index": "fixedPipIndex",
+        "package": {"name": "libexpat1", "version": "2.10.0-r0", "sha256": "68d2212a36051d122200630086b3f9f3edae4785b4700599ac47edb92364e8c5", "bytes": 113820, "indexChecksum": "Q1PNKLH+bUHNB3bSnT9O/FGajZYI8="},
+        "pinnedForTheNewIndex": "libbz2-1=1.0.8-r28: the refreshed index also advertises unstaged libbz2-1 1.0.8-r29, which the first runtime install would otherwise select for python-3.13-base",
+        "buildOnly": "the ClamAV compiler stage keeps its development-closure libexpat1 2.9.0-r0; that stage is not exported",
+        "qualification": "Authenticated source/index/package closure only; actual ARM image execution and zero-HIGH/CRITICAL scan required."
+      },
       "fixedPipIndex": {
     "source": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
-    "path": "infra/product-preview/native-apk-index/aarch64-APKINDEX-d0b9dba15872808df79eaaefec9d51e26359c61d0f0ff155300ab136118bd5a3.tar.gz",
-    "sha256": "d0b9dba15872808df79eaaefec9d51e26359c61d0f0ff155300ab136118bd5a3",
-    "bytes": 9237212,
+    "path": "infra/product-preview/native-apk-index/aarch64-APKINDEX-d6f8b212573cb558a4476d29eea5279c3de8a6e0b5bcc6361715bd70932a8e64.tar.gz",
+    "sha256": "d6f8b212573cb558a4476d29eea5279c3de8a6e0b5bcc6361715bd70932a8e64",
+    "bytes": 9344187,
+    "retrievedOn": "2026-11-02",
     "architecture": "aarch64",
-    "role": "Second offline vendor-signed repository for the fixed pip trio and Python 3.13.18 security pair. Both compiler and runtime use it; the retained first index remains authoritative for the two GStreamer revisions absent here. No index is edited or synthesized.",
+    "role": "Second offline vendor-signed repository for the fixed pip trio, the Python 3.13.18 security pair and the fixed libexpat1. Both compiler and runtime use it; the retained first index remains authoritative for the two GStreamer revisions absent here. No index is edited or synthesized.",
     "trustRoot": "the vendor RSA keys already installed in the pinned base keyring; apk verifies this index signature before selecting any package from it"
   },
   "fixedPipPackages": [
