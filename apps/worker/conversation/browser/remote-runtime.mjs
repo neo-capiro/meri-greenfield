@@ -3,8 +3,11 @@
  *
  * The run's browser host is provisioned on first use: nothing here contacts the host until the model's first browser
  * call reaches the PreToolUse gate, which prepares the browser once (`starting()` is told, so the conversation can show
- * that a browser is starting) and then forwards to the host as before. A run that never browses prepares nothing and
- * settles with a local not-applicable receipt. A takeover handoff prepares at once: its browser already holds custody. */
+ * that a browser is starting) and then forwards to the host as before. A run that never asked for a browser settles with
+ * a local not-applicable receipt; once a preparation was sent, settlement goes through the port, whose control answers
+ * not-applicable itself when no browser host was ever allocated for the run. A takeover handoff prepares at once and
+ * quietly: its browser already exists and holds custody. Before the browser is prepared no browser effect exists, so the
+ * post-use hooks have nothing to record: a refused first use never stops the turn. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 import {assertBrowserCustody} from '../../../../packages/runtime/browser-custody.mjs';
@@ -18,18 +21,19 @@ const prefix='mcp__meri_browser__',fault=code=>Object.assign(Error(code),{code})
 const FIRST_USE_HOOK_TIMEOUT_S=Math.ceil((browserOperationCeilingMs('browser-prepare')+BROWSER_NATIVE_LIMITS.metadataMs)/1000);
 export async function prepareRemoteBrowserRun({port,binding,deadlineMs,now,signal,browserHandoff,starting}){
  if(starting!==undefined&&typeof starting!=='function')throw fault('BROWSER_CONFIGURATION');
- let sdk,metadata=null,preparing,settled,retained;
+ let sdk,metadata=null,preparing,settled,retained,requested=false;
  /** One preparation per run; a failure is final for the run (the browser is unavailable, every gate then denies). */
- const ensure=(options={})=>preparing??=(async()=>{
-  try{starting?.();}catch{}
-  const result=await port.prepare({signal:options.signal});const policy=validateBrowserPolicy(result.policy);
+ const ensure=({signal,announce=true}={})=>preparing??=(async()=>{
+  if(announce)try{starting?.();}catch{}
+  requested=true;
+  const result=await port.prepare({signal});const policy=validateBrowserPolicy(result.policy);
   if(result.activation!=='open'||!policy.enabled)throw fault('BROWSER_ACTIVATION_HELD');
   metadata=Object.freeze({...result,policy});await sdk?.toolsChanged();return metadata;
  })();
  const settle=input=>settled??=(async()=>{
   try{await sdk?.close();if(retained&&input.outcome!=='failed')return retained;
-   // Never prepared: no host, egress grant, process or profile was created for this run's browser.
-   if(preparing===undefined)return assertBrowserCleanupReceipt({schema:BROWSER_CLEANUP_SCHEMA,binding:structuredClone(binding),outcome:input.outcome,
+   // Never asked for: no host, egress grant, process or profile was created for this run's browser.
+   if(!requested)return assertBrowserCleanupReceipt({schema:BROWSER_CLEANUP_SCHEMA,binding:structuredClone(binding),outcome:input.outcome,
     activation:'not-applicable',egress:'not-applicable',process:'not-applicable',profile:'done'},{binding,outcome:input.outcome});
    return assertBrowserCleanupReceipt(await port.settle(input),{binding,outcome:input.outcome});}
   catch{throw fault('BROWSER_CLEANUP_UNKNOWN');}
@@ -38,11 +42,12 @@ export async function prepareRemoteBrowserRun({port,binding,deadlineMs,now,signa
   sdk=createBrowserSdkServer({binding,prepared:()=>metadata,ensure:()=>ensure(),tools:port.tools,call:port.call,deadlineMs,now});
   let resumeSnapshot;
   if(browserHandoff){
-   await ensure({signal});
+   await ensure({signal,announce:false});
    resumeSnapshot=data(own(metadata.resumeSnapshot,['content']));
    if(canonicalSha256(resumeSnapshot)!==browserHandoff.returned?.snapshotSha256)throw fault('BROWSER_CUSTODY_REFUSED');
   }
   const hook=event=>async(raw,toolUseId,options)=>{
+   if(event!=='PreToolUse'&&metadata===null)return {};
    try{
     await ensure();
     const input={hook_event_name:raw.hook_event_name,session_id:raw.session_id,tool_name:raw.tool_name,tool_input:raw.tool_input,tool_use_id:raw.tool_use_id,...(event==='PostToolUse'?{tool_response:raw.tool_response}:{})};

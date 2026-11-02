@@ -155,3 +155,21 @@ test('the migration is appended exactly once at ordinal 77 and only widens the d
  assert.equal(PLAN[75].path,'apps/control/browser-hosts/migrations/0003_browser_only_teardown.sql');
  assert.equal(PLAN[75].pinned,'ad06f879d0202b37b32e5de7fae612e7a2603e7388a7393d5834bb2983c85992');
 });
+test('the run host demand is one prepared row of its own run; every repeat, a pending one or changed scopes is the same demand',async()=>{
+ const port=journalPort(),o=createBrowserOperationOwner({now:()=>NOW,journal:createIntentJournal({claim:port.claim,settle:port.settle,read:port.read})});
+ assert.equal(await o.hostDemanded({binding}),false);
+ await o.demandHost({binding,scopes,expiresAtMs:NOW+60000});
+ assert.equal(await o.hostDemanded({binding}),true);
+ const [row]=[...port.rows.values()];assert.equal(port.rows.size,1);assert.equal(row.state,'PREPARED');
+ assert.deepEqual(row.outcome.result,{demanded:true});assert.deepEqual(Object.keys(row.record).sort(),['argumentsSha256','operation']);
+ await o.demandHost({binding,scopes,expiresAtMs:NOW+60000});
+ await o.demandHost({binding,scopes:[{...scopes[0],policyRevision:'p2'}],expiresAtMs:NOW+60000});
+ assert.equal(port.rows.size,1,'a repeated demand, even under changed scopes, writes nothing new');
+ // Another run of the same conversation is not demanded; an expired run cannot demand.
+ assert.equal(await o.hostDemanded({binding:{...binding,runId:'77777777-7777-4777-8777-777777777777'}}),false);
+ await assert.rejects(o.demandHost({binding,scopes,expiresAtMs:NOW}),{code:'BROWSER_OPERATION_REFUSED'});
+ // A lost settle acknowledgement leaves the row PENDING: still the run's demand.
+ const lost=journalPort(),p=createBrowserOperationOwner({now:()=>NOW,journal:createIntentJournal({claim:lost.claim,settle:async()=>{throw Error('lost');},read:lost.read})});
+ await assert.rejects(p.demandHost({binding,scopes,expiresAtMs:NOW+60000}));assert.equal(await p.hostDemanded({binding}),true);
+ await p.demandHost({binding,scopes,expiresAtMs:NOW+60000});
+});

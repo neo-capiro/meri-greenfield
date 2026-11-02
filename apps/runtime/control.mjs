@@ -290,18 +290,20 @@ export function assembleControl(options){
  try{
  // A declared browser-host family also owns the run's browser-only host prerequisite: the need is control's open activation
  // record AND the run's resolved browser policy (the saved run's scopes, the actor's current role, the same readBrowserPolicy
- // the host facts use). The host is provisioned on the run's first browser use: `browser-prepare` demands it and waits for
- // the browser allocation reader's readiness over the same canonical currentness the router uses.
+ // the host facts use). The host is provisioned on the run's first browser use: `browser-prepare` records the demand in the
+ // browser custody journal and waits for the browser allocation reader's readiness over the same canonical currentness the
+ // router uses.
  // Without a role reader the policy cannot be resolved, so the prerequisite is not mounted and the broker's call refuses.
  const browserPrerequisite=browserHosts===null||readCapabilityRole===undefined?undefined:createBrowserExecutionPrerequisite({allocations:browserHosts.allocations,
   activation:compileBrowserActivation(configuration.browserActivation),now,requestTimeoutMs:configuration.limits.requestMs,effectTimeoutMs:BROWSER_NATIVE_LIMITS.provisionMs,
+  demands:{record:browserCustody.demandHost,read:browserCustody.hostDemanded},
   policy:{async read({binding,signal,deadlineMs}){
    const saved=await store.read(binding,{after:0,limit:1},()=>signal?.throwIfAborted());
    const role=await readCapabilityRole({binding,signal,deadlineMs});
    return readBrowserPolicy({binding,scopes:saved.run.scopes,actorRole:role.actorRole,signal,deadlineMs});
   }}});
  const browserNeed=browserPrerequisite?.need;
- const browserOperations=ports.browserHosts?.executeBrowserOperation&&readCapabilityRole&&browserPrerequisite?createBrowserOperations({hosts:ports.browserHosts,readCapabilityRole,readBrowserPolicy,custody:browserCustody,ensureHost:browserPrerequisite.demand,now}):undefined;
+ const browserOperations=ports.browserHosts?.executeBrowserOperation&&readCapabilityRole&&browserPrerequisite?createBrowserOperations({hosts:ports.browserHosts,readCapabilityRole,readBrowserPolicy,custody:browserCustody,ensureHost:browserPrerequisite.demand,hostReached:browserPrerequisite.reached,now}):undefined;
  // Selection admission asks the same reads composer for availability under the session (no run yet) and the same policy producer
  // for the worker's capability policy, with the session's Core role; without either producer no selection is admitted.
  const selected=configuration.sourceEnabled&&configuration.agentcore&&createReadsRuntime?createNativeSelectedComposition({configuration,pool,store,execution,createReadsRuntime:input=>createReadsRuntime({...input,capabilityPolicy,readCapabilityRole}),

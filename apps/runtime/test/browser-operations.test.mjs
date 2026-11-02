@@ -11,7 +11,7 @@ import {createExecutionBinding} from '../../control/conversations/execution-boun
 import {binding,versions,scopes} from '../../control/conversations/test/store-fixture.mjs';
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
 const policy=validateBrowserPolicy({enabled:true,tools:['browser_snapshot'],timeouts:{actionMs:5000,navigationMs:60000}});
-function fixture(){
+function fixture({ensureHost,reached=true}={}){
  let at=1000,checks=0,roleReads=0,policyReads=0,dispatches=0,revoked=false,replyBinding=binding,authFailure=false,advance=0;
  const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:true},expiresAtMs:301000,runtimeSessionId:'synthetic-'+('a'.repeat(64))});
  const calls=[],requests=[],ensured=[],now=()=>at;
@@ -29,7 +29,7 @@ function fixture(){
   if(operation==='browser-tools')return {tools:[{name:'browser_snapshot',inputSchema:{type:'object'}}]};
   if(operation==='browser-settle')return {schema:'meri-browser-cleanup/1',binding,outcome:request.outcome,activation:'open',egress:'done',process:'done',profile:'done'};
  }};
- const browserOperations=createBrowserOperations({ensureHost:async input=>{ensured.push({...input,dispatchesBefore:dispatches});},hosts,now,custody,readCapabilityRole:async()=>{roleReads++;if(revoked)throw Error('REVOKED');return {actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000};},readBrowserPolicy:async input=>{policyReads++;assert.deepEqual(input.scopes,scopes);return policy;}});
+ const browserOperations=createBrowserOperations({ensureHost:async input=>{ensured.push({...input,dispatchesBefore:dispatches});await ensureHost?.(input);},hostReached:async()=>reached,hosts,now,custody,readCapabilityRole:async()=>{roleReads++;if(revoked)throw Error('REVOKED');return {actorRole:'standard_user',checkedAtMs:at,expiresAtMs:at+30000};},readBrowserPolicy:async input=>{policyReads++;assert.deepEqual(input.scopes,scopes);return policy;}});
  const app=createWorkerRunApplication({now,browserOperations,configuration:{limits:{requestMs:3000,requestBytes:1048576}},createService(){throw Error('browser must not invent a run-owner method');},
   execution:{async authenticate(input){checks++;assert.equal(input.credential,'synthetic-execution');assert.deepEqual(input.binding,binding);if(authFailure||at>=identity.expiresAtMs)throw Error('EXECUTION_AUTHORITY_REFUSED');return {execution:identity,scopes,selectedClientId:scopes[0].resourceId,policyRevision:scopes[0].policyRevision};}}});
  const transport=async(url,init)=>{requests.push(url);return app.handle(new Request(url.replace('/v1/runner/','/internal/conversations/'),init));};
@@ -74,4 +74,13 @@ test('the first browser preparation demands the run host and waits for it before
  assert.ok(demand.deadlineMs>1000+130000,'preparation includes the provisioning allowance');
  await f.port.call({requestId:'b'.repeat(64),tool:'browser_snapshot',args:{}});await f.port.tools();
  assert.equal(f.ensured.length,1);
+});
+test('a preparation that never got a browser host settles as not-applicable at control; a reached host still settles itself',async()=>{
+ const f=fixture({ensureHost:async()=>{throw Object.assign(Error('EXECUTION_BROWSER_PREREQUISITE_REFUSED'),{code:'EXECUTION_BROWSER_PREREQUISITE_REFUSED'});},reached:false});
+ await assert.rejects(f.port.prepare());assert.equal(f.counts().dispatches,0,'the host was never reached');
+ assert.deepEqual(await f.port.settle({outcome:'failed'}),{schema:'meri-browser-cleanup/1',binding,outcome:'failed',activation:'not-applicable',egress:'not-applicable',process:'not-applicable',profile:'done'});
+ assert.equal(f.counts().dispatches,0,'no host settlement is attempted for a host that does not exist');
+ const g=fixture();await g.port.prepare();assert.equal((await g.port.settle({outcome:'ended'})).activation,'open');
+ assert.deepEqual(g.calls.map(c=>c.operation),['browser-prepare','browser-settle']);
+ assert.deepEqual(g.ensured[0].scopes,scopes,'the demand carries the run scopes for its durable record');
 });

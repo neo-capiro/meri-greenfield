@@ -8,6 +8,10 @@
  * This is EXECUTION custody, not approval: the delivery domain tag differs from the approval domain, so
  * a browser execution row can never be read as an approval proposal, and no approval operation is
  * admitted by the internal registration.
+ *
+ * The run's first browser use (the demand for its browser host) is one more row of the same journal: a fixed request id
+ * per run, claimed and settled PREPARED by the preparation that demanded it. Every control task, and a restarted one,
+ * answers the run's browser need from that row (browser-execution-prerequisite.mjs).
  */
 import {canonicalSha256,validateShape} from '../../../packages/contracts/validate.mjs';
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -16,6 +20,9 @@ import {assertBrowserOperationDescriptor,browserOperationArgumentsSha256,browser
 
 const fail=code=>{throw Object.assign(Error(code),{code});};
 const same=(a,b)=>canonicalSha256(a)===canonicalSha256(b);
+/** The run's host demand: its request id, input and policy digests are fixed, so every demand of one run is the same row. */
+const HOST_DEMAND=canonicalSha256({schema:'meri-browser-host-demand/1'});
+const demandDescriptor=(binding,scopes)=>({binding,requestId:HOST_DEMAND,tool:'browser-host',inputSha256:HOST_DEMAND,policySha256:HOST_DEMAND,scopes});
 
 export function createBrowserOperationOwner({journal,now=Date.now}={}){
  if(typeof journal?.begin!=='function'||typeof journal?.settle!=='function'||typeof journal?.read!=='function'||
@@ -82,6 +89,19 @@ export function createBrowserOperationOwner({journal,now=Date.now}={}){
   if(entry.state==='FAILED')return Object.freeze({...base,variant:'refused',state:'FAILED',code:entry.outcome?.code??null});
   throw fail('BROWSER_OPERATION_UNKNOWN');
  }
- return Object.freeze({claim,settle,verify,operation:BROWSER_OPERATION_CONTRACT,
+ /** Record the run's first browser use. Any existing row of this run (settled, still pending after a lost acknowledgement,
+   * or claimed under the run's earlier scopes) is already that record; only a journal that cannot answer refuses. */
+ async function demandHost({binding,scopes,expiresAtMs,signal}){
+  if(!Number.isSafeInteger(expiresAtMs)||expiresAtMs<=now())throw fail('BROWSER_OPERATION_REFUSED');
+  const descriptor=demandDescriptor(binding,scopes);let claimed;
+  try{claimed=await claim({...descriptor,signal});}catch(error){if(error?.code==='CONFLICT')return;throw error;}
+  if(claimed.dispatch===true)await settle({...descriptor,state:'PREPARED',outcome:{result:{demanded:true},release:{binding,scopes,expiresAtMs}},signal});
+ }
+ /** Whether this run's first browser use was recorded. */
+ async function hostDemanded({binding,signal}={}){
+  const b=data(binding);validateShape('RunBinding',b);
+  return await journal.read({binding:b,deliveryId:browserExecutionDeliveryId({binding:b,requestId:HOST_DEMAND}),signal})!==null;
+ }
+ return Object.freeze({claim,settle,verify,demandHost,hostDemanded,operation:BROWSER_OPERATION_CONTRACT,
   argumentsSha256:browserOperationArgumentsSha256});
 }

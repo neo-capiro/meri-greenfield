@@ -22,11 +22,15 @@ over `execution/browser/prerequisite`) is `none` unless control's `browserActiva
 browser policy (platform record, tenant settings, the actor's current role) is enabled; an enabled run is `deferred` until its
 first browser use. The model turn never waits for a browser host: the runner mounts the browser tools (only
 `browser_navigate` is listed until the host exists), and the first browser call's PreToolUse gate prepares the browser; the
-conversation shows "Starting a browser…". Control's `browser-prepare` records the run's demand and waits (up to
-`BROWSER_NATIVE_LIMITS.provisionMs`, 90 s) for the host to be `ready`: active row, bootstrap custody retained, canonical run
-`browserAdmitted`. The worker's broker polls the need with each status poll while it is `deferred` and provisions the host
-once it is `browser-only`; then the runner lists the host's own tools (`tools/list_changed`). A run that never browses
-provisions nothing; a failed browser provision leaves the run going without a browser. Takeover handoffs prepare at once.
+conversation shows "Starting a browser…". Control's `browser-prepare` records the run's demand durably (one PREPARED row of
+the run in the browser custody journal, `browser-operation-owner.mjs` `demandHost`, so every control task answers the same
+need) and waits (up to `BROWSER_NATIVE_LIMITS.provisionMs`, 90 s) for the host to be `ready`: active row, bootstrap custody
+retained, canonical run `browserAdmitted`. The worker's broker polls the need with each status poll while it is `deferred`
+and provisions the host once it is `browser-only`; then the runner lists the host's own tools (`tools/list_changed`, which
+the actual CLI honours: `sdk-server.cli.test.mjs`). A run that never browses provisions nothing and settles locally. A
+failed browser provision leaves the run going without a browser: the denied first use does not stop the turn, and the
+run's browser settlement is answered by control as not-applicable when no browser host was ever allocated for it.
+Takeover handoffs prepare at once, without the "Starting a browser…" line (their browser already runs).
 
 **Generation and identity.** Generation is the run's writer fence, as for native. The host id is deterministic per
 purpose (`meri-browser-host-provision/1` versus `meri-native-host-provision/1`), so the two hosts of one run never share
