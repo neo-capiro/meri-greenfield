@@ -1,7 +1,7 @@
 /** Offline control counterexamples only. These never qualify a provider/model. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync,readFileSync,writeFileSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
-import {SOURCE,SOURCE_TREE,IMAGE,COORDINATOR,PAIRS,LIMITS,validatePlan,journal,sha,requestFor,buildBinding,commitment,canonical,manifestFor,parseRuntimeManifest,takeRuntimeManifest,assertCandidateEnvironment,MANIFEST_ENV} from './plan.mjs';
+import {SOURCE,SOURCE_TREE,IMAGE,COORDINATOR,SONNET,OPUS,PAIRS,LIMITS,validatePlan,journal,sha,requestFor,buildBinding,commitment,canonical,manifestFor,parseRuntimeManifest,takeRuntimeManifest,assertCandidateEnvironment,MANIFEST_ENV} from './plan.mjs';
 import {observeQuery,assertLoaded} from './observe.mjs';import {runBatch} from './driver.mjs';import {review as reviewNative} from './review.mjs';
 const syntheticCollection=events=>({events,receiptSha256:'7'.repeat(64),collectionComplete:true});
 const review=(p,product,runtime)=>reviewNative(p,product,runtime,{readReceipt:(_,ctx)=>syntheticCollection(runtime.filter(e=>e.caseId===ctx.c.id))});
@@ -48,9 +48,10 @@ function fakePorts(p,{unknownPath,usageAmount=.001,runtimeChange}={}){
 test('driver uses five distinct product admissions, one submit each, and never claims qualification from answers',async()=>{const f=fakePorts(plan()),out=await runBatch(f.args);assert.equal(out.cases,5);assert.equal(out.qualification,'PENDING_RUNTIME_RECEIPT_REVIEW');assert.equal(f.calls.filter(c=>c.path.endsWith('/submit')).length,5);assert.equal(f.calls.length,35);assert.equal(new Set(f.calls.filter(c=>c.path.endsWith('/submit')).map(c=>c.body.requestId)).size,5);});
 for(const path of ['/api/conversations/input/allocate','/api/conversations/input/admit','/api/conversations/submit'])test(`unknown ${path} stops without retry or next case`,async()=>{const f=fakePorts(plan(),{unknownPath:path});await assert.rejects(runBatch(f.args));assert.equal(f.calls.filter(c=>c.path===path).length,1);assert.equal(f.events.filter(e=>e.event==='case-product-complete').length,0);});
 test('post-result estimate overrun stops before another case; empty runtime evidence cannot pass',async()=>{const p=plan(),f=fakePorts(p,{usageAmount:.251});await assert.rejects(runBatch(f.args),/USAGE_OR_TOOLS/);assert.equal(f.calls.filter(c=>c.path.endsWith('/submit')).length,1);assert.ok(review(p,[],[]).cases.every(c=>c.status==='UNKNOWN'));});
-test('disabled policy correction keeps default and pending efforts closed without aliasing history',async()=>{
+test('the committed policy serves exactly the five qualification pairs beside the Sonnet default; the retired Opus alias stays decodable history, never a live selection',async()=>{
  const policy=JSON.parse(readFileSync(new URL('../../../infra/product-preview/first-chat/policy.json',import.meta.url))),{assertModelCatalog,availableModelSelection,storedModelSelection}=await import('../../../packages/contracts/model-selection.mjs');assertModelCatalog(policy.models);
- assert.equal(policy.models.models[1].modelId,'us.anthropic.claude-opus-4-6-v1');assert.equal(policy.models.models[1].available,false);for(const pair of PAIRS)assert.throws(()=>availableModelSelection(policy.models,pair.selection));
+ assert.deepEqual(policy.models.models.map(m=>[m.modelId,m.available]),[[SONNET,true],[OPUS,true]]);for(const pair of PAIRS)assert.deepEqual(availableModelSelection(policy.models,pair.selection),pair.selection);
+ for(const selection of [{provider:'bedrock',modelId:SONNET,effort:'low'},{provider:'bedrock',modelId:OPUS,effort:'medium'},{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6',effort:null}])assert.throws(()=>availableModelSelection(policy.models,selection),{code:'MODEL_SELECTION_UNAVAILABLE'});
  const old={provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6',effort:null};assert.deepEqual(storedModelSelection({modelSelection:old}),old);assert.equal(policy.models.defaultSelection.effort,null);
 });
 test('real service allocations and public receivers reach one submit without an invented settings owner',async()=>{

@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {accountSdkUsage,sdkUsageSnapshot,SDK_USAGE_BASIS,resolveSdkModelConfiguration} from './usage.mjs';
 import {readFile} from 'node:fs/promises';
-import {availableModelSelection} from '../../../packages/contracts/model-selection.mjs';
+import {availableModelSelection,MODEL_EFFORTS} from '../../../packages/contracts/model-selection.mjs';
 import {storedModelSettings} from '../settings/documents.mjs';
 const session='10000000-0000-4000-8000-000000000001',fork='10000000-0000-4000-8000-000000000002';
 const bedrock='us.anthropic.claude-sonnet-4-6',api='claude-opus-4-6';
@@ -21,7 +21,7 @@ test('deployment catalog changes flow through tenant limits into SDK configurati
  const next=resolveSdkModelConfiguration(availableModelSelection(catalog,catalog.defaultSelection),limits);
  assert.equal(next.model,future.modelId);assert.equal(next.effort,future.effort);assert.equal(next.maxTurns,config.maxTurns);assert.equal(next.maxCostMicroUSD,config.maxCostMicroUSD);
  for(const row of policy.models.models.filter(row=>!row.available))for(const effort of row.efforts)assert.throws(()=>availableModelSelection(policy.models,{provider:row.provider,modelId:row.modelId,effort}));
- for(const row of policy.pendingModels)for(const effort of row.efforts)assert.throws(()=>availableModelSelection(policy.models,{provider:row.provider,modelId:row.modelId,effort}));
+ for(const row of policy.models.models)for(const effort of [null,...MODEL_EFFORTS].filter(effort=>!row.efforts.includes(effort)))assert.throws(()=>availableModelSelection(policy.models,{provider:row.provider,modelId:row.modelId,effort}));
  for(const invalid of [{...selection,effort:'ultra'},{...selection,modelId:''},{...selection,apiKey:'synthetic'}])assert.throws(()=>resolveSdkModelConfiguration(invalid,limits),/SDK_MODEL_CONFIGURATION_REFUSED/);
 });
 test('three turns across models/providers charge only each native cumulative estimate delta',()=>{
