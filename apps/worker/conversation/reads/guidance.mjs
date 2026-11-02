@@ -46,7 +46,7 @@ const PAGE_FAILURES=Object.freeze({
  * government forecasts' freshness was not recorded although its freshness field holds the source check time. */
 const SQL_LIMITATIONS=Object.freeze([
  'Rows are bounded by the query and by the data Capiro has ingested; an empty result is not proof of absence.',
- 'A data set\'s freshness field, when describe lists one, records when Capiro last checked or synchronized its source; generatedAt is only the query time.',
+ 'A public data set\'s freshness field records when Capiro last checked or synchronized its source; a private one (updated_at, created_at) is the latest record change, and private records are current at generatedAt (query time).',
  'Derived rows are not immutable source evidence; use canonical readers for decisive bill text, report passages and consolidated PE funding.',
  'Client-record sources read only the current authorized scope; General may narrow with clientId, a selected-client conversation cannot broaden, saved jobs have no private SQL admission.',
 ]);
@@ -177,7 +177,7 @@ export const READ_GUIDANCE=Object.freeze({
  }),refusals:SQL_REFUSAL_GUIDANCE}),
  query_capiro_data:Object.freeze({usage:Object.freeze([
   // The descriptor's whenToUse describes Core's canonical row objects; the model reads `sqlQueryView` (results.mjs).
-  'What you receive: generatedAt (query time), columns (names, once), rows (each an array of values in that order), sameInEveryRow (columns identical in every row, given once), units, rowCount, rowLimitReached, byteTruncated, and shownRows and cutCells when only part could be shown; the complete result is kept for the record.',
+  'What you receive: generatedAt (query time), columns (names, once), rows (arrays in column order), sameInEveryRow (columns identical in every row, given once), units, rowCount, rowLimitReached, byteTruncated, and shownRows and cutCells when only part could be shown; the complete result is kept for the record.',
   'For a "which" or "list" question select the identifying columns (title, number, agency, date or window, stage or status) in a useful order with count(*) OVER () AS total_matching, and list the rows with the total: all up to about 30, otherwise about 20 representative ones and an offer of the rest; aggregate (by month, agency or stage) only when asked.',
  ]),limitations:SQL_LIMITATIONS,failures:Object.freeze({
   INVALID_ARGUMENTS:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source (one of the listed sources) and clientId (UUID, client_records only).',

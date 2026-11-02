@@ -24,7 +24,7 @@ export const SQL_FIRST_GUIDANCE='Structured questions: for counts, totals, ranki
 export const SQL_ABSENT_GUIDANCE='Structured questions: text-to-SQL is not enabled in this conversation, so this typed read is the structured path; report its paging and coverage limits instead of inferring totals.';
 /** What the text-to-SQL families return to the model (`results.mjs` sqlQueryView), where their freshness is and how a result declares clipped output. */
 const SQL_STATES='rowLimitReached and byteTruncated declare clipped output and shownRows rows not shown; each data set\'s limitations in describe declare its coverage; a denied, timed-out or invalid query is a failure, never an empty result.';
-const SQL_RETURNS='Compact rows (column names once, each row an array) with generatedAt (query time) and exact integer and decimal strings, or data set metadata naming each freshness field: when Capiro last checked or synchronized the source.';
+const SQL_RETURNS='Compact rows with generatedAt (query time) and exact integer and decimal strings, or data set metadata naming each freshness field (public: source check time; private: latest record change).';
 const g=(/** @type {string} */covers,/** @type {string} */returns,/** @type {string} */states,structured=false)=>Object.freeze({covers,returns,states,structured});
 /** @type {Readonly<Record<string,FamilyGuidance>>} */
 export const READ_FAMILY_GUIDANCE=Object.freeze({

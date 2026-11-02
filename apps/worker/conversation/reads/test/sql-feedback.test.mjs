@@ -138,10 +138,29 @@ test('a result that fits is shown whole; only an oversized one has its long text
  for(const result of [sqlRefusal(),capiroDataPage('describe_capiro_data')]){const text=JSON.stringify(envelope(result));assert.equal(modelResultText(query,text,envelope(result)),text);}
 });
 
-test('the describe notice names each freshness field and how to state when Capiro last checked the source',()=>{
+// 2 November review: a private data set's updated_at or created_at is when a record changed, not when Capiro checked a source.
+test('the describe notice states a public freshness field as the source check time and a private one as the latest record change',()=>{
  const page=capiroDataPage('describe_capiro_data');
- assert.doesNotMatch(notices(describe,page)[0].text,/Freshness fields/,'no field, no freshness line');
+ assert.doesNotMatch(notices(describe,page)[0].text,/Freshness fields|Record change fields/,'no field, no freshness line');
  const fresh={...page,relations:[{...page.relations[0],freshness:{field:'last_synced_at',sourceAsOf:null,sourceVersion:null}},{...page.relations[0],name:'government_forecasts',freshness:{field:'observed_at',sourceAsOf:null,sourceVersion:null}}]};
  const text=notices(describe,fresh)[0].text;
  assert.match(text,/ Freshness fields: program_elements\.last_synced_at, government_forecasts\.observed_at\. The latest value of a freshness field is when Capiro last checked or synchronized that source: .*select its max \(for example max\(observed_at\) OVER \(\) AS source_checked_at in the listing query, with the edition where the data set has one\) and state it as the data's as-of time; never say a data set's freshness is not recorded when it lists a freshness field\. These names are for writing queries/);
+ assert.doesNotMatch(text,/Record change fields/);
+ const own=privateCapiroDataPage('describe_capiro_data'),relation=own.relations[0];
+ const records={...own,relations:[{...relation,freshness:{field:'updated_at',sourceAsOf:null,sourceVersion:null}},{...relation,name:'client_campaign_recipients',freshness:{field:'created_at',sourceAsOf:null,sourceVersion:null}},
+  {...relation,name:'research_portfolio_bills',coverage:{...relation.coverage,basis:'authorized_research_portfolio'},freshness:{field:'updated_at',sourceAsOf:null,sourceVersion:null}}]};
+ const recordText=notices(describe,records)[0].text;
+ assert.match(recordText,/rowLimit default 200, max 1000\. Record change fields: client_objectives\.updated_at, client_campaign_recipients\.created_at, research_portfolio_bills\.updated_at\. Each is when a record was last edited or created, not a source check: state its latest value as the latest record change, and these records as current at generatedAt \(the query time\)\. These names are for writing queries/);
+ assert.doesNotMatch(recordText,/Freshness fields|checked or synchronized|as-of time/);
+});
+
+// 2 November review probes: a folded 80,000-character value made an 80,182-character view, and 150 rows reported 200 cut values for 63 shown.
+test('folded values get the same cut as cells, and cutCells counts only the values shown',()=>{
+ const page=capiroDataPage(),shared='z'.repeat(80000);
+ const folded=sqlQueryView({...page,rows:[0,1,2].map(i=>({...page.rows[0],count:String(i),pe_code:shared})),rowCount:3});
+ assert.equal(folded.sameInEveryRow.pe_code,`${'z'.repeat(SQL_VIEW_CELL_MAX)}...`);assert.equal(folded.rows.length,3);assert.equal(folded.shownRows,undefined);
+ assert.equal(folded.cutCells,1);assert.ok(JSON.stringify(folded).length<=SQL_VIEW_CHARS_MAX);
+ const wide=sqlQueryView({...page,rows:Array.from({length:150},(_,i)=>({...page.rows[0],count:String(i),pe_code:`${i}${'p'.repeat(400)}`,absent:`${i}${'a'.repeat(400)}`})),rowCount:150});
+ assert.ok(wide.shownRows<SQL_VIEW_ROWS_MAX,`${wide.shownRows} rows shown`);assert.equal(wide.rows.length,wide.shownRows);
+ assert.equal(wide.cutCells,2*wide.shownRows);assert.ok(JSON.stringify(wide).length<=SQL_VIEW_CHARS_MAX);
 });
