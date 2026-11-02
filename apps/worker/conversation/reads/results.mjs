@@ -6,7 +6,8 @@
  * model repeats what it reads to the user (the 1 November "UNAVAILABLE" and tool-name leaks). The model already knows
  * which call failed from the tool-use id; the closed code is `failureCode(error)`, never parsed back out of the text.
  * Successful SQL, memory and mail pages get one short orientation notice (counts, continuation, what an empty page
- * means, stale mailbox); the canonical result bytes and their hashes are never touched. */
+ * means, stale mailbox); the canonical result bytes and their hashes are never touched, and mail candidate pages and
+ * query results reach the model as a compact view of them (`modelResultText`). */
 import {readGuidance,MAIL_COVERAGE_REASONS,MAIL_COVERAGE_UNKNOWN} from './guidance.mjs';
 import {SQL_TOOL_IDS} from './tools.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
@@ -90,9 +91,50 @@ export function mailCandidateView(page){
     preview:preview!==null&&preview.length>MAIL_PREVIEW_VIEW_MAX?`${preview.slice(0,MAIL_PREVIEW_VIEW_MAX)}...`:preview,
     ...(typeof m?.clientId==='string'?{clientId:m.clientId}:{}),...(m?.connectionStatus&&m.connectionStatus!=='connected'?{connectionStatus:m.connectionStatus}:{})};})};
 }
-/** The text the model receives for a successful read: the canonical result, except a mail candidate page, which it reads as
- * `mailCandidateView`. @param {{id:string}} operation @param {string} result @param {any} parsed */
-export const modelResultText=(operation,result,parsed)=>MAIL_TOOLS.has(operation.id)&&parsed?.kind==='mail-candidate-source-page'?JSON.stringify(mailCandidateView(parsed)):result;
+/** Rows, characters and characters per text value of one query result the model reads: about 10,000 tokens at most,
+ * well inside the SDK's 25,000-token tool-result limit together with the notice. */
+export const SQL_VIEW_ROWS_MAX=100,SQL_VIEW_CHARS_MAX=40000,SQL_VIEW_CELL_MAX=300;
+/** What the model reads of a successful query_capiro_data result: the column names once, each row as an array in that order,
+ * and the columns whose value is the same in every row (for example count(*) OVER () or max(observed_at) OVER ()) once.
+ * Up to SQL_VIEW_ROWS_MAX rows are shown; a result still over SQL_VIEW_CHARS_MAX has its long text values, folded ones
+ * included, cut to SQL_VIEW_CELL_MAX characters and then shows fewer rows (at least one); shownRows and cutCells say so. The canonical
+ * result stays the result of record (receipt hash, output accounting). Its envelope (binding, per-relation limitations
+ * repeated from describe) and row objects repeating every column name made the 2 November "which government forecasts
+ * have a window in the next two quarters" result spill past the SDK's tool-result limit into a file, which the model then
+ * narrated reading with Read and a shell command. @param {any} page */
+export function sqlQueryView(page){
+ const names=page.columns.map((/** @type {{name:string}} */c)=>c.name);
+ const all=page.rows.map((/** @type {Record<string,unknown>} */row)=>names.map((/** @type {string} */name)=>row[name]??null));
+ const same=all.length>2?names.flatMap((/** @type {string} */_,/** @type {number} */i)=>all.every((/** @type {unknown[]} */row)=>row[i]===all[0][i])?[i]:[]):[];
+ const kept=names.flatMap((/** @type {string} */_,/** @type {number} */i)=>same.includes(i)?[]:[i]);
+ const units=page.columns.filter((/** @type {{unit?:unknown}} */c)=>typeof c.unit==='string');
+ const folded=Object.fromEntries(same.map(i=>[names[i],all[0][i]]));
+ const head=(/** @type {Record<string,unknown>} */sameInEveryRow)=>({generatedAt:page.generatedAt,columns:kept.map(i=>names[i]),
+  ...(same.length?{sameInEveryRow}:{}),
+  ...(units.length?{units:Object.fromEntries(units.map((/** @type {{name:string,unit:string}} */c)=>[c.name,c.unit]))}:{}),
+  rowCount:page.rowCount,rowLimitReached:page.rowLimitReached,byteTruncated:page.byteTruncated});
+ /** @type {unknown[][]} */
+ let rows=all.slice(0,SQL_VIEW_ROWS_MAX).map((/** @type {unknown[]} */row)=>kept.map(i=>row[i]));
+ let top=head(folded),cutCells=0;
+ // The size check reserves the two optional counters at their largest spelling.
+ const size=(/** @type {object} */h,/** @type {unknown[][]} */r)=>JSON.stringify({...h,rows:r,shownRows:SQL_VIEW_ROWS_MAX,cutCells:all.length*names.length}).length;
+ if(size(top,rows)>SQL_VIEW_CHARS_MAX){
+  const long=(/** @type {unknown} */v)=>typeof v==='string'&&v.length>SQL_VIEW_CELL_MAX,cut=(/** @type {unknown} */v)=>long(v)?`${String(v).slice(0,SQL_VIEW_CELL_MAX)}...`:v;
+  top=head(Object.fromEntries(Object.entries(folded).map(([name,v])=>[name,cut(v)])));
+  let used=size(top,[]),shown=0;
+  for(const row of rows){used+=JSON.stringify(row.map(cut)).length+1;if(used>SQL_VIEW_CHARS_MAX&&shown>0)break;shown++;}
+  rows=rows.slice(0,shown);
+  // Only values the model is shown count as cut: the folded ones and those in the rows kept.
+  cutCells=[...Object.values(folded),...rows.flat()].filter(long).length;
+  rows=rows.map(row=>row.map(cut));
+ }
+ return {...top,rows,...(rows.length<page.rowCount?{shownRows:rows.length}:{}),...(cutCells?{cutCells}:{})};
+}
+const sqlSuccess=(/** @type {{id:string}} */operation,/** @type {any} */page)=>operation.id==='query_capiro_data'&&page?.ok===true&&Array.isArray(page.columns)&&Array.isArray(page.rows);
+/** The text the model receives for a successful read: the canonical result, except a mail candidate page and a query
+ * result, which it reads as `mailCandidateView` and `sqlQueryView`. @param {{id:string}} operation @param {string} result @param {any} parsed */
+export const modelResultText=(operation,result,parsed)=>MAIL_TOOLS.has(operation.id)&&parsed?.kind==='mail-candidate-source-page'?JSON.stringify(mailCandidateView(parsed))
+ :sqlSuccess(operation,parsed?.result)?JSON.stringify(sqlQueryView(parsed.result)):result;
 /** One orientation line for a canonical mail page: counts, continuation, preview incompleteness and a stale mailbox.
  * @param {any} page */
 function mailNotice(page){
@@ -169,11 +211,18 @@ export function readNotices(operation,result,parsed){
  if(operation.id==='describe_capiro_data'){
   if(page?.ok!==true||!Array.isArray(page.relations))return [];
   const names=page.relations.map(r=>r?.name).filter(name=>typeof name==='string');
-  return [notice(`Notice: ${names.length} ${page.scope?.kind??'public'} data set(s) described: ${names.join(', ')}. Spell data set and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each data set's grain and limitations; rowLimit default ${page.limits?.defaultRowLimit}, max ${page.limits?.maxRowLimit}. These names are for writing queries, never for the user: when no described data set holds the subject asked about, tell the user in plain words that this data is not available for structured queries yet and offer what is (for example a search by topic).`)];
+  // 2 November acceptance: "the data freshness date is not recorded" although government_forecasts.observed_at is the source check time.
+  // A public data set's freshness field is that check time; a private one (updated_at, created_at) is when a record changed.
+  const fresh=(/** @type {boolean} */pub)=>page.relations.filter(r=>typeof r?.name==='string'&&typeof r?.freshness?.field==='string'&&(r.coverage?.basis==='ingested_public_records')===pub).map(r=>`${r.name}.${r.freshness.field}`);
+  const checked=fresh(true),changed=fresh(false);
+  return [notice(`Notice: ${names.length} ${page.scope?.kind??'public'} data set(s) described: ${names.join(', ')}. Spell data set and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each data set's grain and limitations; rowLimit default ${page.limits?.defaultRowLimit}, max ${page.limits?.maxRowLimit}.${checked.length?` Freshness fields: ${checked.join(', ')}. The latest value of a freshness field is when Capiro last checked or synchronized that source: when the answer depends on how current the data is, or the user asks, select its max (for example max(observed_at) OVER () AS source_checked_at in the listing query, with the edition where the data set has one) and state it as the data's as-of time; never say a data set's freshness is not recorded when it lists a freshness field.`:''}${changed.length?` Record change fields: ${changed.join(', ')}. Each is when a record was last edited or created, not a source check: state its latest value as the latest record change, and these records as current at generatedAt (the query time).`:''} These names are for writing queries, never for the user: when no described data set holds the subject asked about, tell the user in plain words that this data is not available for structured queries yet and offer what is (for example a search by topic).`)];
  }
- if(operation.id!=='query_capiro_data'||page?.ok!==true)return [];
- const lines=[`Notice: ${page.rowCount} row(s) returned of rowLimit ${page.limits?.rowLimit} from ${(page.relationsUsed??[]).join(', ')}.`];
- if(page.rowLimitReached)lines.push('rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');
+ if(!sqlSuccess(operation,page))return [];
+ const view=sqlQueryView(page);
+ const lines=[`Notice: ${page.rowCount} row(s) returned of rowLimit ${page.limits?.rowLimit} from ${(page.relationsUsed??[]).join(', ')}${page.rowCount?`; each row lists its values in the order of columns${view.sameInEveryRow?', and sameInEveryRow gives once the columns whose value is the same in every row':''}`:''}.`];
+ if(view.shownRows!==undefined)lines.push(`Only the first ${view.shownRows} row(s) are shown; the rest are kept for the record. For a list answer name about 20 representative rows from these with the total and offer the rest; for counts, totals or trends aggregate in SQL instead of reading rows; continue by keyset after the last row shown when the user wants more.`);
+ if(view.cutCells)lines.push(`${view.cutCells} long text value(s) are cut to ${SQL_VIEW_CELL_MAX} characters and end with "...": to quote one whole, select substr(column, 1, 20000) for that row.`);
+ if(page.rowLimitReached)lines.push('rowLimitReached: more rows matched; to say how many, count them (count(*) OVER () AS total_matching in the same query), or narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');
  if(page.byteTruncated)lines.push('byteTruncated: whole rows were dropped at the 256 KiB output budget; select fewer columns or lower rowLimit.');
  if(page.rowCount===0)lines.push('Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the data set coverage limitations before concluding.');
  return [notice(lines.join(' '))];

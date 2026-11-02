@@ -35,7 +35,8 @@ test('the semantic routing sentence appears only with a mounted semantic read an
  assert.ok(all.indexOf('Structured questions')<all.indexOf('by meaning:')&&all.indexOf('by meaning:')<all.indexOf('Saved knowledge'),'SQL, then semantic, then memory');
  // 4,400: the funding sentence (status, passage, coverage-gap and awards rules for grants and notices) added about 420 characters.
  // 5,000: the no-gap-filling and government-forecast sentences (2 November acceptance R06, R07) added about 520 characters.
- assert.ok(all.length<5000,`${all.length} characters`);
+ // 5,300: the list-answer, freshness and no-file-talk sentence (2 November forecasts acceptance) added about 370 characters.
+ assert.ok(all.length<5300,`${all.length} characters`);
 });
 
 test('each semantic sample question carries a cue the sentence routes to the semantic reads, and none of the SQL cues',()=>{

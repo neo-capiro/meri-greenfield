@@ -14,6 +14,7 @@
   "auroraSecurityGroupId": "sg-059b4e4de0b1dcca5",
   "endpointSecurityGroupId": "sg-01def4e5c0fe44d4a",
   "s3PrefixListId": "pl-63a5400a",
+  "browserHostSecurityGroupId": "sg-0706ddc3bed938bc3",
   "checkpoint": {
     "bucket": "meri-greenfield-qual-checkpoint-967807252336-us-east-1",
     "prefix": "product-preview/checkpoints",
