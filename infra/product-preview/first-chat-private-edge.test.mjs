@@ -24,3 +24,10 @@ test('internal-only TLS 1.3 front: host-matched forward to 8082, everything else
  assert.equal(of(t,'AWS::EC2::SecurityGroupEgress').length,4,'three client egress rules plus ALB to control');
  const [zone]=of(t,'AWS::Route53::HostedZone');assert.equal(zone.Name,'meri-preview.internal');assert.equal(zone.VPCs[0].VPCId,'vpc-0ac26cfac7ed972be');
 });
+
+test('the private load balancer group carries no inline ingress, so rules other stacks add for their own clients are never reconciled away',()=>{
+ const t=synthesizeFirstChatPrivateEdge(binding());
+ const groups=Object.entries(t.Resources).filter(([,r])=>r.Type==='AWS::EC2::SecurityGroup');
+ assert.ok(groups.length>=1);
+ for(const [id,group] of groups)assert.equal(Object.hasOwn(group.Properties,'SecurityGroupIngress'),false,`${id} must not carry inline ingress`);
+});

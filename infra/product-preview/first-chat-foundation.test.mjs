@@ -126,3 +126,18 @@ test('no control-to-runner receiver or obsolete runner resource survives synthes
  assert.equal(egress.length,0);
  assert.equal(ingress.length,1);assert.equal(ingress[0][1].Properties.SourceSecurityGroupId,'sg-0dc7236a6d67e4340');
 });
+
+test('no security group of this stack carries inline ingress, so ingress rules other stacks add to the control group are never reconciled away',()=>{
+ for(const binding of [foundationBinding(),{...foundationBinding(),browserHostSecurityGroupId:'sg-0706ddc3bed938bc3'}]){
+  const t=synthesizeFirstChatFoundation(binding);
+  for(const [id,resource] of ofType(t,'AWS::EC2::SecurityGroup'))
+   assert.equal(Object.hasOwn(resource.Properties,'SecurityGroupIngress'),false,`${id} must not carry inline ingress; the private TLS front and the host listener add standalone rules to it`);
+ }
+});
+
+test('the browser host group adds exactly one standalone egress on the control group for the pinned listener port, and only when bound',()=>{
+ const egress=t=>ofType(t,'AWS::EC2::SecurityGroupEgress').filter(([,r])=>r.Properties.FromPort===9444);
+ assert.equal(egress(synthesizeFirstChatFoundation(foundationBinding())).length,0);
+ const [only,...rest]=egress(synthesizeFirstChatFoundation({...foundationBinding(),browserHostSecurityGroupId:'sg-0706ddc3bed938bc3'}));
+ assert.equal(rest.length,0);assert.equal(only[1].Properties.DestinationSecurityGroupId,'sg-0706ddc3bed938bc3');assert.equal(only[1].Properties.ToPort,9444);
+});

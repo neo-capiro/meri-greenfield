@@ -41,8 +41,12 @@ Only launch/renew responses can contain the short-lived form token. Never persis
 or log form fields. Submit to the exact returned editor origin and frame target.
 The WOPI host supplies the configured application HTTPS origin as
 PostMessageOrigin. Frame messages must match both that editor origin and the
-actual frame window. CODE's Reset_Access_Token requires token and TTL; an issued
-renewal response does not prove a live frame accepted it. Save acknowledgement
+actual frame window. The form's `access_token_ttl` is always the WOPI zero
+sentinel (no client expiry), so CODE shows no countdown of its own; `expiresAtMs`
+is the token's real expiry, which the host frame and the WOPI handler enforce,
+and the host renews before it. CODE's Reset_Access_Token carries the token and
+the same zero TTL; an issued renewal response does not prove a live frame
+accepted it. Save acknowledgement
 must be followed by current draft metadata before selecting a Publish hash.
 
 Remaining integration: frontend consumer pins,
