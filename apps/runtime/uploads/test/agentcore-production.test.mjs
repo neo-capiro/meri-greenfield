@@ -253,3 +253,24 @@ test('the mounted CONTROL handle destroys the ONE client it owns, after the owne
  assert.match(shutdown,/\(\)=>assembly\?\.close\(\)[\s\S]*uploadsNative\?\.inspection\?\.close/u,
   'the serving owner stops before the owned client is destroyed');
 });
+
+test('a browser-only host block beside agentcore leaves upload inspection on the AgentCore port',async()=>{
+ const placement={accountId:'111122223333',region:'us-east-1',amiId:'ami-0fedcba9876543210',vpcId:'vpc-0123456789abcdef0',
+  subnetId:'subnet-0123456789abcdef0',securityGroupId:'sg-0123456789abcdef0',rootDeviceName:'/dev/xvda'};
+ const native=compileUploadNativeConfiguration({uploads:{native:{enabled:true,agentcore:{imageDigest:DECLARED_IMAGE},policySha256:'d'.repeat(64),
+  host:{tls:{caPath:'/run/meri/native-issuer-ca.pem',certPath:'/run/meri/native-control-client.pem',keyPath:'/run/meri/native-control-client.key'},
+   browserDeployment:placement}}}});
+ assert.equal(native.agentcore.imageDigest,DECLARED_IMAGE);assert.deepEqual(native.host.browserDeployment,placement);
+ const allocations={resolve:()=>assert.fail('uploads never resolve a provisioned host allocation beside agentcore')};
+ const handle=await mountUploadNativeControl({credentialPaths:INVENTORY,configuration:{uploads:{native},agentcore:runtime()},allocations,now:Date.now,
+  run:async()=>assert.fail('no local sandbox composition')});
+ assert.deepEqual(handle.missing,[]);assert.equal(handle.host,null);
+ // The same port the agentcore-only declaration mounts: an inspection dispatches to the runtime, never to a host.
+ await mocked();sent.length=0;onInvoke=null;
+ const state={at:Date.now(),denied:false,gets:0,rows:new Map(),object:null};clock=()=>state.at;
+ const call=await mounted({inspection:handle.inspection,state});
+ await call.owner.put(call.prepared.uploadId,call.bytes,call.options);
+ assert.equal((await call.owner.inspect(call.prepared.uploadId,call.options)).inspection.scan.status,'clean');
+ assert.deepEqual(dispatched(),['InvokeAgentRuntimeCommand','StopRuntimeSessionCommand']);
+ handle.inspection.close();
+});

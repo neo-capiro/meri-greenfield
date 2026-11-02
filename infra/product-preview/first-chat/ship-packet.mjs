@@ -133,17 +133,23 @@ export function releaseSteps({deployment,stage3,upload,migrations,work,bindingsP
  steps.push({id:'upload',title:`Stage the ${roles.length} rendered bundles under ${upload.label} (AWSCURRENT does not move)`,
   commands:upload.roles.flatMap(r=>[command(r.command,{note:`append "${r.role}<TAB>VersionId" to ${W('secret-versions.tsv')}; on an uncertain outcome resend this exact command`}),command(r.readback)]),
   gate:`${roles.length} new versions carry only ${upload.label}; each secret's other labels equal its labelsBefore in the upload plan (AWSCURRENT unmoved)`});
+ // Native processing renders Control's host-currentness listener; its container port is attached to the host listener
+ // load balancer (infra/browser-host/host-listener-stack.mjs), whose stack outputs the bindings then require.
+ const hostListener=deployment.features?.nativeProcessing?.enabled===true;
  steps.push({id:'bindings',title:'Live readbacks, then bindings and the update templates',
   commands:[command(['aws','cloudformation','get-template','--region','us-east-1','--stack-name',STAGE3_STACKS.app,'--template-stage','Original','--query','TemplateBody','--output','json'],{stdout:W('app.live.template.json')}),
    command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name','<foundation stack>','--query','Stacks[0].Outputs'],{stdout:W('foundation-live.json')}),
    command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name','<private-edge stack>','--query','Stacks[0].Outputs'],{stdout:W('private-edge-outputs.json')}),
+   ...(hostListener?[command(['aws','cloudformation','describe-stacks','--region','us-east-1','--stack-name','<host listener stack>','--query','Stacks[0].Outputs'],{stdout:W('host-listener-outputs.json')})]:[]),
    command(['node',STAGE3,'bindings','--deployment-inputs','<deployment-inputs.json>','--foundation-outputs',W('foundation-live.json'),'--private-edge-outputs',W('private-edge-outputs.json'),
-    '--rendered',W('rendered'),'--secret-versions',W('secret-versions.tsv'),'--image-scans','<image-scans.json>','--live-app-template',W('app.live.template.json'),'--out',W('bindings')])],
+    '--rendered',W('rendered'),'--secret-versions',W('secret-versions.tsv'),'--image-scans','<image-scans.json>','--live-app-template',W('app.live.template.json'),
+    ...(hostListener?['--host-listener-outputs',W('host-listener-outputs.json')]:[]),'--out',W('bindings')])],
   gate:'STAGE3_BINDINGS_WRITTEN; rerun this packet with --bindings to pin the template hashes'});
  const gates={app:{wait:wait(...roles),checks:[logs(f.ControlLogGroupName,'"runtime.listening"'),logs(f.WorkerLogGroupName,'"runtime.listening"'),...(schedule?[logs(f.ScheduleLogGroupName,'"runtime.listening"')]:[]),
    command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',deployment.privateEdge.controlPrivateTargetGroupArn]),
-   command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',f.ControlTargetGroupArn])],
-   gate:`exactly one control task, worker 1/1/0${schedule?', schedule-worker 1/1/0':''}, all runtime.listening, both target groups healthy; no RUNTIME_UNAVAILABLE, RUNTIME_CONFIGURATION, STATIC_INIT_* or *_REFUSED; tasks alive after 200 s${schedule?'; verify an actual authorized scheduled occurrence and revocation/retirement through the canonical owners before accepting routines':''}`}};
+   command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn',f.ControlTargetGroupArn]),
+   ...(hostListener?[command(['aws','elbv2','describe-target-health','--region','us-east-1','--target-group-arn','<host-listener-outputs.json HostListenerTargetGroupArn>'])]:[])],
+   gate:`exactly one control task, worker 1/1/0${schedule?', schedule-worker 1/1/0':''}, all runtime.listening, ${hostListener?'all three target groups (public, private, host listener) healthy':'both target groups healthy'}; no RUNTIME_UNAVAILABLE, RUNTIME_CONFIGURATION, STATIC_INIT_* or *_REFUSED; tasks alive after 200 s${schedule?'; verify an actual authorized scheduled occurrence and revocation/retirement through the canonical owners before accepting routines':''}`}};
  for(const key of STAGE3_DEPLOY_ORDER){
   const planned=bindingsPlan?.stacks?.[key],stack=STAGE3_STACKS[key];
   steps.push({id:`deploy-${key}`,title:`${stack}: change set, review, execute, wait`,

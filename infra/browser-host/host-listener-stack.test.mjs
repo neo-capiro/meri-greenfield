@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {compileHostListenerTemplate,validateHostListenerInput,CONTROL_HOST_LISTENER_PORT,HOST_LISTENER_PORT} from './host-listener-stack.mjs';
+import {compileHostListenerTemplate,validateHostListenerInput,HOST_LISTENER_PORT} from './host-listener-stack.mjs';
+import {CONTROL_HOST_LISTENER_PORT} from '../../apps/runtime/browser-host-configuration.mjs';
 import {compileProvisionedBrowserHostTemplate} from './provisioned-stack.mjs';
 
 const input=()=>({vpcId:'vpc-0123456789abcdef0',subnetId:'subnet-0123456789abcdef0',privateIpv4Address:'10.42.7.250',
@@ -37,7 +38,7 @@ test('the host group of the static stack may reach the listener: its egress cove
   imageRepository:'meri-greenfield/browser-host',logGroupName:'/meri-greenfield/browser-host'}).Resources.BrowserHostSecurityGroup.Properties;
  assert.equal(host.SecurityGroupEgress.some(r=>r.IpProtocol==='tcp'&&r.FromPort<=HOST_LISTENER_PORT&&r.ToPort>=HOST_LISTENER_PORT),true);
 });
-test('the Control port is closed: not a port another Meri role already serves, and not privileged',()=>{
+test('the Control port is exactly the rendered host-currentness listener port',()=>{
  for(const port of [80,443,1023,8080,8082,8083,70000,'8443',8443.5])
   assert.throws(()=>validateHostListenerInput({...input(),controlPort:port}),{code:'HOST_LISTENER_TEMPLATE_REFUSED'});
 });

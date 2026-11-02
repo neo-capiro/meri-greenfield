@@ -95,6 +95,9 @@ import {createBrowserDownloadReservations} from '../control/intents/browser-down
 import {createPostgresIntentJournalStore} from '../control/intents/postgres-journal.mjs';
 import {createBrowserReceiptProducer} from '../control/browser-hosts/browser-receipts.mjs';
 import {createBrowserActionRecorder} from '../control/browser-hosts/action-settlement.mjs';
+/** Uploads are inspected on provisioned native-processing hosts only when `uploads.native.host` is declared without
+ * `agentcore`; a host block beside `agentcore` is the browser-only purpose's Control configuration (uploads stay on AgentCore). */
+const uploadsInspectedOnHosts=configuration=>configuration.uploads?.native?.host!==undefined&&configuration.uploads.native.agentcore===undefined;
 function productBinding(options){
  const c=own(options,[],['productPorts','productPortsFactory']);
  if(c.productPorts!==undefined&&c.productPortsFactory!==undefined)throw fault('PRODUCT_PORTS_CONFIGURATION');
@@ -291,8 +294,7 @@ export function assembleControl(options){
   ...(readAvailability&&capabilityPolicy&&readSessionCapabilityRole?{readAvailability:input=>readAvailability({...input,capabilityPolicy}),capabilityPolicy,readSessionCapabilityRole}:{}),serviceFor:value=>createWorkerService(value),...(productContext?{revisionSource:value=>selectedDocumentRevisionSourceFor(productContext,value)}:{}),now}):null;
  if(selected)ports=composeRuntimePorts(ports,selected.ports);
  const uploadInputSource=ports.uploadApplicationFactory?.createSource?.({sessions,retention:retention?.gate,conversationStore:store});
- const nativeHostConfig=configuration.uploads?.native?.host;
- const nativePrerequisite=nativeHostConfig===undefined?undefined:createNativeExecutionPrerequisite({store,uploadInputSource,
+ const nativePrerequisite=!uploadsInspectedOnHosts(configuration)?undefined:createNativeExecutionPrerequisite({store,uploadInputSource,
   nativeAllocations,policySha256:configuration.uploads.native.policySha256,now,requestTimeoutMs:configuration.limits.requestMs,
   effectTimeoutMs:NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS});
  const nativeNeed=nativePrerequisite?.need,nativeReady=nativePrerequisite?.ready;
@@ -338,7 +340,7 @@ export function assembleControl(options){
  // unbound (operations refuse) and never change unrelated startup. The AgentCore inspection (`uploads.native.agentcore`)
  // and the local composition resolve no allocation and declare no host policy, so there is nothing to bind for them:
  // reporting the host owners as missing over a healthy remote mount was a false unavailable event.
- if(configuration.uploads?.native?.host!==undefined&&nativeAllocations!==undefined){
+ if(uploadsInspectedOnHosts(configuration)&&nativeAllocations!==undefined){
   try{
    if(nativeCurrentness===null)throw Error('NATIVE_CURRENTNESS_UNAVAILABLE');
    nativeAllocations.bind(createPostgresNativeAllocationReader({pool,readCanonicalNative:nativeCurrentness.readCanonicalNative,now}));
@@ -373,8 +375,8 @@ export async function startControl(configuration,options={}){
  const browserHostsDeclared=compileBrowserHostConfiguration(configuration)!==null;
  const lateBrowserNeed=!browserHostsDeclared?undefined:async(args)=>{if(typeof boundBrowserNeed!=='function')throw Object.assign(Error('EXECUTION_BROWSER_PREREQUISITE_REFUSED'),{code:'EXECUTION_BROWSER_PREREQUISITE_REFUSED'});return boundBrowserNeed(args);};
  const lateBrowserReady=!browserHostsDeclared?undefined:async(args)=>{if(typeof boundBrowserReady!=='function')throw Object.assign(Error('EXECUTION_BROWSER_PREREQUISITE_REFUSED'),{code:'EXECUTION_BROWSER_PREREQUISITE_REFUSED'});return boundBrowserReady(args);};
- const lateNativeNeed=configuration.uploads?.native?.host===undefined?undefined:async(args)=>{if(typeof boundNativeNeed!=='function')throw Object.assign(Error('EXECUTION_NATIVE_PREREQUISITE_REFUSED'),{code:'EXECUTION_NATIVE_PREREQUISITE_REFUSED'});return boundNativeNeed(args);};
- const lateNativeReady=configuration.uploads?.native?.host===undefined?undefined:async(args)=>{if(typeof boundNativeReady!=='function')throw Object.assign(Error('EXECUTION_NATIVE_PREREQUISITE_REFUSED'),{code:'EXECUTION_NATIVE_PREREQUISITE_REFUSED'});return boundNativeReady(args);};
+ const lateNativeNeed=!uploadsInspectedOnHosts(configuration)?undefined:async(args)=>{if(typeof boundNativeNeed!=='function')throw Object.assign(Error('EXECUTION_NATIVE_PREREQUISITE_REFUSED'),{code:'EXECUTION_NATIVE_PREREQUISITE_REFUSED'});return boundNativeNeed(args);};
+ const lateNativeReady=!uploadsInspectedOnHosts(configuration)?undefined:async(args)=>{if(typeof boundNativeReady!=='function')throw Object.assign(Error('EXECUTION_NATIVE_PREREQUISITE_REFUSED'),{code:'EXECUTION_NATIVE_PREREQUISITE_REFUSED'});return boundNativeReady(args);};
  const checkAuthorization=()=>{fence.check();signal.throwIfAborted();};
  const lateNativeHostAuthority=configuration.uploads?.native?.host===undefined?undefined:async(args)=>{if(typeof boundNativeHostAuthority?.verify!=='function')throw Object.assign(Error('EXECUTION_NATIVE_HOST_AUTHORITY_REFUSED'),{code:'EXECUTION_NATIVE_HOST_AUTHORITY_REFUSED'});return boundNativeHostAuthority.verify(undefined,args);};
  const close=()=>closing??=(async()=>{fence.lose('RUNTIME_STOPPING');readCredentialRelay?.close();nativeAllocations?.close();memoryContextRelay?.close();occurrenceRelay?.close();officeDiscovery?.close();externalSignal?.removeEventListener('abort',onExternalAbort);const results=[];try{officeKey?.fill(0);}catch{}for(const method of [()=>listener?.close(),()=>privateListener?.close(),()=>candidate?.close(),()=>nativeHostTeardown?.close?.(),()=>assembly?.browserHosts?.close(),()=>assembly?.close(),()=>uploadsNative?.inspection?.close?.(),()=>connection?.close(),()=>pool?.end(),()=>telemetry?.close(),()=>routeCounters.flush(),()=>{if(!injectedTurnTelemetry)turnTelemetry.close();}])try{results.push({status:'fulfilled',value:await method()});}catch(reason){results.push({status:'rejected',reason});}assertTemporalRuntimeCleanup(results);})();

@@ -145,7 +145,8 @@ const USAGE=`Usage: node infra/product-preview/first-chat/stage3-deploy.mjs <com
   upload-plan    --deployment-inputs F --rendered DIR --label NEW_LABEL --secret-labels DIR --out upload-plan.json
                  (DIR: one list-secret-version-ids --include-deprecated JSON output per material secret, read just before)
   bindings       --deployment-inputs F --foundation-outputs F --private-edge-outputs F --rendered DIR --secret-versions versions.tsv
-                 --image-scans scans.json --live-app-template app.live.template.json [--web-search-outputs gw.outputs.json] --out NEW_DIR
+                 --image-scans scans.json --live-app-template app.live.template.json [--web-search-outputs gw.outputs.json]
+                 [--host-listener-outputs listener.outputs.json (required when the render has the host-currentness listener)] --out NEW_DIR
   verify-outputs --bindings DIR --app F`;
 
 export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.write(t),err=t=>process.stderr.write(t)}={}){
@@ -185,10 +186,12 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
    for(const role of deploymentRoles(deployment))renderedExpected[role]=await json(join(rendered,role,'expected.json'));
    // Optional: the gateway stack's own outputs bind public search into control's environment.
    const webSearchOutputs=a['web-search-outputs']===undefined?undefined:outputsObject(await json(a['web-search-outputs']));
+   // Required exactly when the render carries the host-currentness listener: the host listener stack's own outputs.
+   const hostListenerOutputs=a['host-listener-outputs']===undefined?undefined:outputsObject(await json(a['host-listener-outputs']));
    const bindings=buildStage3Bindings({deployment,foundationOutputs:outputsObject(await json(a['foundation-outputs'])),
     privateEdgeOutputs:outputsObject(await json(a['private-edge-outputs'])),renderSummary:await json(join(rendered,'summary.json')),renderedExpected,
     secretVersions:parseVersionsTsv(await readFile(a['secret-versions'],'utf8')),imageScans:await json(a['image-scans']),liveAppTemplate:await json(a['live-app-template']),
-    ...(webSearchOutputs===undefined?{}:{webSearchOutputs})});
+    ...(webSearchOutputs===undefined?{}:{webSearchOutputs}),...(hostListenerOutputs===undefined?{}:{hostListenerOutputs})});
    const {bodies,sizes}=synthesizeStage3(bindings),dir=await outsideRepository(a.out);
    await mkdir(dir,{recursive:false,mode:0o700});
    for(const key of STAGE3_DEPLOY_ORDER){await writeNew(join(dir,`${key}.binding.json`),JSON.stringify(bindings[key],null,1)+'\n');await writeNew(join(dir,`${key}.template.json`),bodies[key]);}

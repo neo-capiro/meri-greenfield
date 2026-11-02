@@ -130,8 +130,9 @@ runs).
 ## 3. Shipping brief (executor: Sonnet; operator: Release)
 
 Preconditions: PR 540, PR 2 and PR 3 merged; native processing (runbook step 2) live or shipped in the same window; the
-host-to-control currentness listener (`browserHosts.tls.hostServer` + `bind`) rendered and reachable from the host
-subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step below deploys anything without Release.
+host-to-control currentness listener (`browserHosts.tls.hostServer` + `bind`, rendered by source since 2 November)
+reachable from the host subnet through the host listener NLB (`infra/browser-host/host-listener-stack.mjs`, live at
+10.40.7.250 TCP 443, runbook 3a). No step below deploys anything without Release.
 
 1. **Database (Release).** First rehearse on an isolated PostgreSQL 16 (Codex-Gates): with `MERI_D2_TEST_ADMIN_URL`
    pointing at a throwaway database, run `node --test infra/product-preview/first-chat-database.test.mjs
@@ -143,9 +144,9 @@ subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step belo
    constraints are `convalidated`; the ledger has 86 rows. Rollback: the forward migration is reversible only by
    restoring the snapshot (no browser-only rows exist before the first browser run).
 2. **Image.** Create the ECR repository `meri-greenfield/browser-host` (immutable tags, scan on push) if it does not
-   exist. In the gate environment (WSL Codex-Gates): generate the browser stack lockfile once with
-   `npm install --package-lock-only --ignore-scripts --no-audit --no-fund --prefix apps/runtime/browser-host-service/image`
-   and commit it (lockfile owner). Build `apps/runtime/Dockerfile.browser-host` once for `linux/arm64` from the exact
+   exist. The browser stack lockfile `apps/runtime/browser-host-service/image/package-lock.json` is committed (2 November;
+   registry integrity for `@playwright/mcp` 0.0.83, `playwright` and `playwright-core` 1.64.0-alpha-1790635538000).
+   In the gate environment (WSL Codex-Gates) build `apps/runtime/Dockerfile.browser-host` once for `linux/arm64` from the exact
    source commit (`docker buildx build --platform linux/arm64 -f apps/runtime/Dockerfile.browser-host .`), push to the
    `meri-greenfield/browser-host` ECR repository, record the digest, run the scanner (0 HIGH/CRITICAL; record decisions
    for other findings). The build records `/opt/meri/browser-host/helper-hashes.txt` (launcher, relay launcher and
@@ -161,16 +162,16 @@ subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step belo
    (`memoryBytes` 2147483648, `pidsMax` 512, `cpuQuotaUs` 200000, `periodUs` 100000 on c7g.large), the instance's
    private interface name (`ens5` on c7g) and the namespace-local proxy port (3128); its SHA-256 is `profileSha256`.
    AMI recipe, concretely: start from the native host AMI recipe (same base, same SSM agent, same bootstrap document
-   install), replace the pulled image with the browser host digest, set the account/AMI defaults for IMDSv2 required with
-   hop limit 1 and an encrypted gp3 30 GiB root volume, enable `kernel.unprivileged_userns_clone=1` and
+   install), replace the pulled image with the browser host digest, set the AMI default for an encrypted gp3 30 GiB root volume (IMDSv2 required with hop limit 1 is set by the
+   provisioning RunInstances request itself, `NATIVE_HOST_METADATA_OPTIONS`, and the worker policy refuses any other), enable `kernel.unprivileged_userns_clone=1` and
    `user.max_user_namespaces` for Chromium's namespace sandbox, and register the SSM document
    `meri-browser-host-bootstrap` (the same document body as the native one; its name, version and SHA-256 go in
    `bootstrapSpec.document`). Record
    `imageDigest`, `sourceCommit`, `bootstrapSha256`, AMI id.
 3. **Static host infra (Release).** Render `infra/browser-host/provisioned-stack.mjs` with the VPC id and CIDR, the
    control task security group and the `meri-greenfield/browser-host` repository, review, create the stack. It yields
-   the `meri-browser-host` security group (ingress TCP 9444 from the control security group only; egress TCP 443 to
-   control, DNS to the VPC resolver, TCP 443/80 to 0.0.0.0/0; no IPv6), the instance role (SSM core, pull of that one
+   the `meri-browser-host` security group (ingress TCP 9444 from the control security group only; egress DNS to the VPC
+   resolver and TCP 443/80 to 0.0.0.0/0, which covers the host-control NLB address; no IPv6), the instance role (SSM core, pull of that one
    repository, writes to its own log group) and the instance profile; outputs give the group id and the profile Name.
    The security group's 0.0.0.0/0 includes the VPC: it is one layer only. Private, link-local and metadata ranges are
    refused by the run policy in the supervisor and dropped for the proxy uid by the host nft guard, which step 4c probes.
@@ -178,8 +179,8 @@ subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step belo
 4. **Deployment inputs (private copy).** `features.nativeProcessing.browserDeployment` with `accountId`, `region`,
    the native `placement` (with `securityGroupIds:[<browser SG>]` and `iamInstanceProfile:<profile Name>`),
    `launch{ImageId:<browser AMI>,InstanceType:'c7g.large',SubnetId,SecurityGroupIds:[<browser SG>],IamInstanceProfile:{Name:<profile Name>}}`
-   (exactly these keys: `compileNativeDeployment` refuses `Arn`, `MetadataOptions` and `BlockDeviceMappings`; those
-   properties come from the AMI and account defaults of step 2),
+   (exactly these keys: `compileNativeDeployment` refuses `Arn`, `MetadataOptions` and `BlockDeviceMappings`; the
+   metadata options come from the launch request itself and the root volume from the AMI of step 2),
    `imageDigest`, `sourceCommit`, `bootstrapSha256`, `physicalObserver`, `launchTagPolicy`, `bootstrapSpec` (the
    bootstrap document name/version/sha256, `programSha256` and `profileSha256` from step 2, `hostEndpoint{port:9444,
    serverName}`, the SAME `control` block and `issuerCaCertificate` as the native deployment). Render; the renderer

@@ -34,7 +34,7 @@ import {createPostgresArtifactVersions} from '../../../../artifacts/storage/post
 import {validators} from '../../../../artifacts/test/artifact-harness.mjs';
 
 mock.module(new URL('./tls.mjs',import.meta.url).href,{exports:{
- privateAddress:v=>v,dnsName:v=>v,fingerprint:v=>v,tlsBytes:v=>Buffer.from(v),MAX_CERT_LIFETIME_MS:900000,
+ privateAddress:v=>v,dnsName:v=>v,fingerprint:v=>v,tlsBytes:v=>Buffer.from(v),
  checkedCertificate:(_raw,{nowMs})=>Object.freeze({fingerprintSha256:'d'.repeat(64),notAfterMs:nowMs+300000})}});
 
 const clock={now:NOW};

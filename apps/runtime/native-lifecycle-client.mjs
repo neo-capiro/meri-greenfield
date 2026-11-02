@@ -52,7 +52,7 @@ export function createNativeLifecycleClient({allocation,binding,hostIdentity,end
  // Credential validity is INDEPENDENT of the workload allocation lease: cleanup must remain possible after
  // that lease expires. The certificate's own not-after is the per-operation cutoff.
  function credential(){if(disposed)throw Error('NATIVE_LIFECYCLE_DISPOSED');
-  const certInfo=checkedCertificate(cert,{name:clientName,nowMs:now()});
+  const certInfo=checkedCertificate(cert,{name:clientName,nowMs:now(),pinnedControl:'client'});
   if(!Number.isSafeInteger(certInfo?.notAfterMs)||certInfo.notAfterMs<=now())throw Error('NATIVE_LIFECYCLE_CREDENTIAL');
   return certInfo.notAfterMs;}
  function local(){return credential();}

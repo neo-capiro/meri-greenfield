@@ -21,9 +21,7 @@ import {NATIVE_DECLARATION_V2} from '../../packages/contracts/native-observer.mj
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 const AWS_ID=/^(?:ami|vpc|subnet|sg)-(?:[0-9a-f]{8}|[0-9a-f]{17})$/u;
 
-function facts(host){
- const d=host?.deployment;
- if(d===undefined)return null;
+function facts(d){
  if(typeof d.accountId!=='string'||!/^[0-9]{12}$/u.test(d.accountId)||
   typeof d.region!=='string'||!/^[a-z]{2}-[a-z]+-[0-9]$/u.test(d.region)||
   typeof d.amiId!=='string'||!d.amiId.startsWith('ami-')||!AWS_ID.test(d.amiId)||
@@ -56,10 +54,10 @@ export function createControlNativeHostTeardown({configuration,pool,owners={},no
   return Object.freeze({closed:clean});
  })();
  try{
-  const expected=facts(host);
-  if(host.observer!==undefined&&expected===null)throw fault('NATIVE_TEARDOWN_CONFIGURATION');
-  // Browser-only hosts run the same observer on their own AMI; every other placement fact is shared.
-  const placements=expected===null?null:[expected,...(host.browserDeployment===undefined?[]:[Object.freeze({...expected,amiId:host.browserDeployment.amiId})])];
+  // One exact placement per declared provisioned purpose (native-processing, browser-only); either may stand alone.
+  const declared=[host.deployment,host.browserDeployment].filter(d=>d!==undefined).map(facts);
+  const placements=declared.length?declared:null;
+  if(host.observer!==undefined&&placements===null)throw fault('NATIVE_TEARDOWN_CONFIGURATION');
   observer=host.observer===undefined?null:createNativeObserverRuntime({pool,now,requestMs,expected:placements,
    ...(owners.createObserverSession?{createSession:owners.createObserverSession}:{})});
   writer=observer?.writer??createPostgresHostAllocationWriter({pool,now});
@@ -102,7 +100,7 @@ export function createControlNativeHostTeardown({configuration,pool,owners={},no
     if(!observer)throw fault('NATIVE_TEARDOWN_CONFIGURATION');
     observerRow=(await observer.read(hostId,generation)).row;
    }
-   if(expected===null)throw fault('NATIVE_TEARDOWN_CONFIGURATION');
+   if(placements===null)throw fault('NATIVE_TEARDOWN_CONFIGURATION');
    const pending=(async()=>{
     const owned=[];
     let failed=false;

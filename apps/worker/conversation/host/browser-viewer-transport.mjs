@@ -42,9 +42,11 @@ export function createBrowserViewerHostClient({binding,ownerInstanceId,hostId,ge
  const source=structuredClone(binding),address=privateAddress(endpoint.address),serverName=dnsName(endpoint.serverName),serverFingerprint=fingerprint(endpoint.serverFingerprintSha256);
  const clientName=dnsName(tls.clientName),cert=tlsBytes(tls.cert),key=tlsBytes(tls.key),ca=tlsBytes(tls.ca),lifetime=new AbortController();
  if(!Number.isSafeInteger(endpoint.port)||endpoint.port<1||endpoint.port>65535||!Number.isSafeInteger(requestMs)||requestMs<1||requestMs>30000)fail();
- checkedCertificate(cert,{name:clientName,nowMs:now()});
+ // The Control client leaf is a rendered, fingerprint-pinned identity (tls.mjs PINNED_CONTROL_LIFETIME_MS.client).
+ const ownLeaf=()=>checkedCertificate(cert,{name:clientName,nowMs:now(),pinnedControl:'client'});
+ ownLeaf();
  async function send(payload,signal,{path=PATH,deadlineMs=now()+requestMs,requestLimit=REQUEST_LIMIT,responseLimit=BROWSER_VIEWER_LIMITS.responseBytes}={}){
-  lifetime.signal.throwIfAborted();checkedCertificate(cert,{name:clientName,nowMs:now()});
+  lifetime.signal.throwIfAborted();ownLeaf();
   const bytes=encode(payload);if(bytes.length>requestLimit)fail();
   const life=createOperationLifetime({now,deadlineMs,signal:AbortSignal.any([lifetime.signal,...(signal?[signal]:[])]),errorFactory:()=>Object.assign(Error('BROWSER_VIEWER_TRANSPORT_UNAVAILABLE'),{code:'BROWSER_VIEWER_TRANSPORT_UNAVAILABLE'})});
   try{return await life.run(current=>new Promise((resolve,reject)=>{
@@ -109,7 +111,7 @@ export function createBrowserViewerHostServer({bind,tls,peer,relay,custodyOwner,
     const tools=req.url===TOOL_PATH;
     if(req.httpVersion!=='1.1'||req.method!=='POST'||!tools&&req.url!==PATH||req.socket.authorized!==true||tools&&typeof operationOwner?.executeBrowserOperation!=='function')fail();
     const seen=new Set();for(let n=0;n<req.rawHeaders.length;n+=2){const name=req.rawHeaders[n].toLowerCase();if(seen.has(name)||!['host','content-type','content-length','connection'].includes(name))fail();seen.add(name);}
-    checkedCertificate(req.socket.getPeerCertificate(false).raw,{name:peerName,nowMs:now(),fingerprintSha256:peerFingerprint});
+    checkedCertificate(req.socket.getPeerCertificate(false).raw,{name:peerName,nowMs:now(),pinnedControl:'client',fingerprintSha256:peerFingerprint});
     const raw=await life.run(signal=>body(req,tools?TOOL_REQUEST_LIMIT:REQUEST_LIMIT,signal));
     let q;
     if(tools){

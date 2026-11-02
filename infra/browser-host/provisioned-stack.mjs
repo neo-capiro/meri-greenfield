@@ -39,7 +39,7 @@ export function compileProvisionedBrowserHostTemplate(input){
   AWSTemplateFormatVersion:'2010-09-09',
   Description:'Meri provisioned browser-only hosts: shared security group, instance role/profile and log group. Instances are launched per conversation run by the worker coordinator and destroyed by Control.',
   Metadata:{hostPurpose:'browser-only',listenerPort:BROWSER_HOST_LISTENER_PORT,instanceType:'c7g.large',architecture:'arm64',
-   note:'The per-run instance is not a stack resource. browserDeployment.launch carries exactly ImageId, InstanceType, SubnetId, SecurityGroupIds and IamInstanceProfile:{Name} (compileNativeDeployment refuses other keys); IMDSv2 with hop limit 1, the encrypted gp3 root volume and terminate-on-shutdown come from the browser host AMI and the account instance defaults, and the qualification host readback (runbook 4c) verifies them.'},
+   note:'The per-run instance is not a stack resource. browserDeployment.launch carries exactly ImageId, InstanceType, SubnetId, SecurityGroupIds and IamInstanceProfile:{Name} (compileNativeDeployment refuses other keys); the provisioning coordinator RunInstances request itself sets MetadataOptions {HttpTokens:required, HttpPutResponseHopLimit:1, HttpEndpoint:enabled, InstanceMetadataTags:disabled} (NATIVE_HOST_METADATA_OPTIONS) and the worker policy refuses any other; the encrypted gp3 root volume and terminate-on-shutdown come from the browser host AMI and the account instance defaults; the qualification host readback (runbook 4c) verifies all of them.'},
   Resources:{
    BrowserHostLogGroup:{Type:'AWS::Logs::LogGroup',DeletionPolicy:'Retain',UpdateReplacePolicy:'Retain',Properties:{
     LogGroupName:b.logGroupName,RetentionInDays:7,Tags:tags}},

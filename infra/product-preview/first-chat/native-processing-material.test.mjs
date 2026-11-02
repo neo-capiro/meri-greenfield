@@ -5,6 +5,11 @@ import {createRenderFixture} from './render-material.fixture.mjs';
 import {nativeProcessingInputs} from './native-processing-material.fixture.mjs';
 import {renderMaterial,readPrivateDirectory} from './render-material.mjs';
 import {parseNativeProcessing,NATIVE_PATHS} from './native-processing-material.mjs';
+import {PINNED_CONTROL_LIFETIME_MS} from '../../../apps/worker/conversation/host/control/tls.mjs';
+import {compileUploadNativeConfiguration} from '../../../apps/runtime/uploads/control-lifecycle.mjs';
+import {validateConfiguration} from '../../../apps/runtime/config.mjs';
+import {execFileSync} from 'node:child_process';
+import {python} from './render-material.fixture.mjs';
 import {compileNativeWatchdogDefinition} from '../../browser-enforcement/workflow.mjs';
 import {compileNativeWatchdogTemplate} from '../../browser-enforcement/native-template.mjs';
 import {createManagedWatchdogReadback} from '../../../apps/runtime/native-watchdog-readback.mjs';
@@ -21,7 +26,7 @@ test('existing renderer emits complete native /2 role configs and exact private 
  const bd=w.nativeProvisioning.browserDeployment,fb=i.deployment.features.nativeProcessing.browserDeployment;
  assert.equal(bd.imageDigest,fb.imageDigest);assert.equal(bd.launch.ImageId,fb.launch.ImageId);assert.equal(bd.bootstrapSpec.document.name,'synthetic-browser-bootstrap');
  assert.deepEqual(bd.placement,w.nativeProvisioning.deployment.placement);assert.equal(bd.bootstrapSpec.control.policySha256,w.nativeProvisioning.deployment.bootstrapSpec.control.policySha256);
- assert.deepEqual(c.uploads.native.host.browserDeployment,{amiId:fb.launch.ImageId});
+ assert.deepEqual(c.uploads.native.host.browserDeployment,{...c.uploads.native.host.deployment,amiId:fb.launch.ImageId},'one exact teardown placement per purpose');
  const withoutBrowser={...i,deployment:structuredClone(i.deployment)};delete withoutBrowser.deployment.features.nativeProcessing.browserDeployment;
  const r2=renderMaterial(withoutBrowser);assert.equal(r2.roles['temporal-worker'].config.nativeProvisioning.browserDeployment,undefined);assert.equal(r2.roles.control.config.uploads.native.host.browserDeployment,undefined);
  for(const k of ['issuerCaCertificate','controlClientCertificate','controlClientKey','observerKey'])assert.ok(r.roles.control.expected.sha256ByPath[NATIVE_PATHS[k]]);
@@ -122,4 +127,43 @@ test('template bytes, observed numeric-version definition, full renderer and unc
  feature.watchdog.definitionReadback=readback;
  const wrongVersion=await arm(definition,watchdog.stateMachineVersionArn.replace(/:4$/u,':5'));
  await assert.rejects(wrongVersion.result,/NATIVE_WATCHDOG_REFUSED/u);assert.deepEqual(wrongVersion.calls,['DescribeStateMachineCommand']);
+});
+
+test('browser-only provisioning needs no native deployment and keeps upload inspection on AgentCore',async()=>{
+ const i=await inputs(),f=i.deployment.features.nativeProcessing;delete f.deployment;
+ const r=renderMaterial(i),c=r.roles.control.config,w=r.roles['temporal-worker'].config;
+ // Uploads stay exactly the AgentCore declaration; the host block beside it carries only the browser-only placement.
+ assert.deepEqual(c.uploads.native.agentcore,{imageDigest:r.roles.control.expected.imageDigest});
+ assert.deepEqual(Object.keys(c.uploads.native.host).sort(),['browserDeployment','maxRequestMs','observer','tls']);
+ assert.equal(c.uploads.native.host.browserDeployment.amiId,f.browserDeployment.launch.ImageId);
+ assert.deepEqual(compileUploadNativeConfiguration(c).agentcore,c.uploads.native.agentcore);
+ assert.doesNotThrow(()=>validateConfiguration(c,'control'));
+ assert.ok(c.browserHosts.tls.hostServer,'the router and the host-currentness listener are rendered for the browser purpose');
+ assert.equal(w.nativeProvisioning.deployment,undefined);assert.equal(w.nativeProvisioning.browserDeployment.launch.ImageId,f.browserDeployment.launch.ImageId);
+ assert.doesNotThrow(()=>validateConfiguration(w,'temporal-worker'));
+ assert.equal(r.summary.nativeProcessing.observerCaSha256,sha(Buffer.from(f.browserDeployment.bootstrapSpec.control.caCertificate)));
+ // A host block beside AgentCore never declares a native-processing placement; native processing needs uploads enabled.
+ assert.throws(()=>compileUploadNativeConfiguration({uploads:{native:{...c.uploads.native,host:{...c.uploads.native.host,deployment:c.uploads.native.host.browserDeployment}}}}),{code:'UPLOAD_NATIVE_CONFIGURATION'});
+ const disabled=await inputs();delete disabled.deployment.features.nativeProcessing.deployment;disabled.deployment.features.uploads.enabled=false;
+ assert.throws(()=>renderMaterial(disabled),/nativeProcessing requires sourceEnabled and uploads/u);
+ const none=await inputs();delete none.deployment.features.nativeProcessing.deployment;delete none.deployment.features.nativeProcessing.browserDeployment;
+ assert.throws(()=>renderMaterial(none),/RENDER_NATIVE_PROCESSING_REFUSED/u);
+});
+
+test('the pinned Control client leaf must outlast the rendered material and live at most 31 days',async()=>{
+ const issue=minutes=>JSON.parse(execFileSync(python,['-I','-c','import sys,json,pathlib,datetime\nfrom cryptography import x509\nfrom cryptography.hazmat.primitives import serialization,hashes\nfrom cryptography.hazmat.primitives.asymmetric import rsa\nfrom cryptography.x509.oid import ExtendedKeyUsageOID\np=pathlib.Path(sys.argv[1]); ca=x509.load_pem_x509_certificate((p/"server-ca.pem").read_bytes()); ck=serialization.load_pem_private_key((p/"server-ca.key.pem").read_bytes(),None); k=rsa.generate_private_key(public_exponent=65537,key_size=2048); n=datetime.datetime.now(datetime.timezone.utc)\nc=x509.CertificateBuilder().subject_name(x509.Name([])).issuer_name(ca.subject).public_key(k.public_key()).serial_number(x509.random_serial_number()).not_valid_before(n-datetime.timedelta(seconds=1)).not_valid_after(n+datetime.timedelta(minutes=int(sys.argv[2]))).add_extension(x509.BasicConstraints(ca=False,path_length=None),True).add_extension(x509.SubjectAlternativeName([x509.DNSName("native-control.synthetic.internal")]),False).add_extension(x509.ExtendedKeyUsage([ExtendedKeyUsageOID.CLIENT_AUTH]),False).sign(ck,hashes.SHA256())\nprint(json.dumps({"cert":c.public_bytes(serialization.Encoding.PEM).decode(),"key":k.private_bytes(serialization.Encoding.PEM,serialization.PrivateFormat.PKCS8,serialization.NoEncryption()).decode()}))',fixture.pkiDir,String(minutes)],{timeout:30000,windowsHide:true}));
+ const withLeaf=async minutes=>{const i=await inputs(),f=i.deployment.features.nativeProcessing,leaf=issue(minutes);
+  i.nativeMaterial.controlClientCertificate=Buffer.from(leaf.cert);i.nativeMaterial.controlClientKey=Buffer.from(leaf.key);
+  for(const d of [f.deployment,f.browserDeployment])d.bootstrapSpec.control.clientCertificate=leaf.cert;
+  for(const k of ['controlClientCertificate','controlClientKey'])f.materialSha256[k]=sha(i.nativeMaterial[k]);
+  return {...i,nowMs:Date.now()};};
+ assert.equal(PINNED_CONTROL_LIFETIME_MS.client,31*86400000);
+ // The former 15-minute leaf ends long before the 7-day material: refused. A leaf beyond 31 days: refused.
+ const short=await withLeaf(15),long=await withLeaf(32*24*60);
+ assert.throws(()=>renderMaterial(short),/RENDER_NATIVE_PROCESSING_REFUSED/u);
+ assert.throws(()=>renderMaterial(long),/RENDER_NATIVE_PROCESSING_REFUSED/u);
+ const ok=renderMaterial(await withLeaf(8*24*60));
+ assert.ok(ok.summary.nativeProcessing.materialNotAfterMs>Date.now()+7*86400000,'the leaf outlasts the material validity');
+ // Shorter material validity admits a leaf that outlasts it.
+ assert.ok(renderMaterial({...(await withLeaf(3*24*60)),validityDays:2}));
 });

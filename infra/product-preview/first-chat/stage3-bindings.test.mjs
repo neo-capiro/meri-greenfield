@@ -348,3 +348,22 @@ test('the rendered control variables are exactly what the producer constructor a
  assert.equal(primarySearchTarget({...env,MERI_WEB_SEARCH_GATEWAY_ENDPOINT:GATEWAY_URL.replace('/mcp','')}),undefined,
   'an origin-only value keeps the family on the old Core route');
 });
+
+test('the host-currentness listener and the host listener load balancer travel together: port mapping and target only with both',async()=>{
+ const {args,synth}=await setup(),edge={HostListenerTargetGroupArn:'arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-host-control/0123456789abcdef',
+  HostListenerSecurityGroupId:'sg-0123456789abcdef0',HostListenerAddress:'10.40.7.250'};
+ const control=t=>resources(t,'AWS::ECS::TaskDefinition').find(d=>d.Family==='meri-product-preview-control').ContainerDefinitions.find(c=>c.Name==='control');
+ const service=t=>resources(t,'AWS::ECS::Service').find(s=>s.ServiceName==='meri-product-preview-control');
+ // Without the listener: no port 8443 and no third target, and edge outputs alone refuse.
+ assert.deepEqual(control(synth.templates.app).PortMappings.map(p=>p.ContainerPort),[8080,8082]);
+ assert.throws(()=>buildStage3Bindings({...structuredClone(args),hostListenerOutputs:edge}),/must be supplied together/u);
+ // A render that carries the listener (control key browserHosts from the native family) requires the outputs, then maps them.
+ const listening={...structuredClone(args),renderSummary:{...structuredClone(args.renderSummary),features:{controlKeys:['uploads','browserHosts']}}};
+ assert.throws(()=>buildStage3Bindings(listening),/must be supplied together/u);
+ assert.throws(()=>buildStage3Bindings({...listening,hostListenerOutputs:{...edge,HostListenerTargetGroupArn:'arn:aws:elasticloadbalancing:us-east-1:111111111111:targetgroup/x/0123456789abcdef'}}),/HostListenerTargetGroupArn/u);
+ const bound=buildStage3Bindings({...listening,hostListenerOutputs:edge});
+ assert.equal(bound.app.controlHostListenerTargetGroupArn,edge.HostListenerTargetGroupArn);
+ const t=synthesizeStage3(bound).templates.app;
+ assert.deepEqual(control(t).PortMappings.map(p=>p.ContainerPort),[8080,8082,8443]);
+ assert.deepEqual(service(t).LoadBalancers.find(l=>l.ContainerPort===8443),{ContainerName:'control',ContainerPort:8443,TargetGroupArn:edge.HostListenerTargetGroupArn});
+});

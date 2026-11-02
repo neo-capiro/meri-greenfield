@@ -6,19 +6,16 @@
  * terminates in Control, never at the load balancer), cross-zone so a Control task in any zone is reachable. The load
  * balancer carries its own security group: hosts reach it on 443 only from the host security group; it reaches Control's
  * host-listener port only, and Control accepts that port only from it. The ECS service registration of Control (the
- * container port mapping and the `LoadBalancers` entry on the service) is a deploy change of the control task definition and
- * the app stack, made with the control rollout; this stack creates the target group it will attach to. No AWS client, secret
+ * container port mapping and the `LoadBalancers` entry on the service) comes from the app stack: `stage3-deploy.mjs bindings
+ * --host-listener-outputs` attaches the control container port to this stack's target group. No AWS client, secret
  * or deploy action lives here. */
+import {CONTROL_HOST_LISTENER_PORT} from '../../apps/runtime/browser-host-configuration.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const REFUSED='HOST_LISTENER_TEMPLATE_REFUSED';
 const ID=prefix=>new RegExp(`^${prefix}-[0-9a-f]{8,17}$`,'u');
 const IPV4=/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/u;
 const freezeTree=value=>{if(value&&typeof value==='object'){for(const child of Object.values(value))freezeTree(child);Object.freeze(value);}return value;};
-/** The Control container port that serves `browserHosts.bind`: non-root, above 1024, distinct from the public 8080, the
- * private 8082 and the schedule worker 8083. */
-export const CONTROL_HOST_LISTENER_PORT=8443;
 export const HOST_LISTENER_PORT=443;
-const TAKEN_PORTS=Object.freeze([8080,8082,8083]);
 
 /** @param {unknown} raw */
 export function validateHostListenerInput(raw){
@@ -31,7 +28,7 @@ export function validateHostListenerInput(raw){
   typeof v.controlSecurityGroupId!=='string'||!ID('sg').test(v.controlSecurityGroupId)||typeof v.hostSecurityGroupId!=='string'||
   !ID('sg').test(v.hostSecurityGroupId)||v.hostSecurityGroupId===v.controlSecurityGroupId||
   typeof v.privateIpv4Address!=='string'||!IPV4.test(v.privateIpv4Address)||octets.length!==4||octets.some(o=>!Number.isInteger(o)||o>255)||
-  typeof port!=='number'||!Number.isSafeInteger(port)||port<1024||port>65535||TAKEN_PORTS.includes(port))fail(REFUSED);
+  port!==CONTROL_HOST_LISTENER_PORT)fail(REFUSED);   // the one port the rendered `browserHosts.bind` listens on
  return Object.freeze({vpcId:v.vpcId,subnetId:v.subnetId,privateIpv4Address:v.privateIpv4Address,controlSecurityGroupId:v.controlSecurityGroupId,
   hostSecurityGroupId:v.hostSecurityGroupId,controlPort:port});
 }

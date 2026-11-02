@@ -14,7 +14,7 @@ import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {nativeProcessingInputs} from './native-processing-material.fixture.mjs';
-import {renderMaterial,readBrowserActivationEvidence} from './render-material.mjs';
+import {renderMaterial,readBrowserActivationEvidence,PATHS} from './render-material.mjs';
 import {NATIVE_PATHS} from './native-processing-material.mjs';
 import {configurationMaxBytes,validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {compileBrowserPlatform} from '../../../apps/runtime/product-ports/browser-policy.mjs';
@@ -23,6 +23,9 @@ import {EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION} from 
 import {startControl,assembleControl} from '../../../apps/runtime/control.mjs';
 import {agentcoreControlFixture} from '../../../apps/runtime/test/agentcore-fixture.mjs';
 import {PROPOSED_PREVIEW_CAPABILITY_PLATFORM} from '../../../apps/runtime/product-ports/capability-policy.mjs';
+import {CONTROL_HOST_LISTENER_PORT,compileBrowserHostConfiguration} from '../../../apps/runtime/browser-host-configuration.mjs';
+import {compileProductMaterialPlan} from '../../../apps/runtime/material-init-plan.mjs';
+import {createServer} from 'node:net';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
 const fixture=createRenderFixture();after(()=>fixture.cleanup());
@@ -53,9 +56,21 @@ test('the committed browserPlatform renders into control as the runtime compiles
  // The router pins the SAME control-to-host identity the native inspection host already uses: same client leaf and key,
  // same issuer root for the host certificates, same client name.
  const t=c.uploads.native.host.tls;
- assert.deepEqual(c.browserHosts,{enabled:true,tls:{privateClient:{clientName:spec.clientName,certFile:NATIVE_PATHS.controlClientCertificate,keyFile:NATIVE_PATHS.controlClientKey,caFile:NATIVE_PATHS.issuerCaCertificate}}});
+ // The host-currentness listener presents the control-private leaf every bootstrap spec pins, accepts host leaves of the
+ // same issuer root, and binds the task's interfaces on the one listener port the host listener load balancer forwards to.
+ assert.deepEqual(c.browserHosts,{enabled:true,tls:{privateClient:{clientName:spec.clientName,certFile:NATIVE_PATHS.controlClientCertificate,keyFile:NATIVE_PATHS.controlClientKey,caFile:NATIVE_PATHS.issuerCaCertificate},
+  hostServer:{serverName:i.deployment.names.control_private,certFile:PATHS.controlHostServerCert,keyFile:PATHS.controlHostServerKey,clientCaFile:NATIVE_PATHS.issuerCaCertificate}},
+  bind:{address:'0.0.0.0',port:CONTROL_HOST_LISTENER_PORT}});
  assert.deepEqual(c.browserHosts.tls.privateClient,{clientName:t.clientName,certFile:t.certPath,keyFile:t.keyPath,caFile:t.caPath});
- assert.equal(c.browserHosts.bind,undefined,'the host-currentness listener is not rendered: its material and network path are deployment decisions (runbook)');
+ assert.ok(compileBrowserHostConfiguration(c).bind,'the runtime mounts the listener from exactly this declaration');
+ const files=new Map(r.roles.control.bundle.files.map(f=>[f.path,Buffer.from(f.base64,'base64')]));
+ assert.deepEqual(files.get(PATHS.controlHostServerCert),i.private.certs['control-private'],'the exact leaf the bootstrap spec pins');
+ assert.equal(files.get(PATHS.controlHostServerCert).toString(),spec.serverCertificate);
+ assert.deepEqual(files.get(PATHS.controlHostServerKey),i.private.keys['control-private']);
+ assert.equal(r.roles['temporal-worker'].bundle.files.some(f=>[PATHS.controlHostServerCert,PATHS.controlHostServerKey].includes(f.path)),false,'control only');
+ const plan=compileProductMaterialPlan({role:'control',configuration:c,runtimeUser:'1000:1000'}).requiredFiles;
+ assert.deepEqual(Object.fromEntries(plan.filter(f=>[PATHS.controlHostServerCert,PATHS.controlHostServerKey].includes(f.path)).map(f=>[f.path,f.purposes])),
+  {[PATHS.controlHostServerCert]:['control-host-server-cert'],[PATHS.controlHostServerKey]:['control-host-server-key']});
  for(const key of ['browserPlatform','browserActivation','browserHosts'])assert.ok(r.summary.features.controlKeys.includes(key),key);
  assert.ok(Buffer.byteLength(r.roles.control.configBytes)<=configurationMaxBytes('control'));
  assert.equal(r.roles['temporal-worker'].config.browserActivation,undefined);assert.equal(r.roles['temporal-worker'].config.browserPlatform,undefined);
@@ -133,20 +148,25 @@ function harness(blocks,material){
  return {configuration,events,reads,assembly:()=>assembly,start:()=>startControl(configuration,{signal:controller.signal,testOwners:owners})};
 }
 
-test('a control booted from the rendered browser blocks composes the browser-host router over the native material, held or open; open without the router refuses',async()=>{
+test('a control booted from the rendered browser blocks composes the browser-host router and the host-currentness listener over the native material, held or open; open without the router refuses',async()=>{
  const i=await withNative(v=>{v.deployment.features.browserPlatform=structuredClone(committed);v.deployment.features.browserActivation=structuredClone(OPEN);});
  const rendered=renderMaterial(i),c=rendered.roles.control.config;
- const material=new Map(rendered.roles.control.bundle.files.filter(f=>Object.values(NATIVE_PATHS).includes(f.path)).map(f=>[f.path,Buffer.from(f.base64,'base64')]));
+ const listenerFiles=[...Object.values(NATIVE_PATHS),PATHS.controlHostServerCert,PATHS.controlHostServerKey];
+ const material=new Map(rendered.roles.control.bundle.files.filter(f=>listenerFiles.includes(f.path)).map(f=>[f.path,Buffer.from(f.base64,'base64')]));
+ // The rendered listener binds every interface on its fixed port in the task; here it binds loopback on a free port.
+ const port=await new Promise((resolve,reject)=>{const probe=createServer().listen(0,'127.0.0.1',()=>{const {port}=probe.address();probe.close(()=>resolve(port));}).on('error',reject);});
  for(const state of ['open','held']){
-  const blocks={browserHosts:c.browserHosts,browserPlatform:c.browserPlatform,browserActivation:state==='open'?c.browserActivation:{state:'held'}};
+  const blocks={browserHosts:{...c.browserHosts,bind:{address:'127.0.0.1',port}},browserPlatform:c.browserPlatform,browserActivation:state==='open'?c.browserActivation:{state:'held'}};
   const f=harness(blocks,material);
   const runtime=await f.start();
   try{
    assert.deepEqual(f.events.filter(e=>e.startsWith('listen:')),['listen:private','listen:public']);
-   for(const path of [NATIVE_PATHS.controlClientCertificate,NATIVE_PATHS.controlClientKey,NATIVE_PATHS.issuerCaCertificate])assert.ok(f.reads.includes(path),path);
+   for(const path of [NATIVE_PATHS.controlClientCertificate,NATIVE_PATHS.controlClientKey,NATIVE_PATHS.issuerCaCertificate,PATHS.controlHostServerCert,PATHS.controlHostServerKey])assert.ok(f.reads.includes(path),path);
    const a=f.assembly();
    assert.ok(a.browserHosts,'the browser-host family is composed');
-   assert.deepEqual(a.browserHosts.state(),{mounted:true,closed:false,listener:null,siteWorkflows:false,browserApproval:false},'router only: no listener was declared');
+   const composed=a.browserHosts.state();
+   assert.equal(composed.listener,'127.0.0.1','the host-currentness listener is up on the rendered material');
+   assert.deepEqual({...composed,listener:null},{mounted:true,closed:false,listener:null,siteWorkflows:false,browserApproval:false});
    assert.equal(typeof a.browserHosts.browserHosts.executeBrowserOperation,'function','the port control\'s browser operations and the runner\'s browser-prepare route use');
    assert.equal(typeof a.browserHosts.currentness.readFacts,'function');
    assert.equal(a.productReadiness().owners.find(o=>o.name==='browser.hosts')?.state,'composed','product readiness reports the composed browser-host family');

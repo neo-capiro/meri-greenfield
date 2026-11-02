@@ -107,6 +107,12 @@ export function compileProductMaterialPlan({role,configuration,runtimeUser}){
    add(host.tls.caPath,'native-host-ca');add(host.tls.certPath,'native-host-cert');add(host.tls.keyPath,'native-host-key');
    if(host.observer!==undefined)add(host.observer.keyPath,'native-observer-key');
   }
+  // The host-currentness listener: its own server leaf and key; its client CA is the native issuer root delivered above.
+  const listener=role==='control'?c.browserHosts?.tls?.hostServer:undefined;
+  if(listener!==undefined){
+   if(!files.has(listener.clientCaFile))refuse();
+   add(listener.certFile,'control-host-server-cert');add(listener.keyFile,'control-host-server-key');
+  }
   if(c.office?.enabled===true){add(c.office.keyFile,'office-wopi-signing-key');
    // Intentional same-Core service secret reuse keeps ONE purpose; a dedicated file gets its own.
    if(c.office.serviceSecretFile!==c.reads?.serviceSecretFile)add(c.office.serviceSecretFile,'office-core-service-secret');

@@ -113,3 +113,12 @@ test('teardown refuses a request without the exact canonical host row',async()=>
  await assert.rejects(async()=>teardown.settle({binding,generation,hostId}),error=>productFailure(error)?.code==='BROWSER_HOST_TEARDOWN_REFUSED');
  await teardown.close();
 });
+test('a browser-only host family (beside AgentCore uploads) tears down through the same owner; an observer needs a placement',async()=>{
+ const {deployment,...family}=configuration.uploads.native.host;
+ const browserOnly={uploads:{native:{enabled:true,agentcore:{imageDigest:'sha256:'+'c'.repeat(64)},host:{...family,browserDeployment:{...deployment,amiId:'ami-0fedcba9876543210'}}}}};
+ const p=pool(),calls=[];let clock=now-1000;const teardown=createControlNativeHostTeardown({configuration:browserOnly,pool:p,owners:owners(calls),now:()=>clock++});
+ row.state='missing';
+ await assert.rejects(async()=>teardown.settle({binding,generation,hostId}),error=>productFailure(error)?.code==='BROWSER_HOST_TEARDOWN_REFUSED');
+ await teardown.close();
+ assert.throws(()=>createControlNativeHostTeardown({configuration:{uploads:{native:{enabled:true,host:{...family,observer:{keyId:'k',keyPath:'/synthetic/observer'}}}}},pool:pool(),owners:owners([])}),{code:'NATIVE_TEARDOWN_CONFIGURATION'});
+});

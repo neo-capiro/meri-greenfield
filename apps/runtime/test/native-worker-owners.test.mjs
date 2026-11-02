@@ -122,6 +122,10 @@ test('a browser deployment composes a second coordinator on the shared owners; a
  assert.deepEqual(b.calls,['pool-create','material-close','ssm-close','sfn-destroy','ec2-destroy','pool-end'],'one pool, one SSM transport, one EC2 client serve both purposes');
  const without=await createNativeWorkerOwners({configuration,native:boundaries().native,owners:boundaries().owners});
  assert.equal(without.browserProvisioner,undefined);await without.close();
+ // Browser-only: no native-processing deployment, no native coordinator; the browser coordinator stands alone.
+ const {deployment:_native,...browserOnly}={...configuration.nativeProvisioning,browserDeployment};
+ const alone=await createNativeWorkerOwners({configuration:{...configuration,nativeProvisioning:browserOnly},native:boundaries().native,owners:boundaries().owners});
+ assert.equal(alone.provisioner,undefined);assert.equal(typeof alone.browserProvisioner.provision,'function');await alone.close();
  for(const bad of [{...browserDeployment,bootstrapSpec:{...browserDeployment.bootstrapSpec,control:{...browserDeployment.bootstrapSpec.control,policySha256:'e'.repeat(64)}}}]){
   const c=boundaries();
   await assert.rejects(createNativeWorkerOwners({configuration:{...configuration,nativeProvisioning:{...configuration.nativeProvisioning,browserDeployment:bad}},native:c.native,owners:c.owners}),{code:'NATIVE_WORKER_OWNERS_CONFIGURATION'});

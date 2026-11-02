@@ -67,21 +67,21 @@ export function validateConfiguration(raw,role){
 
  if(c.nativeProvisioning!==undefined){
   requireValue(role==='temporal-worker','NATIVE_PROVISIONING_CONFIGURATION');
-  // `browserDeployment` is the browser-only host purpose (image, launch, bootstrap) beside the native one; it shares the
-  // account, region and control policy digest, so one worker authority and one allocator serve both purposes.
+  // `deployment` is the native-processing host purpose and `browserDeployment` the browser-only one (image, launch,
+  // bootstrap); either may stand alone, and together they share the account, region and control policy digest, so one
+  // worker authority and one allocator serve both purposes.
   const p=c.nativeProvisioning;own(p,['enabled'],['databaseFile','issuerCaCertFile','issuerCaKeyFile','deployment','watchdog','browserDeployment']);
   requireValue(typeof p.enabled==='boolean','NATIVE_PROVISIONING_CONFIGURATION');
   if(p.enabled){
-   for(const k of ['databaseFile','issuerCaCertFile','issuerCaKeyFile','deployment','watchdog']){
+   for(const k of ['databaseFile','issuerCaCertFile','issuerCaKeyFile','watchdog']){
     requireValue(p[k]!==undefined,'NATIVE_PROVISIONING_CONFIGURATION');
    }
+   requireValue(p.deployment!==undefined||p.browserDeployment!==undefined,'NATIVE_PROVISIONING_CONFIGURATION');
    own(p.watchdog,['stateMachineVersionArn','definitionSha256','qualificationEvidenceSha256']);
    for(const k of ['databaseFile','issuerCaCertFile','issuerCaKeyFile'])file(p[k]);
-   let d;try{d=compileNativeDeployment(p.deployment);}catch{throw fault('NATIVE_PROVISIONING_CONFIGURATION');}
-   if(p.browserDeployment!==undefined){
-    let b;try{b=compileNativeDeployment(p.browserDeployment);}catch{throw fault('NATIVE_PROVISIONING_CONFIGURATION');}
-    requireValue(b.accountId===d.accountId&&b.region===d.region&&b.bootstrapSpec.control.policySha256===d.bootstrapSpec.control.policySha256,'NATIVE_PROVISIONING_CONFIGURATION');
-   }
+   const compiled=[p.deployment,p.browserDeployment].filter(v=>v!==undefined).map(v=>{try{return compileNativeDeployment(v);}catch{throw fault('NATIVE_PROVISIONING_CONFIGURATION');}});
+   if(compiled.length===2){const [d,b]=compiled;
+    requireValue(b.accountId===d.accountId&&b.region===d.region&&b.bootstrapSpec.control.policySha256===d.bootstrapSpec.control.policySha256,'NATIVE_PROVISIONING_CONFIGURATION');}
   }else requireValue(p.databaseFile===undefined&&p.issuerCaCertFile===undefined&&p.issuerCaKeyFile===undefined&&
    p.deployment===undefined&&p.watchdog===undefined&&p.browserDeployment===undefined,'NATIVE_PROVISIONING_CONFIGURATION');
  }

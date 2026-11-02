@@ -4,6 +4,9 @@
 import {isAbsolute} from 'node:path';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
+/** Control's container port for the host-currentness listener. Hosts reach it through the internal network load balancer
+ * of infra/browser-host/host-listener-stack.mjs (TCP 443 passthrough to this port). */
+export const CONTROL_HOST_LISTENER_PORT=8443;
 const file=value=>{
  if(typeof value!=='string'||!isAbsolute(value)||value.includes('/../')||value.length>4096)fail('BROWSER_HOST_CONFIGURATION');
  return value;

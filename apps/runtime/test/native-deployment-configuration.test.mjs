@@ -52,6 +52,8 @@ test('/2 real producer supplies complete protected graph input and original laun
  const sent=requests.find(x=>x.constructor.name==='RunInstancesCommand').input;
  assert.deepEqual(sent,nativeObserverLaunchRequest({allocation,declaration}));
  assert.deepEqual(sent.TagSpecifications.map(x=>x.ResourceType),['instance','volume']);
+ // The launch itself sets IMDSv2 with one hop: no namespace or container hop of the host reaches instance metadata.
+ assert.deepEqual(sent.MetadataOptions,{HttpEndpoint:'enabled',HttpTokens:'required',HttpPutResponseHopLimit:1,InstanceMetadataTags:'disabled'});
  for(const set of sent.TagSpecifications){const tags=Object.fromEntries(set.Tags.map(t=>[t.Key,t.Value]));
   assert.equal(Object.keys(tags).length,7);assert.equal(tags.Project,'meri-greenfield');
   assert.equal(tags.MeriDeclarationSha256,hash(declaration));assert.equal(tags.MeriAllocationSha256,hash(allocation));}
