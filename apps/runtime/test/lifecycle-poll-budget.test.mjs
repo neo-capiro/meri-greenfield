@@ -3,7 +3,8 @@
 // the first poll after the SDK's init message hit that default and failed the run at activity-stream (LIFECYCLE_EXECUTION_UNKNOWN).
 import test from 'node:test';import assert from 'node:assert/strict';
 import {mkdtemp,chmod,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
-import {assembleConversationRunner} from '../conversation-runner.mjs';
+import {assembleConversationRunner,runnerCall} from '../conversation-runner.mjs';
+import {runnerStartupBudget} from '../../../packages/runtime/runner-load-budget.mjs';
 import {createNativeCapabilityClient} from '../native-client.mjs';
 import {compileNativeTaskPlan} from '../native-authority/task-allocator.mjs';
 import {continuationFixture} from '../../worker/conversation/continuation/test/fixtures.mjs';
@@ -19,6 +20,19 @@ test('lifecycle control exchanges and upload page reads accept the lease-bounded
  for(const operation of [...lifecycleOperations,'runner/upload-source']){
   at=start;assert.deepEqual(await client.call(operation,{},{maxRequestMs:23000,deadlineMs:start+23000}),{ok:true});
   at=start;await assert.rejects(client.call(operation,{}),/DEADLINE/);
+ }
+});
+
+test('the runner sends upload page reads, procedure and site-workflow resolution with the session allowance and original cutoff',async()=>{
+ const binding={tenantId:'tenant',actorId:'actor',conversationId:'71000000-0000-4000-8000-000000000001',runId:'71000000-0000-4000-8000-000000000002'};
+ const originalExpiresAtMs=Date.now()+900000,startup=runnerStartupBudget({requestMs:25000,shutdownMs:10000,originalExpiresAtMs}),sent=[];
+ const native={async call(operation,input,options){sent.push({operation,input,options});return {};}},signal=new AbortController().signal;
+ for(const [operation,input] of [['runner/upload-source',{input:{page:0}}],['runner/procedure-resolve',{}],['runner/site-workflow-resolve',{}]]){
+  sent.length=0;await runnerCall({native,binding,startup})(operation,input,signal);
+  assert.deepEqual(sent,[{operation,input:{binding,...input},options:{signal,deadlineMs:originalExpiresAtMs,maxRequestMs:startup.stages.session.maxMs}}],operation);
+  assert.ok(startup.stages.session.maxMs>3000);
+  // Without a startup budget (no original execution) the call keeps the native client's 3s default.
+  sent.length=0;await runnerCall({native,binding,startup:null})(operation,input,signal);assert.deepEqual(sent[0].options,{signal},operation);
  }
 });
 

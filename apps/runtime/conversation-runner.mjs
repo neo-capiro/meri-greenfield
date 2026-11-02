@@ -60,6 +60,24 @@ export async function ensureSdkConfigurationDirectories(directories,options={}){
  return directories;
 }
 const lifecycleOperations=new Set(['runner/next-controls','runner/claim-control','runner/ack-control','runner/record-checkpoint','runner/child-dispatch','runner/child-settle']);
+// Calls that cross control's task authority and more than one canonical read (lifecycle polls, upload page reads,
+// procedure and site-workflow resolution, file custody) share the session allowance and immutable execution cutoff;
+// live, each outlived the native client's 3s default. Without a startup budget every call keeps that default.
+const sessionAllowanceOperations=new Set([...lifecycleOperations,'runner/outreach/complete','runner/outreach/fail','runner/checkpoint/capture',
+ 'runner/checkpoint/complete','runner/files/restore','runner/upload-source','runner/procedure-resolve','runner/site-workflow-resolve']);
+/** The runner's run-owner transport: the exact binding plus the startup stage or session allowance for each operation. */
+export function runnerCall({native,binding,startup}){
+ const stages=startup?.stages;
+ return (operation,input,signal)=>{let stage;
+  if(operation==='runner/load')stage=stages?.load;
+  else if(operation==='runner/runtime')stage=stages?.runtime;
+  else if(startup&&(operation==='runner/publish'||sessionAllowanceOperations.has(operation))){
+   const state=operation==='runner/publish'&&input.event?.type==='run.status'?input.event.data?.state:null;
+   stage=(state&&stages[state])??{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs};}
+  const result=native.call(operation,{binding,...input},stage?{signal,deadlineMs:stage.expiresAtMs,...(operation==='runner/load'?{}:{maxRequestMs:stage.maxMs})}:{signal});
+  if(operation!=='runner/load')return result;
+  const loaded=value=>{markRunnerTelemetryStage('runner.load.done');return value;};return typeof result?.then==='function'?result.then(loaded):loaded(result);};
+}
 function startupBudgetFor(configuration){
  if(configuration.execution===undefined)return null;
  const execution=assertExecutionIdentity(configuration.execution);
@@ -70,22 +88,14 @@ export function assembleConversationRunner({configuration,native,query,credentia
  const readPort=captureGeneralReadPort(generalReads,configuration.sourceEnabled);
  const startup=startupBudgetFor(configuration),stages=startup?.stages;
  validateShape('RuntimeVersions',configuration.versions);const configuredVersionsSha256=canonicalSha256(configuration.versions);
- const binding=configuration.binding,call=(operation,input,signal)=>{let stage;
-  if(operation==='runner/load')stage=stages?.load;
-  else if(operation==='runner/runtime')stage=stages?.runtime;
-  else if(operation==='runner/publish'&&startup){const state=input.event?.type==='run.status'?input.event.data?.state:null;
-   stage=stages[state]??{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs};}
-  // Lifecycle calls and upload page reads share the existing session allowance and immutable execution cutoff: an upload
-  // page read crosses control's custody read twice plus its durable source observation, which live outlived the 3s default.
-  else if(operation==='runner/outreach/complete'||operation==='runner/outreach/fail'||operation==='runner/checkpoint/capture'||operation==='runner/checkpoint/complete'||operation==='runner/files/restore'||operation==='runner/upload-source'||lifecycleOperations.has(operation))stage=startup?{maxMs:stages.session.maxMs,expiresAtMs:startup.originalExpiresAtMs}:undefined;
-  const result=native.call(operation,{binding,...input},stage?{signal,deadlineMs:stage.expiresAtMs,...(operation==='runner/load'?{}:{maxRequestMs:stage.maxMs})}:{signal});
-  if(operation!=='runner/load')return result;
-  const loaded=value=>{markRunnerTelemetryStage('runner.load.done');return value;};return typeof result?.then==='function'?result.then(loaded):loaded(result);};
+ const binding=configuration.binding,call=runnerCall({native,binding,startup});
+ // Procedure and site-workflow resolution use the same run-owner transport, so they keep the same allowance.
+ const runnerNative=Object.freeze({call:(operation,input,options)=>call(operation,input,options?.signal)});
  if(sessionFactory!==undefined&&typeof sessionFactory!=='function')throw fault('RUNNER_SESSION_CONFIGURATION');
  const selectedSkills=createTaskSelectedSkills({native,now,sourceEnabled:configuration.sourceEnabled??false}),sdkSession=sessionFactory===undefined?null:createOwnedRuntimeSdkSession({factory:sessionFactory,now,cleanupMs:configuration.limits?.shutdownMs??1000});
  // Wave5 MO01/ST16: the same task transport resolves the persisted procedure selection for a run. The control-side
  // 'procedure/resolve' handler is the remaining join; without it a selected procedure refuses rather than runs.
- const procedures=createTaskProcedurePort({native,now}),siteWorkflows=createTaskSiteWorkflowPort({native});
+ const procedures=createTaskProcedurePort({native:runnerNative,now}),siteWorkflows=createTaskSiteWorkflowPort({native:runnerNative});
  const localBinding=b=>{if(canonicalSha256(b)!==canonicalSha256(binding))throw fault('RUNNER_BINDING_REFUSED');};
  let outreachSelection=null;
  const outreachGeneration=createOutreachGenerationRuntime({selection:{async read({binding:b}){localBinding(b);return outreachSelection;}},complete:({binding:b,signal,...input})=>{localBinding(b);return call('runner/outreach/complete',input,signal);},fail:({binding:b,signal,...input})=>{localBinding(b);return call('runner/outreach/fail',input,signal);}});
