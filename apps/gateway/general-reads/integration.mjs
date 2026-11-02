@@ -1,5 +1,6 @@
 import * as federalDraftSource from './families/federal-draft-source.mjs';
 import * as graphPaths from './families/graph-paths.mjs';
+import * as semanticSearch from './families/semantic-search.mjs';
 import * as buyerWorkspace from './families/buyer-workspace.mjs';
 import * as fundingAnalysis from './families/funding-analysis.mjs';
 import * as watchState from './families/watch-state.mjs';
@@ -67,7 +68,7 @@ import * as researchWorkflow from './families/research-portfolio-workflow.mjs';
 import * as capiroData from './families/capiro-data.mjs';
 import * as savedRecordValidators from './families/saved-records.mjs';
 import * as strategySavedValidators from './families/strategy-saved-records.mjs';
-const modules=[federalDraftSource,graphPaths,buyerWorkspace,fundingAnalysis,watchState,legiwatchRelevance,legislativeComparisons,legiwatchReview,researchSharing,researchWorkflow,strategySavedValidators,savedRecordValidators,capiroData,f49,f48,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40,f41,f42,f43,f44,f45,f46,f47];
+const modules=[federalDraftSource,graphPaths,semanticSearch,buyerWorkspace,fundingAnalysis,watchState,legiwatchRelevance,legislativeComparisons,legiwatchReview,researchSharing,researchWorkflow,strategySavedValidators,savedRecordValidators,capiroData,f49,f48,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f11,f12,f13,f14,f15,f16,f17,f18,f19,f20,f21,f22,f23,f24,f25,f26,f27,f28,f29,f30,f31,f32,f33,f34,f35,f36,f37,f38,f39,f40,f41,f42,f43,f44,f45,f46,f47];
 modules.push(chatAttachments);
 modules.push(capiroData.successor,capiroData.domainSuccessor,capiroData.privateSuccessor);
 const byFamily=new Map(modules.map(f=>[f.id,f]));

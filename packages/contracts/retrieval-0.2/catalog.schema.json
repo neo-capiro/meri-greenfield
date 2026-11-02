@@ -159,7 +159,10 @@
                 "get_pe_buyer_workspace",
                 "find_path_to",
                 "read_federal_draft_source",
-                "prepare_federal_draft"
+                "prepare_federal_draft",
+                "semantic_search_bills",
+                "semantic_search_grants",
+                "semantic_search_contract_opportunities"
               ]
             },
             "disposition": {
@@ -587,7 +590,7 @@
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
           "minItems": 153,
-          "maxItems": 156,
+          "maxItems": 159,
           "uniqueItems": true
         },
         "operations": {

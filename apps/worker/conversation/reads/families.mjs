@@ -13,6 +13,7 @@
 export const READ_FAMILIES=Object.freeze({'watch-state':Object.freeze({clientScope:'optional'}),'legiwatch-relevance':Object.freeze({clientScope:'optional'}),'legiwatch-review':Object.freeze({clientScope:'optional'}),'legislative-comparisons':Object.freeze({clientScope:'optional'}),mail:Object.freeze({clientScope:'optional'}),
  'federal-draft-source':Object.freeze({clientScope:'optional'}),
  'graph-paths':Object.freeze({clientScope:'optional'}),
+ 'semantic-search':Object.freeze({clientScope:'optional'}),
  'buyer-workspace':Object.freeze({clientScope:'optional'}),
  'saved-records':Object.freeze({clientScope:'optional'}),
  'strategy-saved-records':Object.freeze({clientScope:'optional'}),

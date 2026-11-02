@@ -157,6 +157,14 @@
       "subject": "current native tenant/user; public web data; no fetched-content or live safety qualification from source tests"
     },
     {
+      "path": "apps/gateway/sources/semantic-search",
+      "family": "semantic-search",
+      "declaredIn": ["apps/gateway/sources/semantic-search/handler.mjs"],
+      "operations": ["semantic_search_bills", "semantic_search_grants", "semantic_search_contract_opportunities"],
+      "adapterChecks": ["fixed native route per operation", "family-specific filters refused before the call", "result page bound to the request: tool, query, limit, ordering, references and filters"],
+      "subject": "current native tenant/user; public bill, grant and SAM notice records only; empty context"
+    },
+    {
       "path": "apps/gateway/sources/data-search",
       "family": "data-search",
       "declaredIn": ["apps/gateway/sources/data-search/handler.mjs"],

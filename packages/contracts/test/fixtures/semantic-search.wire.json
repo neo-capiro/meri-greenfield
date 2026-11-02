@@ -1,0 +1,156 @@
+{
+  "synthetic": "Hand-built from the Core result shape in apps/api/src/meri/semantic-search.ts (projectSemanticSearch); not a PostgreSQL capture. Live acceptance records the deployed shape.",
+  "bills": {
+    "request": {
+      "query": "rural broadband affordability",
+      "congress": 119,
+      "limit": 5
+    },
+    "response": {
+      "tool": "semantic_search_bills",
+      "generatedAt": "2026-11-02T03:00:00.000Z",
+      "query": "rural broadband affordability",
+      "model": "amazon.titan-embed-text-v2:0",
+      "similarityFloor": 0.35,
+      "candidateLimit": 200,
+      "total": 1,
+      "notes": [
+        "Nearest-meaning congress bill records by embedding similarity: the 200 closest vectors, then congress filters; similarity is not relevance and an empty result is not proof of absence. Date filters apply to the latest action date.",
+        "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
+      ],
+      "results": [
+        {
+          "reference": "congress_bill:119-hr-1",
+          "score": 0.713,
+          "snippet": "HR 1 (119th Congress) Rural Broadband Affordability Act Policy area: Science, Technology, Communications",
+          "record": {
+            "id": "119-hr-1",
+            "congress": 119,
+            "billType": "hr",
+            "billNumber": "1",
+            "title": "Rural Broadband Affordability Act",
+            "sponsorName": "Rep. Example, Synthetic [D-XX-1]",
+            "sponsorParty": "D",
+            "sponsorState": "XX",
+            "policyArea": "Science, Technology, Communications",
+            "subjects": [
+              "Broadband and internet access",
+              "Rural conditions and development"
+            ],
+            "status": "introduced",
+            "introducedDate": "2025-01-03",
+            "latestActionDate": "2025-02-10",
+            "latestActionText": "Referred to the Subcommittee on Communications and Technology.",
+            "url": "https://www.congress.gov/bill/119th-congress/house-bill/1"
+          }
+        }
+      ]
+    }
+  },
+  "grants": {
+    "request": {
+      "query": "wildfire resilience for small rural counties",
+      "agency": "Agriculture",
+      "status": "posted"
+    },
+    "response": {
+      "tool": "semantic_search_grants",
+      "generatedAt": "2026-11-02T03:00:00.000Z",
+      "query": "wildfire resilience for small rural counties",
+      "model": "amazon.titan-embed-text-v2:0",
+      "similarityFloor": 0.35,
+      "candidateLimit": 200,
+      "total": 1,
+      "notes": [
+        "Nearest-meaning federal grant records by embedding similarity: the 200 closest vectors, then agency, status filters; similarity is not relevance and an empty result is not proof of absence. Date filters apply to the close date.",
+        "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
+      ],
+      "results": [
+        {
+          "reference": "federal_grant:SYN-GRANT-000001",
+          "score": 0.642,
+          "snippet": "Community Wildfire Resilience Grants Department of Agriculture Funds county-level fuel reduction and community wildfire protection plans.",
+          "record": {
+            "id": "SYN-GRANT-000001",
+            "title": "Community Wildfire Resilience Grants",
+            "agency": "Department of Agriculture",
+            "subAgency": "Forest Service",
+            "opportunityNumber": "USDA-FS-2026-WF-01",
+            "category": "Discretionary",
+            "fundingInstrument": "Grant",
+            "awardCeiling": 500000,
+            "awardFloor": 50000,
+            "estimatedFunding": 10000000,
+            "openDate": "2026-09-01",
+            "closeDate": "2027-01-15",
+            "status": "posted",
+            "url": "https://www.grants.gov/search-results-detail/000001"
+          }
+        }
+      ]
+    }
+  },
+  "contractOpportunities": {
+    "request": {
+      "query": "drone detection at military installations",
+      "naics": "3345",
+      "dateFrom": "2026-11-02"
+    },
+    "response": {
+      "tool": "semantic_search_contract_opportunities",
+      "generatedAt": "2026-11-02T03:00:00.000Z",
+      "query": "drone detection at military installations",
+      "model": "amazon.titan-embed-text-v2:0",
+      "similarityFloor": 0.35,
+      "candidateLimit": 200,
+      "total": 1,
+      "notes": [
+        "Nearest-meaning sam opportunity records by embedding similarity: the 200 closest vectors, then naics, dateFrom filters; similarity is not relevance and an empty result is not proof of absence. Date filters apply to the response deadline.",
+        "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
+      ],
+      "results": [
+        {
+          "reference": "sam_opportunity:00000005-0000-4000-8000-000000000001",
+          "score": 0.588,
+          "snippet": "Counter-UAS Detection at Installations Department of Defense The Army seeks sensor and radio-frequency detection of small unmanned aircraft at installations.",
+          "record": {
+            "id": "00000005-0000-4000-8000-000000000001",
+            "noticeId": "syn0000000000000001",
+            "solicitationNumber": "W912DY26R0001",
+            "title": "Counter-UAS Detection at Installations",
+            "noticeType": "Solicitation",
+            "agency": "Department of Defense",
+            "subAgency": "Department of the Army",
+            "office": "Army Contracting Command",
+            "setAside": "Total Small Business Set-Aside",
+            "naicsCode": "334511",
+            "pscCode": "5865",
+            "postedDate": "2026-10-20T14:00:00+00:00",
+            "responseDeadline": "2026-11-30T21:00:00+00:00",
+            "active": true,
+            "url": "https://sam.gov/opp/00000005/view"
+          }
+        }
+      ]
+    }
+  },
+  "empty": {
+    "request": {
+      "query": "zzz no such topic"
+    },
+    "response": {
+      "tool": "semantic_search_bills",
+      "generatedAt": "2026-11-02T03:00:00.000Z",
+      "query": "zzz no such topic",
+      "model": "amazon.titan-embed-text-v2:0",
+      "similarityFloor": 0.35,
+      "candidateLimit": 200,
+      "total": 0,
+      "notes": [
+        "Nearest-meaning congress bill records by embedding similarity: the 200 closest vectors; similarity is not relevance and an empty result is not proof of absence. Date filters apply to the latest action date.",
+        "Each reference is a stable record identifier; use exact reads or SQL for counts, joins and fields beyond this record."
+      ],
+      "results": []
+    }
+  }
+}

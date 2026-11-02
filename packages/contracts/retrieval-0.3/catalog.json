@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.32",
+  "catalogVersion": "0.2.33",
   "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
@@ -1539,6 +1539,36 @@
       "boundary": "Runtime deterministic preparation from the fixed authenticated Core federal source; no approval or publication.",
       "replacement": {
         "id": "prepare_federal_draft",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "semantic_search_bills",
+      "disposition": "selected",
+      "boundary": "Nearest-meaning public federal bills by embedding similarity over the stored bill metadata text, with the canonical bill record and a stable congress_bill reference per hit. No count, exhaustive-recall or relevance claim.",
+      "replacement": {
+        "id": "semantic_search_bills",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "semantic_search_grants",
+      "disposition": "selected",
+      "boundary": "Nearest-meaning public Grants.gov opportunities by embedding similarity over the stored grant text chunks, de-duplicated to the canonical grant record with a stable federal_grant reference per hit. No count, exhaustive-recall or relevance claim.",
+      "replacement": {
+        "id": "semantic_search_grants",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "semantic_search_contract_opportunities",
+      "disposition": "selected",
+      "boundary": "Nearest-meaning public SAM.gov contract opportunity notices by embedding similarity over the stored notice text chunks, de-duplicated to the canonical notice record with a stable sam_opportunity reference per hit. No count, exhaustive-recall or relevance claim.",
+      "replacement": {
+        "id": "semantic_search_contract_opportunities",
         "version": "0.2.0"
       },
       "state": "mapped"
@@ -12472,6 +12502,207 @@
       ],
       "fixtureIds": [
         "catalog.binding.query_capiro_data"
+      ]
+    },
+    {
+      "operation": {
+        "id": "semantic_search_bills",
+        "version": "0.2.0"
+      },
+      "displayName": "Find bills by meaning",
+      "whenToUse": "Find federal bills whose stored title, policy area, subjects, sponsor and latest action are closest in meaning to a topic, question or description, ranked by embedding similarity, with an optional Congress, status and latest-action date range. Use it to find, compare, summarize or recommend bills by topic or intent; use text-to-SQL for counts, exact fields, trends and joins, including exact facts about the bills this read returns.",
+      "limitations": [
+        "At most twenty-five records per call from the two hundred nearest vectors; similarity is not relevance, and an empty result is not proof that no bill exists.",
+        "The ranked text is the stored bill metadata (title, policy area, subjects, sponsor, latest action), not full bill text; read_bill_text reads the text itself.",
+        "Every record is public federal data; no client or tenant record is ranked. Core current authority still governs the call."
+      ],
+      "positiveExamples": [
+        "Which bills are about rural broadband affordability?",
+        "Find bills similar to the Clean Water State Revolving Fund expansion and summarize how they differ."
+      ],
+      "negativeExamples": [
+        "Treat the returned page as a count of matching bills or as proof that a bill is absent.",
+        "Use it for how-many, which-field, trend or join questions; those go to text-to-SQL."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "stored_public_data",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchInput",
+        "sha256": "66d026ae5bd80dda956464beb1d556eee40f989673f467a5fcfa3fb00998fe1a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchOutput",
+        "sha256": "66d026ae5bd80dda956464beb1d556eee40f989673f467a5fcfa3fb00998fe1a"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.semantic_search_bills"
+      ]
+    },
+    {
+      "operation": {
+        "id": "semantic_search_grants",
+        "version": "0.2.0"
+      },
+      "displayName": "Find grants by meaning",
+      "whenToUse": "Find Grants.gov funding opportunities whose stored title, agency, description and eligibility text are closest in meaning to a topic, need or description, ranked by embedding similarity, with an optional agency, status and close-date range. Use it to find, compare, summarize or recommend grants by topic or intent; use text-to-SQL for counts, exact fields, trends and joins, including exact facts about the grants this read returns.",
+      "limitations": [
+        "At most twenty-five records per call from the two hundred nearest text chunks; one grant may hold several chunks and only its best chunk is scored.",
+        "Only grants whose text was embedded are ranked (the embedding worker covers open and forecasted grants first); similarity is not eligibility, and an empty result is not proof that no grant exists.",
+        "Every record is public Grants.gov data; no client or tenant record is ranked. Core current authority still governs the call."
+      ],
+      "positiveExamples": [
+        "Which grants fund wildfire resilience for small rural counties?",
+        "Find funding opportunities similar to this program description and compare their award ceilings."
+      ],
+      "negativeExamples": [
+        "Treat the returned page as a count of matching grants or as proof that a grant is absent.",
+        "Use it for how-many, which-field, trend or join questions; those go to text-to-SQL."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "stored_public_data",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchInput",
+        "sha256": "66d026ae5bd80dda956464beb1d556eee40f989673f467a5fcfa3fb00998fe1a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchOutput",
+        "sha256": "66d026ae5bd80dda956464beb1d556eee40f989673f467a5fcfa3fb00998fe1a"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.semantic_search_grants"
+      ]
+    },
+    {
+      "operation": {
+        "id": "semantic_search_contract_opportunities",
+        "version": "0.2.0"
+      },
+      "displayName": "Find contract opportunities by meaning",
+      "whenToUse": "Find SAM.gov contract opportunities (solicitations, sources sought, presolicitations) whose stored title, agency, description, set-aside, NAICS and PSC text are closest in meaning to a capability, need or description, ranked by embedding similarity, with an optional agency, NAICS prefix, inactive-notice and response-deadline range. Use it to find, compare, summarize or recommend contract opportunities by topic or intent; use text-to-SQL for counts, exact fields, trends and joins, including exact facts about the notices this read returns.",
+      "limitations": [
+        "At most twenty-five records per call from the two hundred nearest text chunks; one notice may hold several chunks and only its best chunk is scored.",
+        "Active notices only unless includeInactive is set; only notices whose text was embedded are ranked, similarity is not eligibility, and an empty result is not proof that no opportunity exists.",
+        "Every record is public SAM.gov data; contract awards are not ranked here. Core current authority still governs the call."
+      ],
+      "positiveExamples": [
+        "Which open solicitations are looking for drone detection at military installations?",
+        "Find contract opportunities similar to this capability statement and compare their deadlines and set-asides."
+      ],
+      "negativeExamples": [
+        "Treat the returned page as a count of matching opportunities or as proof that an opportunity is absent.",
+        "Use it for how-many, which-field, trend or join questions; those go to text-to-SQL."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "stored_public_data",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchInput",
+        "sha256": "66d026ae5bd80dda956464beb1d556eee40f989673f467a5fcfa3fb00998fe1a"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchOutput",
+        "sha256": "66d026ae5bd80dda956464beb1d556eee40f989673f467a5fcfa3fb00998fe1a"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.semantic_search_contract_opportunities"
       ]
     }
   ]
