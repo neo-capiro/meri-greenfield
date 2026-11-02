@@ -1,4 +1,4 @@
-/** Shared wire fixture: grammar copied from Core362's gate constants, never used to admit SQL. */
+/** Shared wire fixture: grammar copied from Core's gate constants (capiro-backend PR 420), never used to admit SQL. */
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 export const grammar={
   "version": "postgresql-select/1",
@@ -54,7 +54,22 @@ export const grammar={
     "lowrite",
     "dblink",
     "dblink_connect",
-    "dblink_exec"
+    "dblink_exec",
+    "query_to_xml",
+    "query_to_xml_and_xmlschema",
+    "query_to_xmlschema",
+    "table_to_xml",
+    "table_to_xml_and_xmlschema",
+    "table_to_xmlschema",
+    "schema_to_xml",
+    "schema_to_xml_and_xmlschema",
+    "schema_to_xmlschema",
+    "database_to_xml",
+    "database_to_xml_and_xmlschema",
+    "database_to_xmlschema",
+    "cursor_to_xml",
+    "cursor_to_xmlschema",
+    "ts_stat"
   ],
   "blockedFunctionPatterns": [],
   "sourceMixing": false
