@@ -73,7 +73,7 @@ test('public-web failures carry a precise next step between the closed head and 
 
 test('a debrief refusal names the conversation to switch to instead of a bare "not permitted"',()=>{
  const text=failureResult('ACCESS_DENIED','mcp__meri_reads__meeting_query_debriefs').content[0].text;
- assert.match(text,/^ACCESS_DENIED: /u);
+ assert.match(text,/^This read is not permitted for this user, client or conversation now/u);assert.doesNotMatch(text,/ACCESS_DENIED/u);
  assert.match(text,/open a conversation for that client \(choose the client in Meri\) and ask there/u);
  assert.match(text,/do not say no debriefs exist/u);
  assert.match(describe('meeting.query_debriefs'),/read only in the conversation of that client, with clientId set to the selected client/u);
