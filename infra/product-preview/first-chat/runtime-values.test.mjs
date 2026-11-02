@@ -15,35 +15,27 @@ test('policy carries execution limits and the explicit qualified model catalog',
  }
 });
 
-test('the served catalog offers Sonnet at its default effort only; Opus and explicit Sonnet efforts stay unavailable until Release flips them',async()=>{
- const policy=await json('policy.json'),{models}=policy.models,sonnet=models.find(m=>m.modelId==='us.anthropic.claude-sonnet-4-6'),opus=models.find(m=>m.modelId==='us.anthropic.claude-opus-4-6-v1');
- assert.deepEqual(policy.models.defaultSelection,{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:null});
- assert.deepEqual(sonnet,{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',label:'Claude Sonnet 4.6',efforts:[null],available:true,unavailableReason:null},'the live-proven Sonnet row is byte-for-byte the retained catalog row');
- assert.deepEqual(opus,{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',label:'Claude Opus 4.6',efforts:[null,'high','max'],available:false,unavailableReason:'model_unqualified'});
- assert.deepEqual(policy.pendingModels,[{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',label:'Claude Sonnet 4.6',efforts:['high','max'],available:false,unavailableReason:'model_unqualified'}]);
- for(const selection of [{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:null},{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:'high'},{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:'high'},{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:'max'},{provider:'claude-api',modelId:'claude-sonnet-4-6',effort:null}])
+const SONNET='us.anthropic.claude-sonnet-4-6',OPUS='us.anthropic.claude-opus-4-6-v1',bedrock=(modelId,effort)=>({provider:'bedrock',modelId,effort});
+test('the served catalog offers Sonnet null/high/max and Opus null/high/max; every other pair is refused at admission',async()=>{
+ const policy=await json('policy.json'),{models}=policy.models;
+ assert.deepEqual(policy.models.defaultSelection,bedrock(SONNET,null));
+ assert.deepEqual(models,[
+  {provider:'bedrock',modelId:SONNET,label:'Claude Sonnet 4.6',efforts:[null,'high','max'],available:true,unavailableReason:null},
+  {provider:'bedrock',modelId:OPUS,label:'Claude Opus 4.6',efforts:[null,'high','max'],available:true,unavailableReason:null},
+ ],'the committed catalog is the rendered control /models member');
+ assert.equal(Object.hasOwn(policy,'pendingModels'),false);
+ for(const selection of [bedrock(SONNET,null),bedrock(SONNET,'high'),bedrock(SONNET,'max'),bedrock(OPUS,null),bedrock(OPUS,'high'),bedrock(OPUS,'max')])
+  assert.deepEqual(availableModelSelection(policy.models,selection),selection,JSON.stringify(selection));
+ for(const selection of [bedrock(SONNET,'low'),bedrock(SONNET,'medium'),bedrock(SONNET,'xhigh'),bedrock(OPUS,'low'),bedrock(OPUS,'medium'),bedrock(OPUS,'xhigh'),bedrock('us.anthropic.claude-opus-4-6',null),bedrock('us.anthropic.claude-opus-4-6','high'),{provider:'claude-api',modelId:'claude-sonnet-4-6',effort:null}])
   assert.throws(()=>availableModelSelection(policy.models,selection),{code:'MODEL_SELECTION_UNAVAILABLE'},JSON.stringify(selection));
- assert.deepEqual(availableModelSelection(policy.models,policy.models.defaultSelection),policy.models.defaultSelection);
- // The runtime values and served configuration carry `models` only; pending rows never reach the catalog.
- const values=structuredClone(await parserFixture());assert.equal(Object.hasOwn(parseRuntimeValues(values),'pendingModels'),false);
- const flipped=structuredClone(policy);flipped.models.models[1].available=true;flipped.models.models[1].unavailableReason=null;
- assert.equal(parsePolicy(flipped),flipped,'Release flips a row by setting available:true and clearing the reason');
- assert.deepEqual(availableModelSelection(flipped.models,{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:'max'}),{provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:'max'});
- const merged=structuredClone(policy);merged.models.models[0].efforts=[null,'high','max'];merged.pendingModels=[];
- assert.equal(parsePolicy(merged),merged,'Release flips pending Sonnet efforts by moving them onto the served row');
- assert.deepEqual(availableModelSelection(merged.models,{provider:'bedrock',modelId:'us.anthropic.claude-sonnet-4-6',effort:'high'}).effort,'high');
- for(const change of [
-  p=>p.pendingModels=[{...p.pendingModels[0],available:true,unavailableReason:null}],
-  p=>p.pendingModels=[{...p.pendingModels[0],efforts:[null]}],
-  p=>p.pendingModels=[{...p.pendingModels[0],efforts:['high','high']}],
-  p=>p.pendingModels=[p.pendingModels[0],p.pendingModels[0]],
-  p=>p.pendingModels=[{...p.pendingModels[0],efforts:['medium','ultra']}],
-  p=>p.pendingModels=[{...p.pendingModels[0],secretArn:'hidden'}],
-  p=>p.pendingModels=[{...p.pendingModels[0],provider:'openai'}],
-  p=>p.pendingModels={},
-  p=>p.pendingModels=null,
- ]){const p=structuredClone(policy);change(p);assert.throws(()=>parsePolicy(p),{code:'RUNTIME_VALUES_REFUSED'});}
- const none=structuredClone(policy);delete none.pendingModels;assert.equal(parsePolicy(none),none,'a policy without pending rows is still a policy');
+ // The runtime values carry the catalog as written; a retired pending-row key is an unexpected field, not a silent no-op.
+ assert.deepEqual(parseRuntimeValues(structuredClone(await parserFixture())).models,policy.models);
+ const pending=structuredClone(policy);pending.pendingModels=[];assert.throws(()=>parsePolicy(pending),{code:'RUNTIME_VALUES_REFUSED'});
+ // A row Release adds before qualification is refused until it flips available:true and clears the reason.
+ const held=structuredClone(policy);held.models.models.push({provider:'bedrock',modelId:'us.anthropic.claude-synthetic-held',label:'Synthetic held',efforts:[null,'high'],available:false,unavailableReason:'model_unqualified'});
+ assert.equal(parsePolicy(held),held);assert.throws(()=>availableModelSelection(held.models,bedrock('us.anthropic.claude-synthetic-held','high')),{code:'MODEL_SELECTION_UNAVAILABLE'});
+ const flipped=structuredClone(held);flipped.models.models[2].available=true;flipped.models.models[2].unavailableReason=null;
+ assert.deepEqual(availableModelSelection(flipped.models,bedrock('us.anthropic.claude-synthetic-held','high')),bedrock('us.anthropic.claude-synthetic-held','high'));
 });
 
 test('runtime parser requires the catalog and refuses retired task allocation, launch and old fixed-model inputs',async()=>{

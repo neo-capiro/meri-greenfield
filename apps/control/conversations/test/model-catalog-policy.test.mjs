@@ -13,7 +13,9 @@ import {resolveSdkModelConfiguration,SDK_USAGE_BASIS} from '../usage.mjs';
 import {USER_PREFERENCE_DEFAULTS} from '../../../../packages/contracts/user-preferences-application/document.mjs';
 import {productFailure} from '../../product-access/errors.mjs';
 const policy=JSON.parse(await readFile(new URL('../../../../infra/product-preview/first-chat/policy.json',import.meta.url),'utf8')),catalog=policy.models;
-const SONNET=catalog.defaultSelection,OPUS={provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6',effort:null};
+const SONNET=catalog.defaultSelection,OPUS={provider:'bedrock',modelId:'us.anthropic.claude-opus-4-6-v1',effort:null},HELD={provider:'bedrock',modelId:'us.anthropic.claude-synthetic-held',effort:null};
+// The served catalog plus one row Release has added but not yet qualified (refused until it flips available:true and clears the reason).
+const heldCatalog=()=>{const c=structuredClone(catalog);c.models.push({provider:HELD.provider,modelId:HELD.modelId,label:'Synthetic held',efforts:[null,'high'],available:false,unavailableReason:'model_unqualified'});return c;};
 const intent={requestId:id(60),prompt:'Reply exactly: model selection two. Do not use tools or delegate.'};
 function fixture(){
  const f=initialInputFixture(),state=Object.assign(f.state,{context:structuredClone({binding,scopes,selectedClientId:id(5)}),ttl:30000,starts:[]});let serial=200;
@@ -51,10 +53,9 @@ test('the loaded execution configuration forwards the admitted selection, the us
 });
 
 for(const [name,modelSelection] of [
- ['the unqualified Opus row at its default effort',OPUS],
- ['the unqualified Opus row at an explicit effort',{...OPUS,effort:'max'}],
- ['an explicit Sonnet effort that is only pending',{...SONNET,effort:'high'}],
- ['an explicit Sonnet effort that is only pending (max)',{...SONNET,effort:'max'}],
+ ['the served Opus row at an effort it does not list',{...OPUS,effort:'medium'}],
+ ['the served Sonnet row at an effort it does not list',{...SONNET,effort:'low'}],
+ ['the retired Opus alias the catalog never served',{...OPUS,modelId:'us.anthropic.claude-opus-4-6'}],
  ['a Claude API row the catalog does not serve',{provider:'claude-api',modelId:'claude-sonnet-4-6',effort:null}],
  ['an invented model',{...SONNET,modelId:'us.anthropic.claude-invented'}],
 ])test(`M6: ${name} is refused before allocation, admission or dispatch`,async()=>{
@@ -66,15 +67,21 @@ for(const [name,modelSelection] of [
  assert.equal(f.allocations.size,0);
 });
 
-test('a Release flip of the Opus row admits it without any code change; the pending Sonnet efforts stay refused until merged into the served row',async()=>{
- const flipped=structuredClone(catalog);const opus=flipped.models.find(m=>m.modelId===OPUS.modelId);opus.available=true;opus.unavailableReason=null;
+for(const selection of [{...SONNET,effort:'high'},{...SONNET,effort:'max'},OPUS,{...OPUS,effort:'high'},{...OPUS,effort:'max'}])test(`M6: the served pair ${selection.modelId}/${selection.effort} is admitted exactly and loaded into the SDK configuration`,async()=>{
+ const f=fixture(),input={...intent,modelSelection:selection};
+ await f.allocate(input);assert.deepEqual((await f.admit(input)).request.modelSelection,selection);
+ const loaded=await f.load();assert.equal(loaded.model.model,selection.modelId);assert.equal(loaded.model.effort,selection.effort);
+});
+
+test('a row Release adds before qualification is refused until it flips available:true; the flip admits it without any code change',async()=>{
+ const flipped=heldCatalog();const row=flipped.models.find(m=>m.modelId===HELD.modelId);row.available=true;row.unavailableReason=null;
  const f=fixture(),store=createPostgresConversationStore({pool:f.pool,modelCatalog:flipped,now:f.now});let serial=300;
  const sessions={async authenticateSession(){return {principal:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId},checkedAtMs:f.now(),expiresAtMs:f.now()+30000};},async readCurrentState({authentication}){return {authenticationSha256:hash(authentication),...structuredClone(f.state.context),checkedAtMs:f.now(),expiresAtMs:f.now()+30000};}};
  const service=createConversationService({sessions,store,versions,modelCatalog:flipped,now:f.now,newId:()=>id(serial++),dispatcher:{async start(){},async cancel(){}}});
- await assert.rejects(service.allocateInput({credential:'synthetic',input:{...intent,modelSelection:{...SONNET,effort:'high'}}}),error=>code(error)==='MODEL_SELECTION_UNAVAILABLE');
+ await assert.rejects(service.allocateInput({credential:'synthetic',input:{...intent,modelSelection:{...HELD,effort:'max'}}}),error=>code(error)==='MODEL_SELECTION_UNAVAILABLE','an effort the flipped row does not list stays refused');
  assert.equal(f.allocations.size,0,'a refused selection allocates nothing, so the run is still free for an admitted one');
- const selection={...OPUS,effort:'high'},input={...intent,modelSelection:selection};
+ const selection={...HELD,effort:'high'},input={...intent,modelSelection:selection};
  await service.allocateInput({credential:'synthetic',input});const admitted=await service.admitInput({credential:'synthetic',input});
  assert.deepEqual(admitted.request.modelSelection,selection);
- const loaded=await service.loadForExecution({credential:'synthetic',binding});assert.equal(loaded.model.model,OPUS.modelId);assert.equal(loaded.model.effort,'high');
+ const loaded=await service.loadForExecution({credential:'synthetic',binding});assert.equal(loaded.model.model,HELD.modelId);assert.equal(loaded.model.effort,'high');
 });

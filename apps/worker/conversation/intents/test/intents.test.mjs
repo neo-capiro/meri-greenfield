@@ -18,7 +18,7 @@ test('lists only owner-backed intents, never read-only, with descriptor-derived 
  try{const {tools}=await m.client.listTools();
   assert.deepEqual(tools.map(t=>t.name),['propose_task']);assert.deepEqual([...m.runtime.sdkOptions.allowedTools],['mcp__meri_intents__propose_task']);
   const [t]=tools;assert.equal(t.annotations.readOnlyHint,false);assert.equal(t.annotations.destructiveHint,false);
-  assert.ok(t.description.startsWith('Prepare a write request for the user to review. This never applies a change'));assert.deepEqual(t.inputSchema.properties.operation.enum,['create_task']);
+  assert.ok(t.description.startsWith('Prepare a request for the user\'s approval. This never applies a change'));assert.deepEqual(t.inputSchema.properties.operation.enum,['create_task']);
   // The advertised arguments are the canonical request the owner validates, not an untyped object.
   assert.deepEqual(Object.keys(t.inputSchema.properties.arguments.properties),['title','clientId','dueDate']);
   assert.equal((await m.runtime.sdkOptions.canUseTool('mcp__meri_intents__propose_memory',{},{})).behavior,'deny');assert.equal((await m.runtime.sdkOptions.canUseTool('mcp__meri_intents__propose_task',{},{})).behavior,'allow');
@@ -63,6 +63,22 @@ test('a timeout after the port call started is UNKNOWN, not "nothing prepared"',
  try{const pending=m.call('propose_task',CREATE);setTimeout(()=>{f.f.state.now+=2000;},20);
   const r=await pending;failed(r,'UNKNOWN');release();
  }finally{release();await m.close();}
+});
+
+test('an INVALID_ARGUMENTS refusal shows the port\'s field-path detail so the model can correct the call; anything else is dropped',async()=>{
+ const f=intentFixture();let detail="data must have required property 'title'";
+ const port={readAvailability:v=>f.port.readAvailability(v),prepare:async()=>{throw Object.assign(Error('INVALID_ARGUMENTS'),{code:'INVALID_ARGUMENTS',layer:'control',...(detail===undefined?{}:{detail})});}};
+ const m=await mountIntents(f,{port});
+ try{
+  const r=await m.call('propose_task',CREATE,{toolUseId:'toolu_detail'});failed(r,'INVALID_ARGUMENTS');
+  assert.equal(text(r),"INVALID_ARGUMENTS: mcp__meri_intents__propose_task refused these arguments (data must have required property 'title'); correct the named fields and supply literal arguments matching its input schema. Nothing has been changed.");
+  let n=0;
+  for(const odd of [undefined,'','x\n',' y'.repeat(201),7,{path:'/title'}]){
+   detail=odd;const o=await m.call('propose_task',CREATE,{toolUseId:'toolu_odd'+n++});failed(o,'INVALID_ARGUMENTS');
+   assert.equal(text(o),'INVALID_ARGUMENTS: mcp__meri_intents__propose_task refused these arguments; correct the named fields and supply literal arguments matching its input schema. Nothing has been changed.',JSON.stringify(odd));
+  }
+  assert.deepEqual(m.runtime.receipts(),[]);
+ }finally{await m.close();}
 });
 
 test('cross-tenant: a foreign availability snapshot mounts nothing; a foreign-tenant/actor/conversation or applied result is withheld',async()=>{

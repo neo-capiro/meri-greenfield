@@ -7,7 +7,7 @@ import {scheduleOperationFamily} from '../../../packages/contracts/schedule-oper
 import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertPool,transact} from '../product-persistence/transaction.mjs';
 import {refuse,productFailure} from '../product-access/errors.mjs';
-import {intentFault,INTENT_FAILURE_CODES} from './faults.mjs';
+import {intentFault,INTENT_FAILURE_CODES,INTENT_DETAIL_MAX} from './faults.mjs';
 const TABLE='meri_intents.preparations',COLUMNS='record,record_sha256,state,outcome';
 const states=['PENDING','PREPARED','FAILED','UNKNOWN'],digest=/^[a-f0-9]{64}$/u;
 function key(raw){
@@ -34,8 +34,10 @@ function record(raw){
 function outcome(state,raw){
  if(!states.includes(state))refuse('INTENT_JOURNAL_STATE');
  if(state==='PENDING'||state==='UNKNOWN'){if(raw!==null)refuse('INTENT_JOURNAL_STATE');return null;}
- const o=data(own(raw,state==='FAILED'?['code']:['result'],state==='PREPARED'?['release']:[]));
- if(state==='FAILED'&&!INTENT_FAILURE_CODES.includes(o.code))refuse('INTENT_JOURNAL_STATE');
+ // A FAILED outcome may retain the canonical schema's bounded field-path detail beside its code (`faults.mjs` INTENT_DETAIL_MAX),
+ // so a replay answers the same explained refusal; the bound is enforced on write and on read.
+ const o=data(own(raw,state==='FAILED'?['code']:['result'],state==='FAILED'?['detail']:state==='PREPARED'?['release']:[]));
+ if(state==='FAILED'&&(!INTENT_FAILURE_CODES.includes(o.code)||o.detail!==undefined&&(typeof o.detail!=='string'||!o.detail.length||o.detail.length>INTENT_DETAIL_MAX)))refuse('INTENT_JOURNAL_STATE');
  if(state==='PREPARED'&&(o.result===null||typeof o.result!=='object'||Array.isArray(o.result)))refuse('INTENT_JOURNAL_STATE');
  if(o.release!==undefined){const r=own(o.release,['binding','scopes','expiresAtMs']);validateShape('RunBinding',r.binding);
   if(!Array.isArray(r.scopes)||!r.scopes.length||!Number.isSafeInteger(r.expiresAtMs)||r.expiresAtMs<1)refuse('INTENT_JOURNAL_STATE');

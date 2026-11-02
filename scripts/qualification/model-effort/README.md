@@ -46,7 +46,7 @@ Driver reads local final receipt<=60times at1s spacing within original case dead
 
 Independent source/method acceptance, accepted collector adaptation/envelope, actual qualified derivative, actual environment sizing/readback, isolated routing/IAM/material, credential/session allocation and cleanup ownership remain unbound. If the retained collector cannot deliver the stated file amendment within bounds, return the constraint; do not invent S3/SSM, mounts, roles, services or endpoints.
 
-Use existing clean-base policy assembly and audited candidate-only tenant CAS/readbacks. Candidate policy enables Sonnet null/high/max and Opus null/high/max, pending empty, Sonnet/null default; qualification tenant caps<=2turns/250000micro-USD plus bounded monthly allocation. Source production policy still holds Opus unavailable/model_unqualified and explicit Sonnet efforts pending. Stored historical IDs are never rewritten/aliased. Prepare five ordinary authenticated fresh General sessions with adequate expiry and no skills/windows/uploads/procedures/source reads/intents or prior model work.
+Use existing clean-base policy assembly and audited candidate-only tenant CAS/readbacks. Candidate policy enables Sonnet null/high/max and Opus null/high/max, pending empty, Sonnet/null default; qualification tenant caps<=2turns/250000micro-USD plus bounded monthly allocation. The committed source policy now serves the same five pairs beside the Sonnet default (no pending-row key). Stored historical IDs are never rewritten/aliased. Prepare five ordinary authenticated fresh General sessions with adequate expiry and no skills/windows/uploads/procedures/source reads/intents or prior model work.
 
 After prerequisites, with existing dependencies/trust:
 

@@ -58,7 +58,7 @@ test('a persisted historical pin still resolves to its own exact version while n
  const admitted=await (async()=>{await f.allocate(intent(historical));return f.admit(intent(historical));})();
  assert.deepEqual(admitted.request.skill,pin);assert.equal(admitted.request.skill.skillVersion,'1.0.0');
  assert.equal(selectSkill('quick_skill.mail_history','1.0.0').manifest.budgets.maxRuntimeSeconds,60,'the historical pin keeps its historical budget');
- assert.equal(CONVERSATION_SKILLS.find(s=>s.skillId==='quick_skill.mail_history').version,'1.0.1');
+ assert.equal(CONVERSATION_SKILLS.find(s=>s.skillId==='quick_skill.mail_history').version,'1.0.2');
 });
 
 test('a portfolio-only workflow is unavailable in a client conversation without the portfolio admission owner',async()=>{
@@ -83,7 +83,7 @@ for(const [name,skill,expected] of [
  ['a version that was never installed',{skillId:'quick_skill.mail_history',skillVersion:'9.9.9'},'SKILL_UNAVAILABLE'],
  ['a retired version that is no longer in the index',{skillId:'quick_skill.client_changes',skillVersion:'1.0.0'},'SKILL_UNAVAILABLE'],
  ['a latest alias',{skillId:'quick_skill.mail_history',skillVersion:'latest'},'SKILL_UNAVAILABLE'],
- ['a successor that exists only on disk',{skillId:'quick_skill.mail_history',skillVersion:'1.0.2'},'SKILL_UNAVAILABLE'],
+ ['a successor that exists only on disk',{skillId:'quick_skill.mail_history',skillVersion:'1.0.3'},'SKILL_UNAVAILABLE'],
 ])test(`${name} is refused before allocation, admission and dispatch`,async()=>{
  const f=fixture(),input=intent(skill);
  await assert.rejects(f.allocate(input),error=>code(error)===expected);

@@ -38,7 +38,7 @@ test('the original fourteen identities plus the one additive identity retain exp
  // general cited report claim rather than by rewriting that original inventory.
  assert.deepEqual([...new Set(listSkills().map(s=>s.skillId))].sort(),[...inventory.records.map(row=>row.fields.ID),'quick_skill.cited_report'].sort());
  assert.deepEqual(listSkills().filter(s=>s.skillId==='quick_skill.bill_watch').map(s=>s.skillVersion).sort(),['1.0.0','1.0.1','1.1.0','1.1.1','2.0.0','2.0.1']);
- assert.equal(listSkills().length,35);
+ assert.equal(listSkills().length,36);
  assert.equal(Object.keys(evidence).length,14);
  for(const entry of listSkills()){
   const asset=selectSkill(entry.skillId,entry.skillVersion);

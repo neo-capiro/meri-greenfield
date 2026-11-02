@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {READ_FAMILIES} from '../families.mjs';
 import {READ_FAMILY_GUIDANCE,READ_FAMILY_GUIDANCE_IDS,GUIDANCE_LIMITS,RESULT_STATE_GUIDANCE,SQL_FIRST_GUIDANCE,SQL_ABSENT_GUIDANCE} from '../family-guidance.mjs';
 import {describeRead,domainLimitations,MAX_DESCRIPTION,SQL_TOOL_IDS} from '../tools.mjs';
+import {userVocabulary} from '../../user-vocabulary.mjs';
 import {readGuidance} from '../guidance.mjs';
 import {sdkToolName} from '../../skills/mcp.mjs';
 import {familyReads} from '../availability.mjs';
@@ -21,9 +22,10 @@ test('guidance is a closed, bounded set equal to the mounted read families',()=>
 test('every mounted read describes what it covers, returns and how its result declares absent, partial and stale data',()=>{
  for(const row of rows)for(const sqlPrimary of [true,false]){
   const d=row.descriptor,text=describeRead(d,row.family,{sqlPrimary}),guidance=READ_FAMILY_GUIDANCE[row.family];
-  assert.ok(text.startsWith(`${d.displayName}. ${d.whenToUse}`),row.operation.id);
+  // The frozen descriptor words reach the model projected into the user's vocabulary.
+  assert.ok(text.startsWith(userVocabulary(`${d.displayName}. ${d.whenToUse}`)),row.operation.id);
   assert.ok(text.includes(`Covers: ${guidance.covers}`)&&text.includes(`Returns: ${guidance.returns}`)&&text.includes(`Result states: ${guidance.states}`),row.operation.id);
-  assert.ok(text.includes(d.inputSchema.sha256)&&text.endsWith('Supply literal arguments only; credentials and scope authority remain with the gateway.'),row.operation.id);
+  assert.ok(text.includes(d.inputSchema.sha256)&&text.endsWith('Supply literal arguments only; identity, permissions and client selection come from the trusted run, never from arguments.'),row.operation.id);
   assert.ok(text.length<=MAX_DESCRIPTION,`${row.operation.id} ${text.length}`);
   for(const line of text.split('\n'))assert.ok(line.length>0,row.operation.id);
  }
@@ -48,13 +50,14 @@ test('registration-era catalog limitations never reach the model; data limitatio
   assert.doesNotMatch(text,stale,row.operation.id);
   const operational=readGuidance(sdkToolName(row.operation));
   const limits=(operational?.limitations.length?operational.limitations:domainLimitations(row.descriptor)).slice(0,4);
-  if(limits.length){const line=`Limits: ${limits.join(' ')}`;assert.ok(text.includes(line)||text.length+line.length+1>MAX_DESCRIPTION,`${row.operation.id}: limits are shown unless they cannot fit`);}
+  if(limits.length){const line=userVocabulary(`Limits: ${limits.join(' ')}`);assert.ok(text.includes(line)||text.length+line.length+1>MAX_DESCRIPTION,`${row.operation.id}: limits are shown unless they cannot fit`);}
  }
  const market=rows.find(row=>row.operation.id==='search_federal_contract_awards').descriptor;
  assert.equal(domainLimitations(market).length,2);assert.equal(market.limitations.length,5);
 });
-test('the shared result-state vocabulary names every closed failure meaning the server can return',()=>{
- for(const code of ['ACCESS_DENIED','UNAVAILABLE','SOURCE_UNAVAILABLE','INVALID_RESULT'])assert.ok(RESULT_STATE_GUIDANCE.includes(code),code);
+test('the shared result-state vocabulary names every closed failure meaning the server can return, in user terms',()=>{
+ for(const meaning of ['refused as not permitted (for this user, client or conversation) is not absent data','not connected here is not absent data','did not answer this call is not an empty result','withheld malformed result is not evidence'])assert.ok(RESULT_STATE_GUIDANCE.includes(meaning),meaning);
+ assert.doesNotMatch(RESULT_STATE_GUIDANCE,/UNAVAILABLE|ACCESS_DENIED|INVALID_RESULT/u,'codes never reach the instructions the model repeats');
  assert.ok(READ_FAILURE_CODES.includes('SOURCE_UNAVAILABLE'));
  assert.match(RESULT_STATE_GUIDANCE,/empty list is absence inside that page, window and source set, never proof of global absence/u);
 });

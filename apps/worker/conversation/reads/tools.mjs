@@ -12,6 +12,7 @@ import {sdkToolName} from '../skills/mcp.mjs';
 import {advertisedArguments} from './schema.mjs';
 import {READ_FAMILY_GUIDANCE,SQL_FIRST_GUIDANCE,SQL_ABSENT_GUIDANCE} from './family-guidance.mjs';
 import {readGuidance} from './guidance.mjs';
+import {userVocabulary} from '../user-vocabulary.mjs';
 export const READ_SERVER_NAME='meri_reads';
 export const READ_TOOL_PREFIX=`mcp__${READ_SERVER_NAME}__`;
 /** 4096 holds the longest descriptor with every optional line (`query_capiro_data` at 0.3.0 and later states the SQL rules and
@@ -22,7 +23,7 @@ export const SQL_TOOL_IDS=new Set(['describe_capiro_data','query_capiro_data']);
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
 /** Catalog limitations that describe the registration row (null handler, pending qualification, frozen declared types),
  * not the data: true of the catalog, false of a read that is mounted and executing. Closed patterns, no source detail. */
-const REGISTRATION_LIMITATION=/null handler|Pending (?:private )?contract only|no enabled source|remains? unqualified|remains? unverified|remain required|Source presence does not qualify|does not qualify native installation|Source requirements are design declarations|Local source validation does not qualify|Outputs are frozen declared types|generic gateway composition for this context remains unqualified/iu;
+const REGISTRATION_LIMITATION=/null handler|Pending (?:private )?contract only|no enabled source|remains? unqualified|remains? unverified|remain required|Source presence does not qualify|does not qualify native installation|Source requirements are design declarations|Local source validation does not qualify|Outputs are frozen declared types|generic gateway composition for this context remains unqualified|runtime acceptance|does not yet compose/iu;
 /** The descriptor limitations the model should still see. @param {any} d @returns {string[]} */
 export const domainLimitations=d=>(d.limitations??[]).filter((/** @type {string} */l)=>!REGISTRATION_LIMITATION.test(l));
 /** @param {{operation:{id:string,version:string}}} row */
@@ -38,12 +39,13 @@ export function describeRead(d,family,{sqlPrimary}){
  // tell them to call themselves, so they carry their own routing in the descriptor and the system prompt.
  const head=[`${d.displayName}. ${d.whenToUse}`,`Covers: ${guidance.covers}`,`Returns: ${guidance.returns}`,`Result states: ${guidance.states}`,...(operational?.usage??[]),
   ...(guidance.structured&&!SQL_TOOL_IDS.has(d.operation.id)?[sqlPrimary?SQL_FIRST_GUIDANCE:SQL_ABSENT_GUIDANCE]:[])];
- const tail=[`Canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}.`,'Supply literal arguments only; credentials and scope authority remain with the gateway.'];
+ const tail=[`Canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}.`,'Supply literal arguments only; identity, permissions and client selection come from the trusted run, never from arguments.'];
  const limits=(operational?.limitations.length?operational.limitations:domainLimitations(d)).slice(0,MAX_LIMITS),optional=[...(limits.length?[`Limits: ${limits.join(' ')}`]:[]),...(d.negativeExamples??[]).map((/** @type {string} */example)=>`Do not: ${example}`)];
  const lines=[...head,...tail];
  if(lines.join('\n').length>MAX_DESCRIPTION)throw fault('READ_DESCRIPTION_LIMIT');
  for(const line of optional)if([...lines,line].join('\n').length<=MAX_DESCRIPTION)lines.splice(lines.length-tail.length,0,line);
- return lines.join('\n');
+ // Catalog bytes stay frozen; the model-facing text is projected into the user's vocabulary (`user-vocabulary.mjs`).
+ return userVocabulary(lines.join('\n'));
 }
 /** @param {{operation:{id:string,version:string},family:string,descriptor:any}} row @param {(raw:any,extra:any)=>Promise<any>} handler @param {boolean} alwaysLoad @param {{sqlPrimary:boolean}} [options] */
 export function defineReadTool(row,handler,alwaysLoad,options={sqlPrimary:false}){

@@ -6,19 +6,21 @@ import {tool} from '@anthropic-ai/claude-agent-sdk';
 import {z} from 'zod';
 import {intentDescriptor,intentToolName} from './catalog.mjs';
 import {intentToolArguments} from './schema.mjs';
+import {userVocabulary} from '../user-vocabulary.mjs';
 const MAX_DESCRIPTION=4096;
 export const INTENT_ANNOTATIONS=Object.freeze({readOnlyHint:false,destructiveHint:false,idempotentHint:true,openWorldHint:false});
 /** @param {readonly import('./catalog.mjs').IntentRow[]} rows */
 function description(rows){
- const lines=[rows.every(row=>row.owner==='note')?'Save the requested note once through the current Core owner. A static PASS may write immediately; there is no approval step. Report only the returned saved, withheld, blocked, unknown or failed outcome. Never retry an unknown save.':rows.every(row=>row.owner==='memory')?'Prepare the exact memory text and destination scope for review. Preparation does not create a memory candidate or publish memory. The user can approve submission of this exact proposal; successful submission is pending review, not publication.':'Prepare a write request for the user to review. This never applies a change: it returns an immutable proposal that the user must approve in Meri, or an immutable draft version.'];
+ const lines=[rows.every(row=>row.owner==='note')?'Save the requested note once through the current Core owner. A static PASS may write immediately; there is no approval step. Report only the returned saved, withheld, blocked, unknown or failed outcome. Never retry an unknown save.':rows.every(row=>row.owner==='memory')?'Prepare the exact memory text and destination scope for review. Preparation does not create a memory candidate or publish memory. The user can approve submission of this exact proposal; successful submission is pending review, not publication.':'Prepare a request for the user\'s approval. This never applies a change: it returns an immutable proposal that the user must approve in Meri, or an immutable draft version.'];
  for(const r of rows){const d=intentDescriptor(r.operation);
   if(r.operation.id==='manage_research_portfolio')lines.push('Management lists and gets return current owner data directly with no approval. Changes, including rule preview which persists a record, still prepare a proposal for approval.');
   if(r.operation.id==='propose_office_edit')lines.push('action "read" returns the selected Office version identity and its addressable outline directly with no approval; quote a unit\'s current text exactly as "before". action "propose" prepares bounded operations the user applies as a new version of the same document; nothing changes until they apply it.');
   lines.push(`operation "${r.operation.id}": ${d.displayName}. ${d.whenToUse}`);
   for(const example of d.negativeExamples??[])lines.push(`  Do not: ${example}`);
   lines.push(`  arguments follow canonical input schema ${d.inputSchema.id}, SHA256 ${d.inputSchema.sha256}; the owner validates them.`);}
- lines.push('Supply literal arguments only; identity, tenant, approval and scope authority come from the trusted run, never from arguments.');
- const text=lines.join('\n');return text.length>MAX_DESCRIPTION?text.slice(0,MAX_DESCRIPTION):text;
+ lines.push('Supply literal arguments only; identity, tenant, approval, permissions and client selection come from the trusted run, never from arguments.');
+ // Catalog bytes stay frozen; the model-facing text is projected into the user's vocabulary (`user-vocabulary.mjs`).
+ const text=userVocabulary(lines.join('\n'));return text.length>MAX_DESCRIPTION?text.slice(0,MAX_DESCRIPTION):text;
 }
 /** @param {string} name intent tool name @param {readonly import('./catalog.mjs').IntentRow[]} rows available rows of this tool
  * @param {(raw:any,extra:any)=>Promise<any>} handler */

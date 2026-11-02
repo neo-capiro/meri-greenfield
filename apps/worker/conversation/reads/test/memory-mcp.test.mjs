@@ -15,7 +15,7 @@ test('search_memory is listed with its recall guidance and an argument schema no
  try{const {tools}=await m.client.listTools();assert.deepEqual(tools.map(t=>t.name),['search_memory']);
   const [t]=tools,d=resolveOperationContract({id:'search_memory',version:'0.2.0'}).descriptor;
   assert.ok(t.description.startsWith(`${d.displayName}. ${d.whenToUse}`));
-  assert.match(t.description,/Recall of approved governed memory: what the user, the firm or Meri previously saved and a reviewer approved/);
+  assert.match(t.description,/Recall of approved saved memory: what the user, the firm or Meri previously saved and a reviewer approved/);
   assert.match(t.description,/never say a memory was saved or remembered/);
   assert.doesNotMatch(t.description,/adapter assertion|Local validation does not qualify|Pending private contract/);
   assert.ok(isNarrowerOrEqual(t.inputSchema.properties.arguments,canonicalInputSchema(d.inputSchema)));
@@ -79,7 +79,7 @@ test('disabled recall is UNAVAILABLE with the memory hint, never an empty succes
  const f=await memoryReadFixture(),m=await mountReads(f);f.enabled(false);
  try{const r=await m.call('search_memory',{query:'approved allocation'});
   assert.equal(r.isError,true);assert.match(text(r),/^UNAVAILABLE: mcp__meri_reads__search_memory /);
-  assert.match(text(r),/Governed memory recall is not available in this conversation; say nothing about what is or is not saved beyond that it could not be read\. No evidence, absence or completeness is established\.$/);
+  assert.match(text(r),/Saved memory cannot be read in this conversation; say nothing about what is or is not saved beyond that it could not be read\. No evidence, absence or completeness is established\.$/);
   assert.deepEqual(corePaths(f),[]);
  }finally{await m.close();}
 });

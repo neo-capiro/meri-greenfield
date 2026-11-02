@@ -4,14 +4,14 @@
  * `guidance.mjs` owns one; none carries source detail, and no failure is ever rendered as a successful or empty result.
  * Successful SQL, memory and mail pages get one short orientation notice (counts, continuation, what an empty page
  * means, stale mailbox); the canonical result bytes and their hashes are never touched. */
-import {readGuidance} from './guidance.mjs';
+import {readGuidance,MAIL_COVERAGE_REASONS,MAIL_COVERAGE_UNKNOWN} from './guidance.mjs';
 import {SQL_TOOL_IDS} from './tools.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
 /** @type {Readonly<Record<string,(tool:string)=>string>>} */
 const TEXTS=Object.freeze({
- UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not enabled, installed or served for this request in this conversation (an unsupported operation or a source-side refusal that is neither a denied scope nor an outage). ${NOTHING}`,
+ UNAVAILABLE:tool=>`UNAVAILABLE: ${tool} is not enabled, installed or served for this request in this conversation (an unsupported operation or a source-side refusal that is neither a permission refusal nor an outage). ${NOTHING}`,
  SOURCE_UNAVAILABLE:tool=>`SOURCE_UNAVAILABLE: ${tool} is served, but its source did not answer this call (outage, overload, a refusal by the source or an upstream timeout). This is not an empty result. ${NOTHING}`,
- ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now (denied scope, not absent data). ${NOTHING}`,
+ ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now (not permitted, not absent data). ${NOTHING}`,
  DEADLINE:tool=>`DEADLINE: ${tool} did not finish within its time limit. ${NOTHING}`,
  CANCELLED:tool=>`CANCELLED: ${tool} was cancelled before it finished. ${NOTHING}`,
  INVALID_ARGUMENTS:tool=>`INVALID_ARGUMENTS: ${tool} refused these arguments; supply literal arguments matching its input schema. ${NOTHING}`,
@@ -72,7 +72,7 @@ function mailNotice(page){
   const parts=[`${n} stored message candidate(s)${Number.isInteger(page.totalMatches)?` of ${page.totalMatches} matching`:''}${page.hasMore===true&&Number.isInteger(page.nextOffset)?`; more exist, continue with offset ${page.nextOffset}`:''}.`];
   parts.push(n===0?'An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.'
    :'Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content.');
-  const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
+  parts.push(...coverageReasons(page));const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
   return parts.join(' ');
  }
  if(page?.kind==='mail-thread-source-page'){
@@ -83,10 +83,20 @@ function mailNotice(page){
   const parts=[`${messages.length} message(s) of ${Number.isInteger(page.totalMessages)?page.totalMessages:'an unknown number'} in this thread${page.hasMoreMessages===true&&Number.isInteger(page.nextMessageOffset)?`; more follow at messageOffset ${page.nextMessageOffset}`:''}.`];
   if(partial)parts.push(`${partial} body section(s) are incomplete: continue with the listed nextBodyOffsets before quoting, and say what was not read.`);
   if(absent)parts.push(`${absent} message body(ies) are not available in stored mail (missing or unknown): report that the body could not be read; nothing continues them.`);
-  const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
+  parts.push(...coverageReasons(page));const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
   return parts.join(' ');
  }
  return null;
+}
+/** Core's per-mailbox coverage reasons, carried in coverage.limitations as "Mailbox <address> has incomplete mail coverage:
+ * <reason>.", rendered as the closed user sentences; an unknown reason is reported without echoing its code. @param {any} page */
+function coverageReasons(page){
+ const limitations=Array.isArray(page?.coverage?.limitations)?page.coverage.limitations:[],sentences=new Set();
+ for(const limitation of limitations){
+  const reason=typeof limitation==='string'?/incomplete mail coverage: ([a-z_]+)\.?$/u.exec(limitation)?.[1]:undefined;
+  if(reason!==undefined)sentences.add(Object.hasOwn(MAIL_COVERAGE_REASONS,reason)?MAIL_COVERAGE_REASONS[reason]:MAIL_COVERAGE_UNKNOWN);
+ }
+ return sentences.size?["Mail coverage: "+[...sentences].join(" ")]:[];
 }
 /** One staleness sentence for a mail page, with the reconnect hint once: the contract's SourceState (freshness,
  * synchronizedAt), which an empty page carries too, and the mailbox connection states of the messages actually returned.
@@ -111,7 +121,7 @@ function connectedAppNotice(operation,page){
  * @param {{id:string}} operation @param {string} result the canonical result text @param {any} parsed its parsed envelope */
 export function readNotices(operation,result,parsed){
  if(operation.id==='find_contacts')return result.includes('update_client_profile')?
-  [notice('Notice: update_client_profile is not available in Meri. Do not propose or claim a client profile change. You may offer a governed task proposal instead.')]:[];
+  [notice('Notice: update_client_profile is not available in Meri. Do not propose or claim a client profile change. You may offer to prepare a task request for the user\'s approval instead.')]:[];
  const connected=connectedAppNotice(operation,parsed?.result);
  if(connected!==null)return [notice(`Notice: ${connected}`)];
  if(MAIL_TOOLS.has(operation.id)){const text=mailNotice(parsed);return text===null?[]:[notice(`Notice: ${text}`)];}
@@ -126,13 +136,13 @@ export function readNotices(operation,result,parsed){
  if(operation.id==='describe_capiro_data'){
   if(page?.ok!==true||!Array.isArray(page.relations))return [];
   const names=page.relations.map(r=>r?.name).filter(name=>typeof name==='string');
-  return [notice(`Notice: ${names.length} ${page.scope?.kind??'public'} relation(s) described: ${names.join(', ')}. Spell relation and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each relation's grain and limitations; rowLimit default ${page.limits?.defaultRowLimit}, max ${page.limits?.maxRowLimit}.`)];
+  return [notice(`Notice: ${names.length} ${page.scope?.kind??'public'} table(s) described: ${names.join(', ')}. Spell table and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each table's grain and limitations; rowLimit default ${page.limits?.defaultRowLimit}, max ${page.limits?.maxRowLimit}.`)];
  }
  if(operation.id!=='query_capiro_data'||page?.ok!==true)return [];
  const lines=[`Notice: ${page.rowCount} row(s) returned of rowLimit ${page.limits?.rowLimit} from ${(page.relationsUsed??[]).join(', ')}.`];
  if(page.rowLimitReached)lines.push('rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');
  if(page.byteTruncated)lines.push('byteTruncated: whole rows were dropped at the 256 KiB output budget; select fewer columns or lower rowLimit.');
- if(page.rowCount===0)lines.push('Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the relation coverage limitations before concluding.');
+ if(page.rowCount===0)lines.push('Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the table coverage limitations before concluding.');
  return [notice(lines.join(' '))];
 }
 /** Closed code of a failure: the gateway's own code (carried as `code` or as the message of a `GatewayDenied`) when it

@@ -40,7 +40,7 @@ test('the closed 0.2.0 foundation is byte-unchanged and still refuses the new id
  assert.equal(canonicalSha256(catalog),'812a0fbade3b560809da6a62dcc4ba3065f762ab4a72255786b349b50d08d4a9','the retained 0.2 catalog snapshot stays exact; the cited-report selection keeps its older published pin');
  const installed=selectSkill('quick_skill.cited_report','1.0.0');
  assert.throws(()=>validateShape('SkillManifest',installed.manifest),/must be equal to one of the allowed values/u,'an old 0.2.0 consumer still refuses the added identity');
- assert.equal(listSkills().length,35);
+ assert.equal(listSkills().length,36);
 });
 
 test('the 0.3.0 receiver is versioned, minimal and composes the frozen shape instead of copying it',()=>{
@@ -135,7 +135,7 @@ test('every published original pin is byte-unchanged',()=>{
   assert.equal(row.manifestSha256,manifestSha256,`${identity} manifest bytes unchanged`);
   assert.equal(row.proseSha256,proseSha256,`${identity} prose bytes unchanged`);
  }
- assert.equal(rows.size,35);
+ assert.equal(rows.size,36);
  assert.equal(new Set([...rows.keys()].map(key=>key.split('@')[0])).size,15,'the fourteen original ids plus exactly one added id');
  for(const id of CLOSED)assert.ok([...rows.keys()].some(key=>key.startsWith(id+'@')),`${id} is still published`);
 });

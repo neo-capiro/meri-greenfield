@@ -1,6 +1,7 @@
 /** Actual MCP server -> worker HTTP -> control composer -> mail adapter. Core is synthetic. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
+import {userVocabulary} from '../../user-vocabulary.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {generalReadFixture,mountReads,MAIL_OPERATIONS,SESSION,NOW} from './fixture.mjs';
 import {canonicalInputSchema,isNarrowerOrEqual} from '../schema.mjs';
@@ -14,8 +15,8 @@ test('lists exactly the available mail reads, derived from descriptors, with sch
   assert.deepEqual(list.tools.map(t=>t.name).sort(),[...NAMES].sort(),'no tool was dropped and no legacy alias is a name');
   assert.deepEqual([...m.runtime.sdkOptions.allowedTools].sort(),NAMES.map(n=>`mcp__meri_reads__${n}`).sort());
   for(const t of list.tools){const op=MAIL_OPERATIONS.find(o=>o.id.replace('.','_')===t.name),d=resolveOperationContract(op).descriptor;
-   assert.equal(t.annotations.readOnlyHint,true);assert.equal(t.annotations.destructiveHint,false);assert.ok(t.description.startsWith(`${d.displayName}. ${d.whenToUse}`));assert.ok(t.description.includes(d.inputSchema.sha256));
-   assert.ok(t.description.includes('Supply literal arguments only; credentials and scope authority remain with the gateway.'));for(const alias of d.aliases)assert.equal(t.name.includes(alias),false);
+   assert.equal(t.annotations.readOnlyHint,true);assert.equal(t.annotations.destructiveHint,false);assert.ok(t.description.startsWith(userVocabulary(`${d.displayName}. ${d.whenToUse}`)));assert.ok(t.description.includes(d.inputSchema.sha256));
+   assert.ok(t.description.includes('Supply literal arguments only; identity, permissions and client selection come from the trusted run, never from arguments.'));for(const alias of d.aliases)assert.equal(t.name.includes(alias),false);
    assert.deepEqual(t.inputSchema.required,['arguments']);
    assert.ok(isNarrowerOrEqual(t.inputSchema.properties.arguments,canonicalInputSchema(d.inputSchema)),`${t.name}: advertised arguments are equal to or narrower than ${d.inputSchema.id}`);}
  }finally{await m.close();}

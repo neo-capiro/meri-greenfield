@@ -99,7 +99,7 @@ test('a Core 362 describe page reaches the model with one orientation line while
  const f=await fixture('capiro-data','describe_capiro_data',{scene}),m=await connect(t,f),out=await m.call();
  assert.equal(out.isError,undefined,JSON.stringify(out));assert.equal(out.content.length,2);
  const envelope=JSON.parse(out.content[0].text);assert.deepEqual(envelope.result,scene.page);
- assert.match(out.content[1].text,/^Notice: 1 public relation\(s\) described: program_elements\. Spell relation and column names exactly as listed/);
+ assert.match(out.content[1].text,/^Notice: 1 public table\(s\) described: program_elements\. Spell table and column names exactly as listed/);
  assert.match(out.content[1].text,/rowLimit default 200, max 1000\.$/);
  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(envelope));
 });

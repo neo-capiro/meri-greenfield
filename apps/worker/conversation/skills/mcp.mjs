@@ -1,5 +1,6 @@
 /** Fixed original read tools through the adopted SDK server, never an alternate agent loop. */
 import {createSdkMcpServer,tool} from '@anthropic-ai/claude-agent-sdk';
+import {userVocabulary} from '../user-vocabulary.mjs';
 import {randomUUID} from 'node:crypto';
 import {z} from 'zod';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
@@ -24,7 +25,7 @@ export function createOriginalSkillServer({selected,read,timeoutMs,binding,expec
   return {hookSpecificOutput:{hookEventName:'PreToolUse',updatedInput:{arguments:value.arguments,_meriInvocation:token}}};
  }catch{return {hookSpecificOutput:{hookEventName:'PreToolUse',permissionDecision:'deny',permissionDecisionReason:'Original task correlation unavailable'}};}};
  const definitions=original.manifest.allowedOperations.map(operation=>{const {descriptor}=resolveOperationContract(operation);
-  return tool(sdkToolName(operation),`${descriptor.displayName}. ${descriptor.whenToUse} Canonical input schema ${descriptor.inputSchema.id}, SHA256 ${descriptor.inputSchema.sha256}. Supply literal arguments only; credentials and scope authority remain with the gateway.`,
+  return tool(sdkToolName(operation),userVocabulary(`${descriptor.displayName}. ${descriptor.whenToUse}`)+` Canonical input schema ${descriptor.inputSchema.id}, SHA256 ${descriptor.inputSchema.sha256}. Supply literal arguments only; identity, permissions and client selection come from the trusted run, never from arguments.`,
    {arguments:z.record(z.string(),z.json()),_meriInvocation:z.string().optional().describe('Reserved correlation supplied only by the trusted SDK hook')},async(raw,extra)=>{
     try{const {arguments:args,_meriInvocation:token}=own(data(raw),['arguments'],['_meriInvocation']),entry=correlations.get(token);
      if(!entry||canonicalSha256(entry.operation)!==canonicalSha256(operation)||entry.argumentsSha256!==canonicalSha256(args))throw fault('SKILL_HOOK_REFUSED');correlations.delete(token);
@@ -35,8 +36,8 @@ export function createOriginalSkillServer({selected,read,timeoutMs,binding,expec
    },{annotations:{readOnlyHint:true,destructiveHint:false,idempotentHint:true,openWorldHint:true},alwaysLoad:true});
  });
  if(new Set(definitions.map(d=>d.name)).size!==definitions.length)throw fault('SKILL_TOOL_COLLISION');
- const server=createSdkMcpServer({name:'meri_original_reads',version:'1.0.0',instructions:'Read-only original selected-skill sources. Preserve exact source IDs/versions/hashes/scopes, separate inference, and disclose partial or unavailable evidence. No artifact write or external mutation is exposed.',tools:definitions,alwaysLoad:true,timeout:Math.max(1000,timeoutMs)});
+ const server=createSdkMcpServer({name:'meri_original_reads',version:'1.0.0',instructions:'Read-only original selected-skill sources. Preserve exact source IDs, versions, hashes, permissions and client selection, separate inference, and disclose partial or unavailable evidence. No artifact write or external mutation is exposed.',tools:definitions,alwaysLoad:true,timeout:Math.max(1000,timeoutMs)});
  const allowedTools=definitions.map(d=>`mcp__meri_original_reads__${d.name}`);let closed=false;
- return Object.freeze({server,hooks:{PreToolUse:[{matcher:'mcp__meri_original_reads__.*',hooks:[hook]}]},allowedTools:Object.freeze(allowedTools),canUseTool:async(name,input)=>allowedTools.includes(name)?{behavior:'allow',updatedInput:input}:{behavior:'deny',message:'Tool unavailable'},
+ return Object.freeze({server,hooks:{PreToolUse:[{matcher:'mcp__meri_original_reads__.*',hooks:[hook]}]},allowedTools:Object.freeze(allowedTools),canUseTool:async(name,input)=>allowedTools.includes(name)?{behavior:'allow',updatedInput:input}:{behavior:'deny',message:'Not available in this conversation'},
   async close(){if(!closed){closed=true;correlations.clear();await server.instance.close();}}});
 }
