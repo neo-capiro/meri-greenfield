@@ -18,11 +18,11 @@ import {bareReadToolName} from './vocabulary.mjs';
 export const SQL_REFUSAL_GUIDANCE=Object.freeze({
  INVALID_QUERY:'rowLimit must be an integer 1-1000 and sql 1-16384 UTF-8 bytes; a PostgreSQL syntax or type error names the character position to fix. Correct the SQL or the request and run it again.',
  UNSUPPORTED_SQL:'Send exactly one statement that starts with SELECT or WITH ... SELECT: no second statement, no SET, SHOW, EXPLAIN, COPY or transaction control, no INSERT, UPDATE, DELETE, MERGE, SELECT INTO or data-modifying CTE, and no administrative, sleep, lock, file or dblink function. Rewrite the statement and run it again.',
- UNKNOWN_RELATION:'Use a table name exactly as describe_capiro_data lists it (lowercase, unqualified); one query reads one source. Use the same source on describe and query and never mix tables from different sources.',
- UNKNOWN_FIELD:'Use column names exactly as describe_capiro_data lists them, qualified by the table alias when two tables share a name. Re-read the table with describe_capiro_data relations:[...] when unsure.',
+ UNKNOWN_RELATION:'Use a data set name exactly as describe_capiro_data lists it (lowercase, unqualified); one query reads one source. Use the same source on describe and query and never mix data sets from different sources. When no listed data set holds the subject asked about, tell the user in plain words that this data is not available for structured queries yet and offer what is (for example a search by topic), without naming data sets, statements or methods.',
+ UNKNOWN_FIELD:'Use column names exactly as describe_capiro_data lists them, qualified by the alias when two data sets share a column name. Re-read the data set with describe_capiro_data relations:[...] when unsure.',
  PARAMETER_MISMATCH:'parameters must bind $1..$n contiguously with every entry referenced; use strings for exact decimals, large integers, dates and UUIDs and numbers only for safe integers, and cast a parameter ($1::date) when PostgreSQL cannot infer its type.',
  SOURCE_UNAVAILABLE:'The data source is unavailable now; this is not an empty result and must not trigger broader or unscoped retrieval.',
- QUERY_TIMEOUT:'The query exceeded its time budget; add selective WHERE filters, join fewer tables, aggregate instead of listing or lower LIMIT, then run it again.',
+ QUERY_TIMEOUT:'The query exceeded its time budget; add selective WHERE filters, join fewer data sets, aggregate instead of listing or lower LIMIT, then run it again.',
  OUTPUT_LIMIT:'The result exceeded the 256 KiB output budget; select fewer columns, aggregate, or lower rowLimit and page by keyset.',
 });
 const SEARCH_FAILURES=Object.freeze({
@@ -161,7 +161,7 @@ export const READ_GUIDANCE=Object.freeze({
   failures:Object.freeze({...MAIL_THREAD_FAILURES,INVALID_ARGUMENTS:'mail_read_thread takes subject ({kind:"personal"} or {kind:"client", entityId:<UUID>}), threadId (UUID), optional messageId (UUID), messageOffset (0-10000), limit (1-10), bodyOffset (0-10000000) and maxCharacters (1-6000).'}),
  }),
  describe_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
-  INVALID_ARGUMENTS:'describe_capiro_data takes optional relations: 1-15 unique lowercase table names, plus source (one of the listed sources) and clientId (UUID, client_records only).',
+  INVALID_ARGUMENTS:'describe_capiro_data takes optional relations: 1-15 unique lowercase data set names, plus source (one of the listed sources) and clientId (UUID, client_records only).',
  }),refusals:SQL_REFUSAL_GUIDANCE}),
  query_capiro_data:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'query_capiro_data takes sql (1-16384 bytes) and parameters (required; [] when nothing is bound; at most 64 strings, finite safe-integer numbers, booleans or nulls), plus optional rowLimit (integer 1-1000), source (one of the listed sources) and clientId (UUID, client_records only).',

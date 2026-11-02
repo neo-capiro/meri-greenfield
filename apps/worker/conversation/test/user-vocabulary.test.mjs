@@ -15,7 +15,10 @@ import {familyReads,resolveAvailableReads} from '../reads/availability.mjs';
 import {READ_FAMILIES} from '../reads/families.mjs';
 import {createGeneralReadServer} from '../reads/server.mjs';
 import {readToolName} from '../reads/tools.mjs';
-import {failureResult,READ_FAILURE_CODES} from '../reads/results.mjs';
+import {failureResult,readNotices,READ_FAILURE_CODES} from '../reads/results.mjs';
+import {SQL_REFUSAL_GUIDANCE} from '../reads/guidance.mjs';
+import {readPromptSentence} from '../reads/options.mjs';
+import {capiroDataPage,privateCapiroDataPage,sqlRefusal} from '../../../gateway/sources/capiro-data/test/fixture.mjs';
 import {GENERAL_READ_CEILINGS} from '../reads/budget.mjs';
 import {createIntentServer} from '../intents/server.mjs';
 import {INTENT_ROWS} from '../intents/catalog.mjs';
@@ -127,4 +130,38 @@ test('the vocabulary projection is a closed map: catalog bytes are untouched and
  assert.equal(userVocabulary('established by a trusted gateway; authority remains with the gateway'),'established by a trusted run; authority remains with the trusted run');
  const descriptors=familyReads().map(row=>row.descriptor);
  assert.ok(descriptors.some(d=>/\brelations?\b/u.test(d.whenToUse)),'the frozen catalog still carries its own words');
+});
+
+/** The 2 November acceptance (Meri cut 5): "no grants relation in the text-to-SQL layer", "the SQL layer does not include a
+ * SAM opportunities table", a data set name and a statement printed in a refusal, and "89 bills" with no bound. Every fixed
+ * model-facing text of the two SQL reads that a refusal, an argument failure or a page notice can put in front of the model
+ * is free of the data-model words, and the routing guidance states how a count names its bound. */
+const SQL_BANNED=[...BANNED,/\btext-to-SQL\b/iu,/\bSQL layer\b/iu,/\btables?\b/iu];
+const sqlCheck=(text,where)=>{for(const pattern of SQL_BANNED){const m=pattern.exec(text);if(m)violations.push(`${where} says "${m[0]}": ...${text.slice(Math.max(0,m.index-80),m.index+60)}...`);}};
+test('the SQL reads\' refusal, failure and page-notice texts never say text-to-SQL, SQL layer, relation or table, and a refusal tells the model what the user hears instead',()=>{
+ const before=violations.length,tools=['describe_capiro_data','query_capiro_data'];
+ for(const [code,text] of Object.entries(SQL_REFUSAL_GUIDANCE))sqlCheck(text,`refusal guidance ${code}`);
+ assert.match(SQL_REFUSAL_GUIDANCE.UNKNOWN_RELATION,/tell the user in plain words that this data is not available for structured queries yet and offer what is \(for example a search by topic\), without naming data sets, statements or methods/u);
+ const envelope=(id,result)=>({binding:{},subject:{},operation:{id},argumentsSha256:'0'.repeat(64),result});
+ const notices=(id,result)=>readNotices({id},JSON.stringify(envelope(id,result)),envelope(id,result)).map(n=>n.text);
+ for(const id of tools){
+  for(const code of READ_FAILURE_CODES)sqlCheck(failureResult(code,`mcp__meri_reads__${id}`).content[0].text,`${id} ${code}`);
+  // The fixed parts of every refusal notice; PostgreSQL's own diagnostic line (its message, position, hint and nearest names) is quoted verbatim for the correction and is the one part this test does not own.
+  for(const code of [...Object.keys(SQL_REFUSAL_GUIDANCE),'OTHER']){
+   const [text,...rest]=notices(id,{version:'0.1.0',generatedAt:'2026-10-26T12:00:00.000Z',ok:false,error:{code,message:'x'}});
+   assert.equal(rest.length,0);sqlCheck(text,`${id} refusal ${code}`);
+   assert.match(text,/This notice is for correcting the request, never for the user: show them neither the statement nor this message, codes or data set and column names; if the request cannot be corrected, say in plain words which data could not be queried\. No evidence, absence or completeness is established\.$/u,`${id} ${code}`);
+  }
+  const diagnosed=notices(id,sqlRefusal())[0];assert.match(diagnosed,/PostgreSQL 42703: column b\.titel does not exist at character 8\. .* This notice is for correcting the request, never for the user/u);
+ }
+ for(const [where,page] of [['public describe',capiroDataPage('describe_capiro_data')],['client describe',privateCapiroDataPage('describe_capiro_data')],['query',capiroDataPage()],['empty query',{...capiroDataPage(),rows:[],rowCount:0}],['cut query',{...capiroDataPage(),rowLimitReached:true,byteTruncated:true}]]){
+  const texts=notices(page.tool??(where.includes('describe')?'describe_capiro_data':'query_capiro_data'),page);assert.equal(texts.length,1,where);sqlCheck(texts[0],`${where} notice`);
+ }
+ for(const where of ['public describe','client describe'])assert.match(notices('describe_capiro_data',where==='public describe'?capiroDataPage('describe_capiro_data'):privateCapiroDataPage('describe_capiro_data'))[0],/These names are for writing queries, never for the user: when no described data set holds the subject asked about, tell the user in plain words that this data is not available for structured queries yet and offer what is \(for example a search by topic\)\.$/u);
+ assert.equal(violations.length,before,violations.slice(before).join('\n'));
+ // The count-bound rule and the user-terms ban sit in the SQL routing guidance of the system prompt, with the typed-reader sentence no longer inviting "which path" talk.
+ const prompt=readPromptSentence(true,['mcp__meri_reads__describe_capiro_data','mcp__meri_reads__query_capiro_data']);
+ assert.match(prompt,/A count states in one clause the bound it counted under \(Congress, date range, status or tracked set\)\./u);
+ assert.match(prompt,/Never repeat internal status codes, capability, data set, table, column or layer names, SQL or words such as bounded, read-disabled or activity to the user/u);
+ assert.doesNotMatch(prompt,/say which path you used/u);
 });
