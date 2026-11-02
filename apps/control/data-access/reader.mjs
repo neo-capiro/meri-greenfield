@@ -7,7 +7,8 @@
  *   `installation.operations` for every run;
  * - the policy: platform ∧ tenant ∧ role from the canonical resolver (`capability-policy.mjs` `forActor`), the gate the
  *   gateway's `readAvailability` applies per run (`generalReads`, `readFamilies`, `activeReadOperations`);
- * - the describe path's retained relation names (`sources/capiro-data/handler.mjs`, `capiro-data-validation.mjs`).
+ * - the published relation names: the describe path's retained 0.2 names (`sources/capiro-data/handler.mjs`,
+ *   `capiro-data-validation.mjs`) plus the public relations later Core migrations published.
  *
  * It is a view: it reads no source, mints nothing and changes no policy. Current membership is the product gate's; the client
  * must be one the admitted principal holds. A run still applies every gate again on each call. */
@@ -26,6 +27,8 @@ const fail=(code,field=null)=>{throw new ProductError(code,null,field);};
 const REQUIREMENTS=Object.freeze({mail:'mailbox'});
 /** The text-to-SQL families: the published relations are readable when any of them is. */
 const SQL_FAMILIES=Object.freeze(['capiro-data','capiro-data-v3','capiro-data-v4','capiro-data-v5']);
+// Core publishes no relation list the control reads; the two awards relations come from Core migration 20281102100000_capiro_data_federal_awards_surface.
+const PUBLISHED_PUBLIC_RELATIONS=Object.freeze([...RETAINED_PUBLIC_RELATIONS,'federal_awards','federal_assistance_awards']);
 const rank=state=>DATA_ACCESS_STATES.indexOf(state);
 /** The registry rows grouped by family, sorted, each with its guidance. Computed once: the catalog and guidance are static. */
 function registry(){
@@ -66,7 +69,7 @@ export function createDataAccessReader(configuration){
    const rows=families.map(entry=>({family:entry.family,covers:entry.covers,freshness:entry.freshness,structured:entry.structured,clientScope:entry.clientScope,
     state:state(entry,policy,r.clientId),requires:entry.requires}));
    const sql=rows.filter(row=>SQL_FAMILIES.includes(row.family)).reduce((best,row)=>rank(row.state)>rank(best)?row.state:best,'not_installed');
-   const relations=[...RETAINED_PUBLIC_RELATIONS.map(name=>({name,source:'public',state:sql})),
+   const relations=[...PUBLISHED_PUBLIC_RELATIONS.map(name=>({name,source:'public',state:sql})),
     ...RETAINED_CAPIRO_PRIVATE_RELATIONS.map(name=>({name,source:'client_records',state:sql==='available'&&r.clientId===null?'client_required':sql}))];
    return data({schemaVersion:'meri.data-access/1',checkedAt:new Date(c.now()).toISOString(),clientId:r.clientId,generalReads:policy?.generalReads===true,families:rows,relations});
   },

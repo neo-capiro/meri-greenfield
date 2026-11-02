@@ -5,7 +5,8 @@ import {RETAINED_CAPIRO_PRIVATE_RELATIONS} from '../../../../packages/contracts/
 const routes=Object.freeze({describe_capiro_data:'/api/clio/tools/describe_capiro_data',query_capiro_data:'/api/clio/tools/query_capiro_data'});
 // A stored 0.2 skill/catalog pin keeps the original eight-relation public default.
 // Explicit selections and errors retain their exact contracts.
-/** The public relations the describe path publishes by default; the data-access reader lists the same names. */
+/** The public relations the 0.2 default describe requests at Core and its digest-bound descriptor must return exactly;
+ * immutable with the stored 0.2 pins. The data-access reader lists these plus the relations later Core migrations published. */
 export const RETAINED_PUBLIC_RELATIONS=Object.freeze(['congress_bills','congress_bill_subjects','congress_bill_cosponsors',
  'congress_members','program_elements','program_element_projects','program_element_budget_positions',
  'program_element_project_budget_positions']);
