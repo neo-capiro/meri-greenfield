@@ -1,0 +1,30 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {CONTROL_ROUTE_PATTERNS} from '../control-route-boundary.mjs';
+import {compileRoutePatterns,routePattern} from '../telemetry/route-counters.mjs';
+const uuid='11111111-1111-4111-8111-111111111111';
+test('the control route allowlist is closed, well-formed and names the routes the listeners actually answer',()=>{
+ const tables={public:compileRoutePatterns(CONTROL_ROUTE_PATTERNS.public),private:compileRoutePatterns(CONTROL_ROUTE_PATTERNS.private)};
+ for(const listener of ['public','private'])assert.equal(new Set(CONTROL_ROUTE_PATTERNS[listener]).size,CONTROL_ROUTE_PATTERNS[listener].length,listener+' has no duplicate pattern');
+ const expect=(listener,path,pattern)=>assert.equal(routePattern(path,tables[listener]),pattern,path);
+ expect('public','/api/action-followthrough/session','/api/action-followthrough/session');
+ expect('public','/api/conversations/input/admit','/api/conversations/input/admit');
+ expect('public',`/api/conversations/events/${uuid}/stream`,'/api/conversations/events/:id/stream');
+ expect('public','/api/conversations/list','/api/conversations/list');
+ expect('public','/api/meri/office/open','/api/meri/office/open');
+ expect('public','/api/memory/proposals/list','/api/memory/proposals/list');
+ expect('public','/api/settings/user/read','/api/settings/user/read');
+ expect('public','/api/data-access/read','/api/data-access/read');
+ expect('public','/api/uploads/original/'+uuid,'/api/uploads/original/:id');
+ expect('public','/api/documents/download','/api/documents/download');
+ expect('public','/api/routines/session','/api/routines/session');
+ expect('private','/internal/conversations/publish','/internal/conversations/publish');
+ expect('private','/internal/conversations/browser-call','/internal/conversations/browser-call');
+ expect('private','/v1/runner/load','/v1/runner/load');
+ expect('private','/v1/objective-generation/activities/source','/v1/objective-generation/activities/source');
+ expect('private','/v1/internal/workspace-generation/turn','/v1/internal/workspace-generation/turn');
+ expect('private','/api/meri/office/wopi/files/0123456789abcdef0123456789abcdef/contents','/api/meri/office/wopi/files/:id/contents');
+ // The other listener's routes, unknown paths and identifier-shaped segments fold into `other` before any counting.
+ expect('private','/api/conversations/list','other');expect('public','/internal/conversations/publish','other');
+ for(const path of ['/health/live','/api/conversations/'+uuid+'/history','/api/conversations/01ARZ3NDEKTSV4RRFFQ69G5FAV','/api/conversations/jane.doe','/api/conversations/V1StGXR8_Z5jdHi6B-myT','/api/tasks/list','/api/conversations/list/extra'])expect('public',path,'other');
+});

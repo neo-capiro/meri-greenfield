@@ -107,14 +107,18 @@ by `runId` to inspect the original runner cause.
 `route-counters.mjs` wraps control's public and private listener applications
 (`control.mjs`) and counts every response by route pattern and status class. One
 **`meri.http.routes`** line per route, listener and window (60 s) carries
-`listener`, `route`, `statuses` (`2xx`, `3xx`, `401`, `403`, `404`, `409`, `4xx`,
-`503`, `5xx`) and `windowMs`; its metrics are `HttpResponses`, `HttpClientErrors`
-and `HttpServerErrors` with `Service` and `Service,Route` dimensions. Identifier
-segments (UUIDs, hex and numeric ids, long opaque tokens) become `:id`, a path with
-any other unusual segment counts as `other`, at most 200 routes are kept per window
-and nothing is written per request. There is no timer: the first response after a
-window ends flushes it, and control's close flushes the last one. A thrown handler
-counts as `5xx`.
+`listener` (a log field only, never a dimension), `route`, `statuses` (`2xx`,
+`3xx`, `401`, `403`, `404`, `409`, `4xx`, `503`, `5xx`) and `windowMs`; its metrics
+are `HttpResponses`, `HttpClientErrors` and `HttpServerErrors` with `Service` and
+`Service,Route` dimensions. The route values are a closed allowlist,
+`CONTROL_ROUTE_PATTERNS` in `control-route-boundary.mjs` (one list per listener,
+built from the same route tables the listeners dispatch on, `:id` standing for one
+identifier segment); a path that matches none of them is counted as `other`
+before anything else happens, so ULIDs, nanoids, slugs, dotted names, opaque
+tokens or scanner paths can never become a `Route` value. Nothing is written per
+request. The counters flush on the turn telemetry's existing 60 s rollup
+(`onRollup`), on the first response after a window has ended, and at control's
+close. A thrown handler counts as `5xx`.
 
 Checks: `node --test apps/runtime/telemetry/test/{turn-lines,turn-context,counting,route-counters}.test.mjs`.
 

@@ -28,7 +28,7 @@ test('an identity, membership or context owner that did not answer makes issuanc
    const response=await f.app.handle(f.request());
    assert.equal(response.status,503,port);assert.deepEqual(await response.json(),{error:{code:'SESSION_AUTHORITY_UNAVAILABLE'}});
    assert.equal(response.headers.get('cache-control'),'no-store');assert.equal(f.owner.status().sessions,0);
-   assert.equal(f.state.calls,port==='identity'?1:1,'one native verification per issuance');
+   assert.equal(f.state.calls,1,'one native verification per issuance');
   }finally{f.owner.close();}
  }
 });

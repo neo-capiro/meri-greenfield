@@ -22,7 +22,7 @@ import {readSecret,fault,compileControlUserPreferencesConfiguration} from './con
 import {readRuntimeTemporalTls as temporalTls} from './temporal-tls.mjs';
 import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 import {listenRuntime} from './http-server.mjs';
-import {createControlRouteApplications,listenControlApplications} from './control-route-boundary.mjs';
+import {createControlRouteApplications,listenControlApplications,CONTROL_ROUTE_PATTERNS} from './control-route-boundary.mjs';
 import {createWorkerRunApplication} from './worker-http.mjs';
 import {createExecutionSessions} from './execution-sessions.mjs';
 import {createNativeSelectedComposition} from './selected/composition.mjs';
@@ -350,8 +350,10 @@ export async function startControl(configuration,options={}){
  if(createReadsRuntime!==undefined&&typeof createReadsRuntime!=='function'||readAvailability!==undefined&&typeof readAvailability!=='function')throw fault('READS_CONFIGURATION');
  compileControlUserPreferencesConfiguration(configuration);
  const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment});turnTelemetry.start();
- // Per-route, per-status response counts for both listeners (one line per route per minute, no per-request log line).
- const routeCounters=createRouteStatusCounters({emit:(event,fields)=>turnTelemetry.emit(event,fields)});
+ // Per-route, per-status response counts for both listeners over the closed route allowlist (one line per route per minute,
+ // flushed on the telemetry rollup; no per-request log line).
+ const routeCounters=createRouteStatusCounters({emit:(event,fields)=>turnTelemetry.emit(event,fields),routes:CONTROL_ROUTE_PATTERNS});
+ if(typeof turnTelemetry.onRollup==='function')turnTelemetry.onRollup(routeCounters.flush);
  const mounted=compiled.factory?{productPortsFactory:compiled.factory}:{productPorts:compiled.ports};
  const onExternalAbort=()=>fence.lose(externalSignal.reason);externalSignal?.addEventListener('abort',onExternalAbort,{once:true});if(externalSignal?.aborted)onExternalAbort();
  let pool,connection,listener,privateListener,assembly,candidate,closing,telemetry,uploadsNative,nativeAllocations,officeKey,officeDiscovery,boundNativeNeed,boundNativeReady,boundNativeHostAuthority,nativeHostTeardown;

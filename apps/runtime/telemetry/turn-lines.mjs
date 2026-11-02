@@ -44,8 +44,8 @@ const number=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&v
 const nullable=value=>value===null||value===undefined?null:number(value);
 const dictionary=(keys,clean)=>value=>Object.fromEntries(keys.filter(k=>Object.hasOwn(value??{},k)).map(k=>[k,clean(value[k])]));
 const statusCounts=dictionary(STATUS_CLASSES,number),httpStatusCounts=dictionary(HTTP_STATUS_CLASSES,number);
-// A route pattern is a short fixed path whose identifier segments are already `:id` (route-counters.mjs); anything else is `other`.
-const routePatternField=value=>typeof value==='string'&&value.length<=160&&/^\/(?:[A-Za-z0-9._:-]{0,64}\/?){0,12}$/u.test(value)?value:'other';
+// A route pattern is an allowlisted fixed path whose identifier segments are already `:id` (route-counters.mjs); anything else is `other`.
+const routePatternField=value=>typeof value==='string'&&value.length<=160&&/^\/(?:[A-Za-z0-9._-]{1,64}|:id)(?:\/(?:[A-Za-z0-9._-]{1,64}|:id)){0,11}$/u.test(value)?value:'other';
 const core=dictionary(CORE_ROUTES,statusCounts),aws=dictionary(AWS_OPERATIONS,dictionary(OUTCOMES,number));
 const exchanges=dictionary(['operation','capture','admission'],dictionary(['OPEN','OPERATION','POLL','REPLY'],number));
 const db=value=>({statements:number(value?.statements),ms:number(value?.ms)});
@@ -109,7 +109,8 @@ function metricsFor(event,line){
   add('CoreCalls',line.count,'Count',line.attribution==='background'?[['Service','StatusClass'],['Service','StatusClass','Attribution']]:[['Service','StatusClass']]);
  }else if(event==='meri.http.routes'){
   // One line per route and window; the three class totals are separate metrics so one EMF root carries them all.
-  line.Route=line.route;line.Listener=line.listener;const s=line.statuses??{},total=keys=>keys.reduce((n,k)=>n+(s[k]??0),0),dimensions=[['Service'],['Service','Route']];
+  // `listener` stays a log field only (Logs Insights can split by it); the Route dimension is the closed allowlist value.
+  line.Route=line.route;const s=line.statuses??{},total=keys=>keys.reduce((n,k)=>n+(s[k]??0),0),dimensions=[['Service'],['Service','Route']];
   add('HttpResponses',total(HTTP_STATUS_CLASSES),'Count',dimensions);add('HttpClientErrors',total(['401','403','404','409','4xx']),'Count',dimensions);add('HttpServerErrors',total(['503','5xx']),'Count',dimensions);
  }else if(event==='meri.turn.failure'){line.Stage=line.stage;add('RunnerFailures',1,'Count',[['Service','Stage']]);
   if(line.timeoutClass&&line.timeoutClass!=='none')add('TimeoutFailures',1);}
