@@ -77,3 +77,10 @@ test('a debrief refusal names the conversation to switch to instead of a bare "n
  assert.match(text,/do not say no debriefs exist/u);
  assert.match(describe('meeting.query_debriefs'),/read only in the conversation of that client, with clientId set to the selected client/u);
 });
+
+test('a General contacts refusal says to search without the client filter or switch to that client',()=>{
+ const text=failureResult('ACCESS_DENIED','mcp__meri_reads__find_contacts').content[0].text;
+ assert.match(text,/In General, search again without clientId/u);
+ assert.match(text,/open a conversation for that client \(choose the client in Meri\) and ask there/u);
+ assert.match(describe('find_contacts'),/In General, omit clientId and find people by name, email or email domain/u);
+});

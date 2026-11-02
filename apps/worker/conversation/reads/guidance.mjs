@@ -95,6 +95,11 @@ export const READ_GUIDANCE=Object.freeze({
  meeting_read_client_meetings:Object.freeze({usage:Object.freeze([]),limitations:Object.freeze([]),failures:Object.freeze({
   INVALID_ARGUMENTS:'For a continued meeting list, restart without the cursor; if the continuation limit was reached, narrow the from/to time range and restart.',
  })}),
+ find_contacts:Object.freeze({usage:Object.freeze([
+  'In General, omit clientId and find people by name, email or email domain (query or domain). clientId narrows to one client only in the conversation of that client, with clientId set to the selected client.',
+ ]),limitations:Object.freeze([]),failures:Object.freeze({
+  ACCESS_DENIED:'A client filter is allowed only in the conversation of that client. In General, search again without clientId by name, email or domain; to list the contacts of one client, tell the user to open a conversation for that client (choose the client in Meri) and ask there. Do not retry with another client.',
+ })}),
  meeting_query_debriefs:Object.freeze({usage:Object.freeze([
   'Debriefs belong to one client and are read only in the conversation of that client, with clientId set to the selected client. A General conversation has no client to read debriefs for: do not call this there; tell the user to open a conversation for that client (choose the client in Meri) and ask again.',
  ]),limitations:Object.freeze([]),failures:Object.freeze({
