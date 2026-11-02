@@ -4,7 +4,9 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.mjs';
 import {createPostgresSettingsStore} from '../postgres-store.mjs';
-import {modelSettings,tenantSettings} from '../documents.mjs';
+import {modelSettings,tenantSettings,DEFAULT_MODEL_LIMITS} from '../documents.mjs';
+import {MAX_RUN_TURNS} from '../../../../packages/contracts/run-limits.mjs';
+import {usageOverviewSchemaV2} from '../../../../packages/contracts/conversation-usage/overview-schema.mjs';
 import {createSettingsPoolFixture} from './postgres-store-fixture.mjs';
 import {PLATFORM} from './fixtures.mjs';
 
@@ -40,7 +42,7 @@ test('policy update at a stale revision and divergent RETURNING policy both refu
 
 test('explicit null, incomplete and malformed model policies cannot reset the cap',()=>{
  assert.deepEqual(tenantSettings(base,PLATFORM),base);
- for(const value of [null,{}, {...model,monthlyCapMicroUsd:null},{...model,monthlyCapMicroUsd:'123'},{...model,monthlyCapMicroUsd:0},{...model,maxTurns:101},{...model,override:1}]){
+ for(const value of [null,{}, {...model,monthlyCapMicroUsd:null},{...model,monthlyCapMicroUsd:'123'},{...model,monthlyCapMicroUsd:0},{...model,maxTurns:MAX_RUN_TURNS+1},{...model,override:1}]){
   assert.throws(()=>tenantSettings({...base,model:value},PLATFORM));
   assert.throws(()=>modelSettings(value));
  }
@@ -56,4 +58,18 @@ test('forward migration copies only the exact old cap and verifies the absent-ro
  assert.match(sql,/sdk_max_turns integer NOT NULL DEFAULT 20/u);
  assert.match(sql,/sdk_max_budget_micro_usd bigint NOT NULL DEFAULT 2000000/u);
  assert.match(sql,/IS TRUE\);/u,'malformed JSON cannot satisfy a CHECK through SQL NULL');
+});
+
+test('the 1000-turn platform ceiling is one shared constant: 1000 is accepted, 1001 refused, and 0032 moves the CHECK and defaults with it',async()=>{
+ assert.equal(MAX_RUN_TURNS,1000);
+ assert.equal(modelSettings({...model,maxTurns:MAX_RUN_TURNS}).maxTurns,1000);
+ assert.throws(()=>modelSettings({...model,maxTurns:MAX_RUN_TURNS+1}),/SETTINGS_MODEL_INVALID/u);
+ assert.equal(tenantSettings({...base,model:{...model,maxTurns:MAX_RUN_TURNS}},PLATFORM).model.maxTurns,1000);
+ assert.deepEqual(DEFAULT_MODEL_LIMITS,{maxTurns:100,maxBudgetMicroUsd:10000000});
+ assert.equal(usageOverviewSchemaV2().$defs.UsageOverviewResponse2.properties.policy.oneOf[0].properties.maxTurns.maximum,MAX_RUN_TURNS,'the served overview admits every tenant value');
+ const sql=await readFile(new URL('../../conversations/migrations/0032_sdk_run_turns_ceiling.sql',import.meta.url),'utf8');
+ assert.match(sql,/DROP CONSTRAINT tenant_settings_sdk_max_turns_check,\s+ADD CONSTRAINT tenant_settings_sdk_max_turns_check CHECK \(sdk_max_turns BETWEEN 1 AND 1000\)/u);
+ assert.match(sql,new RegExp(`ALTER COLUMN sdk_max_turns SET DEFAULT ${DEFAULT_MODEL_LIMITS.maxTurns},`,'u'));
+ assert.match(sql,new RegExp(`ALTER COLUMN sdk_max_budget_micro_usd SET DEFAULT ${DEFAULT_MODEL_LIMITS.maxBudgetMicroUsd};`,'u'));
+ assert.doesNotMatch(sql,/UPDATE |INSERT |monthly_cap_micro_usd|GRANT /u,'configured tenant rows, the monthly cap and grants are untouched');
 });

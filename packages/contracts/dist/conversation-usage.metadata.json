@@ -51,7 +51,7 @@
     "limits": "current canonical SDK limits and tenant admission cap; no reservations or budget editing",
     "capacity": "recorded durable states only; no physical worker concurrency or available capacity observation",
     "economics": "attempts, conversation threads and canonical root Work/Delegate objectives with successful/partial/failed/cancelled/unclosed separated; the charge is an SDK list-price estimate; provider billing and physical capacity are unavailable",
-    "schemaSha256": "a7f78da61d6d55e10162713a72c9179b75c7df59a8cd16c2d3bd67767e77156c"
+    "schemaSha256": "9e9828f165645f27a3ffe53eae5f1fe2970d99481aa000bc21dadd172c65478e"
   },
   "errorStatuses": {
     "INVALID_REQUEST": [
@@ -173,8 +173,8 @@
     },
     {
       "path": "../../apps/control/conversations/usage.mjs",
-      "sha256": "d971d8ff8c4591ca32ce70b05bc6801e74dd915f1d1c50f66827fe807532790d",
-      "bytes": 8157
+      "sha256": "0565765e60edd2c918267de60f41424a77f72b5c137924ad8212f93f6a86a00b",
+      "bytes": 8241
     },
     {
       "path": "../../apps/runtime/product-applications.mjs",
@@ -198,8 +198,8 @@
     },
     {
       "path": "conversation-usage/overview-schema.mjs",
-      "sha256": "fcfb0785e36839415fba561f01be0822a5477529de0cad009bd961aa8f59b8c3",
-      "bytes": 8314
+      "sha256": "aca29bff02b994af2bc5181dd8cd925bae614543f203de06fd29b00c40e56932",
+      "bytes": 8373
     },
     {
       "path": "conversation-usage/overview-semantics.mjs",
