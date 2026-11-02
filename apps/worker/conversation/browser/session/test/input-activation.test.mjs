@@ -11,7 +11,7 @@ test('takeover activation is held, and cannot open while the browser gate is hel
  assert.equal(TAKEOVER_ACTIVATION.state,'held');assert.equal(takeoverActivationOpen(),false);
  const open={state:'open',evidence:'evidence/takeover-d005.json',requirements:TAKEOVER_REQUIREMENTS};
  assert.equal(takeoverActivationOpen(open),false,'browser gate still held');
- const browser={state:'open',evidence:'evidence/d005.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1}};
+ const browser={state:'open',evidence:'evidence/d005.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}};
  assert.equal(takeoverActivationOpen(open,browser),true,'only both open records with evidence open it');
  assert.equal(takeoverActivationOpen({...open,evidence:null},browser),false);
  assert.equal(takeoverActivationOpen({...open,requirements:[...TAKEOVER_REQUIREMENTS]},browser),false,'a copied requirement list is not the reviewed one');

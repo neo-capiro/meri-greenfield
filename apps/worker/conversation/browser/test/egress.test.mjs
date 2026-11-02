@@ -15,7 +15,7 @@ test('H3: the activation record makes the effective origin allowlist mandatory f
  for(const probe of ['allowlisted-to-unlisted public redirect','unlisted public sub-resource','unlisted public WebSocket','narrowed away by tenant or role'])assert.ok(requirement('evidence').includes(probe),probe);
  assert.equal(activationOpen(HELD_BROWSER_ACTIVATION),false,'still held');
  assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:canonicalSha256(EGRESS_REQUIREMENTS.filter(r=>!r.startsWith('effective-origin-allowlist:')))}),false,'a record measured without the allowlist requirement never opens');
- const receipt={schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1};
+ const receipt={schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256};
  assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}),false,'no render verification receipt, no open');
  assert.equal(activationOpen({state:'open',evidence:'qualification/browser-egress.json',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:receipt}),true);
 });

@@ -65,16 +65,19 @@ export function compileBrowserActivationInput(raw){
  return held(v)??Object.freeze(openFields(v));
 }
 /** The CONTROL record (`browserActivation` in control configuration): the input record plus the renderer's
- * verification receipt `renderVerification:{schema,sourceCommit,renderedAtMs}`. Control cannot read the repository,
- * so an open record without that receipt refuses here: only the rendered material path, which read the evidence file
- * and matched its SHA-256, produces an open control record. */
+ * verification receipt `renderVerification:{schema,sourceCommit,renderedAtMs,evidenceSha256,requirementsSha256}`, whose
+ * digests must restate the record's. Control cannot read the repository; the receipt is a render marker that catches a
+ * record the renderer never saw, not a cryptographic binding. The real binding is operational: the control
+ * configuration is only ever produced by the renderer from reviewed inputs by the release executor, and anyone who can
+ * edit the published control configuration already controls the deployment. */
 export function compileBrowserActivation(raw){
  if(raw===undefined)return HELD_BROWSER_ACTIVATION;
  let v;try{v=own(raw,['state'],['evidence','evidenceSha256','requirementsSha256','renderVerification']);}catch{fail();}
  const h=held(v);if(h)return h;
- const open=openFields(v);let r;try{r=own(v.renderVerification,['schema','sourceCommit','renderedAtMs']);}catch{fail();}
- if(r.schema!==BROWSER_ACTIVATION_RENDER_VERIFICATION||!COMMIT.test(r.sourceCommit)||!Number.isSafeInteger(r.renderedAtMs)||r.renderedAtMs<1)fail();
- return Object.freeze({...open,renderVerification:Object.freeze({schema:r.schema,sourceCommit:r.sourceCommit,renderedAtMs:r.renderedAtMs})});
+ const open=openFields(v);let r;try{r=own(v.renderVerification,['schema','sourceCommit','renderedAtMs','evidenceSha256','requirementsSha256']);}catch{fail();}
+ if(r.schema!==BROWSER_ACTIVATION_RENDER_VERIFICATION||!COMMIT.test(r.sourceCommit)||!Number.isSafeInteger(r.renderedAtMs)||r.renderedAtMs<1||
+  r.evidenceSha256!==open.evidenceSha256||r.requirementsSha256!==open.requirementsSha256)fail();
+ return Object.freeze({...open,renderVerification:Object.freeze({schema:r.schema,sourceCommit:r.sourceCommit,renderedAtMs:r.renderedAtMs,evidenceSha256:r.evidenceSha256,requirementsSha256:r.requirementsSha256})});
 }
 /** True only for a compiled, render-verified open record of the exact current requirements. Pure, so tests prove
  * that a record without evidence, without the renderer's receipt or measured against other requirements never opens. */

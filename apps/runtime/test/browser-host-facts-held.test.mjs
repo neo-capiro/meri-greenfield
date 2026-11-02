@@ -92,7 +92,7 @@ test('real readFacts keeps row.request as the saved selection while readHost kee
   assert.deepEqual(facts.scopes,rtScopes,'scopes come from the canonical execution read boundary');
   assert.equal(facts.browserAdmitted,false,'no configured activation record, so browser admission is truthfully false');
   const open=currentnessFor({runRow,allocationRowValue:row,now,scopesFor:rtScopes,bindingFor:rtBinding,
-   activation:compileBrowserActivation({state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1}})});
+   activation:compileBrowserActivation({state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}})});
   const admitted=await open.currentness.readFacts(open.client,{allocation:allocation,binding:rtBinding});
   assert.equal(admitted.browserAdmitted,true,'the same read admits the browser under control\'s open record');
   assert.equal(admitted.sdkAdmitted,true);assert.deepEqual(admitted.browserPolicy,facts.browserPolicy);

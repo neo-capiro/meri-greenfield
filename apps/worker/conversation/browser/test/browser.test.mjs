@@ -45,14 +45,15 @@ test('an absent or held configuration compiles to the held record; only a comple
  for(const id of ['deny-non-public-destinations','enforce-on-resolved-address','dns-rebinding','redirects','no-proxy-bypass','evidence'])assert.ok(EGRESS_REQUIREMENTS.some(r=>r.startsWith(`${id}:`)),id);
  for(const range of ['169.254','10/8','172.16/12','192.168/16','127/8','fc00::/7','fe80::/10','2000::/3'])assert.ok(EGRESS_REQUIREMENTS[0].includes(range),range);
  const input={state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256};
- const receipt={schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1},open={...input,renderVerification:receipt};
+ const receipt={schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:input.evidenceSha256,requirementsSha256:input.requirementsSha256},open={...input,renderVerification:receipt};
  // The deployment-input shape is exactly the four fields; the control shape additionally carries the renderer's receipt.
  assert.deepEqual(compileBrowserActivationInput(input),input);assert.throws(()=>compileBrowserActivationInput(open),{code:'BROWSER_ACTIVATION_CONFIGURATION'});
  assert.throws(()=>compileBrowserActivation(input),{code:'BROWSER_ACTIVATION_CONFIGURATION'},'control refuses an open record the renderer did not verify');
  const compiled=compileBrowserActivation(open);assert.equal(activationOpen(compiled),true);assert.deepEqual(compiled,open);assert.ok(Object.isFrozen(compiled)&&Object.isFrozen(compiled.renderVerification));
  for(const bad of [{state:'open'},{...open,evidence:null},{...open,evidence:'../evidence'},{...open,evidence:'a b'},{...open,evidenceSha256:'A'.repeat(64)},
   {...open,requirementsSha256:'b'.repeat(64)},{...open,renderVerification:{...receipt,schema:'other/1'}},{...open,renderVerification:{...receipt,sourceCommit:'0'.repeat(39)}},
-  {...open,renderVerification:{...receipt,renderedAtMs:0}},{...open,renderVerification:{...receipt,extra:1}},{state:'held',evidence:'x'},{state:'opened'},{...open,extra:true},'open',null])
+  {...open,renderVerification:{...receipt,renderedAtMs:0}},{...open,renderVerification:{...receipt,extra:1}},
+  {...open,renderVerification:{...receipt,evidenceSha256:'b'.repeat(64)}},{...open,evidenceSha256:'b'.repeat(64)},{...open,renderVerification:{...receipt,requirementsSha256:'b'.repeat(64)}},{state:'held',evidence:'x'},{state:'opened'},{...open,extra:true},'open',null])
   assert.throws(()=>compileBrowserActivation(bad),{code:'BROWSER_ACTIVATION_CONFIGURATION'},JSON.stringify(bad));
  for(const bad of [{...input,evidence:'../evidence'},{...input,evidenceSha256:'nope'},{...input,requirementsSha256:'b'.repeat(64)},{state:'held',evidence:'x'}])
   assert.throws(()=>compileBrowserActivationInput(bad),{code:'BROWSER_ACTIVATION_CONFIGURATION'},JSON.stringify(bad));

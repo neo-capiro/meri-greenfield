@@ -417,7 +417,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  // renders with the renderer's verification receipt, which control requires: it names the rendered source commit and render time
  // beside the evidence path, its digest and the requirement digest the record was measured against.
  if(features.browserActivation!==undefined)featureKeys.browserActivation=features.browserActivation.state==='open'
-  ?{...structuredClone(features.browserActivation),renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:d.images.nodeRuntimeSourceCommit,renderedAtMs:nowMs}}
+  ?{...structuredClone(features.browserActivation),renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:d.images.nodeRuntimeSourceCommit,renderedAtMs:nowMs,
+    evidenceSha256:features.browserActivation.evidenceSha256,requirementsSha256:features.browserActivation.requirementsSha256}}
   :{state:'held'};
  if(features.capabilityPlatform!==undefined)featureKeys.capabilityPlatform=structuredClone(features.capabilityPlatform);
  // Memory (lane M): review-only proposals over Core M2 at the Core origin, with the same Core service secret file as reads.

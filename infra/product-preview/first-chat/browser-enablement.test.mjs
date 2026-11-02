@@ -30,7 +30,7 @@ const committed=JSON.parse(await readFile(join(here,'deployment-inputs.json'),'u
 const EVIDENCE=Buffer.from('# Synthetic browser egress evidence record (test bytes only)\n');
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const OPEN=Object.freeze({state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:sha(EVIDENCE),requirementsSha256:EGRESS_REQUIREMENTS_SHA256});
-const receiptFor=i=>({schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:i.deployment.images.nodeRuntimeSourceCommit,renderedAtMs:i.nowMs});
+const receiptFor=i=>({schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:i.deployment.images.nodeRuntimeSourceCommit,renderedAtMs:i.nowMs,evidenceSha256:OPEN.evidenceSha256,requirementsSha256:OPEN.requirementsSha256});
 // Render inputs plus the evidence bytes the CLI reads from the source root; renderMaterial itself never touches the filesystem.
 // nowMs is taken after the fixture issued its short-lived native client leaf, which is valid only from that moment on.
 const withNative=async change=>{const i=await nativeProcessingInputs(fixture);change?.(i);return {...i,browserEvidence:EVIDENCE,nowMs:Date.now()};};
@@ -68,7 +68,7 @@ test('an open record refuses without the evidence bytes, with a wrong hash, with
   assert.throws(()=>renderMaterial(i),{code:'RENDER_INPUT_REFUSED'},label);
  }
  // A pre-verified control record (with the receipt) is not a deployment input.
- const preVerified=await withNative(v=>{v.deployment.features.browserActivation={...OPEN,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:v.deployment.images.nodeRuntimeSourceCommit,renderedAtMs:1}};});
+ const preVerified=await withNative(v=>{v.deployment.features.browserActivation={...OPEN,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:v.deployment.images.nodeRuntimeSourceCommit,renderedAtMs:1,evidenceSha256:OPEN.evidenceSha256,requirementsSha256:OPEN.requirementsSha256}};});
  assert.throws(()=>renderMaterial(preVerified),{code:'RENDER_INPUT_REFUSED'});
  // The CLI reader: the exact repository path under the source root, refusing a missing file, an escape and a non-file.
  const root=await mkdtemp(join(tmpdir(),'meri-browser-evidence-'));

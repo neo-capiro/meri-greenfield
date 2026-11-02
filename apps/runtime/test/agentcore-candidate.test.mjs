@@ -79,7 +79,7 @@ test('admission settings carry the configured browser activation verdict to the 
  assert.deepEqual(explicit.invocation().browser,{enabled:false});
  const unverified=fixture({browserActivation:{state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}});
  await assert.rejects(unverified.kickoff(),{code:'BROWSER_ACTIVATION_CONFIGURATION'});await unverified.candidate.close();
- const open=fixture({browserActivation:{state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1}}});
+ const open=fixture({browserActivation:{state:'open',evidence:'docs/qualification/browser-egress/record.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,renderVerification:{schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256}}});
  await open.kickoff();await open.waitForInvocation();t.after(()=>open.finish());
  assert.deepEqual(open.invocation().browser,{enabled:true});
 });

@@ -8,7 +8,7 @@ import {EGRESS_REQUIREMENTS_SHA256,HELD_BROWSER_ACTIVATION,BROWSER_ACTIVATION_RE
 
 const tls={privateClient:{clientName:'control.private.invalid',certFile:'/run/meri/native-control-client.pem',keyFile:'/run/meri/native-control-client.key',caFile:'/run/meri/native-issuer-ca.pem'}};
 const OPEN=Object.freeze({state:'open',evidence:'docs/qualification/browser-egress/BROWSER-EGRESS-EVIDENCE-20261101.md',evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256,
- renderVerification:Object.freeze({schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1})});
+ renderVerification:Object.freeze({schema:BROWSER_ACTIVATION_RENDER_VERIFICATION,sourceCommit:'0'.repeat(40),renderedAtMs:1,evidenceSha256:'a'.repeat(64),requirementsSha256:EGRESS_REQUIREMENTS_SHA256})});
 const control=()=>structuredClone(agentcoreControlFixture().configuration);
 
 test('absent and held records validate; an open record needs the browser-host family it routes through',()=>{
@@ -26,7 +26,7 @@ test('absent and held records validate; an open record needs the browser-host fa
 
 test('malformed records refuse at configuration time instead of silently holding, and only control carries the key',()=>{
  const {renderVerification,...unverified}=OPEN;
- for(const bad of [{state:'open'},unverified,{...OPEN,renderVerification:{...renderVerification,schema:'other/1'}},{...OPEN,renderVerification:{...renderVerification,sourceCommit:'short'}},{...OPEN,requirementsSha256:'b'.repeat(64)},{...OPEN,evidenceSha256:'nope'},{...OPEN,evidence:'../x'},{state:'held',evidence:'x'},{state:'opened'},true,null]){
+ for(const bad of [{state:'open'},unverified,{...OPEN,renderVerification:{...renderVerification,schema:'other/1'}},{...OPEN,renderVerification:{...renderVerification,sourceCommit:'short'}},{...OPEN,renderVerification:{...renderVerification,evidenceSha256:'b'.repeat(64)}},{...OPEN,evidenceSha256:'b'.repeat(64)},{...OPEN,requirementsSha256:'b'.repeat(64)},{...OPEN,evidenceSha256:'nope'},{...OPEN,evidence:'../x'},{state:'held',evidence:'x'},{state:'opened'},true,null]){
   const c=control();c.browserHosts={enabled:true,tls};c.browserActivation=bad;
   assert.throws(()=>validateConfiguration(c,'control'),{code:'BROWSER_ACTIVATION_CONFIGURATION'},JSON.stringify(bad));
  }
