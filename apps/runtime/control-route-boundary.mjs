@@ -8,6 +8,7 @@ import {ROUTINE_PATHS} from '../control/schedules/application-http.mjs';
 import {ROUTINE_MANAGEMENT_SESSION_PATH} from '../../packages/contracts/schedules-0.2/application-protocol.mjs';
 import {TENANT_SETTINGS_PATHS} from '../control/settings/tenant-application/protocol.mjs';
 import {MEMORY_PATHS} from '../control/memory/protocol.mjs';
+import {DATA_ACCESS_PATH} from '../control/data-access/protocol.mjs';
 import {matchUploadApplicationPath} from '../control/uploads/application.mjs';
 import {OBJECTIVE_READER_PREFIX} from './product-ports/objective.mjs';
 import {OBJECTIVE_ACTIVITIES_PREFIX} from './native-authority/objective-runs-http.mjs';
@@ -21,7 +22,7 @@ import {SOURCE_EVENT_BINDING_PATH,SOURCE_EVENT_PATH} from '../control/schedules/
 const SOURCE_EVENT_PATHS=Object.freeze([SOURCE_EVENT_PATH,SOURCE_EVENT_BINDING_PATH]);
 const absent=()=>Response.json({error:{code:'ROUTE_NOT_FOUND'}},{status:404,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
 const OFFICE_PUBLIC_PATHS=Object.freeze(OFFICE_ROUTES.map(route=>'/api/meri/office/'+route));
-const publicPath=path=>OFFICE_PUBLIC_PATHS.includes(path)||path==='/api/outreach-generation/start'||path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||path==='/api/action-followthrough/browser-session'||path.startsWith('/api/meri/browser/')||path==='/api/action-followthrough/query'||path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path.startsWith('/api/documents/')||Boolean(matchUploadApplicationPath(path));
+const publicPath=path=>OFFICE_PUBLIC_PATHS.includes(path)||path==='/api/outreach-generation/start'||path==='/api/conversations'||path.startsWith('/api/conversations/')||path==='/api/action-followthrough/session'||path==='/api/action-followthrough/browser-session'||path.startsWith('/api/meri/browser/')||path==='/api/action-followthrough/query'||path===ROUTINE_MANAGEMENT_SESSION_PATH||Object.values(USER_PREFERENCES_PATHS).includes(path)||Object.values(taskCommandPaths).includes(path)||Object.values(ROUTINE_PATHS).includes(path)||Object.values(TENANT_SETTINGS_PATHS).includes(path)||Object.values(MEMORY_PATHS).includes(path)||path===DATA_ACCESS_PATH||path.startsWith('/api/documents/')||Boolean(matchUploadApplicationPath(path));
 const privatePath=path=>path.startsWith('/v1/')||path.startsWith('/internal/conversations/')||path.startsWith(OBJECTIVE_READER_PREFIX);
 
 export function createControlRouteApplications({assembly,candidate,router=null,poststart=null,privateIngress=null,objectiveReader=null,approvalMetadataReader=null,objectiveRuns=null,objectiveStart=null,routinesOccurrences=null,sourceEvents=null,workspaceGeneration=null,retentionWitness=null,office=null,nativeObserver=null}){
