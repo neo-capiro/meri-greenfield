@@ -39,3 +39,10 @@ test('the host\'s closed refusal text reaches the SDK as the tool error; a forge
  const forged=await fixture(t,{call:async()=>({isError:true,content:[{type:'text',text:'BROWSER_USER_IN_CONTROL: page secret'}]})});
  assert.deepEqual(await forged.client.callTool({name:'browser_snapshot'}),structuredClone(browserRefusalResult('BROWSER_CALL_REFUSED')));
 });
+
+test('the SDK tool use named in the call metadata reaches the host with the call; a malformed one is dropped',async t=>{
+ const f=await fixture(t);
+ await f.client.callTool({name:'browser_snapshot',arguments:{},_meta:{'claudecode/toolUseId':'toolu_01XYZ'}});
+ await f.client.callTool({name:'browser_snapshot',arguments:{},_meta:{'claudecode/toolUseId':'not a tool use'}});
+ assert.equal(f.calls[0].toolUseId,'toolu_01XYZ');assert.equal(Object.hasOwn(f.calls[1],'toolUseId'),false);
+});

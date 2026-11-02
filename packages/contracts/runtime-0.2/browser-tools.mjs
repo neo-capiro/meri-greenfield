@@ -17,7 +17,9 @@ export function assertBrowserOperationRequest(operation,raw){
  const name=browserOperationName(operation);if(!name)fail();const value=data(raw);
  if(['browser-prepare','browser-tools'].includes(name))own(value,['binding']);
  else if(name==='browser-call'){
-  own(value,['binding','requestId','tool','args']);if(!/^[a-f0-9]{64}$/u.test(value.requestId)||!tool(value.tool)||!value.args||Array.isArray(value.args)||typeof value.args!=='object')fail();
+  // `toolUseId` (optional): the SDK tool use the call belongs to, so the host can match it to that use's approval.
+  own(value,['binding','requestId','tool','args'],['toolUseId']);if(!/^[a-f0-9]{64}$/u.test(value.requestId)||!tool(value.tool)||!value.args||Array.isArray(value.args)||typeof value.args!=='object'||
+   value.toolUseId!==undefined&&!toolUse(value.toolUseId))fail();
  }else if(name==='browser-hook'){
   own(value,['binding','event','toolUseId','input']);const input=own(value.input,['hook_event_name','session_id','tool_name','tool_input','tool_use_id'],['tool_response']);
   if(!['PreToolUse','PostToolUse','PostToolUseFailure'].includes(value.event)||input.hook_event_name!==value.event||!toolUse(value.toolUseId)||input.tool_use_id!==value.toolUseId||!uuid(input.session_id)||!tool(input.tool_name?.replace(/^mcp__meri_browser__/u,''))||!input.tool_name.startsWith('mcp__meri_browser__')||value.event!=='PostToolUse'&&Object.hasOwn(input,'tool_response'))fail();

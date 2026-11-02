@@ -20,7 +20,8 @@
  * - `submissions` serves the network-level submission gate of the session (`session/submission-gate.mjs`): `approve`
  *   asks the same canonical owner about one request the page tries to send during an agent action (the subject's action
  *   names the method and destination host; its input is {method,host,path,initiator}), and `claim` hands the gate the
- *   page host an approved structural submission of that exact tool call already covers, so the user is asked once.
+ *   page host an approved structural submission of that exact tool use (its SDK tool-use id, tool and input digest)
+ *   covers while that approval is unexpired, once, so the user is not asked twice for one submission.
  *
  * Neither a PostToolUse hook nor a receipt can stop an action; they only record it. */
 import {INTERACTION_TOOLS,checkBrowserUrl} from './policy.mjs';
@@ -75,7 +76,7 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
  if(assertCurrent!==undefined&&typeof assertCurrent!=='function'||classify!==undefined&&typeof classify!=='function')throw Object.assign(Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<APPROVAL_DEADLINE_MS.min||approvalDeadlineMs>APPROVAL_DEADLINE_MS.max||typeof now!=='function'||['begin','capture','isCurrent','cancel'].some(m=>typeof pages?.[m]!=='function')||typeof policySha256!=='string')throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  const prefix=`mcp__${server}__`,tools=policy.tools,interactions=tools.filter(t=>INTERACTION_TOOLS.includes(t)),ledger=createReplayLedger();
- // Approved structural submissions by exact tool and input digest -> the host of the page they act on (consumed once).
+ // Approved structural submissions by SDK tool-use id -> {tool, input digest, page host, approval expiry}; consumed once.
  const covered=new Map();
  const actionOf=name=>typeof name==='string'&&name.startsWith(prefix)?name.slice(prefix.length):null;
  /** The class of one interaction; an unavailable or malformed classification asks rather than runs. */
@@ -118,8 +119,10 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
   if(signal?.aborted||now()>request.expiresAtMs)return refusal('BROWSER_APPROVAL_EXPIRED');
   if(!ledger.claim(answer))return refusal('BROWSER_APPROVAL_REPLAY');
   if(!pages.isCurrent(options.toolUseID,captured))return refusal('BROWSER_APPROVAL_PAGE_CHANGED');
+  for(const [id,entry] of covered)if(entry.expiresAtMs<now())covered.delete(id);
   if(covered.size>=MAX_COVERED)covered.delete(covered.keys().next().value);
-  covered.set(`${action}:${canonicalSha256(approvedInput)}`,new URL(pageOrigin).hostname);
+  covered.set(options.toolUseID,Object.freeze({tool:action,inputSha256:canonicalSha256(approvedInput),host:new URL(pageOrigin).hostname,
+   expiresAtMs:Math.min(request.expiresAtMs,Date.parse(answer.decision.expiresAt))}));
   return {behavior:'allow',updatedInput:approvedInput,toolUseID:options.toolUseID};
  }
  /** One request the page tries to send during an agent action: true only for a consumed canonical approval of exactly
@@ -138,7 +141,10 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
   }catch{return false;}
  }
  const submissions=Object.freeze({approve:approveRequest,windowMs:approvalDeadlineMs,
-  claim({tool,args}){const key=`${tool}:${canonicalSha256(args??{})}`,host=covered.get(key)??null;covered.delete(key);return host;}});
+  claim({toolUseId,tool,args}){
+   if(typeof toolUseId!=='string')return null;
+   const entry=covered.get(toolUseId);covered.delete(toolUseId);
+   return entry!==undefined&&entry.tool===tool&&entry.inputSha256===canonicalSha256(args??{})&&now()<=entry.expiresAtMs?entry.host:null;}});
  /** Composable SDK `canUseTool`: returns undefined for tools that are not this server's. A refused call never ran,
   * so its page is restored in the tracker. */
  const canUseTool=async(name,input,options={})=>{

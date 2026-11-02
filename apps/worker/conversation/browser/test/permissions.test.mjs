@@ -240,9 +240,22 @@ test('a request the page sends is approved through the same canonical owner, bou
  // The approved structural submission of exactly this call covers its page host for the network gate, once.
  await sdk.call('browser_navigate',{url:PAGE},'toolu_n0');
  assert.equal(await sdk.call('browser_click',{element:'Place order',target:'e7'},'toolu_n1'),'executed');
- assert.equal(cap.submissions.claim({tool:'browser_click',args:{element:'Place order',target:'e7'}}),'records.example');
- assert.equal(cap.submissions.claim({tool:'browser_click',args:{element:'Place order',target:'e7'}}),null);
- assert.equal(cap.submissions.claim({tool:'browser_click',args:{element:'Other',target:'e8'}}),null);
+ const click={element:'Place order',target:'e7'};
+ assert.equal(cap.submissions.claim({tool:'browser_click',args:click}),null,'no tool-use id, no coverage');
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_other',tool:'browser_click',args:click}),null,'another tool use is not covered');
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_n1',tool:'browser_click',args:click}),'records.example');
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_n1',tool:'browser_click',args:click}),null,'consumed once');
+ assert.equal(await sdk.call('browser_click',{element:'Place order',target:'e9'},'toolu_n2'),'executed');
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_n2',tool:'browser_click',args:{element:'Other',target:'e8'}}),null,'a different input is not covered');
+});
+test('a click approval covers its page host only until that approval expires',async()=>{
+ let at=clock();const approving=recorders();
+ const {cap}=openFragment({cwd,policy:interactive(),r:approving,approvals:approving.approvals('approve'),now:()=>at});
+ const sdk=scriptedSdk(cap,{extraAllowed:INTERACTION_TOOLS.map(T)});
+ await sdk.call('browser_navigate',{url:PAGE},'toolu_e0');
+ assert.equal(await sdk.call('browser_click',{element:'Place order',target:'e7'},'toolu_e1'),'executed');
+ at=clock()+60001; // the fixture decision expires 60 s after it was made
+ assert.equal(cap.submissions.claim({toolUseId:'toolu_e1',tool:'browser_click',args:{element:'Place order',target:'e7'}}),null);
 });
 test('the approval card action stays a plain sentence inside the display limit',async()=>{
  const {networkAction}=await import('../permissions.mjs');

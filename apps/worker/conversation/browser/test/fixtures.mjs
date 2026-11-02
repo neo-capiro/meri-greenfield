@@ -53,3 +53,6 @@ export function openFragment({cwd,policy=enabledPolicy(),r=recorders(),approvals
 /** The run's network submission approval port as the permission gate exposes it (permissions.mjs `submissions`): asks
  * nothing and approves nothing unless a test replaces it. */
 export const submissions=Object.freeze({approve:async()=>false,claim:()=>null,windowMs:120000});
+/** A scripted browser for a scripted context: its browser-level DevTools session accepts the submission gate's redirect
+ * watch and never pauses a response. */
+export const scriptedBrowser=Object.freeze({newBrowserCDPSession:async()=>({on(){},async send(){},async detach(){}})});

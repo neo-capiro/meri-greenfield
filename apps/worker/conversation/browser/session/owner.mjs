@@ -13,9 +13,11 @@ import {browserRefusalCode} from '../refusals.mjs';
 import {siteSessionExpired} from '../site-workflows/manifest.mjs';
 import {classifyInteraction} from './interaction-classifier.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
-/** The model learns which sends the user did not approve (method and destination host only), beside the page state. */
-const withDeclined=(result,declined)=>Object.freeze({...result,content:Object.freeze([...result.content,Object.freeze({type:'text',
- text:['### Not sent',...declined.map(key=>`- ${key}: the page tried to send this request; the user did not approve it, so it was not sent.`)].join('\n')})])});
+/** The model learns which sends did not happen and why (method and destination host only), beside the page state: the
+ * user declined it, or the browser policy refused it without asking the user. */
+const withNotSent=(result,{declined,refused})=>Object.freeze({...result,content:Object.freeze([...result.content,Object.freeze({type:'text',
+ text:['### Not sent',...declined.map(key=>`- ${key}: the page tried to send this request; the user did not approve it, so it was not sent.`),
+  ...refused.map(key=>`- ${key}: the page tried to send this request; it was refused by policy without asking the user, so it was not sent.`)].join('\n')})])});
 /** `gate` is the context's network submission gate (submission-gate.mjs), `claimSubmission({tool,args})` the page host an
  * approved structural submission of this exact call covers, and `approvalWindowMs` the longest a held request may wait
  * for the user inside one call. */
@@ -60,7 +62,7 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
   },Math.max(1,idleUntilMs-now()));timer.unref?.();
  };
  arm();
- async function call({requestId,tool,args,signal}){
+ async function call({requestId,tool,args,toolUseId,signal}){
   if(closed)fail('BROWSER_SESSION_ENDING');if(!policy.tools.includes(tool))fail('BROWSER_TOOL_REFUSED');
   if(tool==='browser_take_screenshot')fail('BROWSER_IMAGES_WITHHELD');
   // Serialize page effects with capture: no second call can change the page while a result is being filtered.
@@ -75,16 +77,16 @@ export function createBrowserSessionOwner({context,invoke,policy,manifest=null,c
    await life.run(()=>snapshot.capture());
    await life.run(assertCurrent);
    // Every mutating request the page sends during this action is held at the network until the user decides.
-   action=gate.begin({requestId,tool,coveredHost:claimSubmission({tool,args}),signal:life.signal});
+   action=gate.begin({requestId,tool,coveredHost:claimSubmission({toolUseId,tool,args}),signal:life.signal});
    dispatched=true;await life.run(signal=>invoke({tool,args,signal})); // discard all upstream prose, dialogs, error text, metadata and images
-   const {asked,declined}=await life.run(()=>action.settled());action.end();
+   const outcome=await life.run(()=>action.settled()),{asked}=outcome;action.end();
    // A released submission may navigate: let the page load before its state is read.
    if(asked)await life.run(()=>Promise.allSettled(context.pages().map(page=>page.waitForLoadState('domcontentloaded',{timeout:policy.timeouts.navigationMs}))));
    if(fence.state().state!=='agent'){fence.settle(requestId,{outcome:'result'});settled=true;fail('BROWSER_STALE_RESULT');}
    const result=await life.run(()=>snapshot.capture({fenceState:fence.state().state,tool}));
    await life.run(assertCurrent);const receipt=fence.settle(requestId,{outcome:'result'});settled=true;
    if(receipt.deliver!=='result'||fence.state().state!=='agent')fail('BROWSER_STALE_RESULT');
-   touch();return declined.length?withDeclined(result,declined):result;
+   touch();return outcome.declined.length||outcome.refused.length?withNotSent(result,outcome):result;
   }catch(error){
    if(admitted&&!settled){fence.settle(requestId,{outcome:dispatched?(life.signal.aborted?'timeout':'transport-error'):'result'});
     if(dispatched){void destroy('disconnect').catch(()=>{});fail('BROWSER_ACTION_OUTCOME_UNKNOWN');}}

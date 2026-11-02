@@ -17,7 +17,7 @@ export function createBoundBrowserModelPort({binding,policy,tools,call,approvalW
  if(!admitted.enabled||typeof tools!=='function'||typeof call!=='function'||typeof now!=='function'||!Number.isSafeInteger(deadlineMs)||deadlineMs<=now()||
   !Number.isSafeInteger(approvalWindowMs)||approvalWindowMs<1)fail();
  const owner=new AbortController();let closed=false;
- const input=(raw,keys)=>{const q=own(raw,['binding',...keys],['signal']);nativeSignal(q.signal);
+ const input=(raw,keys,optional=[])=>{const q=own(raw,['binding',...keys],['signal',...optional]);nativeSignal(q.signal);
   if(closed||q.signal?.aborted||canonicalSha256(data(q.binding))!==digest)fail();return q;};
  const run=async(signal,operation,extraMs=0)=>{
   const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+Math.min(admitted.timeouts.actionMs+admitted.timeouts.navigationMs,130000)+extraMs),
@@ -35,14 +35,15 @@ export function createBoundBrowserModelPort({binding,policy,tools,call,approvalW
    });}catch{fail();}
   },
   async call(raw){
-   try{const q=input(raw,['requestId','tool','args']),request=wire({requestId:q.requestId,tool:q.tool,args:q.args});
+   try{const q=input(raw,['requestId','tool','args'],['toolUseId']),request=wire({requestId:q.requestId,tool:q.tool,args:q.args});
+    if(q.toolUseId!==undefined&&(typeof q.toolUseId!=='string'||!/^[A-Za-z0-9_-]{1,128}$/u.test(q.toolUseId)))fail();
     if(typeof request.requestId!=='string'||!/^[0-9a-f]{64}$/u.test(request.requestId)||!admitted.tools.includes(request.tool)||
      !request.args||typeof request.args!=='object'||Array.isArray(request.args))fail();
     return await run(q.signal,async signal=>{
      // A closed refusal from the session owner is delivered to the model as its fixed text result; anything
      // else stays a transport failure. The refusal carries no page content and crosses the wire unchanged.
      let answered;
-     try{answered=await call({...request,signal});}
+     try{answered=await call({...request,...(q.toolUseId===undefined?{}:{toolUseId:q.toolUseId}),signal});}
      catch(error){const code=browserRefusalCode(error);if(code==='BROWSER_CALL_REFUSED')throw error;return browserRefusalResult(code);}
      const result=wire(answered);own(result,['content'],['isError']);
      if(Object.hasOwn(result,'isError')&&!isBrowserRefusalResult(result))fail();

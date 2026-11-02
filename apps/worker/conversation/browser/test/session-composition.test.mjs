@@ -7,7 +7,7 @@ import {StdioServerTransport} from '@modelcontextprotocol/sdk/server/stdio.js';
 import {createPinnedBrowserSession} from '../session/connection.mjs';
 import {createBrowserSessionHost} from '../../host/browser-session-host.mjs';
 import {createBrowserViewerRelay} from '../../host/browser-viewer-relay.mjs';
-import {enabledPolicy,binding,installation,installationFor,submissions} from './fixtures.mjs';
+import {enabledPolicy,binding,installation,installationFor,submissions,scriptedBrowser} from './fixtures.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 const cwd='/workspace/'+binding.conversationId;
 import {validateBrowserPolicy} from '../policy.mjs';
@@ -34,7 +34,7 @@ function fixture(t,options={}){
   keyboard:{async insertText(text){await state.onInput?.(text);},async down(key){await state.onInput?.(key);},async up(){}},
   async screenshot(){const png=Buffer.alloc(33);Buffer.from([137,80,78,71,13,10,26,10]).copy(png);png.write('IHDR',12);png.writeUInt32BE(800,16);png.writeUInt32BE(600,20);return png;},
   async ariaSnapshot(){await options.capture?.(state);return state.text;},async waitForLoadState(){state.events.push('load');}};
- const context={pages:()=>[page],async route(){},async unroute(){},async close(){state.events.push('context');}};
+ const context={pages:()=>[page],browser:()=>scriptedBrowser,async route(){},async unroute(){},async close(){state.events.push('context');}};
  const upstream={version:'0.0.83',async createConnection(config,getContext){
   assert.equal(await getContext(),context);assert.equal(config.webmcp,false);assert.equal(config.imageResponses,'omit');
   let transport;return {async connect(value){transport=value;transport.onmessage=async message=>{
@@ -377,9 +377,10 @@ test('a request the page sends during an agent action waits for the user; a decl
  const x=fixture(t,{invoke:()=>new Promise(resolve=>handler({fallback:async()=>{outcomes.push('sent');resolve();},abort:async()=>{outcomes.push('aborted');resolve();}},
   {method:()=>'POST',url:()=>'https://records.example/api/submit',resourceType:()=>'fetch',frame:()=>({page:()=>x.page})}))});
  x.context.route=async(_pattern,fn)=>{handler=fn;};x.context.unroute=async()=>{handler=undefined;};
- x.args.submissions={approve:async q=>{asked.push(q);return false;},claim:()=>null,windowMs:120000};
+ const claims=[];x.args.submissions={approve:async q=>{asked.push(q);return false;},claim:input=>{claims.push(input);return null;},windowMs:120000};
  const session=await createPinnedBrowserSession(x.args);t.after(()=>session.destroy({trigger:'conversation-end'}));
- const result=await call(session);
+ const result=await session.call({requestId:'one',tool:'browser_snapshot',args:{},toolUseId:'toolu_01A'});
+ assert.deepEqual(claims,[{toolUseId:'toolu_01A',tool:'browser_snapshot',args:{}}],'the click approval is looked up by the call tool use');
  assert.deepEqual(outcomes,['aborted']);assert.deepEqual(asked.map(q=>[q.method,q.host,q.pageOrigin,q.tool]),[['POST','records.example','https://records.example','browser_snapshot']]);
  assert.ok(x.state.events.includes('load'),'the page settles before its state is read');
  assert.equal(result.content.at(-1).text,'### Not sent'+String.fromCharCode(10)+'- POST records.example: the page tried to send this request; the user did not approve it, so it was not sent.');

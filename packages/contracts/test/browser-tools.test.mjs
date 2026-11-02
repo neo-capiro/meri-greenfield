@@ -43,3 +43,9 @@ test('approval replies bind the original arguments and SDK tool delivery',()=>{
  assert.throws(()=>assertBrowserApprovalResult({behavior:'allow'},context));
  assert.deepEqual(assertBrowserApprovalResult({behavior:'deny',message:'Revoked'},context),{behavior:'deny',message:'Revoked'});
 });
+
+test('a browser call may name the SDK tool use it belongs to; nothing else is added',()=>{
+ const call={binding,requestId:'a'.repeat(64),tool:'browser_click',args:{},toolUseId:'toolu_01ABC'};
+ assert.deepEqual(assertBrowserOperationRequest('browser-call',call),call);
+ for(const toolUseId of ['',' spaced','x'.repeat(129),42])assert.throws(()=>assertBrowserOperationRequest('browser-call',{...call,toolUseId}));
+});

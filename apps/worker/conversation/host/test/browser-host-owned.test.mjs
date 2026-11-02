@@ -6,7 +6,7 @@ import {Client} from '@modelcontextprotocol/sdk/client/index.js';
 import {InMemoryTransport} from '@modelcontextprotocol/sdk/inMemory.js';
 import {createBrowserSdkServer} from '../../browser/sdk-server.mjs';
 import {createBrowserSessionHost} from '../browser-session-host.mjs';
-import {binding,enabledPolicy,installation,submissions} from '../../browser/test/fixtures.mjs';
+import {binding,enabledPolicy,installation,submissions,scriptedBrowser} from '../../browser/test/fixtures.mjs';
 import {validateBrowserPolicy} from '../../browser/policy.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 
@@ -18,7 +18,7 @@ function fixture(){
  const lifecycle=new EventEmitter(),frame={locator:()=>({evaluateAll:async()=>[{kind:'field',label:'Password',type:'password',autocomplete:'current-password',selectorMatch:false,value:'PRIVATE-CREDENTIAL'}]})};
  const page={url:()=> 'https://records.example/page?token=hidden#secret',frames:()=>[frame],mainFrame:()=>frame,isClosed:()=>false,
   on:(...args)=>lifecycle.on(...args),off:(...args)=>lifecycle.off(...args),ariaSnapshot:async()=>'- heading "Public page PRIVATE-CREDENTIAL"'};
- const context={pages:()=>[page],route:async()=>{},unroute:async()=>{},close:async()=>{events.push('context');}};
+ const context={pages:()=>[page],browser:()=>scriptedBrowser,route:async()=>{},unroute:async()=>{},close:async()=>{events.push('context');}};
  const upstream={version:'0.0.83',async createConnection(_config,getContext){assert.equal(await getContext(),context);let wire;return {
   async connect(transport){wire=transport;wire.onmessage=async q=>{
    if(!Object.hasOwn(q,'id'))return;let result={};
