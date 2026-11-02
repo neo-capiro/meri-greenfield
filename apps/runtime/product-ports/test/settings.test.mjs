@@ -10,6 +10,7 @@ import {resolveBrowserPolicy} from '../../../worker/conversation/browser/resolut
 import {captureRuntimePorts} from '../../product-applications.mjs';
 import {productReadiness} from '../../product-readiness.mjs';
 import {TENANT_SETTINGS_PERMISSION} from '../../../control/settings/service.mjs';
+import {MAX_RUN_TURNS} from '../../../../packages/contracts/run-limits.mjs';
 import {createSettingsPoolFixture} from '../../../control/settings/test/postgres-store-fixture.mjs';
 const code=c=>e=>e?.code===c;
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
@@ -94,7 +95,7 @@ test('mounted tenant save returns 400 for invalid model settings without opening
  const {settingsApplication}=compose({configuration,pool:f.pool,gate:membership(()=>admin).gate});
  const model={monthlyCapMicroUsd:10000000,maxTurns:20,maxBudgetMicroUsd:2000000};
  for(const invalid of [null,{}, {...model,monthlyCapMicroUsd:0},{...model,monthlyCapMicroUsd:'100'},
-  {...model,maxTurns:101},{...model,maxBudgetMicroUsd:0},{...model,override:true}]){
+  {...model,maxTurns:MAX_RUN_TURNS+1},{...model,maxBudgetMicroUsd:0},{...model,override:true}]){
   const response=await settingsApplication.handle(post('/api/settings/tenant/save',{
    expectedRevision:0,settings:{defaultTimezone:'UTC',capabilityPolicy:{},model:invalid}}));
   assert.equal(response.status,400);

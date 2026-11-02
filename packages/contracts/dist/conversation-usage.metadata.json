@@ -243,13 +243,18 @@
     },
     {
       "path": "generate-usage.mjs",
-      "sha256": "8eaab8acb1d3e9a30feb25997ccfc35dc2a3a6304ac8316c33d618c734e14652",
-      "bytes": 10852
+      "sha256": "8d146d634830654474c19075cd2cfa0b99545f29296fa15330510df6f1258c8b",
+      "bytes": 10869
     },
     {
       "path": "meri.schema.json",
       "sha256": "e3de878198bbd557843ac440e48664ad5175eecd99f7ec932021ffc465bf8c5b",
       "bytes": 50043
+    },
+    {
+      "path": "run-limits.mjs",
+      "sha256": "a7d817af7e134764d19ba33a789ccf7b9eb03b672bca13328d16c0d710de7669",
+      "bytes": 1769
     },
     {
       "path": "runtime-0.2/usage.mjs",
