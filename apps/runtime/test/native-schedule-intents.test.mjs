@@ -19,7 +19,10 @@ async function fixture(t){
  const f=await applicationFixture();t.after(()=>f.close());
  const configuration={sourceEnabled:true,intents:{enabled:true},routines:{enabled:true},limits:{requestMs:5000,requestBytes:131072},native:{maxResponseBytes:131072}};
  const nativeState={runState:'running',versions,reserved:false,budget:2000000,budgetReads:0,budgetUnavailable:false};
- const store={async read(){return {run:{binding,scopes:f.scopes(),versions:nativeState.versions,policyRevision:'p1',state:nativeState.runState}};},async readModelPolicy(){nativeState.budgetReads++;if(nativeState.budgetUnavailable)throw Error('model settings unavailable');return {maxBudgetMicroUsd:nativeState.budget};},nextRuns:{async current(){return {reserved:nativeState.reserved,binding,scopes:f.scopes(),policyRevision:'p1'};}}};
+ // `reservation`: the session binds the conversation's reserved next run, which has no persisted run row yet.
+ const store={async read(){return {run:{binding,scopes:f.scopes(),versions:nativeState.versions,policyRevision:'p1',state:nativeState.runState}};},async readOptional(...args){return nativeState.reservation?null:store.read(...args);},
+  async readModelPolicy(){nativeState.budgetReads++;if(nativeState.budgetUnavailable)throw Error('model settings unavailable');return {maxBudgetMicroUsd:nativeState.budget};},readCurrentModelPolicy:()=>store.readModelPolicy(),
+  nextRuns:{async current(){return nativeState.reservation?{reserved:nativeState.reservation.state==='RESERVED',binding,scopes:nativeState.reservation.scopes,policyRevision:nativeState.reservation.policyRevision}:{reserved:nativeState.reserved,binding,scopes:f.scopes(),policyRevision:'p1'};},async readTarget(){return nativeState.reservation??null;}}};
  const {template,workflow,limits,policy}=f.contextConfiguration;
  const context={configuration,pool:f.pool,client:{...f.client,connection:{withDeadline:(_deadline,fn)=>fn(),withAbortSignal:(_signal,fn)=>fn()}},now:f.now};
  const family=routinesFamily({context:{template,workflow,limits,policy},newId:f.newId,runControl:{async cancel(){throw Error('unexpected');}},retirement:{async retire(){throw Error('unexpected');}},
@@ -194,4 +197,39 @@ for(const modelPolicy of ['zero','unavailable','changed'])test(`execution prepar
  }
  if(modelPolicy==='changed')f.nativeState.budget=2000000;
  assert.notEqual((await f.post('approve',approveBody(update))).status,200);assert.deepEqual(f.temporal.calls,before);
+});
+
+const decisionOf=prepared=>({operation:prepared.proposal.operation,request:prepared.request,proposalId:prepared.proposal.proposalId,intentSha256:prepared.proposal.intentSha256});
+const reservationOf=f=>({source:{...binding,runId:id(70)},target:binding,facts:{checkpoint:null,execution:null},scopes:f.scopes(),versions,policyRevision:'p1',reservedAt:new Date(f.now()).toISOString(),state:'RESERVED'});
+test('a finished conversation approves its routine card from the reserved next run exactly once',async t=>{
+ // 2 Nov: the proposing run completed, the conversation page re-issued its session (which binds the reserved next run) and
+ // every approval answered 503 with an unconfirmed outcome because that run has no persisted row yet.
+ const f=await fixture(t),prepared=await f.prepare();f.nativeState.runState='completed';f.nativeState.reservation=reservationOf(f);
+ const approved=await f.post('approve',approveBody(prepared));assert.equal(approved.status,200,await approved.clone().text());assert.equal(f.temporal.calls.create,1);
+ assert.equal((await approved.json()).status,'acknowledged');
+ assert.equal((await f.post('approve',approveBody(prepared))).status,200);assert.equal(f.temporal.calls.create,1,'the retried approval never creates a second schedule');
+ const reconciled=await f.post('reconcile',decisionOf(prepared));assert.equal(reconciled.status,200,await reconciled.clone().text());assert.equal((await reconciled.json()).outcome,'ACKNOWLEDGED');
+ const listed=await f.post('list',{limit:1,historyLimit:0});assert.equal(listed.status,200,await listed.clone().text());
+ assert.equal((await listed.json()).page.rows[0].projection.scheduleId,prepared.proposal.projection.scheduleId);
+});
+test('a next run reserved before a deployment still approves: its message is accepted under the current versions',async t=>{
+ const f=await fixture(t),prepared=await f.prepare();f.nativeState.runState='completed';
+ f.nativeState.reservation={...reservationOf(f),versions:{...versions,imageDigest:'sha256:'+'c'.repeat(64)}};
+ const approved=await f.post('approve',approveBody(prepared));assert.equal(approved.status,200,await approved.clone().text());assert.equal(f.temporal.calls.create,1);
+});
+for(const change of ['accepted','scopes','policy'])test(`a reserved next run whose ${change==='accepted'?'message was accepted':change+' changed'} refuses before Temporal`,async t=>{
+ const f=await fixture(t),prepared=await f.prepare();f.nativeState.runState='completed';const reservation=reservationOf(f);
+ if(change==='accepted')reservation.state='ACCEPTED';
+ else if(change==='scopes')reservation.scopes=[{...reservation.scopes[0],resourceId:id(71)}];
+ else reservation.policyRevision='p2';
+ f.nativeState.reservation=reservation;
+ assert.notEqual((await f.post('approve',approveBody(prepared))).status,200);assert.equal(f.temporal.calls.create,0);
+});
+test('an approval refused before its mutation is a definite NOT_DISPATCHED, and reconciliation reports it not applied',async t=>{
+ const f=await fixture(t),prepared=await f.prepare();f.nativeState.budget=1000;
+ const refused=await f.post('approve',approveBody(prepared));assert.equal(refused.status,409,await refused.clone().text());
+ assert.deepEqual(await refused.json(),{error:{code:'SCHEDULE_CONTEXT_STALE',outcome:'NOT_DISPATCHED'}});
+ const reconciled=await f.post('reconcile',decisionOf(prepared));assert.equal(reconciled.status,502,await reconciled.clone().text());
+ assert.deepEqual(await reconciled.json(),{error:{code:'ROUTINES_NOT_APPLIED',outcome:'NOT_DISPATCHED'}});
+ assert.deepEqual(f.temporal.calls,{describe:0,create:0,update:0,patch:0,delete:0});
 });
