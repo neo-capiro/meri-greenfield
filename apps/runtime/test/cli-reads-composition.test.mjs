@@ -9,6 +9,7 @@ mock.module('../read-credential-relay.mjs',{namedExports:{createReadCredentialRe
 mock.module('../reads-composer.mjs',{namedExports:{async createControlReadsComposer(options){state.composer.push(options);if(state.failure)throw Error('synthetic composition failure');const value={createReadsRuntime(){},familyIds:[],missing:state.missing??[]};state.returned.push(value);return value;}}});
 mock.module('../native-authority/routines-owner-composition.mjs',{namedExports:{createAttendedRoutinesOwnerComposition(){let bound=false,missing=false;return {bindCandidate(value){bound=true;missing=value==='missing';},state(){assert.equal(bound,true,'warning requires candidate binding first');return missing?'owners-unavailable':'composed';}};}}});
 mock.module('../control.mjs',{namedExports:{async startControl(configuration,ports){state.control.push(ports);ports.routinesCandidateBinder?.(state.candidate);return {address:{port:0},completion:Promise.resolve(),async close(){}};}}});
+mock.module('../material-receipt.mjs',{namedExports:{async readMaterialReceipt(){return state.receipt??null;}}});
 const {main}=await import('../cli.mjs');
 async function start(extra={},options={}){
  Object.assign(state,{configuration:{...agentcoreControlFixture().configuration,...extra},composer:[],returned:[],control:[],failure:false,missing:[],candidate:{},...options});
@@ -23,6 +24,11 @@ test('CLI leaves canonical policy construction to the runtime pool/current-role 
  assert.equal(Object.hasOwn(options,'capabilityPolicy'),false,'no static configuration-only policy may enter discovery');
  assert.equal(options.coreOrigin,state.configuration.agentcore.identity.origin);assert.equal(options.serviceSecretFile,'/synthetic/core');assert.equal(options.defaultCongress,119);
  assert.equal(state.control[0].createReadsRuntime,state.returned[0].createReadsRuntime);
+});
+test('the init material receipt names the serving source for control; without one control starts unnamed',async()=>{
+ const sourceCommit='8d22fb8a'.padEnd(40,'0'),receipt={schema:'meri.material-receipt/1',role:'control',sourceCommit,imageDigest:'sha256:'+'b'.repeat(64)};
+ assert.equal((await start({},{receipt})).code,0);assert.equal(state.control[0].sourceCommit,sourceCommit);
+ assert.equal((await start({},{receipt:null})).code,0);assert.equal(Object.hasOwn(state.control[0],'sourceCommit'),false);
 });
 test('disabled reads create no composer; missing family diagnostics retain their declared reason',async()=>{
  assert.equal((await start({reads:{enabled:false}})).code,0);assert.equal(state.composer.length,0);assert.equal(state.control[0].createReadsRuntime,undefined);
