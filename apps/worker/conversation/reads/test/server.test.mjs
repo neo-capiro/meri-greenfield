@@ -5,9 +5,12 @@ import {userVocabulary} from '../../user-vocabulary.mjs';
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {generalReadFixture,mountReads,MAIL_OPERATIONS,SESSION,NOW} from './fixture.mjs';
 import {canonicalInputSchema,isNarrowerOrEqual} from '../schema.mjs';
+import {failureResult} from '../results.mjs';
+import {READ_AVAILABILITY_WORKER_MS} from '../../../../../packages/runtime/runner-load-budget.mjs';
 const NAMES=['mail_list_messages','mail_search_messages','mail_read_thread'];
 const text=r=>r.content[0].text;
-const closed=(r,code)=>{assert.equal(r.isError,true);assert.equal(r.content.length,1);assert.match(text(r),new RegExp(`^${code}: mcp__meri_reads__mail_search_messages `,'u'));assert.match(text(r),/No evidence, absence or completeness is established\.$/u);assert.equal(text(r).includes('PRIVATE'),false);};
+const head=code=>failureResult(code,'mcp__meri_reads__x').content[0].text.replace(/ No evidence, absence or completeness is established\.$/u,'');
+const closed=(r,code)=>{assert.equal(r.isError,true);assert.equal(r.content.length,1);assert.ok(text(r).startsWith(head(code)),text(r));assert.match(text(r),/No evidence, absence or completeness is established\.$/u);assert.doesNotMatch(text(r),/mcp__|\bUNAVAILABLE\b|\bACCESS_DENIED\b|\bDEADLINE\b/u,'no tool name or code reaches the model');assert.equal(text(r).includes('PRIVATE'),false);};
 
 test('lists exactly the available mail reads, derived from descriptors, with schemas no wider than canonical',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
@@ -40,6 +43,13 @@ test('disabled worker or control policy and revoked execution mount no server',a
  assert.equal(await mountReads(f,{policy:{},port:counting}),null);assert.equal(reads,0,'policy off: the port is never asked');
  f.enabled(false);assert.equal(await mountReads(f),null);f.enabled(true);
  f.revoke();assert.equal(await mountReads(f),null);assert.equal(f.calls.length,0);
+});
+
+test('a snapshot that takes 4 s is admitted within the shared worker bound; past it the run mounts no reads',async()=>{
+ const f=await generalReadFixture(),port=f.mount(),advance=ms=>({readAvailability:async v=>{f.source.state.now+=ms;return port.readAvailability(v);},execute:v=>port.execute(v)});
+ const m=await mountReads(f,{port:advance(4000)});
+ try{assert.deepEqual(m.runtime.available.map(o=>o.id).sort(),MAIL_OPERATIONS.map(o=>o.id).sort());}finally{await m.close();}
+ assert.equal(await mountReads(f,{port:advance(READ_AVAILABILITY_WORKER_MS+1)}),null,'past the bound the snapshot is not available for this run');
 });
 
 test('an operation the actor is not granted is absent from the list',async()=>{

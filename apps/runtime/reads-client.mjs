@@ -5,6 +5,7 @@ import {own,data,nativeSignal} from '../../packages/contracts/commands-0.2/execu
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {NATIVE_READS_SCHEMA_VERSION as schemaVersion,assertNativeReadConfiguration,assertNativeReadRequest,assertNativeReadResponse,assertNativeReadExternalFacts,nativeReadFault,nativeReadFailureCode} from '../../packages/contracts/runtime-0.2/reads.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
+import {READ_AVAILABILITY_RUNNER_MS} from '../../packages/runtime/runner-load-budget.mjs';
 const get=Object.fromEntries(['status','headers','body','redirected','url'].map(k=>[k,Object.getOwnPropertyDescriptor(Response.prototype,k).get]));
 const fail=code=>{throw nativeReadFault(code);};
 export function createNativeReadsClient(configuration){
@@ -38,7 +39,7 @@ export function createNativeReadsClient(configuration){
    truncated:usage.truncated,incomplete:usage.unobserved.length>0,unobserved:Object.freeze(usage.unobserved.slice())});
  }
  async function call(operation,fields,signal){if(!config?.enabled)fail('UNAVAILABLE');nativeSignal(signal);const full='runner/reads/'+operation,request=assertNativeReadRequest(full,{schemaVersion,binding,...fields}),body=JSON.stringify(request);if(Buffer.byteLength(body,'utf8')>config.maxRequestBytes)fail('RESOURCE_LIMIT');
-  const started=now(),deadlineMs=started+(operation==='execute'?config.maxExecuteMs:3000),life=createOperationLifetime({now,deadlineMs,signal,errorFactory:nativeReadFault});let response,reader,dispatched=false;
+  const started=now(),deadlineMs=started+(operation==='execute'?config.maxExecuteMs:READ_AVAILABILITY_RUNNER_MS),life=createOperationLifetime({now,deadlineMs,signal,errorFactory:nativeReadFault});let response,reader,dispatched=false;
   try{dispatched=true;response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(origin+'/v1/'+full,{method:'POST',redirect:'error',credentials:'omit',cache:'no-store',headers:{authorization:'Bearer '+credential,'content-type':'application/json'},body,signal}));pending.then(r=>{if(life.signal.aborted)try{get.body.call(r)?.cancel().catch(()=>{});}catch{}},()=>{});return pending;});
    if(types.isProxy(response)||!(response instanceof Response)||get.redirected.call(response))fail('UNAVAILABLE');const responseUrl=get.url.call(response);if(responseUrl&&responseUrl!==origin+'/v1/'+full)fail('UNAVAILABLE');
    const headers=get.headers.call(response),header=k=>Headers.prototype.get.call(headers,k),stream=get.body.call(response);if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(header('content-type')??'')||![null,'identity'].includes(header('content-encoding'))||!stream)fail('INVALID_RESULT');

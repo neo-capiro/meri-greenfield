@@ -19,8 +19,9 @@ import {resolveAvailableReads,profileReads} from './availability.mjs';
 import {nextTurnSessionId} from '../continuation/next-turn-options.mjs';
 import {createGeneralReadServer} from './server.mjs';
 import {effectiveReadBudgets,READ_TIMEOUT_MS} from './budget.mjs';
+import {READ_AVAILABILITY_WORKER_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
-const CATALOG_SHA256=canonicalSha256(catalog),SNAPSHOT_MS=3000;
+const CATALOG_SHA256=canonicalSha256(catalog);
 /** Session id the SDK must report when continuing: the resumed checkpoint session, or the fork target.
  * @param {any} lineage @returns {string|undefined} */
 export function continuationSessionId(lineage){
@@ -41,8 +42,10 @@ export async function createGeneralReadRuntime(configuration){
  scopes.forEach(s=>validateShape('Scope',s));const policyRevision=scopes[0].policyRevision;
  if(c.policy?.generalReads!==true)return null;
  const timeoutMs=Math.min(c.timeoutMs??READ_TIMEOUT_MS.max,READ_TIMEOUT_MS.max),budgets=effectiveReadBudgets(c.skill?.budgets,c.runBudgets);
- /** Fresh snapshot within a bounded wait; any failure is "not available". @param {AbortSignal|undefined} signal */
- const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+SNAPSHOT_MS,now:c.now,signal,errorFactory:fault});
+ /** Fresh snapshot within the shared read-availability bound (runner-load-budget.mjs); any failure is "not available" for this
+  * run, so the bound must hold the control chain (execution authentication, two snapshots with a Core role read each).
+  * @param {AbortSignal|undefined} signal */
+ const read=async signal=>{const life=createOperationLifetime({deadlineMs:c.now()+READ_AVAILABILITY_WORKER_MS,now:c.now,signal,errorFactory:fault});
   try{return assertAvailabilitySnapshot(await life.run(s=>port.readAvailability.call(c.port,{signal:s})),{binding,policyRevision,catalogSha256:CATALOG_SHA256,now:c.now});}finally{life.close();}};
  const narrowing={...(c.skill?{narrowTo:c.skill.allowedOperations}:{}),exclude:c.exclude??[]};
  // Profile mount: the exact active tool list is fixed by the profile before any availability is read.

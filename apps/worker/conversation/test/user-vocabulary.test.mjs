@@ -14,6 +14,8 @@ import {binding,scopes,versions} from '../../../control/conversations/test/appli
 import {familyReads,resolveAvailableReads} from '../reads/availability.mjs';
 import {READ_FAMILIES} from '../reads/families.mjs';
 import {createGeneralReadServer} from '../reads/server.mjs';
+import {readToolName} from '../reads/tools.mjs';
+import {failureResult,READ_FAILURE_CODES} from '../reads/results.mjs';
 import {GENERAL_READ_CEILINGS} from '../reads/budget.mjs';
 import {createIntentServer} from '../intents/server.mjs';
 import {INTENT_ROWS} from '../intents/catalog.mjs';
@@ -76,6 +78,19 @@ test('the full system prompt of a reads+intents run, both server instructions an
   assert.match(o.systemPrompt.append,/say plainly that those records could not be read and what they can do next/u);
   assert.match(intents.instructions,/^Requests prepared for the user's approval in this conversation\./u);
  }finally{await m.reads.close();await m.intents.close();await m.skill.close();}
+});
+
+test('every closed read failure text, with each read\'s own next step, is in the user\'s terms and names neither a code nor the tool',()=>{
+ // The model relays these texts (the 1 November "UNAVAILABLE" and tool-name leaks): the code stays in `failureCode`, never in the words.
+ const before=violations.length,names=familyReads().map(row=>readToolName(row));
+ for(const name of names)for(const code of READ_FAILURE_CODES){
+  const text=failureResult(code,name).content[0].text;check(text,`${name} ${code}`);
+  assert.doesNotMatch(text,/mcp__/u,`${name} ${code} names the tool`);
+  for(const word of READ_FAILURE_CODES)assert.doesNotMatch(text,new RegExp(`\\b${word}\\b`,'u'),`${name} ${code} says ${word}`);
+ }
+ assert.equal(violations.length,before,violations.slice(before).join('\n'));
+ assert.match(failureResult('UNAVAILABLE','mcp__meri_reads__read_bill_text').content[0].text,/could not be read right now and suggest trying again in a minute/u);
+ assert.match(failureResult('SOURCE_UNAVAILABLE','mcp__meri_reads__read_bill_text').content[0].text,/not reachable right now and to try again in a minute/u);
 });
 
 test('the vocabulary projection is a closed map: catalog bytes are untouched and argument or field names never change',()=>{
