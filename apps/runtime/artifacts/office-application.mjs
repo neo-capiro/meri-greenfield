@@ -48,9 +48,9 @@ export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits
    try{
     const info=wopiRequest(request);let claims;
     try{claims=codec.verify(info.token,{fileId:info.fileId});}catch{return wopiResponse(401);}
-    // Borrow only an existing native receipt. Full authentication and the signed
-    // binding/client/scope comparison happen again inside the file application.
-    const selected=borrow({binding:claims.runBinding,selectedClientId:claims.selectedClientId,signal:info.signal});
+    // Borrow only the existing native session the token was launched under. Full authentication and the signed
+    // binding/client/scope/session comparison happen again inside the file application.
+    const selected=borrow({binding:claims.runBinding,selectedClientId:claims.selectedClientId,sessionSha256:claims.sessionSha256,signal:info.signal});
     return await access.run({credential:selected.credential,deadlineMs:Math.min(claims.expiresAtMs,selected.expiresAtMs),signal:info.signal,
      intent:claims.userCanWrite?'revise':'download',versionId:claims.versionId},async current=>{
       const files=createWopiFileApplication({codec,drafts,artifacts:current.artifacts,generation,now,postMessageOrigin:browserOrigin,
@@ -59,7 +59,7 @@ export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits
      });
    }catch(error){
     const code=error&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:null;
-    return wopiResponse(refusalStatus(error)??(['ACCESS_DENIED','SESSION_REFUSED','ARTIFACT_AUTHORITY','RETENTION_SUPPRESSED'].includes(code)?404:500));
+    return wopiResponse(refusalStatus(error)??(['ACCESS_DENIED','SESSION_REFUSED','SESSION_UNAVAILABLE','ARTIFACT_AUTHORITY','RETENTION_SUPPRESSED'].includes(code)?404:500));
    }
    finally{cancelWopiBody(request);}
   },
