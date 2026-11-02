@@ -673,6 +673,18 @@
           {
             "id": "inspect_watch_state",
             "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_grants",
+            "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_contract_opportunities",
+            "version": "0.2.0"
           }
         ]
       },
@@ -1078,6 +1090,18 @@
           },
           {
             "id": "inspect_watch_state",
+            "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_grants",
+            "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_contract_opportunities",
             "version": "0.2.0"
           }
         ]
@@ -1486,6 +1510,18 @@
             {
               "id": "inspect_watch_state",
               "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_grants",
+              "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_contract_opportunities",
+              "version": "0.2.0"
             }
           ]
         },
@@ -1891,6 +1927,18 @@
             },
             {
               "id": "inspect_watch_state",
+              "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_grants",
+              "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_contract_opportunities",
               "version": "0.2.0"
             }
           ]
@@ -2298,6 +2346,18 @@
             {
               "id": "inspect_watch_state",
               "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_bills",
+              "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_grants",
+              "version": "0.2.0"
+            },
+            {
+              "id": "semantic_search_contract_opportunities",
+              "version": "0.2.0"
             }
           ]
         }
@@ -2685,6 +2745,18 @@
           },
           {
             "id": "inspect_watch_state",
+            "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_bills",
+            "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_grants",
+            "version": "0.2.0"
+          },
+          {
+            "id": "semantic_search_contract_opportunities",
             "version": "0.2.0"
           }
         ],

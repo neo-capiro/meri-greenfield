@@ -1,0 +1,452 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:semantic-search:0.2.0",
+  "title": "Semantic (embedding) search over public bills, grants and contract opportunities",
+  "$defs": {
+    "SemanticSearchInput": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 2000
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 25
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": 93,
+          "maximum": 130
+        },
+        "status": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "agency": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "naics": {
+          "type": "string",
+          "pattern": "^[0-9]{2,6}$"
+        },
+        "includeInactive": {
+          "type": "boolean"
+        },
+        "dateFrom": {
+          "type": "string",
+          "format": "date"
+        },
+        "dateTo": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticNullableText": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 8192
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SemanticNullableDate": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SemanticNullableDateTime": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SemanticNullableNumber": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "SemanticBillRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "congress": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "billType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "billNumber": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 8192
+        },
+        "sponsorName": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "sponsorParty": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "sponsorState": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "policyArea": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 512
+          },
+          "maxItems": 500
+        },
+        "status": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "introducedDate": {
+          "$ref": "#/$defs/SemanticNullableDate"
+        },
+        "latestActionDate": {
+          "$ref": "#/$defs/SemanticNullableDate"
+        },
+        "latestActionText": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "url": {
+          "$ref": "#/$defs/SemanticNullableText"
+        }
+      },
+      "required": [
+        "id",
+        "congress",
+        "billType",
+        "billNumber",
+        "title",
+        "sponsorName",
+        "sponsorParty",
+        "sponsorState",
+        "policyArea",
+        "subjects",
+        "status",
+        "introducedDate",
+        "latestActionDate",
+        "latestActionText",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticGrantRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 8192
+        },
+        "agency": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "subAgency": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "opportunityNumber": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "category": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "fundingInstrument": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "awardCeiling": {
+          "$ref": "#/$defs/SemanticNullableNumber"
+        },
+        "awardFloor": {
+          "$ref": "#/$defs/SemanticNullableNumber"
+        },
+        "estimatedFunding": {
+          "$ref": "#/$defs/SemanticNullableNumber"
+        },
+        "openDate": {
+          "$ref": "#/$defs/SemanticNullableDate"
+        },
+        "closeDate": {
+          "$ref": "#/$defs/SemanticNullableDate"
+        },
+        "status": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "url": {
+          "$ref": "#/$defs/SemanticNullableText"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "agency",
+        "subAgency",
+        "opportunityNumber",
+        "category",
+        "fundingInstrument",
+        "awardCeiling",
+        "awardFloor",
+        "estimatedFunding",
+        "openDate",
+        "closeDate",
+        "status",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticContractOpportunityRecord": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "noticeId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "solicitationNumber": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 8192
+        },
+        "noticeType": {
+          "type": "string",
+          "maxLength": 32
+        },
+        "agency": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "subAgency": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "office": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "setAside": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "naicsCode": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "pscCode": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "postedDate": {
+          "$ref": "#/$defs/SemanticNullableDateTime"
+        },
+        "responseDeadline": {
+          "$ref": "#/$defs/SemanticNullableDateTime"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "url": {
+          "$ref": "#/$defs/SemanticNullableText"
+        }
+      },
+      "required": [
+        "id",
+        "noticeId",
+        "solicitationNumber",
+        "title",
+        "noticeType",
+        "agency",
+        "subAgency",
+        "office",
+        "setAside",
+        "naicsCode",
+        "pscCode",
+        "postedDate",
+        "responseDeadline",
+        "active",
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticSearchResult": {
+      "type": "object",
+      "properties": {
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^(congress_bill|federal_grant|sam_opportunity):.+$"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "record": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SemanticBillRecord"
+            },
+            {
+              "$ref": "#/$defs/SemanticGrantRecord"
+            },
+            {
+              "$ref": "#/$defs/SemanticContractOpportunityRecord"
+            }
+          ]
+        }
+      },
+      "required": [
+        "reference",
+        "score",
+        "snippet",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticSearchOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "enum": [
+            "semantic_search_bills",
+            "semantic_search_grants",
+            "semantic_search_contract_opportunities"
+          ]
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "query": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 2000
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "similarityFloor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "candidateLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "indexedRecords": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "totalRecords": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "indexedRecords",
+            "totalRecords"
+          ],
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "minItems": 1,
+          "maxItems": 8
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SemanticSearchResult"
+          },
+          "maxItems": 25
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "query",
+        "model",
+        "similarityFloor",
+        "candidateLimit",
+        "total",
+        "coverage",
+        "notes",
+        "results"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
