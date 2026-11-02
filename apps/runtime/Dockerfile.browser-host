@@ -71,16 +71,17 @@ RUN set -eux; \
       -o /opt/meri/meri-host-relay-launcher apps/worker/conversation/host/network/native/meri-host-relay-launcher.c; \
     sha256sum /opt/meri/meri-host-launcher /opt/meri/meri-host-relay-launcher > /opt/meri/browser-host/helper-hashes.txt; \
     cat /opt/meri/browser-host/helper-hashes.txt
-# Playwright's pinned Chromium (revision 1247 for this playwright-core) under the fixed browsers path. The setuid sandbox
-# helper is not used: the launcher sets NoNewPrivs before exec, so Chromium runs its user-namespace sandbox; the AMI must
-# allow unprivileged user namespaces.
+# Playwright's pinned Chromium (revision 1247 for this playwright-core) under the fixed browsers path, with its headless
+# shell, which is the executable a `headless: true` launch actually runs; both are hashed. The setuid sandbox helper is not
+# used: the launcher sets NoNewPrivs before exec, so Chromium runs its user-namespace sandbox; the AMI must allow
+# unprivileged user namespaces.
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/meri/browsers
 RUN set -eux; \
     node browser-host/node_modules/playwright-core/cli.js install chromium; \
-    test -d /opt/meri/browsers/chromium-1247; \
+    test -d /opt/meri/browsers/chromium-1247 && test -d /opt/meri/browsers/chromium_headless_shell-1247; \
     chmod -R a+rX,u-s,g-s /opt/meri/browsers; \
-    find /opt/meri/browsers -maxdepth 3 -type f -name 'chrome' -exec sha256sum {} \; > /opt/meri/browser-host/chromium-hashes.txt; \
-    test -s /opt/meri/browser-host/chromium-hashes.txt; cat /opt/meri/browser-host/chromium-hashes.txt; \
+    find /opt/meri/browsers -maxdepth 3 -type f \( -name chrome -o -name chrome-headless-shell \) -exec sha256sum {} \; | sort -k2 > /opt/meri/browser-host/chromium-hashes.txt; \
+    test "$(wc -l < /opt/meri/browser-host/chromium-hashes.txt)" = 2; cat /opt/meri/browser-host/chromium-hashes.txt; \
     test -z "$(find /opt/meri/browsers -perm /6000 -type f -print)"
 
 # ---------------------------------------------------------------- host image

@@ -90,6 +90,12 @@ class Case(unittest.TestCase):
         two = f'{H1}  {CHROME}\n{H2}  /opt/meri/browsers/chromium-1247/other/chrome\n'
         with self.assertRaises(AssertionError):
             ev.chromium_path(self.write('two.txt', two))
+        # The headless shell a headless launch runs is recorded beside it and becomes a pinned file too.
+        shell = '/opt/meri/browsers/chromium_headless_shell-1247/chrome-headless-shell-linux-arm64/chrome-headless-shell'
+        both = f'{H1}  {CHROME}\n{H2}  {shell}\n'
+        self.assertEqual(ev.chromium_path(self.write('both.txt', both)), CHROME)
+        self.assertEqual(self.run_hashes(chromium=both)['chromiumFiles'],
+                         [{'path': CHROME, 'sha256': H1}, {'path': shell, 'sha256': H2}])
 
     def scan(self, counts, findings=(), status='COMPLETE'):
         return self.write('scan.json', json.dumps({'repositoryName': 'meri-greenfield/browser-host', 'imageId': {'imageDigest': DIGEST},
