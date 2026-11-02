@@ -40,7 +40,7 @@ export const PATHS=Object.freeze({
  temporalCa:'/run/meri/temporal-ca.pem',temporalCert:'/run/meri/temporal-client.pem',temporalKey:'/run/meri/temporal-client.key',
  serverCa:'/run/meri/control-ca.pem',
  // Delivered only when the matching feature is rendered (control only).
- readsServiceSecret:'/run/meri/core-service-secret',readsReadModeServiceSecret:'/run/meri/core-read-mode-service-secret',
+ readsServiceSecret:'/run/meri/core-service-secret',
  downloadLinkKey:'/run/meri/download-link.key',officeKey:'/run/meri/office-wopi.key'});
 const DAY_MS=86400000;
 /** Defaults for bounded timing values. Each is inside the validator range it is named after. */
@@ -108,7 +108,7 @@ export function parseRuntimeValues(raw){
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
 export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','nativeProcessing','browserPlatform','browserActivation','office']);
 /** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
-export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
+export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn'});
 /** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
  * JSON-key/version suffix or a partial ARN without the 6-character suffix refuses (a name that itself ends in -XXXXXX cannot be told
  * apart syntactically; the operator's describe-secret ARN equality check covers that case). */
@@ -172,19 +172,16 @@ export function parseFeatures(raw,{secrets={}}={}){
   }
  }
  if(f.reads!==undefined){
-  const fields=['serviceSecretArn','readModeServiceSecretArn','defaultCongress','approvedReads'],r=record(f.reads,'features.reads',['enabled'],fields);
+  const fields=['serviceSecretArn','defaultCongress','approvedReads'],r=record(f.reads,'features.reads',['enabled'],fields);
   if(!bool(r.enabled,'features.reads.enabled')){if(fields.some(k=>r[k]!==undefined))fail('RENDER_INPUT_REFUSED','features.reads: disabled reads name no secret, congress or approved reads');out.reads={enabled:false};}
   else{
    if(out.sourceEnabled!==true)fail('RENDER_INPUT_REFUSED','features.reads needs features.sourceEnabled true (G1 gates reads)');
    const material=new Set(Object.values(secrets));
-   for(const key of ['serviceSecretArn','readModeServiceSecretArn'])if(r[key]!==undefined||key==='serviceSecretArn'){
-    if(typeof r[key]!=='string'||!SECRET_ARN.test(r[key]))fail('RENDER_INPUT_REFUSED',`features.reads.${key} must be an exact Secrets Manager secret ARN in ${ACCOUNT}/${REGION}`);
-    if(material.has(r[key]))fail('RENDER_INPUT_REFUSED',`features.reads.${key} must not be a Meri material secret`);
-   }
-   if(r.readModeServiceSecretArn!==undefined&&r.readModeServiceSecretArn===r.serviceSecretArn)fail('RENDER_INPUT_REFUSED','features.reads secret ARNs must be distinct');
+   if(typeof r.serviceSecretArn!=='string'||!SECRET_ARN.test(r.serviceSecretArn))fail('RENDER_INPUT_REFUSED',`features.reads.serviceSecretArn must be an exact Secrets Manager secret ARN in ${ACCOUNT}/${REGION}`);
+   if(material.has(r.serviceSecretArn))fail('RENDER_INPUT_REFUSED','features.reads.serviceSecretArn must not be a Meri material secret');
    if(r.defaultCongress!==undefined&&(!Number.isSafeInteger(r.defaultCongress)||r.defaultCongress<1||r.defaultCongress>1000))fail('RENDER_INPUT_REFUSED','features.reads.defaultCongress must be 1..1000');
    let approvedReads;if(r.approvedReads!==undefined)try{approvedReads=structuredClone(assertNativeReadConfiguration(r.approvedReads));}catch{fail('RENDER_INPUT_REFUSED','features.reads.approvedReads (runtime-0.2 assertNativeReadConfiguration)');}
-   out.reads={enabled:true,serviceSecretArn:r.serviceSecretArn,...(r.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretArn:r.readModeServiceSecretArn}),
+   out.reads={enabled:true,serviceSecretArn:r.serviceSecretArn,
     ...(r.defaultCongress===undefined?{}:{defaultCongress:r.defaultCongress}),...(approvedReads===undefined?{}:{approvedReads})};
   }
  }
@@ -455,7 +452,6 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  if(features.memory!==undefined)featureKeys.memory=features.memory.enabled?{enabled:true,origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}:{enabled:false};
  if(features.objectiveGeneration!==undefined)featureKeys.objectiveGeneration=structuredClone(features.objectiveGeneration);
  if(features.reads!==undefined)featureKeys.reads=features.reads.enabled?{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,
-  ...(features.reads.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretFile:PATHS.readsReadModeServiceSecret}),
   ...(features.reads.defaultCongress===undefined?{}:{defaultCongress:features.reads.defaultCongress})}:{enabled:false};
  if(features.office!==undefined)featureKeys.office=renderOfficeControl(features.office,{coreOrigin:k.coreOrigin,frontendOrigin:k.frontendOrigin,controlPrivate});
  const sourceEnabled=features.sourceEnabled===true;
@@ -493,9 +489,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  const files={
   control:new Map([[PATHS.control,controlBytes],[PATHS.database,controlDsn],
    [PATHS.controlCapability,capabilityBytes.control],...temporalFiles('control'),
-   // Feature material, control only and only when rendered: the Core service secrets for reads and the download-link signing key.
+   // Feature material, control only and only when rendered: the Core service secret for reads and the download-link signing key.
    ...(secretFiles['reads.serviceSecret']?[[PATHS.readsServiceSecret,secretFiles['reads.serviceSecret'].bytes]]:[]),
-   ...(secretFiles['reads.readModeServiceSecret']?[[PATHS.readsReadModeServiceSecret,secretFiles['reads.readModeServiceSecret'].bytes]]:[]),
    ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[]),...(officeKey?[[PATHS.officeKey,officeKey]]:[]),...native.files.control]),
   'temporal-worker':new Map([[PATHS.worker,configBytes['temporal-worker']],[PATHS.controlCapability,capabilityBytes.control],...temporalFiles('temporal-worker'),...native.files.worker]),
  };
@@ -518,7 +513,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  // Non-secret record of what the features rendered (absent without features, so the reviewed summary is unchanged). The secret
  // files are named by path, source ARN, VersionId and sha256 only, so the operator can re-verify the fetched value.
  if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,
-  secretFiles:Object.fromEntries(Object.entries(secretFiles).map(([key,v])=>[key==='reads.serviceSecret'?PATHS.readsServiceSecret:PATHS.readsReadModeServiceSecret,
+  secretFiles:Object.fromEntries(Object.entries(secretFiles).map(([key,v])=>[PATHS.readsServiceSecret,
    {feature:key,secretArn:v.secretArn,versionId:v.versionId,sha256:sha(v.bytes)}])),
   generatedFiles:{...(downloadLinkKey?{[PATHS.downloadLinkKey]:'download-link signing key, fresh per render (32 random bytes, base64url)'}:{}),
    ...(officeKey?{[PATHS.officeKey]:'Office WOPI access-token signing key, fresh per render (32 random bytes, base64url)'}:{})},

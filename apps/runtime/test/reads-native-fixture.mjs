@@ -29,7 +29,7 @@ export async function fixture(family,id,options={}){
  const gatewayCalls=options.gatewayCalls??[],managedSearchResponse=options.managedSearchResponse,dropExecute=options.dropExecuteResponseOnce?{left:1}:null;
  const composer=await createControlReadsComposer({coreOrigin:'https://core.example.invalid',familyIds:[family],defaultCongress:119,
   ...(options.primaryCredentials?{primaryCredentials:options.primaryCredentials}:{}),
-  nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_NATIVE',expiresAtMs:identity.expiresAtMs};}},readSecret:async()=>Buffer.from('SYNTHETIC_SERVICE'),serviceSecretFile:'synthetic',readModeServiceSecretFile:'synthetic-mode',now:scene.now,newId:()=>binding.attemptId,
+  nativeCredentials:{async nativeCredentialFor(){return {credential:'SYNTHETIC_NATIVE',expiresAtMs:identity.expiresAtMs};}},readSecret:async file=>{assert.equal(file,'synthetic','only the reads service secret file is read');return Buffer.from('SYNTHETIC_SERVICE');},serviceSecretFile:'synthetic',now:scene.now,newId:()=>binding.attemptId,
   capabilityPolicy:{async forRun(){return {generalReads:true,readFamilies:[family],activeReadOperations:[operation]};}},
   async fetchImpl(url,options){const address=new URL(url),path=address.pathname,body=typeof options.body==='string'?JSON.parse(options.body):null;
    if(/gateway\.bedrock-agentcore\./u.test(address.hostname)){gatewayCalls.push({url,method:options.method,headers:options.headers,body});
@@ -40,7 +40,8 @@ export async function fixture(family,id,options={}){
    if(path.endsWith('/application-authority/current'))return Response.json({principal,role:'standard_user',permissions:[],clientIds,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:binding.conversationId,selectedClientId,checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
    if(path.endsWith('/application-authority/identity'))return Response.json({principal,identityRevision:'a'.repeat(64),checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
    if(path.endsWith('/application-authority/context'))return Response.json({identitySha256:body.identitySha256,principal,identityRevision:'a'.repeat(64),conversationId:body.conversationId,selectedClientId:contextClientId??body.clientId,contextRevision:'c'.repeat(64),checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
-   if(path.endsWith('/read-mode-observation'))return Response.json({operation:body.operation,requestSha256:body.requestSha256,principal,surface:'chat',evidenceAccuracyMode});
+   // The read-mode observation carries the reads service secret, the same identity Core checks on every tool route.
+   if(path.endsWith('/read-mode-observation')){assert.equal(options.headers['x-internal-service-secret'],'SYNTHETIC_SERVICE');return Response.json({operation:body.operation,requestSha256:body.requestSha256,principal,surface:'chat',evidenceAccuracyMode});}
    if(path.endsWith('/clients/check-ref'))return Response.json({ok:true,clientId:selectedClientId??clientIds[0]},{status:referenceStatus});
    assert.equal(path,scene.sourcePath??`/api/clio/tools/${id}`);if(denySource)return Response.json({message:'refused'},{status:403});
    if(family==='funding-opportunities'){const context=decodeNativeReadObservation(options.headers[NATIVE_READ_OBSERVATION_HEADER],{operation,request:body}).context;scene.state.page=fundingPage(id,scene.contract.normalizeInput(body,context).input,context.asOf,new Date(scene.now()-60000).toISOString());}

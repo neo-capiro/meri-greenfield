@@ -26,21 +26,20 @@ const NOW=Date.now();
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const fixture=createRenderFixture();test.after(()=>fixture.cleanup());
 const ARN={service:'arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/core/internal_service_secret-Ab12Cd',
- readMode:'arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/core/read_mode_service_secret-Zz98Yx'};
-const SECRET={service:'synthetic-core-internal-service-secret-0001',readMode:'synthetic-core-read-mode-secret-0002'};
+ other:'arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/core/other_service_secret-Zz98Yx'};
+const SECRET={service:'synthetic-core-internal-service-secret-0001'};
 const VERSION='0f1e2d3c-4b5a-4968-8776-655443322110';
 const ARTIFACTS={enabled:true,region:'us-east-1',bucket:'meri-preview-artifacts-967807252336-us-east-1',prefix:'product-preview/artifacts',expectedBucketOwner:'967807252336',
  kmsKeyId:'arn:aws:kms:us-east-1:967807252336:key/11111111-2222-4333-8444-555555555555'};
 const APPROVED_READS={schemaVersion:'meri-native-general-reads/1',enabled:true,operations:[{id:'read_bill_text',version:'0.2.0'}],maxExecuteMs:20000,maxRequestBytes:65536,maxResponseBytes:1048576};
-const READS={enabled:true,serviceSecretArn:ARN.service,readModeServiceSecretArn:ARN.readMode,defaultCongress:119,approvedReads:APPROVED_READS};
-const featureSecrets=()=>({'reads.serviceSecret':{secretArn:ARN.service,versionId:VERSION,bytes:Buffer.from(SECRET.service)},
- 'reads.readModeServiceSecret':{secretArn:ARN.readMode,versionId:VERSION,bytes:Buffer.from(SECRET.readMode)}});
+const READS={enabled:true,serviceSecretArn:ARN.service,defaultCongress:119,approvedReads:APPROVED_READS};
+const featureSecrets=()=>({'reads.serviceSecret':{secretArn:ARN.service,versionId:VERSION,bytes:Buffer.from(SECRET.service)}});
 
 test('Objective activation renders the control start owner and matching Temporal activities',async()=>{
  await baseline();
  const objectiveGeneration={runs:{enabled:true},start:{enabled:true,windowMs:900000}};
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,objectiveGeneration}),{featureSecrets:featureSecrets()});
- const control=assertOnly(rendered,['sourceEnabled','reads','objectiveGeneration'],{worker:{sourceEnabled:true,objectiveGeneration:{runs:{enabled:true}}},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
+ const control=assertOnly(rendered,['sourceEnabled','reads','objectiveGeneration'],{worker:{sourceEnabled:true,objectiveGeneration:{runs:{enabled:true}}},extraControlFiles:[PATHS.readsServiceSecret]});
  assert.deepEqual(control.objectiveGeneration,objectiveGeneration);
  withPosixPaths(()=>validateConfiguration(config(rendered,'temporal-worker'),'temporal-worker'));
  assert.throws(()=>parseFeatures({objectiveGeneration}),/needs features.reads enabled/u);
@@ -51,7 +50,7 @@ test('artifact activation preserves the configured image executor through materi
  await baseline();
  const executor={pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000};
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,artifacts:{...ARTIFACTS,authority:{enabled:true},executor}}),{featureSecrets:featureSecrets()});
- const control=assertOnly(rendered,['sourceEnabled','reads','artifacts'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
+ const control=assertOnly(rendered,['sourceEnabled','reads','artifacts'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret]});
  assert.deepEqual(control.artifacts.executor,executor);
  assert.deepEqual(control.artifacts.authority,{origin:control.agentcore.identity.origin,serviceSecretFile:PATHS.readsServiceSecret});
  assert.throws(()=>parseFeatures({artifacts:{...ARTIFACTS,executor:{...executor,pythonExecutable:'relative/python'}}}),/RENDER_INPUT_REFUSED/u);
@@ -223,12 +222,12 @@ function assertNotInJson(rendered,secret){
 test('reads: the Core service secrets come from the exact ARNs, travel only in control material (0600, digest-pinned), never in JSON',async()=>{
  await baseline();
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS}),{featureSecrets:featureSecrets()});
- const control=assertOnly(rendered,['sourceEnabled','reads'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret]});
- assert.deepEqual(control.reads,{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,readModeServiceSecretFile:PATHS.readsReadModeServiceSecret,defaultCongress:119});
+ const control=assertOnly(rendered,['sourceEnabled','reads'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret]});
+ assert.deepEqual(control.reads,{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,defaultCongress:119});
  assert.deepEqual(control.agentcore.approvedReads,APPROVED_READS);
  assert.deepEqual({...control.agentcore,approvedReads:undefined},{...config(defaults,'control').agentcore,approvedReads:undefined});
  const files=new Map(rendered.roles.control.bundle.files.map(f=>[f.path,Buffer.from(f.base64,'base64')]));
- assert.equal(files.get(PATHS.readsServiceSecret).toString(),SECRET.service);assert.equal(files.get(PATHS.readsReadModeServiceSecret).toString(),SECRET.readMode);
+ assert.equal(files.get(PATHS.readsServiceSecret).toString(),SECRET.service);
  assert.equal(rendered.roles.control.expected.sha256ByPath[PATHS.readsServiceSecret],sha(SECRET.service));
  for(const secret of Object.values(SECRET)){assertNotInJson(rendered,secret);
   for(const role of ROLES.filter(r=>r!=='control'))assert.equal(JSON.stringify(rendered.roles[role].bundle).includes(Buffer.from(secret).toString('base64')),false,role);}
@@ -280,14 +279,15 @@ test('fail closed: unknown, malformed or inconsistent feature inputs and secret 
  for(const arn of [ARN.service.replace(/-Ab12Cd$/u,''),ARN.service.replace('us-east-1','us-west-2'),ARN.service.replace('967807252336','111111111111'),'meri/preview/core/internal-service-secret',
   ARN.service+' ','arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/control/material-OhIfMV'])
   await assert.rejects(render(withFeatures({sourceEnabled:true,reads:{...READS,serviceSecretArn:arn}}),{featureSecrets:featureSecrets()}),{code:'RENDER_INPUT_REFUSED',message:/^RENDER_INPUT_REFUSED: features\.reads\.serviceSecretArn must/u});
- await refused({sourceEnabled:true,reads:{...READS,readModeServiceSecretArn:ARN.service}});
+ // A second reads secret ARN is no longer a render input: the read-mode observation uses the reads service secret.
+ await refused({sourceEnabled:true,reads:{...READS,readModeServiceSecretArn:ARN.other}});
  await refused({reads:{enabled:false,serviceSecretArn:ARN.service}});await refused({sourceEnabled:true,reads:{...READS,defaultCongress:0}},'RENDER_INPUT_REFUSED',{featureSecrets:featureSecrets()});
  await refused({sourceEnabled:true,reads:{...READS,approvedReads:{...APPROVED_READS,enabled:'yes'}}},'RENDER_INPUT_REFUSED',{featureSecrets:featureSecrets()});
  // Secret files: exactly the needed keys, the same ARN, a VersionId and exact token bytes.
  const on={sourceEnabled:true,reads:READS},secrets=change=>{const s=featureSecrets();change(s);return {featureSecrets:s};};
- await refused(on);await refused(on,'RENDER_INPUT_REFUSED',secrets(s=>{delete s['reads.readModeServiceSecret'];}));
+ await refused(on);await refused(on,'RENDER_INPUT_REFUSED',secrets(s=>{s['reads.readModeServiceSecret']={...s['reads.serviceSecret'],secretArn:ARN.other};}));
  await refused({intents:{enabled:true}},'RENDER_INPUT_REFUSED',{featureSecrets:featureSecrets()});
- await refused(on,'RENDER_INPUT_REFUSED',secrets(s=>{s['reads.serviceSecret'].secretArn=ARN.readMode;}));
+ await refused(on,'RENDER_INPUT_REFUSED',secrets(s=>{s['reads.serviceSecret'].secretArn=ARN.other;}));
  await refused(on,'RENDER_INPUT_REFUSED',secrets(s=>{s['reads.serviceSecret'].versionId='AWSCURRENT';}));
  await refused(on,'RENDER_PRIVATE_REFUSED',secrets(s=>{s['reads.serviceSecret'].bytes=Buffer.from(SECRET.service+'\n');}));
  await refused(on,'RENDER_PRIVATE_REFUSED',secrets(s=>{s['reads.serviceSecret'].bytes=Buffer.alloc(0);}));
@@ -295,7 +295,7 @@ test('fail closed: unknown, malformed or inconsistent feature inputs and secret 
 });
 
 test('ARN pattern is exact: complete suffixed secret ARNs in this account and region only',()=>{
- for(const ok of [ARN.service,ARN.readMode,'arn:aws:secretsmanager:us-east-1:967807252336:secret:INTERNAL_SERVICE_SECRET-a1B2c3'])assert.match(ok,SECRET_ARN);
+ for(const ok of [ARN.service,ARN.other,'arn:aws:secretsmanager:us-east-1:967807252336:secret:INTERNAL_SERVICE_SECRET-a1B2c3'])assert.match(ok,SECRET_ARN);
  for(const bad of ['arn:aws:secretsmanager:us-east-1:967807252336:secret:meri/preview/core/internal_service_secret','arn:aws:secretsmanager:us-east-1:967807252336:secret:name-abc12',
   'arn:aws:secretsmanager:us-east-1:967807252336:secret:name-abcdefg','arn:aws-us-gov:secretsmanager:us-east-1:967807252336:secret:name-abcdef',
   'arn:aws:secretsmanager:us-east-2:967807252336:secret:name-abcdef','arn:aws:secretsmanager:us-east-1:96780725233:secret:name-abcdef',
@@ -341,7 +341,7 @@ test('approved reads allow valid narrowed role capabilities and reject invalid a
  // The literal is also an accepted input form; it needs the approved roster beside it and never widens past the ordinary validation.
  const literal=structuredClone(features);for(const policy of [literal.capabilityPlatform.maximum,literal.capabilityPlatform.defaults])policy.activeReadOperations=APPROVED_READS_LITERAL;
  assert.deepEqual(config(await render(withFeatures(literal),{featureSecrets:featureSecrets()}),'control').capabilityPlatform,control.capabilityPlatform);
- await assert.rejects(render(withFeatures({sourceEnabled:true,capabilityPlatform:literal.capabilityPlatform,reads:{enabled:true,serviceSecretArn:ARN.service,readModeServiceSecretArn:ARN.readMode,defaultCongress:119}}),{featureSecrets:featureSecrets()}),/features\.capabilityPlatform/);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,capabilityPlatform:literal.capabilityPlatform,reads:{enabled:true,serviceSecretArn:ARN.service,defaultCongress:119}}),{featureSecrets:featureSecrets()}),/features\.capabilityPlatform/);
  assert.throws(()=>parseFeatures({capabilityPlatform:literal.capabilityPlatform}),/features\.capabilityPlatform/);
  const bad=structuredClone(features);bad.reads.approvedReads.operations=[{id:'unknown_read',version:'0.2.0'}];
  await assert.rejects(render(withFeatures(bad),{featureSecrets:featureSecrets()}),/features\.reads\.approvedReads/);
@@ -390,7 +390,7 @@ test('Stage 3: feature material rides the existing control/material secret; temp
   liveAppTemplate:{Resources:{controlService:{Properties:{LoadBalancers:[{ContainerPort:8080,TargetGroupArn:foundationOutputs.ControlTargetGroupArn}]}}}}});
  const {bodies}=synthesizeStage3(bindings),key=rendered.roles.control.bundle.files.find(f=>f.path===PATHS.downloadLinkKey).base64;
  assert.equal(bindings.app.materialDelivery.control.valueFrom,`${i.deployment.secrets['control/material']}:::${versions.control}`);
- for(const path of [PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret,PATHS.downloadLinkKey])assert.ok(bodies.app.includes(path),path);
+ for(const path of [PATHS.readsServiceSecret,PATHS.downloadLinkKey])assert.ok(bodies.app.includes(path),path);
  for(const body of Object.values(bodies))for(const secret of [...Object.values(SECRET),Buffer.from(key,'base64').toString('utf8')])assert.equal(body.includes(secret),false);
 });
 
@@ -447,7 +447,7 @@ test('office renders the control Office mount: editor origin, private WOPI liste
  await baseline();
  const editorOrigin='https://office.synthetic.invalid',office={enabled:true,editorOrigin};
  const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,office}),{featureSecrets:featureSecrets()});
- const control=assertOnly(rendered,['sourceEnabled','reads','office'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret,PATHS.officeKey]});
+ const control=assertOnly(rendered,['sourceEnabled','reads','office'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.officeKey]});
  // Exactly the closed shape artifacts/office-configuration.mjs accepts: no discovery path, frame ancestor list or secret value rides along.
  assert.deepEqual(control.office,{enabled:true,editorOrigin,wopiOrigin:control.privateHttp.frontendOrigin,browserOrigin:control.http.frontendOrigin,coreOrigin:control.agentcore.identity.origin,keyFile:PATHS.officeKey,serviceSecretFile:PATHS.readsServiceSecret});
  assert.deepEqual(control.office,renderOfficeControl(office,{coreOrigin:control.agentcore.identity.origin,frontendOrigin:control.http.frontendOrigin,controlPrivate:control.privateHttp.frontendOrigin}));
@@ -483,12 +483,12 @@ test('worst case: the committed inputs with every renderable feature on plus Off
  const example=JSON.parse(await readFile(new URL('deployment-inputs.json',import.meta.url),'utf8'));
  const {generateKeyPairSync}=await import('node:crypto');const pin=(kid)=>{const {kty,crv,x}=generateKeyPairSync('ed25519').publicKey.export({format:'jwk'});return {issuer:'capiro-core:routines',kid,publicKey:{kty,crv,x}};};
  const executor={pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000};
- const features={...structuredClone(example.features),reads:{...example.features.reads,readModeServiceSecretArn:ARN.readMode},
+ const features={...structuredClone(example.features),reads:example.features.reads,
   intents:{enabled:true,core:{enabled:true}},routines:{enabled:true,core:{cancellationProof:pin('cancel-1'),unattendedGrant:pin('grant-1')},task:{taskId:'11111111-1111-4111-8111-000000000009',version:1}},
   artifacts:{...example.features.artifacts,authority:{enabled:true},executor,renderer:{enabled:true},pdfAdmission:true},downloadLinks:{enabled:true,ttlMs:60000},
   objectiveGeneration:{runs:{enabled:true},start:{enabled:true,windowMs:900000}},browserActivation:{state:'held'},
   office:{enabled:true,editorOrigin:'https://office.synthetic.invalid',wopiOrigin:'https://wopi.synthetic.invalid'}};
- const secrets={'reads.serviceSecret':{secretArn:example.features.reads.serviceSecretArn,versionId:VERSION,bytes:Buffer.from(SECRET.service)},'reads.readModeServiceSecret':{secretArn:ARN.readMode,versionId:VERSION,bytes:Buffer.from(SECRET.readMode)}};
+ const secrets={'reads.serviceSecret':{secretArn:example.features.reads.serviceSecretArn,versionId:VERSION,bytes:Buffer.from(SECRET.service)}};
  const rendered=await render(i=>{i.deployment.features=features;},{featureSecrets:secrets}),control=config(rendered,'control');
  assert.ok(Object.keys(FEATURE_KEYS_ON(control)).length>=15);
  const sizes={control:rendered.roles.control.configBytes.length,expected:Buffer.byteLength(JSON.stringify(rendered.roles.control.expected)),bundle:Buffer.byteLength(JSON.stringify(rendered.roles.control.bundle))};
