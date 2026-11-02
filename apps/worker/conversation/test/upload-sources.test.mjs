@@ -29,7 +29,9 @@ test('native Read receives only current bounded extracted data under server-chos
  }finally{await f.close();}
 });
 test('fresh pre-read denial releases no bytes and latches activity cancellation',async()=>{
- const f=await fixture();try{f.state.revoked=true;assert.equal((await f.hook('PreToolUse')).continue,false);assert.equal(f.state.aborted,true);assert.deepEqual(await readdir(f.root),[]);assert.throws(f.owner.check,/UPLOAD_SOURCE_UNAVAILABLE/);}finally{await f.close();}
+ const f=await fixture();try{f.state.revoked=true;assert.equal((await f.hook('PreToolUse')).continue,false);assert.equal(f.state.aborted,true);assert.deepEqual(await readdir(f.root),[]);
+  // The latched failure names the run-owner error that caused it (live: a 3s transport DEADLINE), never its text in output.
+  assert.throws(f.owner.check,error=>error.code==='UPLOAD_SOURCE_UNAVAILABLE'&&error.cause?.message==='revoked');}finally{await f.close();}
 });
 test('revocation after native Read blocks later output/checkpoint and deletes materialized data',async()=>{
  const f=await fixture();try{await f.hook('PreToolUse');f.state.revoked=true;assert.equal((await f.hook('PostToolUse')).continue,false);assert.equal(f.state.aborted,true);assert.throws(f.owner.check);assert.deepEqual(await readdir(f.root),[]);assert.deepEqual(f.owner.receipts(),[]);}finally{await f.close();}

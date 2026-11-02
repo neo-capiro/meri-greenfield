@@ -43,7 +43,8 @@ export async function prepareUploadReadSources({binding,request,manifests,runOwn
   const page=uploadSourcePage(raw,selected.manifest,selected.page);life.check();check();return page;
  }finally{life.close();}}
  async function erase(selected){await owned();try{const stat=await lstat(selected.path);if(!stat.isFile()&&!stat.isSymbolicLink())throw fault();await unlink(selected.path);}catch(error){if(error?.code!=='ENOENT')throw error;}}
- const failed=error=>{failure??=fault();abort(failure);return {continue:false,stopReason:'Uploaded source is unavailable'};};
+ // The first failure keeps its own error as cause, so RUNNER_FIRST_FAILURE names it (for example a run-owner DEADLINE).
+ const failed=error=>{failure??=Object.assign(fault(),{cause:error});abort(failure);return {continue:false,stopReason:'Uploaded source is unavailable'};};
  const pre=async(raw,toolUseId,options)=>{try{const selectedFile=await selected(raw);if(!selectedFile)return {};check();if(raw.hook_event_name!=='PreToolUse'||raw.tool_name!=='Read'||typeof raw.tool_use_id!=='string'||toolUseId!==undefined&&toolUseId!==raw.tool_use_id||seen.has(raw.tool_use_id)||busy.has(selectedFile.path))throw fault();busy.add(selectedFile.path);
   const page=await source(selectedFile,options?.signal);await owned();await erase(selectedFile);
   const header={kind:'uploaded-source-data',selection:page.selection,versionId:page.versionId,sourceSha256:page.sourceSha256,page:page.page,pageSha256:page.pageSha256,nextPage:page.nextPage,extractionStatus:page.extractionStatus,limitations:page.limitations};
