@@ -13,6 +13,7 @@ import sys
 import tarfile
 import tempfile
 import unittest
+from test_native_apk_index import _deciding_rule, _ignore_rules
 
 ROOT = Path(__file__).resolve().parents[2]
 PATCHES = ROOT / "infra/product-preview/native-clamav-patches"
@@ -65,6 +66,25 @@ class RetirementPatchTests(unittest.TestCase):
             with self.subTest(target=target):
                 self.assertEqual(hashlib.sha256(self.original[target]).hexdigest(), before)
                 self.assertEqual(hashlib.sha256(self.patched[target]).hexdigest(), after)
+
+    def test_build_context_includes_exact_patches_and_excludes_unlisted_siblings(self):
+        rules = _ignore_rules((ROOT / ".dockerignore").read_text(encoding="utf-8"))
+        directory = "infra/product-preview/native-clamav-patches"
+        expected_files = ["clamav-1.5.4-openssl4-asn1-time.patch", "apply-pinned-patch.py"]
+        expected_files.extend(name for name, _, _, _ in self.bindings)
+        expected_rules = [(directory, True), (directory + "/*", False)]
+        expected_rules.extend((directory + "/" + name, True) for name in expected_files)
+        self.assertEqual([rule for rule in rules if directory in rule[0]], expected_rules)
+        for name in expected_files:
+            path = directory + "/" + name
+            with self.subTest(path=path):
+                self.assertTrue((ROOT / path).is_file())
+                self.assertEqual(_deciding_rule(rules, path), (path, True))
+                # Removing this exact exception must expose the original exclusion.
+                without_exception = [rule for rule in rules if rule != (path, True)]
+                self.assertFalse(_deciding_rule(without_exception, path)[1])
+        for name in ["unlisted.patch", "nested/unlisted.patch", "private.txt"]:
+            self.assertFalse(_deciding_rule(rules, directory + "/" + name)[1])
 
     def test_production_thread_manager_source_is_identical_without_test_blocks(self):
         # All changes to scanner code must disappear when the private test macro
