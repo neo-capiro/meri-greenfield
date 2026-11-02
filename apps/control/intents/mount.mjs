@@ -87,8 +87,15 @@ export function createIntentMount(configuration){
     const begun=await life.run(s=>journal.begin({...key,signal:s}));
     const selected={operation:preparer.operation,deliveryId:v.deliveryId,argumentsSha256:record.argumentsSha256,life};
     if(begun.replayed)return await release.release({...selected,owner:preparer.owner,result:begun.result,original:begun.release});
+    // A refusal is journaled with its explanation when the journal keeps one (intents/0006); a journal that refuses the explained row
+    // (the 0002 CHECK admitted only {code}: on 2 Nov every explained refusal rolled back and the deliveries stayed PENDING, cards
+    // "Preparing" for good) still settles the code alone, so a refused delivery never stays PENDING.
+    const settleFailed=async(code,detail)=>{
+     const attempt=outcome=>life.run(s=>journal.settle({...key,state:'FAILED',outcome,signal:s}));
+     try{await attempt(detail===undefined?{code}:{code,detail});}catch{if(detail!==undefined)try{await attempt({code});}catch{}}
+    };
     if(refusedArguments!==undefined){
-     try{await life.run(s=>journal.settle({...key,state:'FAILED',outcome:{code:'INVALID_ARGUMENTS',detail:refusedArguments},signal:s}));}catch{}
+     await settleFailed('INVALID_ARGUMENTS',refusedArguments);
      throw intentFault('INVALID_ARGUMENTS',undefined,refusedArguments);
     }
     let result,original;
@@ -102,7 +109,7 @@ export function createIntentMount(configuration){
      // from the trusted run), else the canonical schema's; any other refusal keeps the owner's own bounded detail (who answered,
      // and with what), so the journal names what happened and its replay explains itself too.
      const none=error?.effect==='none',code=none?closed(error.code):'UNKNOWN',detail=(code==='INVALID_ARGUMENTS'?intentFaultDetail(error)??explain(preparer.operation,v.arguments):intentFaultDetail(error))?.slice(0,INTENT_DETAIL_MAX);
-     try{await life.run(s=>journal.settle({...key,state:none?'FAILED':'UNKNOWN',outcome:none?{code,...(detail===undefined?{}:{detail})}:null,signal:s}));}catch{}
+     if(none)await settleFailed(code,detail);else try{await life.run(s=>journal.settle({...key,state:'UNKNOWN',outcome:null,signal:s}));}catch{}
      throw intentFault(code,undefined,detail,intentFaultReason(error));
     }
     // A lost settlement acknowledgement leaves the delivery PENDING: the result is withheld as UNKNOWN, never retried.

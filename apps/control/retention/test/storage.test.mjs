@@ -31,3 +31,27 @@ test('the storage port times out to UNKNOWN, refuses deletes without the delete 
  await assert.rejects(noDelete.deleteVersion({key:'k',versionId:'v1'}),/RETENTION_STORAGE_PERMISSION/);
  assert.throws(()=>createVersionStorage({send:b.send,bucket:'synthetic-bucket',expectedBucketOwner:'bad',permissions:full,now:Date.now}),/RETENTION_CONFIGURATION/);
 });
+test('holds: a version with no legal hold or retention answers 404 NoSuchObjectLockConfiguration, which is "none", while 403 stays unavailable',async()=>{
+ // The live upload bucket has Object Lock enabled with a 7-day GOVERNANCE default rule: every original carries a
+ // retention date, and S3 answers GetObjectLegalHold for it with 404 NoSuchObjectLockConfiguration because no legal
+ // hold was ever placed. That answer is the explicit no-hold observation for this exact version; treating it as
+ // unavailable turned every removal into a 503 unknown outcome and left the record in `removing`.
+ const lockMissing=()=>Object.assign(new Error('NoSuchObjectLockConfiguration'),{name:'NoSuchObjectLockConfiguration',$metadata:{httpStatusCode:404}});
+ const answers={retention:'governance',legal:'missing'};
+ const send=async({operation,input})=>{
+  if(operation==='HeadObject')return {VersionId:input.VersionId,DeleteMarker:false,$metadata:{httpStatusCode:200}};
+  if(operation==='GetObjectRetention'){if(answers.retention==='missing')throw lockMissing();if(answers.retention==='forbidden')throw err(403,'AccessDenied');
+   return {Retention:{Mode:'GOVERNANCE',RetainUntilDate:new Date(Date.now()+7*86400000).toISOString()},$metadata:{httpStatusCode:200}};}
+  if(operation==='GetObjectLegalHold'){if(answers.legal==='missing')throw lockMissing();if(answers.legal==='forbidden')throw err(403,'AccessDenied');
+   return {LegalHold:{Status:answers.legal},$metadata:{httpStatusCode:200}};}
+  throw new Error('unexpected '+operation);
+ };
+ const storage=createVersionStorage({send,bucket:'synthetic-bucket',expectedBucketOwner:'967807252336',permissions:full,now:Date.now});
+ const held=await storage.holdsFor({key:'k',versionId:'v1'});
+ assert.equal(held.legalHold,false,'a missing legal-hold configuration is no legal hold');
+ assert.ok(held.objectLockRetainUntilMs>Date.now(),'the default-rule retention date is still observed');
+ answers.retention='missing';assert.deepEqual(await storage.holdsFor({key:'k',versionId:'v1'}),{objectLockRetainUntilMs:null,legalHold:false},'neither configured is no hold at all');
+ answers.legal='ON';assert.equal((await storage.holdsFor({key:'k',versionId:'v1'})).legalHold,true);
+ answers.legal='forbidden';await assert.rejects(storage.holdsFor({key:'k',versionId:'v1'}),/RETENTION_STORAGE_UNAVAILABLE/,'a denied read is never an invented no-hold');
+ answers.legal='OFF';answers.retention='forbidden';await assert.rejects(storage.holdsFor({key:'k',versionId:'v1'}),/RETENTION_STORAGE_UNAVAILABLE/);
+});

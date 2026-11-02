@@ -104,14 +104,14 @@ export function createControlRouteApplications({assembly,candidate,router=null,p
 }
 
 /** Do not expose public first-chat routes until their private native route is listening. */
-export async function listenControlApplications({configuration,publicApplication,privateApplication,readiness,signal,listen,checkStartup=()=>{}}){
+export async function listenControlApplications({configuration,publicApplication,privateApplication,readiness,signal,listen,checkStartup=()=>{},sourceCommit}){
  if(typeof checkStartup!=='function'||typeof listen!=='function'||typeof publicApplication?.handle!=='function'||privateApplication!==null&&typeof privateApplication?.handle!=='function')throw Error('PRIVATE_CONTROL_CONFIGURATION');
- let publicListener,privateListener;
+ let publicListener,privateListener;const liveness=sourceCommit===undefined?{}:{sourceCommit};
  try{
   checkStartup();
-  if(privateApplication!==null){privateListener=await listen({configuration:{...configuration,http:configuration.privateHttp},application:privateApplication,readiness,...(signal?{signal}:{})});checkStartup();}
-  // With a private listener, readiness details are served only there; the public host gets liveness.
-  publicListener=await listen({configuration,application:publicApplication,readiness,exposeReadiness:privateApplication===null,...(signal?{signal}:{})});checkStartup();
+  if(privateApplication!==null){privateListener=await listen({configuration:{...configuration,http:configuration.privateHttp},application:privateApplication,readiness,...liveness,...(signal?{signal}:{})});checkStartup();}
+  // With a private listener, readiness details are served only there; the public host gets liveness, which names the serving source.
+  publicListener=await listen({configuration,application:publicApplication,readiness,exposeReadiness:privateApplication===null,...liveness,...(signal?{signal}:{})});checkStartup();
   return {publicListener,privateListener};
  }catch(error){
   // A failed public bind must retire the already-open private listener before startup returns.

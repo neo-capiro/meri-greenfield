@@ -5,7 +5,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {z} from 'zod';
 import {INTENT_ROWS,intentDescriptor} from '../catalog.mjs';
-import {canonicalIntentInputSchema,intentRowArguments,intentToolArguments} from '../schema.mjs';
+import {canonicalIntentInputSchema,intentRowArguments,intentRowBinding,intentToolArguments,SCHEDULE_CADENCES,SCHEDULE_DEFAULTS} from '../schema.mjs';
+import {validators as scheduleValidators} from '../../../../../packages/contracts/test/schedule-tool-interface-fixtures.mjs';
 import {watchValidators,validateShape} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {WATCH_SUPPORTED,WATCH_TARGET_KINDS} from '../../../../../packages/contracts/retrieval-0.2/watch-action-validation.mjs';
 const CONFIGURATION=error=>error?.code==='INTENT_SCHEMA_CONFIGURATION';
@@ -24,7 +25,8 @@ test('every intent row advertises its canonical schema, a declared narrowing, or
   watch_research_portfolio:'declared',update_research_portfolio_change_state:'declared',create_research_portfolio_bookmark:'declared',add_research_portfolio_review_note:'declared',
   prepare_research_portfolio_brief:'declared',prepare_research_portfolio_meeting:'declared',
   create_word:'declared',create_excel:'declared',create_powerpoint:'declared',run_analysis:'record',
-  schedule_task:'record',update_scheduled_task:'record',cancel_scheduled_task:'canonical',
+  // The schedule request is bound: plain fields the run completes into the canonical routine request (`bindScheduleTask`).
+  schedule_task:'bound',update_scheduled_task:'record',cancel_scheduled_task:'canonical',
   create_task:'canonical',update_task:'canonical',save_memory:'declared',save_chat_attachments:'declared',propose_office_edit:'canonical'});
  // A tool is only as precise as its least precise row: one record row keeps the tool's open record.
  assert.equal(intentToolArguments([row('create_excel')]).mode,'declared');
@@ -32,6 +34,7 @@ test('every intent row advertises its canonical schema, a declared narrowing, or
  assert.equal(intentToolArguments([row('run_analysis')]).mode,'record');
  assert.equal(intentToolArguments([row('create_word'),row('create_excel'),row('create_powerpoint')]).mode,'declared');
  assert.equal(intentToolArguments([row('update_scheduled_task'),row('cancel_scheduled_task')]).mode,'record');
+ assert.equal(intentToolArguments([row('schedule_task')]).mode,'bound');
  for(const rows of [[],undefined])assert.throws(()=>intentToolArguments(rows));
 });
 
@@ -52,7 +55,7 @@ test('the open record is what a row advertises only while its canonical schema c
  // A row with no proved canonical contract keeps the record, and it advertises no field contract.
  assert.equal(advertised('run_analysis').properties,undefined);
  assert.equal(parses(z.fromJSONSchema(advertised('run_analysis')),{anything:'at all'}),true);
- assert.equal(advertised('schedule_task').properties,undefined);
+ assert.equal(advertised('update_scheduled_task').properties,undefined);
 });
 
 test('the mail tool asks only for the message: client and sending mailbox come from the trusted run',()=>{
@@ -155,4 +158,45 @@ test('a schema document that does not match the descriptor byte pin fails closed
   {id:'urn:meri:commands:unknown:0.2.0#/$defs/Anything',sha256:inputSchema.sha256},{id:inputSchema.id},{}])
   assert.throws(()=>canonicalIntentInputSchema(tampered),CONFIGURATION,JSON.stringify(tampered));
  assert.throws(()=>intentRowArguments({operation:{id:'save_memory'}}),CONFIGURATION);
+});
+
+test('the schedule tool asks for cadence, day, time and time zone; the run completes the routine request its owner validates',()=>{
+ // 2 Nov: schedule_task advertised an open record, the model assembled three different policy shapes and the routine owner
+ // refused every one (ROUTINES_INVALID_REQUEST). The plain fields are advertised; the completion is proved against the owner's
+ // own 0.2 tool-interface validators, which the control preparer mounts (`apps/control/schedules/application.mjs`).
+ const resolved=intentRowArguments(row('schedule_task')),schema=advertised('schedule_task'),bind=intentRowBinding(row('schedule_task'));
+ assert.equal(resolved.mode,'bound');assert.equal(typeof bind,'function');
+ assert.deepEqual(Object.keys(schema.properties),['taskInstruction','cadence','day','time','timezone']);
+ assert.deepEqual(schema.required,['taskInstruction','cadence','time']);assert.equal(schema.additionalProperties,false);
+ assert.deepEqual(schema.properties.cadence.enum,[...SCHEDULE_CADENCES]);
+ const brief={taskInstruction:'Summarize new committee activity for the selected client.'};
+ const samples=[
+  [{...brief,cadence:'weekly',day:'monday',time:'09:00',timezone:'America/New_York'},{dayOfWeek:[{start:'MONDAY',end:'MONDAY',step:1}],dayOfMonth:'*',hour:9,minute:0,timezone:'America/New_York',note:'Every Monday at 09:00 America/New_York'}],
+  [{...brief,cadence:'daily',time:'07:30'},{dayOfWeek:'*',dayOfMonth:'*',hour:7,minute:30,timezone:'UTC',note:'Every day at 07:30 UTC'}],
+  [{...brief,cadence:'weekdays',time:'18:45',timezone:'Europe/Berlin'},{dayOfWeek:[{start:'MONDAY',end:'FRIDAY',step:1}],dayOfMonth:'*',hour:18,minute:45,timezone:'Europe/Berlin',note:'Every weekday at 18:45 Europe/Berlin'}],
+  [{...brief,cadence:'monthly',day:1,time:'00:00'},{dayOfWeek:'*',dayOfMonth:[{start:1,end:1,step:1}],hour:0,minute:0,timezone:'UTC',note:'Monthly on day 1 at 00:00 UTC'}],
+ ];
+ for(const [args,expected] of samples){
+  assert.equal(parses(resolved.arguments,args),true,JSON.stringify(args));
+  const request=bind(args),normalized=scheduleValidators.normalizeRequest('schedule_task',request);
+  // The one destination the routine policy admits (SCHEDULED_MERI_INBOX_DESTINATION, `apps/control/schedules/scheduled-conversation-currentness.mjs`).
+  assert.equal(normalized.destinationReference,'meri-inbox');assert.equal(SCHEDULE_DEFAULTS.destinationReference,'meri-inbox');
+  assert.deepEqual(normalized.requestedLimits,SCHEDULE_DEFAULTS.requestedLimits);
+  const [calendar]=request.policy.spec.calendars;
+  assert.deepEqual({dayOfWeek:calendar.dayOfWeek,dayOfMonth:calendar.dayOfMonth,hour:calendar.hour[0].start,minute:calendar.minute[0].start,timezone:request.policy.spec.timezone,note:request.policy.note},expected);
+  assert.deepEqual([calendar.second,calendar.month,calendar.year,calendar.comment],[[{start:0,end:0,step:1}],'*','*',expected.note]);
+  assert.deepEqual([request.policy.spec.intervals,request.policy.spec.cronExpressions,request.policy.overlap,request.policy.pauseOnFailure,request.policy.runNow],[[],[],'SKIP',true,false]);
+  assert.deepEqual(bind(args),request,'deterministic: a replay of the delivery binds the same request');
+ }
+ // Admitted by the advertised fields but incomplete for the cadence: refused with the field named, never guessed.
+ for(const [args,detail] of [[{...brief,cadence:'weekly',time:'09:00'},'day: a weekly routine names its weekday'],
+  [{...brief,cadence:'monthly',day:'monday',time:'09:00'},'day: a monthly routine names its day of the month, 1 to 28'],
+  [{...brief,cadence:'daily',day:'monday',time:'09:00'},'day: only weekly and monthly routines take a day']]){
+  assert.equal(parses(resolved.arguments,args),true);
+  assert.throws(()=>bind(args),error=>error.code==='INVALID_ARGUMENTS'&&error.detail===detail);
+ }
+ for(const bad of [{...brief,cadence:'weekly',day:'monday',time:'9:00'},{...brief,cadence:'hourly',time:'09:00'},{...brief,cadence:'monthly',day:29,time:'09:00'},
+  {...brief,cadence:'daily',time:'09:00',timezone:'not a zone!'},{...brief,cadence:'daily',time:'09:00',policy:{}},{cadence:'daily',time:'09:00'}])assert.equal(parses(resolved.arguments,bad),false,JSON.stringify(bad));
+ // The change rows are not bound: the change tool keeps its open record until its rows are projected too.
+ assert.equal(intentRowBinding(row('update_scheduled_task')),undefined);assert.equal(intentRowBinding(row('create_task')),undefined);
 });
