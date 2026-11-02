@@ -5,6 +5,7 @@ import {assertHostAllocation,assertHostRunBinding,assertD005HostIdentity} from '
 import {hostClientDnsName} from '../../worker/conversation/host/control/protocol.mjs';
 import {privateAddress,dnsName,fingerprint,checkedCertificate} from '../../worker/conversation/host/control/tls.mjs';
 import {NATIVE_DECLARATION_V2,nativeObserverDeadline} from '../../../packages/contracts/native-observer.mjs';
+import {PROVISIONED_HOST_MODES} from '../../../packages/contracts/native-lifecycle.mjs';
 import {readNativePhysicalRow} from './native-physical-state.mjs';
 import {assertNativeBootstrapAdmission} from './native-reservations.mjs';
 export const fail=()=>{throw Object.assign(Error('BROWSER_HOST_ALLOCATION_REFUSED'),{code:'BROWSER_HOST_ALLOCATION_REFUSED'});};
@@ -18,7 +19,7 @@ export function hostKey(raw){const value=data(own(raw,['hostId','generation']));
 function serverCeiling(allocation,row){
  const lease=allocation.leaseDeadlineMs;
  if(row?.declaration_json?.schema!==NATIVE_DECLARATION_V2)return lease;
- if(allocation.hostMode!=='native-processing'||!same(row.allocation_json,allocation))fail();
+ if(!PROVISIONED_HOST_MODES.includes(allocation.hostMode)||!same(row.allocation_json,allocation))fail();
  const slots=readNativePhysicalRow(row,{hostId:allocation.hostId,generation:allocation.generation,
   originalBindingSha256:hash(row.original_binding_json),declarationSha256:row.declaration_sha256});
  const c=slots.context.managed.deadlineMs,p=row.bootstrap_prepare_json,i=row.bootstrap_install_json;

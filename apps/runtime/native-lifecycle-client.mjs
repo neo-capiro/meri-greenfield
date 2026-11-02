@@ -8,7 +8,7 @@ import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
 import {nativeObserverDeadline} from '../../packages/contracts/native-observer.mjs';
 import {NATIVE_LIFECYCLE_PATH,NATIVE_LIFECYCLE_SCHEMA,NATIVE_LIFECYCLE_MAX_MS,
- NATIVE_LIFECYCLE_BODY_BYTES,assertNativeHostAllocation,assertHostRunBindingPin,assertD005HostIdentityShape,
+ NATIVE_LIFECYCLE_BODY_BYTES,assertProvisionedHostAllocation,assertHostRunBindingPin,assertD005HostIdentityShape,
  nativeLifecycleCloseAnswer,nativeAbsenceRecord} from '../../packages/contracts/native-lifecycle.mjs';
 
 const fault=code=>{throw Object.assign(new Error(code),{code});};
@@ -32,7 +32,9 @@ function readBody(stream,limit,signal){
 
 export function createNativeLifecycleClient({allocation,binding,hostIdentity,endpoint,tls,now=Date.now,
  requestMs=10000,httpsModule=https}={}){
- const a=assertNativeHostAllocation(allocation),b=assertHostRunBindingPin(a,binding),i=assertD005HostIdentityShape(hostIdentity,b,a);
+ const a=assertProvisionedHostAllocation(allocation),b=assertHostRunBindingPin(a,binding),i=assertD005HostIdentityShape(hostIdentity,b,a);
+ // The host's process scope follows its purpose; the browser-only host observes its browser descendants.
+ const processScope=a.hostMode==='browser-only'?'browser-host-descendants':'native-processing-descendants';
  if(!endpoint||!tls||typeof httpsModule?.request!=='function'||!Number.isSafeInteger(requestMs)||
   requestMs<1||requestMs>NATIVE_LIFECYCLE_MAX_MS)throw Error('NATIVE_LIFECYCLE_CONFIGURATION');
  // Public configuration is validated BEFORE any sensitive bytes are copied. The protected Control peer
@@ -93,7 +95,8 @@ export function createNativeLifecycleClient({allocation,binding,hostIdentity,end
     maxFreshMs:NATIVE_LIFECYCLE_MAX_MS});
    if(answer===null)return Object.freeze({status:'unknown'});
    if(answer.status!=='closed')return Object.freeze({status:'unknown'});
-   return Object.freeze({status:'closed',closed:true,observedAtMs:answer.quiescedAtMs});
+   return Object.freeze({status:'closed',closed:true,observedAtMs:answer.quiescedAtMs,
+    ...(answer.browserEgress===undefined?{}:{browserEgress:answer.browserEgress}),...(answer.browserState===undefined?{}:{browserState:answer.browserState})});
   },
   /** Local owner disposal, distinct from remote close: abort in-flight work, refuse future exchanges and zero
    * ONLY the copies this client made. Borrowed TLS buffers and the transport are never mutated. Idempotent. */
@@ -107,7 +110,7 @@ export function createNativeLifecycleClient({allocation,binding,hostIdentity,end
     'scope','exited','remainingPids']);}catch{fault('NATIVE_LIFECYCLE_UNKNOWN');}
    if(r.schema!=='meri-d005-process-absence/1'||!HEX.test(r.allocationSha256)||!digestMatch(r)||
     !Number.isSafeInteger(r.observedAtMs)||r.observedAtMs>now()||r.observedAtMs<now()-NATIVE_LIFECYCLE_MAX_MS||
-    r.scope!=='native-processing-descendants'||r.exited!==true||!Array.isArray(r.remainingPids)||r.remainingPids.length!==0)
+    r.scope!==processScope||r.exited!==true||!Array.isArray(r.remainingPids)||r.remainingPids.length!==0)
     fault('NATIVE_LIFECYCLE_UNKNOWN');
    return Object.freeze({schema:r.schema,allocationSha256:r.allocationSha256,bindingSha256:r.bindingSha256,
     hostIdentitySha256:r.hostIdentitySha256,observedAtMs:r.observedAtMs,scope:r.scope,exited:true,

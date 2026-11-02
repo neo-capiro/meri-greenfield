@@ -4,7 +4,7 @@
 import {canonicalJson,canonicalSha256 as hash} from './validate.mjs';
 import {privateAddress,dnsName,sha256Der,canonicalCertificatePem} from './native-tls-kernel.mjs';
 import {own} from './commands-0.2/execution-boundary.mjs';
-import {assertNativeHostAllocation,assertHostRunBindingPin} from './native-lifecycle.mjs';
+import {assertProvisionedHostAllocation,assertHostRunBindingPin} from './native-lifecycle.mjs';
 import {NATIVE_DECLARATION_V2,nativeObserverDeadline} from './native-observer.mjs';
 
 export const NATIVE_BOOTSTRAP_OPERATION_SCHEMA='meri-native-bootstrap-operation/1';
@@ -72,8 +72,8 @@ function assertScope(raw,{reservation,specSha256}={}){
  const scopeKeys=['allocation','originalBinding','ownerInstanceId','instanceId','endpoint','source','declarationSha256','bootstrapSpecSha256'];
  const s=closed(raw,Object.hasOwn(raw??{},'cleanupCeilingMs')?[...scopeKeys,'cleanupCeilingMs']:scopeKeys);
  nativeBootstrapCleanupCeiling(s);
- const a=assertNativeHostAllocation(s.allocation),b=assertHostRunBindingPin(a,s.originalBinding);
- if(a.hostMode!=='native-processing'||!UUID.test(s.ownerInstanceId)||!INSTANCE.test(s.instanceId)||
+ const a=assertProvisionedHostAllocation(s.allocation),b=assertHostRunBindingPin(a,s.originalBinding);
+ if(!UUID.test(s.ownerInstanceId)||!INSTANCE.test(s.instanceId)||
   !HEX64.test(s.declarationSha256)||!HEX64.test(s.bootstrapSpecSha256))refuse('NATIVE_BOOTSTRAP_SCOPE_REFUSED');
  const e=closed(s.endpoint,['address','port','serverName']);
  if(!isPrivate(e.address)||!Number.isSafeInteger(e.port)||e.port<1||e.port>65535||!text(e.serverName,1,253))
@@ -178,7 +178,7 @@ export function assertNativeBootstrapRequest(request,{reservation,step}={}){
  if(!NATIVE_BOOTSTRAP_STEPS.includes(step)||reservation===undefined)refuse('NATIVE_BOOTSTRAP_REQUEST_REFUSED');
  const ctx=structuralRequest(request);
  if(ctx.step!==step)refuse('NATIVE_BOOTSTRAP_REQUEST_REFUSED');
- const a=assertNativeHostAllocation(reservation.allocation);
+ const a=assertProvisionedHostAllocation(reservation.allocation);
  if(ctx.payload.operationId!==nativeBootstrapOperationId({hostId:a.hostId,generation:a.generation,step}))refuse('NATIVE_BOOTSTRAP_OPERATION_REFUSED');
  const specSha=hash(ctx.bootstrapSpec),declSpec=reservation.declaration?.bootstrapSpec;
  if(declSpec===undefined||hash(assertNativeBootstrapSpec(declSpec))!==specSha)refuse('NATIVE_BOOTSTRAP_SCOPE_REFUSED');

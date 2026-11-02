@@ -50,12 +50,14 @@ export function createNativeObserverRuntime({pool,now=Date.now,createSession=cre
    if(rows?.length!==1)fail();const row=rows[0],key=keyFor(row),state=readNativePhysicalRow(row,key);assertPlacement(row);return {row,key,state};
   },{unavailable:'NATIVE_PHYSICAL_REFUSED',uncertain:'NATIVE_PHYSICAL_COMMIT_UNKNOWN'});
  }
+ /** `expected` is one placement or the list of placements this Control deploys (one AMI per provisioned purpose). */
  function assertPlacement(row){
   if(expected===null)return;
   const d=row.declaration_json;
-  if(hash(expected)!==hash({accountId:d.accountId,region:d.region,amiId:d.launch.ImageId,vpcId:d.placement.vpcId,
+  const actual=hash({accountId:d.accountId,region:d.region,amiId:d.launch.ImageId,vpcId:d.placement.vpcId,
    subnetId:d.placement.subnetId,securityGroupId:d.placement.securityGroupIds.length===1?d.placement.securityGroupIds[0]:null,
-   rootDeviceName:'/dev/xvda'}))fail();
+   rootDeviceName:'/dev/xvda'});
+  if(!(Array.isArray(expected)?expected:[expected]).some(e=>hash(e)===actual))fail();
  }
  function session(row,key,phase,deadlineMs,signal){
   const sessionId=randomUUID();let sdk=null;

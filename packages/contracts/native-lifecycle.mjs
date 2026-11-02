@@ -18,6 +18,8 @@ const DIGEST=/^sha256:[a-f0-9]{64}$/u;
 const refuse=code=>{throw Object.assign(new Error(code),{code});};
 const record=(value,required,optional=[])=>{try{return own(data(value),required,optional);}catch{refuse('HOST_BINDING_REFUSED');}};
 
+/** Purposes that go through the provisioned host lifecycle (reserve, dispatch, bootstrap, admit, teardown). */
+export const PROVISIONED_HOST_MODES=Object.freeze(['native-processing','browser-only']);
 /** Generic immutable allocation shape (purpose guard is applied by the caller). */
 export function assertHostAllocationShape(value){
  const a=record(value,['schema','tenantId','conversationId','generation','hostId','imageDigest','leaseDeadlineMs'],['hostMode']);
@@ -31,6 +33,12 @@ export function assertHostAllocationShape(value){
 export function assertNativeHostAllocation(value){
  const a=assertHostAllocationShape(value);
  if(a.hostMode!=='native-processing')refuse('HOST_BINDING_REFUSED');
+ return a;
+}
+/** An allocation of either provisioned purpose; legacy (absent hostMode) rows never reach the provisioned path. */
+export function assertProvisionedHostAllocation(value){
+ const a=assertHostAllocationShape(value);
+ if(!PROVISIONED_HOST_MODES.includes(a.hostMode))refuse('HOST_BINDING_REFUSED');
  return a;
 }
 export function assertHostRunBindingPin(allocation,binding){
@@ -48,19 +56,20 @@ export function assertD005HostIdentityShape(value,binding,allocation){
  return Object.freeze(i);
 }
 
-/** Closed request: exactly schema/action/allocation/binding/hostIdentity; the protected image is ALWAYS required. */
+/** Closed request: exactly schema/action/allocation/binding/hostIdentity; the protected image is ALWAYS required. The
+ * host serves exactly its own provisioned purpose: the request's `hostMode` must equal the installed allocation's. */
 export function nativeLifecycleRequest(raw,{config}={}){
  let r;try{r=own(data(raw),['schema','action','allocation','binding','hostIdentity']);}catch{refuse('NATIVE_LIFECYCLE_REFUSED');}
  if(r.schema!==NATIVE_LIFECYCLE_SCHEMA||!NATIVE_LIFECYCLE_ACTIONS.includes(r.action))refuse('NATIVE_LIFECYCLE_REFUSED');
  const trusted=config?.allocation,trustedBinding=config?.binding;
  if(trusted===undefined||trustedBinding===undefined)refuse('NATIVE_LIFECYCLE_CONFIGURATION');
  if(typeof config?.image?.digest!=='string'||!DIGEST.test(config.image.digest))refuse('NATIVE_LIFECYCLE_CONFIGURATION');
- const allocation=assertNativeHostAllocation(r.allocation);
+ const allocation=assertProvisionedHostAllocation(r.allocation);
  const binding=assertHostRunBindingPin(allocation,r.binding);
  const hostIdentity=assertD005HostIdentityShape(r.hostIdentity,binding,allocation);
  if(allocation.hostId!==trusted.hostId||allocation.generation!==trusted.generation||
   allocation.tenantId!==trusted.tenantId||allocation.conversationId!==trusted.conversationId||
-  allocation.hostMode!=='native-processing'||allocation.hostMode!==trusted.hostMode||
+  allocation.hostMode!==trusted.hostMode||
   allocation.leaseDeadlineMs!==trusted.leaseDeadlineMs||
   hostIdentity.instanceId!==trusted.instanceId||hostIdentity.bootId!==trusted.bootId||
   binding.tenantId!==trusted.tenantId||binding.conversationId!==trusted.conversationId||
@@ -78,9 +87,11 @@ export function nativeAbsenceRecord(value){
  return Object.freeze(r);
 }
 
-/** Closed remote close answer: status 'closed'|'unknown' (never {closed:true}), exact hashes and fresh time. */
+/** Closed remote close answer: status 'closed'|'unknown' (never {closed:true}), exact hashes and fresh time. A browser-only
+ * host adds what its close settled locally: `browserEgress` ('closed'|'unknown') and `browserState` ('disposed'|'unknown'). */
 export function nativeLifecycleCloseAnswer(value,{allocation,binding,hostIdentity,nowMs,maxFreshMs=30000}){
- let r;try{r=own(data(value),['schema','action','status','allocationSha256','bindingSha256','hostIdentitySha256','quiescedAtMs']);}catch{return null;}
+ let r;try{r=own(data(value),['schema','action','status','allocationSha256','bindingSha256','hostIdentitySha256','quiescedAtMs'],['browserEgress','browserState']);}catch{return null;}
+ if(r.browserEgress!==undefined&&!['closed','unknown'].includes(r.browserEgress)||r.browserState!==undefined&&!['disposed','unknown'].includes(r.browserState))return null;
  if(r.schema!==NATIVE_LIFECYCLE_SCHEMA||r.action!=='close'||!['closed','unknown'].includes(r.status)||
   r.allocationSha256!==canonicalSha256(allocation)||r.bindingSha256!==canonicalSha256(binding)||
   r.hostIdentitySha256!==canonicalSha256(hostIdentity)||!Number.isSafeInteger(r.quiescedAtMs)||

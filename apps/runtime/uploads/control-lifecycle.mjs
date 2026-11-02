@@ -98,7 +98,7 @@ export function compileUploadNativeConfiguration(configuration){
   // allocation/identity/binding/endpoint come from the canonical allocation reader for the saved upload.
   // EXACT closed shape for a host declaration: enabled/host/policySha256 only; nested host: tls/maxRequestMs only.
   requireValue(Object.keys(native).length===3);
-  let h;try{h=own(native.host,['tls'],['maxRequestMs','deployment','observer']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
+  let h;try{h=own(native.host,['tls'],['maxRequestMs','deployment','observer','browserDeployment']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
   if(h.maxRequestMs!==undefined)requireValue(integer(h.maxRequestMs,1,30000));
   let tlsRefs;try{tlsRefs=own(h.tls,['caPath','certPath','keyPath'],['clientName']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
   for(const k of ['caPath','certPath','keyPath'])absolute(tlsRefs[k]);
@@ -121,6 +121,13 @@ export function compileUploadNativeConfiguration(configuration){
     d.rootDeviceName==='/dev/xvda');
    deployment=Object.freeze({...d});
   }
+  // The browser-only purpose shares every placement fact but its AMI (the browser host image).
+  let browserDeployment;
+  if(h.browserDeployment!==undefined){
+   let bd;try{bd=own(h.browserDeployment,['amiId']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
+   requireValue(deployment!==undefined&&typeof bd.amiId==='string'&&bd.amiId.startsWith('ami-')&&/^ami-(?:[0-9a-f]{8}|[0-9a-f]{17})$/u.test(bd.amiId));
+   browserDeployment=Object.freeze({amiId:bd.amiId});
+  }
   let observer;
   if(h.observer!==undefined){
    let o;try{o=own(h.observer,['keyId','keyPath']);}catch{throw uploadFault('UPLOAD_NATIVE_CONFIGURATION');}
@@ -128,7 +135,7 @@ export function compileUploadNativeConfiguration(configuration){
    requireValue(deployment!==undefined);observer=Object.freeze({...o});
   }
   return Object.freeze({enabled:true,host:Object.freeze({tls:Object.freeze({...tlsRefs}),
-   maxRequestMs:h.maxRequestMs??3000,...(deployment===undefined?{}:{deployment}),...(observer===undefined?{}:{observer}),policySha256:native.policySha256}),
+   maxRequestMs:h.maxRequestMs??3000,...(deployment===undefined?{}:{deployment}),...(browserDeployment===undefined?{}:{browserDeployment}),...(observer===undefined?{}:{observer}),policySha256:native.policySha256}),
    policySha256:native.policySha256});
  }
  if(native.agentcore!==undefined){

@@ -1,9 +1,10 @@
-/** Same-row native pre-effect ownership on the EXISTING host_allocations key. Shape/state only: no provider,
- * SSM or issuer work happens in these transactions. Caller/authority checks are supplied by the canonical owner. */
+/** Same-row pre-effect ownership on the EXISTING host_allocations key for both provisioned purposes (native-processing
+ * and browser-only; migration 0008). Shape/state only: no provider, SSM or issuer work happens in these transactions.
+ * Caller/authority checks are supplied by the canonical owner. */
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {transact} from '../product-persistence/transaction.mjs';
-import {assertNativeHostAllocation,assertHostRunBindingPin,assertD005HostIdentityShape} from
+import {assertProvisionedHostAllocation,assertHostRunBindingPin,assertD005HostIdentityShape,PROVISIONED_HOST_MODES} from
  '../../../packages/contracts/native-lifecycle.mjs';
 import {privateAddress} from '../../../packages/contracts/native-tls-kernel.mjs';
 import {NATIVE_DECLARATION_V2,NATIVE_OBSERVER_TAG_POLICY,assertNativeObserver,assertNativeObserverPlacement,assertNativeObserverInput} from '../../../packages/contracts/native-observer.mjs';
@@ -15,7 +16,7 @@ const HEX64=/^[0-9a-f]{64}$/u,UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[8
  INSTANCE=/^i-(?:[0-9a-f]{8}|[0-9a-f]{17})$/u;
 const fail=()=>{throw Object.assign(Error('BROWSER_HOST_ALLOCATION_REFUSED'),{code:'BROWSER_HOST_ALLOCATION_REFUSED'});};
 const empty=()=>{throw Object.assign(Error('BROWSER_HOST_ALLOCATION_UNKNOWN'),{code:'BROWSER_HOST_ALLOCATION_UNKNOWN'});};
-const PURPOSE='native-processing',STEPS=['prepare','install'];
+const STEPS=['prepare','install'];
 
 export const NATIVE_RESERVATION_SQL=Object.freeze({
  reserveObserver:`INSERT INTO meri_host_control.host_allocations(host_id,generation,tenant_id,conversation_id,allocation_json,
@@ -135,9 +136,9 @@ export async function requireCurrentNativeAuthority(fn,client,{allocation,bindin
 }
 
 function rowReservation(row){
- const allocation=assertNativeHostAllocation(row.allocation_json);
+ const allocation=assertProvisionedHostAllocation(row.allocation_json);
  const originalBinding=assertHostRunBindingPin(allocation,row.original_binding_json);
- if(allocation.hostMode!==PURPOSE||row.declaration_sha256!==hash(row.declaration_json))fail();
+ if(row.declaration_sha256!==hash(row.declaration_json))fail();
  const declaration=assertNativeDeclaration(row.declaration_json);
  assertNativeObserverAllocationJoin(allocation,declaration);
  const observed=row.observed_instance_json===null||row.observed_instance_json===undefined?null:
@@ -158,7 +159,7 @@ export function assertNativeObserverAllocationJoin(allocation,declaration){
  if(declaration.schema!==NATIVE_DECLARATION_V2)return;
  const i=declaration.watchdog.input;
  if(i.hostId!==allocation.hostId||i.generation!==allocation.generation||i.allocationSha256!==hash(allocation)||
-  i.imageDigest!==allocation.imageDigest||i.leaseDeadlineMs!==allocation.leaseDeadlineMs||allocation.hostMode!==PURPOSE)fail();
+  i.imageDigest!==allocation.imageDigest||i.leaseDeadlineMs!==allocation.leaseDeadlineMs||!PROVISIONED_HOST_MODES.includes(allocation.hostMode))fail();
 }
 
 /** Require the canonical successful prepare+install bootstrap custody before native activation. */
@@ -234,7 +235,7 @@ export function createNativeReservationOwner({pool,now=Date.now,readCurrentAutho
    const {allocation:rawAllocation,originalBinding:rawBinding,ownerInstanceId,declaration:rawDeclaration,signal}=
     own(raw,['allocation','originalBinding','ownerInstanceId','declaration'],['signal']);
    nativeSignal(signal);
-   const allocation=assertNativeHostAllocation(rawAllocation),binding=assertHostRunBindingPin(allocation,rawBinding);
+   const allocation=assertProvisionedHostAllocation(rawAllocation),binding=assertHostRunBindingPin(allocation,rawBinding);
    if(typeof ownerInstanceId!=='string'||!UUID.test(ownerInstanceId))fail();
    const declaration=assertNativeDeclaration(rawDeclaration),sha=hash(declaration);
    assertNativeObserverAllocationJoin(allocation,declaration);
@@ -266,7 +267,8 @@ export function createNativeReservationOwner({pool,now=Date.now,readCurrentAutho
        hash(row.original_binding_json)!==hash(binding)||row.owner_instance_id!==ownerInstanceId)fail();
       continue;
      }
-     if(purpose==='legacy'||purpose===PURPOSE)fail();
+     // Legacy is exclusive; one unterminated host per purpose; the other provisioned purpose coexists.
+     if(purpose==='legacy'||purpose===allocation.hostMode)fail();
     }
     const observer=declaration.schema===NATIVE_DECLARATION_V2;
     const physical=observer?physicalTriplet('context',initialPhysicalContexts({allocation,binding,declaration})):[];
@@ -289,7 +291,7 @@ export function createNativeReservationOwner({pool,now=Date.now,readCurrentAutho
      [head[0].tenant_id,head[0].conversation_id]);
     const row=await locked(client,hostId,generation);
     if(row.declaration_sha256!==declarationSha256)fail();
-    const authority=await requireCurrentNativeAuthority(readCurrentAuthority,client,{allocation:assertNativeHostAllocation(row.allocation_json),
+    const authority=await requireCurrentNativeAuthority(readCurrentAuthority,client,{allocation:assertProvisionedHostAllocation(row.allocation_json),
      binding:assertHostRunBindingPin(row.allocation_json,row.original_binding_json),signal,now});
     guard.until=Math.min(row.allocation_json.leaseDeadlineMs,authority.currentUntilMs);
     if(row.state==='reserved'){
@@ -329,7 +331,7 @@ export function createNativeReservationOwner({pool,now=Date.now,readCurrentAutho
    if(!UUID.test(hostId)||!Number.isSafeInteger(generation)||generation<1)fail();
    return tx(signal,async client=>{
     const rows=(await client.query('SELECT * FROM meri_host_control.host_allocations WHERE host_id=$1 AND generation=$2 '+
-     "AND allocation_json->>'hostMode'='native-processing'",[hostId,generation])).rows;
+     "AND allocation_json->>'hostMode' IN ('native-processing','browser-only')",[hostId,generation])).rows;
     if(rows.length===0)return null;if(rows.length!==1)fail();return rowReservation(rows[0]);
    });
   },
