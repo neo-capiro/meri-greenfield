@@ -33,6 +33,10 @@ nonce=$(od -An -tx1 -N8 /dev/urandom | tr -d ' \n')
 name='' builder='' image=''
 state_instances='Name=instance-state-name,Values=pending,running,stopping,stopped'
 
+# Windows AWS CLI writes CRLF. Strip only the line-ending CR, retaining tabs, row boundaries and the CLI exit status
+# (pipefail above) for the same exact checks and cleanup parsing on either host.
+aws_cli() { aws --region "$region" --no-cli-pager "$@" | sed 's/\r$//'; }
+
 # One place for every AWS call: --plan prints it and returns the placeholder, a run executes it.
 call() {
   local placeholder=$1
@@ -41,7 +45,7 @@ call() {
     printf 'PLAN aws %s\n' "$*" >&2
     printf '%s' "$placeholder"
   else
-    aws --region "$region" --no-cli-pager "$@"
+    aws_cli "$@"
   fi
 }
 step() { printf 'STEP %s\n' "$*" >&2; }
@@ -51,21 +55,21 @@ cleanup() {
   trap - EXIT INT TERM
   if [[ $mode == run && -n $name ]]; then
     # The builder, by the id when known and by the run tag always (run-instances can succeed without the call returning).
-    ids=$(aws --region "$region" --no-cli-pager ec2 describe-instances --filters "Name=tag:MeriBakeRun,Values=$nonce" "$state_instances" \
+    ids=$(aws_cli ec2 describe-instances --filters "Name=tag:MeriBakeRun,Values=$nonce" "$state_instances" \
       --query 'Reservations[].Instances[].InstanceId' --output text 2> /dev/null) || ids=''
     ids=$(printf '%s\n' $ids $builder | grep -E '^i-[0-9a-f]{8,17}$' | sort -u | tr '\n' ' ' || true)
     if [[ -n ${ids// /} ]]; then
-      aws --region "$region" --no-cli-pager ec2 terminate-instances --instance-ids $ids > /dev/null 2>&1 || rc=1
+      aws_cli ec2 terminate-instances --instance-ids $ids > /dev/null 2>&1 || rc=1
       printf 'cleanup: terminated builder %s\n' "$ids" >&2
     fi
     # An image created by this run is recorded on any failure, found by the run tag when the id was never captured.
     if ((rc != 0)) && [[ ! -e $EVIDENCE_OUT ]]; then
       if [[ -z $image ]]; then
-        image=$(aws --region "$region" --no-cli-pager ec2 describe-images --owners self --filters "Name=tag:MeriBakeRun,Values=$nonce" \
+        image=$(aws_cli ec2 describe-images --owners self --filters "Name=tag:MeriBakeRun,Values=$nonce" \
           --query 'Images[0].ImageId' --output text 2> /dev/null || true)
       fi
       if [[ $image =~ ^ami-[0-9a-f]{8,17}$ ]]; then
-        snapshots=$(aws --region "$region" --no-cli-pager ec2 describe-images --image-ids "$image" \
+        snapshots=$(aws_cli ec2 describe-images --image-ids "$image" \
           --query 'Images[0].BlockDeviceMappings[].Ebs.SnapshotId' --output text 2> /dev/null || true)
         for id in $snapshots; do [[ $id =~ ^snap-[0-9a-f]{8,17}$ ]] && array+="\"$id\","; done
         (set -o noclobber; printf '{"schema":"meri-browser-host-ami-evidence/1","status":"FAILED_AFTER_IMAGING","amiName":"%s","amiId":"%s","snapshotIds":[%s],"run":"%s","exitCode":%s,"next":"deregister the image and delete its snapshots (tag MeriBakeRun=%s), then rerun"}\n' \
@@ -96,8 +100,8 @@ leftover=$(call '' ec2 describe-instances --filters "Name=tag:MeriBake,Values=$n
 
 step 3 resolve the AL2023 arm64 base image from the public SSM parameter and check it
 base=$(call ami-0plan ssm get-parameter --name /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-arm64 --query Parameter.Value --output text)
-described_base=$(call 'arm64 amazon ebs /dev/xvda' ec2 describe-images --image-ids "$base" --query 'Images[0].[Architecture,ImageOwnerAlias,RootDeviceType,RootDeviceName]' --output text)
-[[ $described_base == 'arm64 amazon ebs /dev/xvda' ]] || { echo "unexpected base image: $described_base" >&2; exit 1; }
+described_base=$(call $'arm64\tamazon\tebs\t/dev/xvda' ec2 describe-images --image-ids "$base" --query 'Images[0].[Architecture,ImageOwnerAlias,RootDeviceType,RootDeviceName]' --output text)
+[[ $described_base == $'arm64\tamazon\tebs\t/dev/xvda' ]] || { echo "unexpected base image: $described_base" >&2; exit 1; }
 ebs='{"Encrypted":true,"VolumeSize":30,"VolumeType":"gp3","DeleteOnTermination":true}'
 if [[ -n ${EBS_KMS_KEY_ID:-} ]]; then ebs=${ebs%\}}",\"KmsKeyId\":\"$EBS_KMS_KEY_ID\"}"; fi
 token="meri-bake-$(printf '%s' "$name$base" | sha256sum | cut -c1-24)-$nonce"

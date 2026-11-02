@@ -20,29 +20,30 @@ const SHIM=`#!/bin/bash
 # fake aws: $4 service, $5 operation (after --region us-east-1 --no-cli-pager)
 echo "$*" >> "$SHIM_STATE/calls.log"
 svc=$4 op=$5 all="$*"
+text() { if [[ \${SHIM_CRLF:-0} == 1 ]]; then printf '%s\\r\\n' "$1"; else printf '%s\\n' "$1"; fi; }
 case "$svc $op" in
- "sts get-caller-identity") echo arn:aws:iam::967807252336:user/shim ;;
- "ssm get-parameter") echo ${BASE} ;;
+ "sts get-caller-identity") text "\${SHIM_CALLER:-arn:aws:iam::967807252336:user/shim}" ;;
+ "ssm get-parameter") text ${BASE} ;;
  "ec2 describe-images")
    if [[ $all == *"Name=name,"* ]]; then :
-   elif [[ $all == *"Name=tag:MeriBakeRun"* ]]; then [[ -f $SHIM_STATE/image ]] && echo ${IMAGE} || echo None
-   elif [[ $all == *"--image-ids ${BASE}"* ]]; then echo "arm64 amazon ebs /dev/xvda"
-   elif [[ $all == *SnapshotId* ]]; then echo ${SNAPSHOT}
-   elif [[ $all == *"Images[0].State"* ]]; then echo "\${SHIM_IMAGE_STATE:-available}"
+   elif [[ $all == *"Name=tag:MeriBakeRun"* ]]; then [[ -f $SHIM_STATE/image ]] && text ${IMAGE} || text None
+   elif [[ $all == *"--image-ids ${BASE}"* ]]; then text "\${SHIM_BASE_ROW:-$'arm64\\tamazon\\tebs\\t/dev/xvda'}"; [[ \${SHIM_BASE_ERROR:-0} == 1 ]] && exit 1
+   elif [[ $all == *SnapshotId* ]]; then text ${SNAPSHOT}
+   elif [[ $all == *"Images[0].State"* ]]; then text "\${SHIM_IMAGE_STATE:-available}"
    else cat "$SHIM_DESCRIBED"; fi ;;
  "ec2 describe-instances")
-   if [[ $all == *"Name=tag:MeriBakeRun"* ]]; then [[ -f $SHIM_STATE/instance && ! -f $SHIM_STATE/terminated ]] && echo ${INSTANCE}; true
-   elif [[ -n \${SHIM_LEFTOVER:-} ]]; then echo ${INSTANCE}; fi ;;
+   if [[ $all == *"Name=tag:MeriBakeRun"* ]]; then [[ -f $SHIM_STATE/instance && ! -f $SHIM_STATE/terminated ]] && text ${INSTANCE}; true
+   elif [[ -n \${SHIM_LEFTOVER:-} ]]; then text ${INSTANCE}; fi ;;
  "ec2 run-instances")
    touch "$SHIM_STATE/instance"
-   case "\${SHIM_RUN_INSTANCES:-ok}" in ok) echo ${INSTANCE} ;; error) echo "RequestExpired" >&2; exit 1 ;; garbage) echo None ;; esac ;;
- "ec2 create-image") touch "$SHIM_STATE/image"; echo ${IMAGE} ;;
- "ec2 terminate-instances") touch "$SHIM_STATE/terminated"; echo "terminated" ;;
- "ec2 describe-volumes") echo 0 ;;
- "ssm describe-instance-information") echo Online ;;
- "ssm send-command") echo cmd-1 ;;
+   case "\${SHIM_RUN_INSTANCES:-ok}" in ok) text ${INSTANCE} ;; error) echo "RequestExpired" >&2; exit 1 ;; garbage) text None ;; esac ;;
+ "ec2 create-image") touch "$SHIM_STATE/image"; text ${IMAGE} ;;
+ "ec2 terminate-instances") touch "$SHIM_STATE/terminated"; text "terminated" ;;
+ "ec2 describe-volumes") text 0 ;;
+ "ssm describe-instance-information") text Online ;;
+ "ssm send-command") text cmd-1 ;;
  "ssm get-command-invocation")
-   if [[ $all == *StandardOutputContent* ]]; then cat "$SHIM_REPORT"; else echo "\${SHIM_STATUS:-Success}"; fi ;;
+   if [[ $all == *StandardOutputContent* ]]; then text "$(cat "$SHIM_REPORT")"; else text "\${SHIM_STATUS:-Success}"; fi ;;
  *) : ;;
 esac
 exit 0
@@ -80,6 +81,29 @@ test('a clean run terminates the builder once, images it, and leaves a success r
  assert.ok(calls.findIndex(c=>c.includes('create-image'))<calls.findIndex(c=>c.includes('modify-image-attribute --image-id '+IMAGE)));
  const body=JSON.parse(readFileSync(evidence,'utf8'));
  assert.equal(body.amiId,IMAGE);assert.equal(body.schema,'meri-browser-host-ami-evidence/1');assert.equal(body.status,undefined);assert.equal(body.deploymentInputs['bootstrapSpec.profileSha256'],ami.renderProfile(input).sha256);
+});
+
+test('Windows CLI CRLF text preserves exact IDs, status and cleanup on success and failed calls',()=>{
+ for(const scenario of [{},{badImage:true},{env:{SHIM_RUN_INSTANCES:'error'}}]){
+  const {r,calls,evidence}=run({...scenario,env:{...scenario.env,SHIM_CRLF:'1'}});
+  assert.equal(r.status===0,Object.keys(scenario).length===0,r.stderr);
+  assert.ok(calls.every(call=>!call.includes('\r')),'no carriage return enters a CLI argument');
+  assert.equal(called(calls,`terminate-instances --instance-ids ${INSTANCE}`).length,1);
+  if(scenario.badImage){const body=JSON.parse(readFileSync(evidence,'utf8'));assert.equal(body.status,'FAILED_AFTER_IMAGING');assert.equal(body.amiId,IMAGE);assert.deepEqual(body.snapshotIds,[SNAPSHOT]);}
+  else if(!scenario.env)assert.equal(JSON.parse(readFileSync(evidence,'utf8')).amiId,IMAGE);
+  else assert.equal(existsSync(evidence),false);
+ }
+});
+
+test('base fields and caller remain fail closed, including a failed CLI that prints a valid row',()=>{
+ const row='arm64\tamazon\tebs\t/dev/xvda';
+ for(const env of [
+  ...['x86_64\tamazon\tebs\t/dev/xvda','arm64\tother\tebs\t/dev/xvda','arm64\tamazon\tinstance-store\t/dev/xvda','arm64\tamazon\tebs\t/dev/sda1',row+'\textra',row+'\n'+row,'None','arm64 amazon ebs /dev/xvda'].map(SHIM_BASE_ROW=>({SHIM_BASE_ROW})),
+  {SHIM_CALLER:'arn:aws:iam::111111111111:user/shim'},{SHIM_BASE_ERROR:'1'},
+ ]){
+  const {r,calls,evidence}=run({env:{...env,SHIM_CRLF:'1'}});
+  assert.notEqual(r.status,0,JSON.stringify(env));assert.equal(called(calls,'run-instances').length,0,JSON.stringify(env));assert.equal(existsSync(evidence),false);
+ }
 });
 
 test('every retry gets a fresh client token and run tag while the name stays the same',()=>{
