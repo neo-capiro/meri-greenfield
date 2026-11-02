@@ -32,6 +32,23 @@ test('replay/idempotency: the same delivery returns the same proposal without a 
  const second=await call(m,{deliveryId:delivery(2)});assert.notEqual(second.proposal.proposalId,first.proposal.proposalId);assert.equal(c.metadataCalls.prepare,2);
 });
 
+test('a refusal before any owner effect settles FAILED with the owner\'s bounded detail and replays it; an unknown effect carries none',async()=>{
+ const {c,store}=setup(),detail='HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created';
+ let answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'none',detail});
+ const preparer={binding:c.binding,owner:'command',operation:CREATE,async prepare(){throw answer;}};
+ const {mount:m}=mount({binding:c.binding,preparers:[preparer],store});
+ const first=await call(m).catch(error=>error);assert.equal(first.code,'REFUSED');assert.equal(first.detail,detail);
+ assert.deepEqual([...store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'REFUSED',detail}]]);
+ answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'none'});
+ const replayed=await call(m).catch(error=>error);assert.equal(replayed.code,'REFUSED');assert.equal(replayed.detail,detail,'the journal replays the explained refusal');
+ // A detail longer than the journal bound is cut, never refused; an unknown effect never carries one (the owner may have acted).
+ answer=Object.assign(Error('UNAVAILABLE'),{code:'UNAVAILABLE',effect:'none',detail:'x'.repeat(500)});
+ const long=await call(m,{deliveryId:delivery(2)}).catch(error=>error);assert.equal(long.code,'UNAVAILABLE');assert.equal(long.detail.length,400);
+ answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'unknown',detail:'never shown'});
+ const unknown=await call(m,{deliveryId:delivery(3)}).catch(error=>error);assert.equal(unknown.code,'UNKNOWN');assert.equal(Object.hasOwn(unknown,'detail'),false);
+ assert.deepEqual([...store.rows.values()].map(r=>r.state),['FAILED','FAILED','UNKNOWN']);
+});
+
 test('UNKNOWN after a lost owner acknowledgement: never prepared again, never released as success',async()=>{
  const {c,store,m}=setup();
  c.hooks.prepare=async(v,owner)=>{await owner.prepare(v);throw Object.assign(new CommandError('APPROVAL_METADATA_UNKNOWN'),{outcome:'UNKNOWN'});};

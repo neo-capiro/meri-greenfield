@@ -37,6 +37,10 @@ const ID=/^(?:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a
 const CODE=/^[A-Za-z0-9_.:-]{1,64}$/u;
 export const safeId=value=>typeof value==='string'&&ID.test(value)?value:'invalid';
 export const safeCode=value=>typeof value==='string'&&CODE.test(value)&&(codeVocabulary.has(value)||['none','other'].includes(value))?value:'other';
+/** One bounded line of printable owner detail (a schema field path, an HTTP status and refusal token); never an identifier,
+ * credential, URL or free text: only letters, digits, spaces and `_ . : ' -`, at most 160 characters, else `none`. */
+const TEXT=/^[A-Za-z0-9 _.:'-]{1,160}$/u;
+export const safeText=value=>typeof value==='string'&&TEXT.test(value)?value:'none';
 const choice=(values,fallback='other')=>value=>values.includes(value)?value:fallback;
 const number=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=Number.MAX_SAFE_INTEGER?value:0;
 const nullable=value=>value===null||value===undefined?null:number(value);
@@ -64,6 +68,10 @@ export const LINE_SCHEMAS=Object.freeze({
  // A governed-intent availability offer that failed: the layer whose bound answered (the worker, the runner client or control) and its
  // closed code, so an UNAVAILABLE write tool is explained in the run's own log stream. Emitted by the runner and by control.
  'meri.intent.availability':{...COMMON,layer:choice(['worker','runner','control']),code:safeCode,elapsedMs:number},
+ // A governed-intent preparation that failed in control: its closed code, whether the canonical owner was reached (`owner`) or the
+ // failure was decided before it (`before-owner`, so nothing was prepared) and the mount's bounded detail (a field path or the
+ // answering owner's token, never values), so a FAILED or UNKNOWN card is attributable from control's own log stream.
+ 'meri.intent.prepare':{...COMMON,layer:choice(['control']),code:safeCode,dispatched:choice(['owner','before-owner'],'other'),elapsedMs:number,detail:safeText},
  'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable','reproven']),code:safeCode},
  'meri.budget.quarantined':{...COMMON,reason:safeCode},
  'meri.process.rollup':{service:choice(SERVICES),atMs:number,windowMs:number,...COUNTERS,ownerExchanges:exchanges,telemetryDropped:number},

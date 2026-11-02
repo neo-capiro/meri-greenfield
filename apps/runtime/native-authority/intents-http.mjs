@@ -14,7 +14,9 @@
  *
  * Availability keeps the shared control bound (`INTENT_AVAILABILITY_CONTROL_MS`, one margin inside the runner client's) and, when it
  * fails after the body named a run, emits one `meri.intent.availability` line through the optional `telemetry` port (run identifiers,
- * closed code, elapsed time) so an UNAVAILABLE write tool is explained in control's log stream.
+ * closed code, elapsed time) so an UNAVAILABLE write tool is explained in control's log stream. A failed preparation emits one
+ * `meri.intent.prepare` line the same way (closed code, whether the owner was reached, the mount's bounded detail), so a FAILED or
+ * UNKNOWN card in the conversation is attributable from control's own log without the journal.
  *
  * Construction is inert: no listener, owner call, timer or allocation. `enabled` defaults to false (UNAVAILABLE after route checks). */
 import {types} from 'node:util';
@@ -67,10 +69,12 @@ export function createRunnerIntentsApplication(configuration){
   if(result===null||typeof result!=='object'||Array.isArray(result)||Buffer.byteLength(JSON.stringify(result),'utf8')>limits.maxResponseBytes)throw runnerIntentFault('UNKNOWN');
   life.check();return await release(result);
  }catch(error){let code=closed(error)??(dispatched?'UNKNOWN':'UNAVAILABLE');if(dispatched&&(code==='DEADLINE'||code==='CANCELLED'||code==='RESOURCE_LIMIT'))code='UNKNOWN';
-  // A failed offer for a named run is explained once here; the runner's answer carries only the closed code.
+  // A closed answer also carries the mount's bounded detail (an INVALID_ARGUMENTS field path, or who refused and with what;
+  // never values), so the model and the journal can say what happened instead of only the code.
+  const detail=error!==null&&typeof error==='object'&&!types.isProxy(error)?runnerIntentDetail(Object.getOwnPropertyDescriptor(error,'detail')?.value):undefined;
+  // A failed offer or preparation for a named run is explained once here; the runner's answer carries only the closed code and detail.
   if(route==='availability'&&named&&emit)try{emit('meri.intent.availability',{...named,layer:'control',code,elapsedMs:now()-started});}catch{}
-  // An INVALID_ARGUMENTS answer also carries the mount's bounded field-path detail (never values), so the model can correct the call.
-  const detail=code==='INVALID_ARGUMENTS'&&error!==null&&typeof error==='object'&&!types.isProxy(error)?runnerIntentDetail(Object.getOwnPropertyDescriptor(error,'detail')?.value):undefined;
+  if(route==='prepare'&&named&&emit)try{emit('meri.intent.prepare',{...named,layer:'control',code,dispatched:dispatched?'owner':'before-owner',elapsedMs:now()-started,...(detail===undefined?{}:{detail})});}catch{}
   return response({error:{code,...(detail===undefined?{}:{detail})}},RUNNER_INTENT_FAILURES[code]);}
  finally{life?.close();try{if(info?.body&&!info.body.locked)void info.body.cancel().catch(()=>{});}catch{}}}});
 }

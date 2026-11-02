@@ -65,6 +65,19 @@ test('a timeout after the port call started is UNKNOWN, not "nothing prepared"',
  }finally{release();await m.close();}
 });
 
+test('a REFUSED answer tells the model who refused and with what; without a detail the plain closed text stands',async()=>{
+ const f=intentFixture();let detail='HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created';
+ const port={readAvailability:v=>f.port.readAvailability(v),prepare:async()=>{throw Object.assign(Error('REFUSED'),{code:'REFUSED',layer:'control',...(detail===undefined?{}:{detail})});}};
+ const m=await mountIntents(f,{port});
+ try{
+  const r=await m.call('propose_task',CREATE,{toolUseId:'toolu_refused'});failed(r,'REFUSED');
+  assert.equal(text(r),'REFUSED: mcp__meri_intents__propose_task was refused by its owner (HTTP 404 PREVIEW_ROUTE_NOT_FOUND answered the proposal request before any proposal was created). Nothing has been changed.');
+  detail=undefined;const plain=await m.call('propose_task',CREATE,{toolUseId:'toolu_refused_plain'});failed(plain,'REFUSED');
+  assert.equal(text(plain),'REFUSED: mcp__meri_intents__propose_task was refused by its owner (arguments, permissions or current state). Nothing has been changed.');
+  assert.deepEqual(m.runtime.receipts(),[]);
+ }finally{await m.close();}
+});
+
 test('an INVALID_ARGUMENTS refusal shows the port\'s field-path detail so the model can correct the call; anything else is dropped',async()=>{
  const f=intentFixture();let detail="data must have required property 'title'";
  const port={readAvailability:v=>f.port.readAvailability(v),prepare:async()=>{throw Object.assign(Error('INVALID_ARGUMENTS'),{code:'INVALID_ARGUMENTS',layer:'control',...(detail===undefined?{}:{detail})});}};
