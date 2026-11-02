@@ -7,7 +7,7 @@ const UNCHANGED='Nothing has been changed.';
 const TEXTS=Object.freeze({
  UNAVAILABLE:(tool,reason='is not available in this conversation')=>`UNAVAILABLE: ${tool} ${reason}. ${UNCHANGED}`,
  ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now. ${UNCHANGED}`,
- REFUSED:tool=>`REFUSED: ${tool} was refused by its owner (arguments, permissions or current state). ${UNCHANGED}`,
+ REFUSED:(tool,detail)=>`REFUSED: ${tool} was refused by its owner (${detail??'arguments, permissions or current state'}). ${UNCHANGED}`,
  INVALID_ARGUMENTS:(tool,detail)=>`INVALID_ARGUMENTS: ${tool} refused these arguments${detail===undefined?'':` (${detail})`}; correct the named fields and supply literal arguments matching its input schema. ${UNCHANGED}`,
  DEADLINE:tool=>`DEADLINE: ${tool} did not finish preparing within its time limit and nothing was prepared. ${UNCHANGED}`,
  CANCELLED:tool=>`CANCELLED: ${tool} was cancelled before anything was prepared. ${UNCHANGED}`,
@@ -25,18 +25,21 @@ export function intentFailureCode(error){
  return typeof code==='string'&&Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR';
 }
 /** `reason`: for UNAVAILABLE a closed phrase replacing the default one (e.g. that the run's offer could not be checked); for
- * INVALID_ARGUMENTS the owner's bounded field-path detail (never values) naming what to correct. Ignored for every other code.
+ * INVALID_ARGUMENTS the owner's bounded field-path detail (never values) naming what to correct; for REFUSED the owner's bounded
+ * account of who refused and with what. Ignored for every other code.
  * @param {string} code @param {string} tool @param {string} [reason] */
 export function intentFailureResult(code,tool,reason){
  const known=Object.hasOwn(TEXTS,code)?code:'INTERNAL_ERROR';
- const explained=(known==='UNAVAILABLE'||known==='INVALID_ARGUMENTS')&&typeof reason==='string'?reason:undefined;
+ const explained=(known==='UNAVAILABLE'||known==='INVALID_ARGUMENTS'||known==='REFUSED')&&typeof reason==='string'?reason:undefined;
  // A memory failure after the port was reached stays uncertain; an unchecked offer never reached it, so the plain reason applies.
  if(tool.endsWith('propose_memory')&&!(known==='UNAVAILABLE'&&explained!==undefined))return {isError:true,content:[{type:/** @type {const} */('text'),text:`${known}: the memory proposal result was not released; do not repeat the request. Check the original conversation request. This is not confirmation of submission or active memory.`}]};
  return {isError:true,content:[{type:/** @type {const} */('text'),text:TEXTS[known](tool,explained)}]};
 }
-/** The prepared result exactly as the owner returned it, then one fixed instruction block.
- * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status @param {string} [operation] */
-export function preparedResult(json,status,operation){
+/** The prepared result exactly as the owner returned it, then one fixed instruction block. `officeEditing`: the run offers
+ * Office editing (an `office` owner is available), so a draft's notice may say Office documents open in the Workspace.
+ * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status @param {string} [operation]
+ * @param {{officeEditing?:boolean}} [facts] */
+export function preparedResult(json,status,operation,{officeEditing=false}={}){
  const notice=operation==='save_memory'&&status==='approval_required'
   ?'PREPARED MEMORY PROPOSAL: review this exact text and destination scope. No memory candidate has been submitted and no memory has been published. Approve this exact proposal in Meri to submit a pending candidate; publication requires a later Core review result.'
   :status==='read'
@@ -46,7 +49,7 @@ export function preparedResult(json,status,operation){
   :status==='analysis_pending'
   ?'ANALYSIS OUTPUTS PENDING: the admitted analysis owner returned durable output references. Inspection and publication remain pending; do not say these outputs are published or filed.'
   :status==='draft'
-  ?'PREPARED DRAFT: an immutable draft version was created. The user sees it as a file card under "Files in this conversation" below your answer (Preview, Download; Office formats open in the Workspace), and under Files > My files, or the selected client\'s files in a client conversation. Do not say it is shown above or that it was filed. Nothing else has been changed; filing it into a client\'s documents is a separate request that is offered only in a client conversation.'
+  ?`PREPARED DRAFT: an immutable draft version was created. The user sees it as a file card under "Files in this conversation" below your answer (Download, Details${officeEditing?'; Office documents open in the Workspace':''}), and under Files > My files, or the selected client's files in a client conversation. Do not say it is shown above or that it was filed. Nothing else has been changed; filing it into a client's documents is a separate request that is offered only in a client conversation.`
   :'PREPARED PROPOSAL: nothing has been changed. The user must approve this exact proposal in Meri\'s approval control before anything happens, and current permissions are checked again then. Do not say it is done.';
  return {content:[{type:/** @type {const} */('text'),text:json},{type:/** @type {const} */('text'),text:notice}]};
 }

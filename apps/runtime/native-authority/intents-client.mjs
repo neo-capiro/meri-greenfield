@@ -8,6 +8,7 @@
  * repeats an UNKNOWN delivery, and the control journal replays the same delivery without a second preparation).
  *
  * Construction is inert: no request, timer or credential read. `enabled` defaults to false (every call UNAVAILABLE). */
+import {isDeclaredFormats} from '../../../packages/runtime/intent-formats.mjs';
 import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../../packages/contracts/validate.mjs';
@@ -23,8 +24,8 @@ export const RUNNER_INTENT_PATHS=Object.freeze({availability:'/v1/runner/intents
 export const runnerIntentFault=code=>Object.assign(new Error(code),{code:Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:'UNAVAILABLE'});
 /** The closed code an error carries as an own data property, or null. Never runs accessors or proxy traps. */
 export const runnerIntentCode=error=>{const code=error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;return typeof code==='string'&&Object.hasOwn(RUNNER_INTENT_FAILURES,code)?code:null;};
-/** The bounded explanation an INVALID_ARGUMENTS answer may carry beside its code: the canonical schema's field paths and
- * keywords (never values), one line of printable text. Anything else is dropped, never widened into a second channel. */
+/** The bounded explanation a closed answer may carry beside its code: an INVALID_ARGUMENTS field path, or who refused and with
+ * what (never values), one line of printable text. Anything else is dropped, never widened into a second channel. */
 const DETAIL=/^[^\p{C}]{1,400}$/u;
 export const runnerIntentDetail=value=>typeof value==='string'&&DETAIL.test(value)?value:undefined;
 const errorDetail=error=>runnerIntentDetail(error!==null&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined);
@@ -52,15 +53,12 @@ export function runnerIntentRequest(route,value){
  }
  return v;
 }
-/** A document operation's declared formats (the owner's own admission for this composition): a short closed list of lowercase tokens. */
-const FORMAT=/^[a-z0-9]{1,8}$/u;
-export const declaredFormats=value=>Array.isArray(value)&&value.length>=1&&value.length<=8&&value.every(f=>typeof f==='string'&&FORMAT.test(f))&&new Set(value).size===value.length;
 /** The availability facts a mount may release: this run's binding, closed operations, an unexpired window. Anything else refuses. */
 export function runnerIntentAvailability(raw,binding,at){
  try{
   const s=data(own(raw,['binding','operations','checkedAtMs','expiresAtMs']));
   if(hash(s.binding)!==hash(binding)||!Array.isArray(s.operations)||s.operations.length>MAX_OPERATIONS||!Number.isSafeInteger(s.checkedAtMs)||!Number.isSafeInteger(s.expiresAtMs)||s.checkedAtMs>at||s.expiresAtMs<=at)throw 0;
-  for(const o of s.operations){own(o,['id','version'],['formats']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible({id:o.id,version:o.version})||o.formats!==undefined&&!declaredFormats(o.formats))throw 0;}
+  for(const o of s.operations){own(o,['id','version'],['formats']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible({id:o.id,version:o.version})||o.formats!==undefined&&!isDeclaredFormats(o.formats))throw 0;}
   return s;
  }catch{throw runnerIntentFault('UNAVAILABLE');}
 }
@@ -94,7 +92,7 @@ export function createRunnerIntentsClient(configuration){
    const raw=data(JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(Buffer.concat(chunks))));
    if(get.status.call(response)!==200){own(raw,['error']);const answer=own(raw.error,['code'],['detail']),code=answer.code;
     if(typeof code!=='string'||!Object.hasOwn(RUNNER_INTENT_FAILURES,code)||RUNNER_INTENT_FAILURES[code]!==get.status.call(response))throw 0;
-    throw new ControlAnswer(code,code==='INVALID_ARGUMENTS'?runnerIntentDetail(answer.detail):undefined);}
+    throw new ControlAnswer(code,runnerIntentDetail(answer.detail));}
    life.check();return raw;
   }catch(error){
    // `layer` names where the closed failure was decided (control's answer or this client's own bound/transport); the worker's

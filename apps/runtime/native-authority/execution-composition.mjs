@@ -124,7 +124,7 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
     async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};}}):[])];
   if(!preparers.length)throw intentFault('UNAVAILABLE');
   // The conversation store (when composed) receives each new document draft as the run's own `artifact.available` event.
-  const publishDraft=store?createDraftPublication({store,binding,current:fresh,now}):undefined;
+  const publishDraft=store?createDraftPublication({store,binding,current:fresh}):undefined;
   return createIntentMount({binding,preparers,journalStore:createPostgresIntentJournalStore({pool}),now,
    limits:{maxRequestMs:configuration.limits.requestMs},enabled:true,...(publishDraft?{publishDraft}:{}),
    resultRelease:createIntentResultReleaseAuthority({binding,now,currentRights,async currentRun(_binding,{signal}){

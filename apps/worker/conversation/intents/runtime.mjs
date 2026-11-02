@@ -19,6 +19,7 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {INTENT_AVAILABILITY_WORKER_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
+import {isDeclaredFormats} from '../../../../packages/runtime/intent-formats.mjs';
 import {availabilityFailure} from '../capabilities/availability-failure.mjs';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
@@ -37,9 +38,7 @@ const registered=(/** @type {{id:string,version:string}} */operation)=>{try{reso
  * `originals`/`disposition` data, so this is the same authority, not a copied list. */
 const declaredOriginals=new Set(catalog.originals.filter(o=>o.disposition==='deferred').map(o=>o.id));
 const admissible=(/** @type {{id:string,version:string}} */operation)=>registered(operation)||declaredOriginals.has(operation.id);
-const OPERATION=/^[a-z][a-z_]{0,62}$/u,FORMAT=/^[a-z0-9]{1,8}$/u;
-/** A document operation's declared formats in the offer: the owner's own admission (PDF only when its composition admits it). */
-const declaredFormats=value=>Array.isArray(value)&&value.length>=1&&value.length<=8&&value.every(f=>typeof f==='string'&&FORMAT.test(f))&&new Set(value).size===value.length;
+const OPERATION=/^[a-z][a-z_]{0,62}$/u;
 const key=(/** @type {{id:string,version:string}} */o)=>canonicalSha256({id:o.id,version:o.version});
 /** The closed fact of a failed offer, shared with the general-read snapshot (`capabilities/availability-failure.mjs`). */
 const offerFailure=availabilityFailure;
@@ -57,7 +56,7 @@ export function assertIntentAvailability(raw,binding,at){
   if(canonicalSha256(s.binding)!==canonicalSha256(binding)||!Array.isArray(s.operations)||s.operations.length>INTENT_ROWS.length||
    !Number.isSafeInteger(s.checkedAtMs)||!Number.isSafeInteger(s.expiresAtMs)||s.checkedAtMs>at||s.expiresAtMs<=at)throw 0;
   const keys=new Map();
-  for(const o of s.operations){own(o,['id','version'],['formats']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible({id:o.id,version:o.version})||keys.has(key(o))||o.formats!==undefined&&!declaredFormats(o.formats))throw 0;keys.set(key(o),o.formats===undefined?undefined:Object.freeze([...o.formats]));}
+  for(const o of s.operations){own(o,['id','version'],['formats']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible({id:o.id,version:o.version})||keys.has(key(o))||o.formats!==undefined&&!isDeclaredFormats(o.formats))throw 0;keys.set(key(o),o.formats===undefined?undefined:Object.freeze([...o.formats]));}
   return keys;
  }catch{throw fault('INTENT_AVAILABILITY_REFUSED');}
 }

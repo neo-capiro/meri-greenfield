@@ -21,6 +21,7 @@ import {researchActionValidators,officeEditValidators} from '../../../../package
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {INTENT_SERVER_NAME,INTENT_TOOL_PREFIX,intentToolName} from './catalog.mjs';
 import {defineIntentTool} from './tools.mjs';
+import {conversationBound} from './schema.mjs';
 import {assertPreparedResult} from './prepared.mjs';
 import {intentFailureCode,intentFailureResult,preparedResult} from './results.mjs';
 const fault=(/** @type {string} */code)=>Object.assign(Error(code),{code});
@@ -41,10 +42,10 @@ const deny=(/** @type {string} */reason)=>({hookSpecificOutput:{hookEventName:/*
 const UNCHECKED_REASON='could not check whether this request can be prepared right now: preparing a request for the user\'s approval did not get an answer in time, so nothing was prepared. This is temporary, not a disabled capability; ask the user to try again in a new message';
 /** A `stillAvailable` refusal marked `unchecked` (a transient mid-run loss) takes the same reason. */
 const uncheckedRefusal=(/** @type {unknown} */error)=>error!==null&&typeof error==='object'&&Object.getOwnPropertyDescriptor(error,'unchecked')?.value===true;
-/** The port's bounded field-path detail on an INVALID_ARGUMENTS refusal (one printable line, never values): shown to the model
- * so it corrects the named fields instead of guessing. Anything else is dropped. */
+/** The port's bounded detail on a refusal (one printable line, never values): an INVALID_ARGUMENTS field path, shown to the model
+ * so it corrects the named fields instead of guessing, or a REFUSED owner's account of who answered and with what. Anything else is dropped. */
 const DETAIL=/^[^\p{C}]{1,400}$/u;
-const invalidArgumentsDetail=(/** @type {unknown} */error)=>{const d=error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined;return typeof d==='string'&&DETAIL.test(d)?d:undefined;};
+const refusalDetail=(/** @type {unknown} */error)=>{const d=error!==null&&typeof error==='object'?Object.getOwnPropertyDescriptor(error,'detail')?.value:undefined;return typeof d==='string'&&DETAIL.test(d)?d:undefined;};
 /**
  * `mounted` (G3 profile mount): the rows to register, a superset of `available` (which may then be empty); a mounted row outside
  * `available` answers UNAVAILABLE through `stillAvailable`. Without it exactly the available rows are registered, as before.
@@ -66,6 +67,10 @@ export function createIntentServer(c){
  /** @type {Map<string,import('./catalog.mjs').IntentRow[]>} */
  const byTool=new Map();for(const r of registered)byTool.set(intentToolName(r.tool),[...(byTool.get(intentToolName(r.tool))??[]),r]);
  const rowFor=(/** @type {string} */name,/** @type {unknown} */id)=>byTool.get(name)?.find(r=>r.operation.id===id);
+ // A request whose canonical schema names its conversation gets this run's: the model is never told the conversation id and
+ // must never choose one (the 2 Nov new-conversation runs failed in the worker on a guessed id before any port call).
+ const bound=new Map(registered.map(r=>[r,conversationBound(r)]));
+ const bind=(/** @type {import('./catalog.mjs').IntentRow} */row,/** @type {unknown} */args)=>bound.get(row)&&args!==null&&typeof args==='object'&&!Array.isArray(args)?{...args,conversationId:binding.conversationId}:args;
  /** @type {import('@anthropic-ai/claude-agent-sdk').HookCallback} */
  const hook=async(raw,toolUseID,options)=>{try{
   if(closed||options?.signal?.aborted)throw fault('CANCELLED');
@@ -74,9 +79,9 @@ export function createIntentServer(c){
    typeof input.session_id!=='string'||!SESSION.test(input.session_id)||session!==null&&session!==input.session_id||seenToolUses.has(input.tool_use_id))throw fault('INTENT_HOOK_REFUSED');
   if(admitted>=maxCalls)throw fault('RESOURCE_LIMIT');
   admitted++;session??=input.session_id;seenToolUses.add(input.tool_use_id);
-  const token=randomUUID(),deliveryId=intentDeliveryId(binding,session,input.tool_use_id);
-  correlations.set(token,{operation:row.operation,argumentsSha256:canonicalSha256(value.arguments),deliveryId});
-  return {hookSpecificOutput:{hookEventName:'PreToolUse',updatedInput:{operation:value.operation,arguments:value.arguments,_meriInvocation:token}}};
+  const token=randomUUID(),deliveryId=intentDeliveryId(binding,session,input.tool_use_id),args=bind(row,value.arguments);
+  correlations.set(token,{operation:row.operation,argumentsSha256:canonicalSha256(args),deliveryId});
+  return {hookSpecificOutput:{hookEventName:'PreToolUse',updatedInput:{operation:value.operation,arguments:args,_meriInvocation:token}}};
  }catch(error){return deny(intentFailureCode(error)==='RESOURCE_LIMIT'?'RESOURCE_LIMIT: the write-request limit for this run is reached. Nothing has been changed.':'Write-request correlation unavailable');}};
  /** @param {string} name */
  const handler=name=>async(/** @type {any} */raw,/** @type {any} */extra)=>{
@@ -87,19 +92,21 @@ export function createIntentServer(c){
    correlations.delete(token);if(closed)throw fault('UNAVAILABLE');
    life=createOperationLifetime({deadlineMs:Math.min(c.now()+c.timeoutMs,c.deadlineMs),now:c.now,signal:extra?.signal,errorFactory:fault});
    if(!await life.run(signal=>c.stillAvailable(row.operation,signal)))throw fault('UNAVAILABLE');
-   started=!(row.owner==='research-action'&&researchActionValidators.isManagementRead(row.operation.id,args,{binding})||row.owner==='office'&&officeEditValidators.isRead(args));
+   // Only a request the canonical validators admit as a read skips the journal. A request they refuse is still sent to the port,
+   // which journals and explains the INVALID_ARGUMENTS refusal; it is never an INTERNAL_ERROR decided here without a row.
+   try{started=!(row.owner==='research-action'&&researchActionValidators.isManagementRead(row.operation.id,args,{binding})||row.owner==='office'&&officeEditValidators.isRead(args));}catch{started=true;}
    const result=await life.run(signal=>c.prepare({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));life.check();
    const prepared=assertPreparedResult(row.owner,row.operation,result,binding,{scopes:c.scopes,nowMs:c.now()}),json=JSON.stringify(prepared.value);
    // A read answers the exact arguments it was asked with: the office read is the one closed `{action:'read'}`.
    if(prepared.status==='read'&&canonicalSha256(row.owner==='office'?{action:'read'}:prepared.value.request)!==entry.argumentsSha256)throw fault('INVALID_RESULT');
    if(prepared.status!=='read')receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:row.operation,argumentsSha256:entry.argumentsSha256,outcome:'prepared',status:prepared.status,reference:prepared.reference,resultSha256:canonicalSha256(prepared.value)}));
-   return preparedResult(json,prepared.status,row.operation.id);
+   return preparedResult(json,prepared.status,row.operation.id,{officeEditing:c.available.some(r=>r.owner==='office')});
   }catch(error){
    let code=intentFailureCode(error);
    // Once the port call started, a timeout or cancellation cannot show that nothing was prepared.
    if(started&&(code==='DEADLINE'||code==='CANCELLED'))code='UNKNOWN';
    if(code==='UNKNOWN'&&entry)receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:entry.operation,argumentsSha256:entry.argumentsSha256,outcome:'unknown',status:null,reference:null,resultSha256:null}));
-   return intentFailureResult(code,name,code==='UNAVAILABLE'&&(unchecked||uncheckedRefusal(error))?UNCHECKED_REASON:code==='INVALID_ARGUMENTS'?invalidArgumentsDetail(error):undefined);
+   return intentFailureResult(code,name,code==='UNAVAILABLE'&&(unchecked||uncheckedRefusal(error))?UNCHECKED_REASON:code==='INVALID_ARGUMENTS'||code==='REFUSED'?refusalDetail(error):undefined);
   }finally{life?.close();}
  };
  const tools=[...byTool].map(([name,rows])=>defineIntentTool(rows[0].tool,rows,handler(name),c.formats));

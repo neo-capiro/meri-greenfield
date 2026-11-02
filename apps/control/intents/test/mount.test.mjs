@@ -33,6 +33,28 @@ test('replay/idempotency: the same delivery returns the same proposal without a 
  const second=await call(m,{deliveryId:delivery(2)});assert.notEqual(second.proposal.proposalId,first.proposal.proposalId);assert.equal(c.metadataCalls.prepare,2);
 });
 
+test('a refusal before any owner effect settles FAILED with the owner\'s bounded detail and replays it; an unknown effect carries none',async()=>{
+ const {c,store}=setup(),detail='the proposal request was answered before any proposal was created (HTTP 404)';
+ let answer=intentFault('REFUSED','none',detail,'PREVIEW_ROUTE_NOT_FOUND');
+ const preparer={binding:c.binding,owner:'command',operation:CREATE,async prepare(){throw answer;}};
+ const {mount:m}=mount({binding:c.binding,preparers:[preparer],store});
+ const first=await call(m).catch(error=>error);assert.equal(first.code,'REFUSED');assert.equal(first.detail,detail);assert.equal(first.reason,'PREVIEW_ROUTE_NOT_FOUND','the reason travels on the fault for the log line');
+ assert.deepEqual([...store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'REFUSED',detail}]]);
+ answer=intentFault('REFUSED','none');
+ const replayed=await call(m).catch(error=>error);assert.equal(replayed.code,'REFUSED');assert.equal(replayed.detail,detail,'the journal replays the explained refusal');assert.equal(replayed.reason,undefined,'never the constant');
+ // A detail longer than the journal bound is cut, never refused. An unknown effect is journaled without one (the owner may have
+ // acted), but the thrown fault keeps the owner's reason so control's log line can name it.
+ answer=intentFault('UNAVAILABLE','none','x'.repeat(500));
+ const long=await call(m,{deliveryId:delivery(2)}).catch(error=>error);assert.equal(long.code,'UNAVAILABLE');assert.equal(long.detail.length,400);
+ answer=intentFault('UNAVAILABLE','unknown','the proposal request got no answer','ECONNREFUSED');
+ const unknown=await call(m,{deliveryId:delivery(3)}).catch(error=>error);assert.equal(unknown.code,'UNKNOWN');assert.equal(unknown.detail,'the proposal request got no answer');assert.equal(unknown.reason,'ECONNREFUSED');
+ // A detail or reason on a plain error (not an intent fault) never travels: the owner's words are the only source.
+ answer=Object.assign(Error('REFUSED'),{code:'REFUSED',effect:'none',detail:'core.internal.example 11111111-1111-4111-8111-111111111111',reason:'SESSION_UNAVAILABLE'});
+ const plain=await call(m,{deliveryId:delivery(4)}).catch(error=>error);assert.equal(plain.code,'REFUSED');assert.equal(Object.hasOwn(plain,'detail'),false);assert.equal(Object.hasOwn(plain,'reason'),false);
+ assert.deepEqual([...store.rows.values()].map(r=>[r.state,r.outcome]).slice(2,3),[['UNKNOWN',null]]);
+ assert.deepEqual([...store.rows.values()].map(r=>r.state),['FAILED','FAILED','UNKNOWN','FAILED']);
+});
+
 test('UNKNOWN after a lost owner acknowledgement: never prepared again, never released as success',async()=>{
  const {c,store,m}=setup();
  c.hooks.prepare=async(v,owner)=>{await owner.prepare(v);throw Object.assign(new CommandError('APPROVAL_METADATA_UNKNOWN'),{outcome:'UNKNOWN'});};
@@ -93,7 +115,7 @@ test('an owner that completed the request from the trusted run explains its own 
  assert.equal(calls,1,'the refused delivery is answered from the journal');
 });
 
-test('a document draft is published to the conversation once (never on replay), the offer carries the owner\'s formats, and a lost publication keeps the draft',async()=>{
+test('a document draft is published to the conversation on preparation and on each replay, the offer carries the owner\'s formats, and a lost publication keeps the draft',async()=>{
  const c=commandComposition(),scopes=[{tenantId:c.binding.tenantId,kind:'private-user',resourceId:c.binding.actorId,policyRevision:'r1'}];
  const version={artifactId:'7'.repeat(8)+'-7777-4777-8777-'+'7'.repeat(12),versionId:'8'.repeat(8)+'-8888-4888-8888-'+'8'.repeat(12),binding:c.binding,scopes};
  const published=[];let prepared=0,down=false;
@@ -104,9 +126,10 @@ test('a document draft is published to the conversation once (never on replay), 
  const word=extra=>m.prepare({operation:{id:'create_word',version:'0.2.0'},arguments:{operation:'create_word',format:'docx',title:'Note',content:{blocks:[]}},deliveryId:delivery(3),...extra});
  const out=await word();assert.equal(out.status,'draft');assert.deepEqual(out.version,version);
  assert.deepEqual(published,[version],'published exactly once from the first preparation');
- assert.deepEqual(await word(),out);assert.equal(prepared,1);assert.deepEqual(published,[version],'a replay is answered from the journal and publishes nothing');
- down=true;const second=await word({deliveryId:delivery(4)});assert.equal(second.status,'draft');assert.equal(published.length,2,'the publication was attempted');
+ assert.deepEqual(await word(),out);assert.equal(prepared,1);assert.deepEqual(published,[version,version],'a replay is answered from the journal and publishes again (idempotently), so a publication lost the first time is made good');
+ down=true;const second=await word({deliveryId:delivery(4)});assert.equal(second.status,'draft');assert.equal(published.length,3,'the publication was attempted');
  assert.deepEqual([...store.rows.values()].map(r=>r.state),['PREPARED','PREPARED'],'a failed publication never withdraws the prepared draft');
+ down=false;assert.deepEqual(await word({deliveryId:delivery(4)}),second);assert.equal(published.length,4,'the retry of that delivery publishes the draft the first call lost');
  const availability=await m.readAvailability();assert.deepEqual(availability.operations,[{id:'create_word',version:'0.2.0',formats:['docx','txt','xml','pdf']}]);
  const plain=build(createMemoryJournalStore());assert.equal((await plain.prepare({operation:{id:'create_word',version:'0.2.0'},arguments:{operation:'create_word'},deliveryId:delivery(5)})).status,'draft','no publication port: the draft is still prepared');
  for(const formats of [[],['DOCX'],['docx','docx'],'docx'])assert.throws(()=>createIntentMount({binding:c.binding,preparers:[{...preparer,formats}],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000}}),code('INTENT_CONFIGURATION'),JSON.stringify(formats));
