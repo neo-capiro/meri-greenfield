@@ -60,7 +60,7 @@ function fixture(kind,{deferReplacement=false,lateCloseFails=false,stalledLocalC
     hostWrites>=4?expandedRules.expectedHost:initial.expectedHost)};
    return {stdout:nftOutput(toolWrites>=2?expandedRules.expectedTool:initial.expectedTool)};
   }
-  if(cmd.includes('/usr/sbin/ss -H -ltnp')){
+  if(cmd.includes('/usr/bin/ss -H -ltnp')){
    const current=localStarts===1?p:expanded??p,pid=420+localStarts;
    return {stdout:current.routes.map(r=>`LISTEN 0 511 127.0.0.1:${r.localPort} 0.0.0.0:* users:(("node",pid=${pid},fd=18))`).join('\n')};
   }

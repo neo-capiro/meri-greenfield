@@ -85,9 +85,11 @@ RUN set -eux; apt-get update; \
       libnss3 libnspr4 libatk1.0-0t64 libatk-bridge2.0-0t64 libcups2t64 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 \
       libxfixes3 libxrandr2 libgbm1 libpango-1.0-0 libcairo2 libasound2t64 libatspi2.0-0t64 libx11-6 libxcb1 libxext6 \
       libglib2.0-0t64 libexpat1 libdbus-1-3 fonts-liberation fonts-noto-core; \
-    apt-get clean; rm -rf /var/lib/apt/lists/*; \
-    test -x /usr/sbin/ip && test -x /usr/sbin/nft && test -x /usr/sbin/ss
+    apt-get clean; rm -rf /var/lib/apt/lists/*
 COPY --from=builder /opt/meri /opt/meri
+# The network executables the host service runs are checked at the exact paths its source names (confinement.mjs
+# NETWORK_TOOLS), so a package that moves one fails this build instead of the first run on an instance.
+RUN node --input-type=module -e "import {accessSync,constants} from 'node:fs';import {NETWORK_TOOLS} from '/opt/meri/apps/worker/conversation/host/network/confinement.mjs';for(const file of Object.values(NETWORK_TOOLS)){accessSync(file,constants.X_OK);console.log(file);}"
 # The bootstrap program the SSM document runs is this tree's protected-bootstrap module at its fixed path (its bytes are
 # programSha256); the helpers are root-only executables at their fixed protected paths (helperSha256).
 RUN set -eux; \
