@@ -344,8 +344,9 @@ known-ID recovery, launch, renewal, explicit takeover, release, discard and
 Publish with the actual existing document options and native-session owners.
 `office-access.mjs` resolves the canonical Core artifact intent for each required
 action; revise, inspect and download permissions are not interchangeable. Each
-source/publication authorization refreshes Core, including the final check after
-awaited bytes. Request lifetimes close on every outcome. This factory starts no
+source/publication authorization checks the current native session; Core is
+observed at admission, immediately before every write (attended effects, Proposal
+Apply and Reject) and at release. Request lifetimes close on every outcome. This factory starts no
 listener and creates no credential store, ledger or provider process.
 
 The selected browser input names only the immutable version, private draft and
