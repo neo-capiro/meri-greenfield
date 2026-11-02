@@ -31,11 +31,12 @@ test('save A/null with expectedRevision, read it back, then restore the original
 
 test('a served pair becomes a personal default; an unlisted effort, the retired alias or a row held before qualification cannot, and a Release flip admits the held row with no code change',async()=>{
  const t=setup(),p=member();
- for(const defaultModel of [{...OPUS,effort:'medium'},{...SONNET,effort:'low'},{...OPUS,modelId:'us.anthropic.claude-opus-4-6'},{provider:'claude-api',modelId:'claude-sonnet-4-6',effort:null}])
+ for(const defaultModel of [{...OPUS,effort:'xhigh'},{...SONNET,effort:'xhigh'},{...OPUS,modelId:'us.anthropic.claude-opus-4-6'},{provider:'claude-api',modelId:'claude-sonnet-4-6',effort:null}])
   await failed(t.service.saveUser({principal:p,body:{expectedRevision:0,preferences:prefs({defaultModel})}}),'SETTINGS_FIELD_INVALID','defaultModel');
  assert.equal(t.store.docs.size,0);assert.equal(t.store.audit.length,0);
  const saved=await t.service.saveUser({principal:p,body:{expectedRevision:0,preferences:prefs({defaultModel:{...OPUS,effort:'max'}})}});
  assert.deepEqual(saved.preferences.defaultModel,{...OPUS,effort:'max'});
+ const low=await t.service.saveUser({principal:p,body:{expectedRevision:1,preferences:prefs({defaultModel:{...SONNET,effort:'low'}})}});assert.deepEqual(low.preferences.defaultModel,{...SONNET,effort:'low'},'the newly served low effort becomes a personal default');
  const held=setup(heldCatalog());await failed(held.service.saveUser({principal:p,body:{expectedRevision:0,preferences:prefs({defaultModel:{...HELD,effort:'max'}})}}),'SETTINGS_FIELD_INVALID','defaultModel');
  const flipped=heldCatalog();const row=flipped.models.find(m=>m.modelId===HELD.modelId);row.available=true;row.unavailableReason=null;
  const after=setup(flipped),admitted=await after.service.saveUser({principal:p,body:{expectedRevision:0,preferences:prefs({defaultModel:{...HELD,effort:'max'}})}});
