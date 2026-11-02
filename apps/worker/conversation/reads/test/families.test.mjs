@@ -23,11 +23,13 @@ test('all forty-eight constructible families remain unavailable without installa
 });
 test('per-operation client prefilter preserves personal meetings while withholding required-client reads',()=>{
  const result=resolveAvailableReads({policy,installation:{operations},discovery:{operations},scopes:[{kind:'private-user'}]}),ids=result.available.map(r=>r.operation.id);
- for(const id of ['meeting.read_client_meetings','get_client_context','read_client_documents','search_client_knowledge','search_tracked_bills','meeting.list_upcoming_meetings','meeting.query_debriefs','search_memory','query_tasks',
+ for(const id of ['meeting.read_client_meetings','get_client_context','read_client_documents','search_client_knowledge','search_tracked_bills','meeting.list_upcoming_meetings','search_memory','query_tasks',
   'get_business_development_context','get_business_development_recent_changes','query_knowledge_graph','get_state_bill_status','search_state_floor_votes','search_committee_hearings','search_legislative_research'])assert.ok(ids.includes(id),id);
  for(const id of ['query_action_items','actions.query','read_monday_client_boards',
   'get_representation','get_district_nexus_context','get_district_nexus_changes','search_funding_opportunities','get_funding_opportunity_requirements',
-  'get_funding_opportunity','get_opportunity_client_context','get_opportunity_government_landscape','query_outreach','get_business_development_evidence'])assert.ok(!ids.includes(id),id);
+  'get_funding_opportunity','get_opportunity_client_context','get_opportunity_government_landscape','query_outreach','get_business_development_evidence','meeting.query_debriefs'])assert.ok(!ids.includes(id),id);
+ const client=resolveAvailableReads({policy,installation:{operations},discovery:{operations},scopes:[{kind:'client'}]}).available.map(r=>r.operation.id);
+ assert.ok(client.includes('meeting.query_debriefs'),'debriefs are offered in a client conversation');
 });
 for(const row of familyReads())test(`synthetic ${row.operation.id}: advertised arguments retain canonical constraints`,()=>{
  const schema=advertisedArguments(row.descriptor.inputSchema);assert.equal(schema.mode,'canonical');

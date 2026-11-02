@@ -1,6 +1,7 @@
 /** Public pinned SDK options are built directly from trusted run configuration. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {buildConversationOptions,RESPONSE_STYLE,RESPONSE_VOICE} from '../options.mjs';
+import {PRODUCT_DEFINITIONS} from '../product-definitions.mjs';
 import {binding,versions} from '../../../control/conversations/test/application-fixture.mjs';
 import {BEDROCK_MODEL} from '../provider.mjs';
 import {MAX_RUN_TURNS} from '../../../../packages/contracts/run-limits.mjs';
@@ -28,10 +29,16 @@ test('quality adjustment is one short native append, without a validation loop',
  for(const sentence of ['Preserve the supplied as-of date','Distinguish source deadlines from proposed dates','Uncorroborated completion is not a contradiction','an unknown owner is not unassigned','only after actually invoking one'])assert.ok(append.includes(sentence));
  assert.ok(append.startsWith('You are Meri'));assert.ok(append.includes('keep responses short does not apply'));assert.ok(append.includes('Finish every section you start'));
  // Voice rules bind every answer: no narrated tool use or internal identifiers, and a requested length is honoured.
- assert.ok(append.includes('never name tools, internal source identifiers or pages you are about to scrape, never narrate what you are doing or about to do ("let me", "I\'ll search", "now preparing"): the user reads findings, not steps; and never mention hooks, run state, token or cost budgets or other internal mechanics.'));
+ assert.ok(append.includes('never name tools, internal source identifiers or pages you are about to scrape, never narrate steps or intent ("let me", "I\'ll search"), and never mention hooks, run state, token or cost budgets or other internal mechanics.'));
  assert.ok(append.includes('When the user asks for a length, stay within about ten percent of it, and say so when the material does not fill it.'));
  // Internal identifiers never reach the user: a routine spec names the client, never its record id.
  assert.ok(append.includes('Never print internal identifiers (UUIDs, record, client, run or session ids) to the user; name clients, documents, schedules and records by their titles.'));
+ // A trivial instruction is followed literally, never answered with a canned self-introduction.
+ assert.ok(append.includes('Follow a simple instruction literally (asked to say hello in one sentence, say hello in one sentence) with no self-introduction or capability list.'));
+ // Product definitions come from the page that shows the metric; an unreadable definition is said to be unavailable, never invented.
+ assert.ok(append.includes(PRODUCT_DEFINITIONS));
+ assert.ok(PRODUCT_DEFINITIONS.includes('the share of active clients with at least one saved bill watch'));
+ assert.ok(PRODUCT_DEFINITIONS.includes('when neither defines it, say its definition is not available to you rather than guessing'));
  assert.ok(RESPONSE_STYLE.length<1600,`${RESPONSE_STYLE.length} characters`);
  assert.ok(append.startsWith(RESPONSE_STYLE+'\n\n'+RESPONSE_VOICE+'\n\n'));
  assert.equal(append.split(RESPONSE_STYLE).length-1,1);assert.equal(append.split(RESPONSE_VOICE).length-1,1);
