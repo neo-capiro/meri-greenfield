@@ -53,8 +53,8 @@ test('the loaded execution configuration forwards the admitted selection, the us
 });
 
 for(const [name,modelSelection] of [
- ['the served Opus row at an effort it does not list',{...OPUS,effort:'medium'}],
- ['the served Sonnet row at an effort it does not list',{...SONNET,effort:'low'}],
+ ['the served Opus row at an effort it does not list',{...OPUS,effort:'xhigh'}],
+ ['the served Sonnet row at an effort it does not list',{...SONNET,effort:'xhigh'}],
  ['the retired Opus alias the catalog never served',{...OPUS,modelId:'us.anthropic.claude-opus-4-6'}],
  ['a Claude API row the catalog does not serve',{provider:'claude-api',modelId:'claude-sonnet-4-6',effort:null}],
  ['an invented model',{...SONNET,modelId:'us.anthropic.claude-invented'}],
@@ -67,7 +67,7 @@ for(const [name,modelSelection] of [
  assert.equal(f.allocations.size,0);
 });
 
-for(const selection of [{...SONNET,effort:'high'},{...SONNET,effort:'max'},OPUS,{...OPUS,effort:'high'},{...OPUS,effort:'max'}])test(`M6: the served pair ${selection.modelId}/${selection.effort} is admitted exactly and loaded into the SDK configuration`,async()=>{
+for(const selection of [{...SONNET,effort:'low'},{...SONNET,effort:'medium'},{...SONNET,effort:'high'},{...SONNET,effort:'max'},OPUS,{...OPUS,effort:'low'},{...OPUS,effort:'medium'},{...OPUS,effort:'high'},{...OPUS,effort:'max'}])test(`M6: the served pair ${selection.modelId}/${selection.effort} is admitted exactly and loaded into the SDK configuration`,async()=>{
  const f=fixture(),input={...intent,modelSelection:selection};
  await f.allocate(input);assert.deepEqual((await f.admit(input)).request.modelSelection,selection);
  const loaded=await f.load();assert.equal(loaded.model.model,selection.modelId);assert.equal(loaded.model.effort,selection.effort);
