@@ -6,7 +6,7 @@
  * the batch that leaves RESERVED_TURNS turns, the next request carries one instruction to stop calling tools and answer with
  * what was found. Subagent batches run against their own limit and are not counted. */
 export const RESERVED_TURNS=2;
-export const TURN_LIMIT_NOTICE='This message is about to reach its step limit: call no more tools. Answer the user now from what you have already found: say plainly what you could not finish and that they can ask you to continue, without mentioning steps, limits or tools.';
+export const TURN_LIMIT_NOTICE='This message is about to reach its step limit: call no more tools. Answer the user now from what you have already found, say which parts you have not covered yet and offer to continue; do not explain why, and do not mention steps, limits, processing or tools.';
 /** @param {number} maxTurns the run's final SDK `maxTurns` */
 export function turnBudgetHooks(maxTurns){
  if(!Number.isSafeInteger(maxTurns)||maxTurns<1)throw Error('RUNTIME_CONFIGURATION');

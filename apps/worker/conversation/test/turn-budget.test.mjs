@@ -13,7 +13,7 @@ test('the batch that leaves the reserved turns carries the notice once; earlier 
  for(let n=1;n<6-RESERVED_TURNS;n++)assert.deepEqual(await batch(hooks),{},`batch ${n}`);
  assert.deepEqual(await batch(hooks),NOTICE);
  assert.deepEqual(await batch(hooks),{},'told once');
- assert.match(TURN_LIMIT_NOTICE,/call no more tools.*without mentioning steps, limits or tools/);
+ assert.match(TURN_LIMIT_NOTICE,/call no more tools.*say which parts you have not covered yet and offer to continue; do not explain why, and do not mention steps, limits, processing or tools\./);
 });
 
 test('parallel calls count as one turn: a long run with four calls per turn is told only near its own limit',async()=>{
