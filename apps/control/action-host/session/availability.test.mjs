@@ -1,4 +1,5 @@
-/** Issuance status semantics: Core not answering is 503 SESSION_AUTHORITY_UNAVAILABLE; every refusal stays 401 SESSION_REFUSED. */
+/** Issuance status semantics: Core not answering is 503 SESSION_AUTHORITY_UNAVAILABLE; a full session table or an abandoned request
+ * is 503 SESSION_UNAVAILABLE; only a definitive refusal is 401 SESSION_REFUSED (the browser reads every 401 as lost access). */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
@@ -49,7 +50,7 @@ test('an actual refusal by the same owners stays 401 SESSION_REFUSED, content-fr
  }finally{f.owner.close();}
 });
 
-test('the route budget running out while Core is parked is 503; a caller cancellation stays 401',async()=>{
+test('the route budget running out while Core is parked is 503; a caller cancellation is 503 SESSION_UNAVAILABLE, never a refusal',async()=>{
  const f=fixture();
  try{
   f.state.hook=async()=>{f.advance(5000);};
@@ -57,7 +58,7 @@ test('the route budget running out while Core is parked is 503; a caller cancell
   assert.equal(timedOut.status,503);assert.deepEqual(await timedOut.json(),{error:{code:'SESSION_AUTHORITY_UNAVAILABLE'}});assert.equal(f.owner.status().sessions,0);
   const controller=new AbortController();f.state.hook=async()=>{controller.abort();};
   const cancelled=await f.app.handle(f.request('session','native-identity',{signal:controller.signal}));
-  assert.equal(cancelled.status,401);assert.deepEqual(await cancelled.json(),{error:{code:'SESSION_REFUSED'}});assert.equal(f.owner.status().sessions,0);
+  assert.equal(cancelled.status,503);assert.deepEqual(await cancelled.json(),{error:{code:'SESSION_UNAVAILABLE'}});assert.equal(f.owner.status().sessions,0);
  }finally{f.owner.close();}
 });
 
@@ -70,5 +71,16 @@ test('browser-only issuance and transport refusals keep their own statuses',asyn
   assert.equal((await f.app.handle(new Request('http://127.0.0.1/api/action-followthrough/session',{method:'POST',headers:{'content-type':'application/json'},body:'{}'}))).status,401,'a missing bearer is refused before any owner');
   assert.equal((await f.app.handle(f.request('session','native-identity',{body:'{"tenantId":"forged"}'}))).status,400);
   assert.equal(f.state.calls,1,'transport refusals reach no owner');
+ }finally{f.owner.close();}
+});
+
+test('a full session table is 503 SESSION_UNAVAILABLE, never a 401 refusal; issuance resumes once a session ends',async()=>{
+ const f=fixture();
+ try{
+  for(let n=0;n<limits.maxSessions;n++)assert.equal((await f.app.handle(f.request())).status,200);
+  const full=await f.app.handle(f.request());
+  assert.equal(full.status,503);assert.deepEqual(await full.json(),{error:{code:'SESSION_UNAVAILABLE'}});assert.equal(f.owner.status().sessions,limits.maxSessions);
+  f.advance(limits.maxTtlMs+1);
+  assert.equal((await f.app.handle(f.request())).status,200,'expired sessions make room');
  }finally{f.owner.close();}
 });

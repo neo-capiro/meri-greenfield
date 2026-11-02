@@ -14,8 +14,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "7840f09795ecc961ef9dbd67522673872f3c4c8804cc93c9341587c35800cf29",
-      "bytes": 42032
+      "sha256": "3cd4d823f8cf7998ac0c91f6af7cbce08456daa830f92f8e6acdec060ce276e2",
+      "bytes": 42184
     },
     {
       "path": "../skills/./originals/bill_watch/1.1.1/manifest.json",
