@@ -11,13 +11,14 @@
 # Pins:
 #  - NODE_IMAGE is the same immutable linux/arm64 Node 24.22.1 trixie-slim child manifest the runtime image uses
 #    (infra/product-preview/runtime-packages.lock.json: nodeImageUri).
-#  - DEBIAN_SNAPSHOT fixes every apt candidate; versions are recorded from the real build (dpkg inventory below) instead of
-#    being guessed per architecture here. Bump the snapshot deliberately and re-scan.
+#  - DEBIAN_SNAPSHOT fixes every apt candidate, and the base image's own packages are upgraded to it (security fixes
+#    such as expat and brotli land in the base packages); versions are recorded from the real build (dpkg inventory below)
+#    instead of being guessed per architecture here. Bump the snapshot deliberately and re-scan.
 #  - The browser-host lockfile (apps/runtime/browser-host-service/image/package-lock.json) pins @playwright/mcp 0.0.83,
 #    playwright and playwright-core 1.64.0-alpha-1790635538000 by registry integrity; regenerate it only with
 #    `npm install --package-lock-only --ignore-scripts` in that directory when image/package.json changes.
 ARG NODE_IMAGE=public.ecr.aws/docker/library/node@sha256:401346cb1fc12bb388a82ed58ea72eeed2fe8530804d2964bcddce63a4eda4d8
-ARG DEBIAN_SNAPSHOT=20261009T000000Z
+ARG DEBIAN_SNAPSHOT=20261102T000000Z
 
 FROM ${NODE_IMAGE} AS snapshot
 ARG DEBIAN_SNAPSHOT
@@ -34,6 +35,7 @@ RUN set -eux; \
       > /etc/apt/sources.list.d/meri-snapshot.sources; \
     apt-get update; apt-get install -y --no-install-recommends --no-remove ca-certificates; \
     sed -i 's#http://snapshot.debian.org#https://snapshot.debian.org#g' /etc/apt/sources.list.d/meri-snapshot.sources; \
+    apt-get update; apt-get upgrade -y --no-install-recommends; \
     apt-get clean; rm -rf /var/lib/apt/lists/*
 
 # ---------------------------------------------------------------- build: dependencies, helpers, Chromium
