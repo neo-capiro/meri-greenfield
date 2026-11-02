@@ -251,6 +251,8 @@ export function renderOfficeControl(office,{coreOrigin,frontendOrigin,controlPri
  if(office.enabled!==true)return {enabled:false};
  const wopiOrigin=office.wopiOrigin??controlPrivate;
  if(wopiOrigin===office.editorOrigin)fail('RENDER_INPUT_REFUSED','features.office.editorOrigin must not be the control private origin');
+ // The editor and the WOPI listener are never the browser origin: the frontend neither serves CODE nor mounts WOPI.
+ if(office.editorOrigin===frontendOrigin||wopiOrigin===frontendOrigin)fail('RENDER_INPUT_REFUSED','features.office origins must differ from the frontend origin');
  return {enabled:true,editorOrigin:office.editorOrigin,wopiOrigin,browserOrigin:frontendOrigin,coreOrigin,keyFile:PATHS.officeKey,serviceSecretFile:PATHS.readsServiceSecret};
 }
 /** Fresh WOPI signing key per render: 32 random bytes, base64url (43 printable bytes, above the composition's 32-byte floor). */

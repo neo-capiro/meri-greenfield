@@ -467,8 +467,30 @@ test('office renders the control Office mount: editor origin, private WOPI liste
  // control private origin, a retired discovery path or an unknown field, and origins on a disabled mount.
  await assert.rejects(render(withFeatures({sourceEnabled:true,office})),/needs features.reads enabled/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,office:{enabled:true,editorOrigin:control.privateHttp.frontendOrigin}}),{featureSecrets:featureSecrets()}),/must not be the control private origin/u);
+ for(const office of [{enabled:true,editorOrigin:control.http.frontendOrigin},{enabled:true,editorOrigin,wopiOrigin:control.http.frontendOrigin}])
+  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,office}),{featureSecrets:featureSecrets()}),/must differ from the frontend origin/u);
  for(const bad of [{enabled:'yes'},{enabled:true},{enabled:true,editorOrigin:'http://office.synthetic.invalid'},{enabled:true,editorOrigin:editorOrigin+'/hosting'},{enabled:true,editorOrigin:7},
   {enabled:true,editorOrigin,wopiOrigin:editorOrigin},{enabled:true,editorOrigin,wopiOrigin:'https://wopi.synthetic.invalid/x'},{enabled:true,editorOrigin,discoveryPath:'/hosting/discovery'},
   {enabled:true,editorOrigin,keyFile:'/run/meri/other.key'},{enabled:false,editorOrigin},{}])
   assert.throws(()=>parseFeatures({sourceEnabled:true,reads:READS,office:bad}),error=>error.code==='RENDER_INPUT_REFUSED'||/must be a boolean/u.test(error.message));
 });
+
+test('worst case: the committed inputs with every renderable feature on plus Office stay under the manifest, bundle and control caps',async()=>{
+ await baseline();
+ const example=JSON.parse(await readFile(new URL('deployment-inputs.json',import.meta.url),'utf8'));
+ const {generateKeyPairSync}=await import('node:crypto');const pin=(kid)=>{const {kty,crv,x}=generateKeyPairSync('ed25519').publicKey.export({format:'jwk'});return {issuer:'capiro-core:routines',kid,publicKey:{kty,crv,x}};};
+ const executor={pythonExecutable:'/usr/bin/python3.13',nodeExecutable:'/usr/local/bin/node',pptxModulePath:'/opt/meri/apps/artifacts/generation/node_modules/pptxgenjs',tempRoot:'/tmp',timeoutMs:30000};
+ const features={...structuredClone(example.features),reads:{...example.features.reads,readModeServiceSecretArn:ARN.readMode},
+  intents:{enabled:true,core:{enabled:true}},routines:{enabled:true,core:{cancellationProof:pin('cancel-1'),unattendedGrant:pin('grant-1')},task:{taskId:'11111111-1111-4111-8111-000000000009',version:1}},
+  artifacts:{...example.features.artifacts,authority:{enabled:true},executor,renderer:{enabled:true},pdfAdmission:true},downloadLinks:{enabled:true,ttlMs:60000},
+  objectiveGeneration:{runs:{enabled:true},start:{enabled:true,windowMs:900000}},browserActivation:{state:'held'},
+  office:{enabled:true,editorOrigin:'https://office.synthetic.invalid',wopiOrigin:'https://wopi.synthetic.invalid'}};
+ const secrets={'reads.serviceSecret':{secretArn:example.features.reads.serviceSecretArn,versionId:VERSION,bytes:Buffer.from(SECRET.service)},'reads.readModeServiceSecret':{secretArn:ARN.readMode,versionId:VERSION,bytes:Buffer.from(SECRET.readMode)}};
+ const rendered=await render(i=>{i.deployment.features=features;},{featureSecrets:secrets}),control=config(rendered,'control');
+ assert.ok(Object.keys(FEATURE_KEYS_ON(control)).length>=15);
+ const sizes={control:rendered.roles.control.configBytes.length,expected:Buffer.byteLength(JSON.stringify(rendered.roles.control.expected)),bundle:Buffer.byteLength(JSON.stringify(rendered.roles.control.bundle))};
+ // validateRendered already refused anything over the caps; the numbers are reported for the PR.
+ assert.ok(sizes.control<=40*1024&&sizes.expected<=8192&&sizes.bundle<=65536,JSON.stringify(sizes));
+ process.stdout.write('# worst-case control sizes '+JSON.stringify({...sizes,files:rendered.roles.control.bundle.files.length,controlKeys:rendered.summary.features.controlKeys})+'\n');
+});
+const FEATURE_KEYS_ON=control=>Object.fromEntries(Object.entries(control).filter(([k])=>['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','browserPlatform','browserActivation','office'].includes(k)));

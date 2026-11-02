@@ -82,25 +82,27 @@ export function createOfficeMount({configuration,office,ports,sessions,retention
 }
 /** Editor discovery with a bounded retry. Startup awaits `first`; a failure logs ONE event (not one per retry), leaves the
  * mount unavailable and retries on the doubling backoff; a later success mounts and logs one recovery event. `close` stops
- * the retry; the control's own signal aborts an in-flight fetch. */
+ * the retry; the control's own signal aborts an in-flight fetch. A failing `log` is swallowed: it never schedules a retry
+ * (which would loop on an already mounted office) and never fails the attempt. */
 export function startOfficeDiscovery({office,mount,signal,now=Date.now,fetchImpl,log=line=>process.stderr.write(JSON.stringify(line)+'\n'),retry=OFFICE_RETRY_MS}){
- if(office?.enabled!==true||typeof mount?.mount!=='function'||typeof log!=='function')throw fault();
+ if(office?.enabled!==true||typeof mount?.mount!=='function'||typeof mount.mounted!=='function'||typeof log!=='function')throw fault();
  let timer=null,closed=false,delayMs=retry.initial,attempts=0,reported=false;
+ const emit=line=>{try{log(line);}catch{}};
  const attempt=async()=>{
   attempts++;
   try{
    const discoveryBytes=await readCodeDiscovery({editorOrigin:office.editorOrigin,signal,now,fetchImpl});
    if(closed)return false;
    mount.mount(discoveryBytes);
-   if(reported)log({event:OFFICE_AVAILABLE_EVENT,editorOrigin:office.editorOrigin,attempts});
-   return true;
   }catch(error){
-   if(closed||signal?.aborted)return false;
-   if(!reported){reported=true;log({event:OFFICE_UNAVAILABLE_EVENT,editorOrigin:office.editorOrigin,code:typeof error?.code==='string'?error.code:'OFFICE_DISCOVERY_FAILED',retryMs:delayMs});}
+   if(closed||signal?.aborted||mount.mounted())return false;
+   if(!reported){reported=true;emit({event:OFFICE_UNAVAILABLE_EVENT,editorOrigin:office.editorOrigin,code:typeof error?.code==='string'?error.code:'OFFICE_DISCOVERY_FAILED',retryMs:delayMs});}
    timer=setTimeout(()=>{timer=null;attempt();},delayMs);timer.unref?.();
    delayMs=Math.min(delayMs*2,retry.max);
    return false;
   }
+  if(reported)emit({event:OFFICE_AVAILABLE_EVENT,editorOrigin:office.editorOrigin,attempts});
+  return true;
  };
  return Object.freeze({first:attempt(),close(){closed=true;if(timer!==null){clearTimeout(timer);timer=null;}}});
 }

@@ -54,7 +54,7 @@ For Office activation, declare `features.office` beside enabled `features.reads`
 }
 ```
 
-An unreachable or malformed editor no longer blocks control startup: the Office routes answer `503 UNAVAILABLE`, control logs one `runtime.office.unavailable` event and retries discovery on a doubling backoff (5 s to 5 min) until it mounts (`runtime.office.available`). An unreadable signing key still refuses startup.
+An unreachable or malformed editor no longer blocks control startup: the Office routes answer `503 UNAVAILABLE`, control logs one `runtime.office.unavailable` event and retries discovery on a doubling backoff (5 s to 5 min) until it mounts (`runtime.office.available`). An unreadable signing key still refuses startup. A deployed re-render rotates the WOPI key and access tokens live at most 10 minutes, so open editor sessions must be relaunched after a control restart.
 
 For schedule activation, supply the existing `features.routines` task identity and workflow target, enabled source/reads, and Core unattended-firing trust. The task ID/version must come from the canonical approved task manifest; the renderer never creates that identity. The schedule queue is `routines.workflow.taskQueue`, and must differ from the ordinary `deployment.temporal.taskQueue` used for conversation dispatch. The schedule runtime remains `sourceEnabled:false` and receives only its existing schedule configuration, health port8083, native private-control capability, pinned `meri-temporal-schedule` certificate and Core service-secret file. Node loads the same pinned private-control CA before startup.
 

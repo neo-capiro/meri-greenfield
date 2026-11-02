@@ -13,7 +13,7 @@ import {documentsFamily} from '../product-ports/documents.mjs';
 import {binding,scopes,id} from '../../control/conversations/test/store-fixture.mjs';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {OFFICE_ROUTES,OFFICE_SCHEMA} from '../../../packages/contracts/dist/office-application.mjs';
-import {OFFICE_UNAVAILABLE_EVENT,OFFICE_AVAILABLE_EVENT,OFFICE_RETRY_MS} from '../artifacts/office-composition.mjs';
+import {OFFICE_UNAVAILABLE_EVENT,OFFICE_AVAILABLE_EVENT,OFFICE_RETRY_MS,startOfficeDiscovery} from '../artifacts/office-composition.mjs';
 import {renderOfficeControl,officeSigningKey,PATHS} from '../../../infra/product-preview/first-chat/render-material.mjs';
 const office=c=>({enabled:true,editorOrigin:'https://office.example.test',wopiOrigin:'https://wopi.example.test',browserOrigin:c.http.frontendOrigin,coreOrigin:'https://core.synthetic.invalid',keyFile:'/run/meri/office.key',serviceSecretFile:'/run/meri/core.secret'});
 const xml=Buffer.from('<wopi-discovery><net-zone name="external-https"><app><action ext="docx" name="edit" urlsrc="https://office.example.test/browser/synthetic/cool.html?"/></app></net-zone></wopi-discovery>');
@@ -148,4 +148,17 @@ test('actual loopback listeners mount the real Office adapters on ephemeral port
   assert.equal((await call(publicBase,'/api/meri/office/unknown',{method:'POST'})).status,404);
  }finally{await runtime.close();}
  await assert.rejects(call(publicBase,'/api/meri/office/open',{method:'POST'}));
+});
+
+test('a throwing log never fails an attempt or schedules a retry against an already mounted office',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});
+ let down=true,mounted=false,fetches=0;const logs=[];
+ const fetchImpl=async url=>{fetches++;if(down)throw Error('synthetic');return {status:200,url,redirected:false,headers:new Headers(),body:new Response(xml).body};};
+ const mount={mounted:()=>mounted,mount(bytes){if(mounted)throw Error('already mounted');assert.ok(bytes instanceof Uint8Array);mounted=true;}};
+ const log=line=>{logs.push(line.event);throw Error('synthetic log failure');};
+ const discovery=startOfficeDiscovery({office:{enabled:true,editorOrigin:'https://office.example.test'},mount,fetchImpl,log});
+ assert.equal(await discovery.first,false);assert.deepEqual(logs,[OFFICE_UNAVAILABLE_EVENT]);
+ down=false;t.mock.timers.tick(OFFICE_RETRY_MS.initial);await settle();
+ assert.equal(mounted,true);assert.equal(fetches,2);assert.deepEqual(logs,[OFFICE_UNAVAILABLE_EVENT,OFFICE_AVAILABLE_EVENT]);
+ t.mock.timers.tick(OFFICE_RETRY_MS.max*2);await settle();assert.equal(fetches,2);discovery.close();
 });
