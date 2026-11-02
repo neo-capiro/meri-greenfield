@@ -55,3 +55,20 @@ test('inactive notices are admitted only when the request asked for them',()=>{
  const {request,response}=structuredClone(wire.contractOpportunities);response.results[0].record.active=false;
  assert.doesNotThrow(()=>contract('semantic_search_contract_opportunities').assertOutput(response,{request:{...request,includeInactive:true}}));
 });
+test('funding results carry the passage citation and attachment coverage; a result from the earlier Core shape stays admitted',()=>{
+ const grant=wire.grants.response.results[0];
+ assert.equal(grant.passage.sourceTable,'opportunity_attachment');assert.equal(typeof grant.passage.fileName,'string');
+ assert.deepEqual(Object.keys(grant.documents),['attachments','withText','truncated','indexed']);
+ assert.equal(grant.record.openForApplications,true);assert.equal(wire.contractOpportunities.response.results[0].record.currentNotice,true);
+ assert.match(wire.grants.response.notes.join(' '),/UTF-16 offsets into the normalized extracted text, not page numbers/);
+ for(const [id,vector] of CASES.slice(1)){
+  const {request,response}=structuredClone(vector);
+  for(const row of response.results){delete row.passage;delete row.documents;delete row.record.openForApplications;delete row.record.responseDateDesc;delete row.record.currentNotice;}
+  assert.doesNotThrow(()=>contract(id).assertOutput(response,{request}),id);
+ }
+});
+mutate('a bill result with a passage','semantic_search_bills',wire.bills,r=>{r.results[0].passage=structuredClone(wire.grants.response.results[0].passage);});
+mutate('attachment coverage above the attachments','semantic_search_grants',wire.grants,r=>{r.results[0].documents.withText=5;});
+mutate('passage from an unknown table','semantic_search_grants',wire.grants,r=>{r.results[0].passage.sourceTable='raw_jsonb';});
+mutate('passage offsets that are not counts','semantic_search_contract_opportunities',wire.contractOpportunities,r=>{r.results[0].passage.start=-1;});
+mutate('grant open flag that is not a boolean','semantic_search_grants',wire.grants,r=>{r.results[0].record.openForApplications='yes';});

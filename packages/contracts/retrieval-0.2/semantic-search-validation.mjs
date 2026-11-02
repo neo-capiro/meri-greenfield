@@ -31,6 +31,9 @@ export function createSemanticSearchValidators({validateShape}){
    const row=out.results[i],record=row.record;
    if(row.reference!==`${family.reference}:${record.id}`||seen.has(row.reference)||row.score<out.similarityFloor)fail();seen.add(row.reference);
    if(i&&out.results[i-1].score<row.score)fail();
+   // Passage citations and attachment coverage belong to the two funding reads; coverage never exceeds the attachments.
+   if(id==='semantic_search_bills'&&(Object.hasOwn(row,'passage')||Object.hasOwn(row,'documents')))fail();
+   if(row.documents&&['withText','truncated','indexed'].some(key=>row.documents[key]>row.documents.attachments))fail();
    if(id==='semantic_search_bills'&&(!Object.hasOwn(record,'billNumber')||input.congress!==undefined&&record.congress!==input.congress||input.status!==undefined&&record.status!==input.status))fail();
    if(id==='semantic_search_grants'&&(!Object.hasOwn(record,'opportunityNumber')||input.status!==undefined&&record.status!==input.status))fail();
    if(id==='semantic_search_contract_opportunities'&&(!Object.hasOwn(record,'noticeId')||!input.includeInactive&&record.active!==true||input.naics!==undefined&&!(record.naicsCode??'').startsWith(input.naics)))fail();
