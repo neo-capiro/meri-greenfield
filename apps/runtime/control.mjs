@@ -8,6 +8,7 @@ import {createBrowserApprovalConsumptionOwner} from '../control/commands/approva
 import {Pool} from 'pg';
 import {createTurnTelemetry} from './telemetry/turn-context.mjs';
 import {countingPool} from './telemetry/counting.mjs';
+import {createRouteStatusCounters} from './telemetry/route-counters.mjs';
 import {Connection,Client} from '@temporalio/client';
 import {createPostgresConversationStore} from '../control/conversations/postgres-store.mjs';
 import {documentRevisionSourceFor,selectedDocumentRevisionSourceFor} from './artifacts/intent-binding.mjs';
@@ -21,7 +22,7 @@ import {readSecret,fault,compileControlUserPreferencesConfiguration} from './con
 import {readRuntimeTemporalTls as temporalTls} from './temporal-tls.mjs';
 import {createTemporalRuntimeFence,assertTemporalRuntimeCleanup,temporalCleanupUnknown} from './temporal-runtime-fence.mjs';
 import {listenRuntime} from './http-server.mjs';
-import {createControlRouteApplications,listenControlApplications} from './control-route-boundary.mjs';
+import {createControlRouteApplications,listenControlApplications,CONTROL_ROUTE_PATTERNS} from './control-route-boundary.mjs';
 import {createWorkerRunApplication} from './worker-http.mjs';
 import {createExecutionSessions} from './execution-sessions.mjs';
 import {createNativeSelectedComposition} from './selected/composition.mjs';
@@ -355,6 +356,10 @@ export async function startControl(configuration,options={}){
  if(createReadsRuntime!==undefined&&typeof createReadsRuntime!=='function'||readAvailability!==undefined&&typeof readAvailability!=='function')throw fault('READS_CONFIGURATION');
  compileControlUserPreferencesConfiguration(configuration);
  const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment});turnTelemetry.start();
+ // Per-route, per-status response counts for both listeners over the closed route allowlist (one line per route per minute,
+ // flushed on the telemetry rollup; no per-request log line).
+ const routeCounters=createRouteStatusCounters({emit:(event,fields)=>turnTelemetry.emit(event,fields),routes:CONTROL_ROUTE_PATTERNS});
+ if(typeof turnTelemetry.onRollup==='function')turnTelemetry.onRollup(routeCounters.flush);
  const mounted=compiled.factory?{productPortsFactory:compiled.factory}:{productPorts:compiled.ports};
  const onExternalAbort=()=>fence.lose(externalSignal.reason);externalSignal?.addEventListener('abort',onExternalAbort,{once:true});if(externalSignal?.aborted)onExternalAbort();
  let pool,connection,listener,privateListener,assembly,candidate,closing,telemetry,uploadsNative,nativeAllocations,officeKey,officeDiscovery,boundNativeNeed,boundNativeReady,boundBrowserNeed,boundBrowserReady,boundNativeHostAuthority,nativeHostTeardown;
@@ -365,7 +370,7 @@ export async function startControl(configuration,options={}){
  const lateNativeReady=configuration.uploads?.native?.host===undefined?undefined:async(args)=>{if(typeof boundNativeReady!=='function')throw Object.assign(Error('EXECUTION_NATIVE_PREREQUISITE_REFUSED'),{code:'EXECUTION_NATIVE_PREREQUISITE_REFUSED'});return boundNativeReady(args);};
  const checkAuthorization=()=>{fence.check();signal.throwIfAborted();};
  const lateNativeHostAuthority=configuration.uploads?.native?.host===undefined?undefined:async(args)=>{if(typeof boundNativeHostAuthority?.verify!=='function')throw Object.assign(Error('EXECUTION_NATIVE_HOST_AUTHORITY_REFUSED'),{code:'EXECUTION_NATIVE_HOST_AUTHORITY_REFUSED'});return boundNativeHostAuthority.verify(undefined,args);};
- const close=()=>closing??=(async()=>{fence.lose('RUNTIME_STOPPING');readCredentialRelay?.close();nativeAllocations?.close();memoryContextRelay?.close();occurrenceRelay?.close();officeDiscovery?.close();externalSignal?.removeEventListener('abort',onExternalAbort);const results=[];try{officeKey?.fill(0);}catch{}for(const method of [()=>listener?.close(),()=>privateListener?.close(),()=>candidate?.close(),()=>nativeHostTeardown?.close?.(),()=>assembly?.browserHosts?.close(),()=>assembly?.close(),()=>uploadsNative?.inspection?.close?.(),()=>connection?.close(),()=>pool?.end(),()=>telemetry?.close(),()=>{if(!injectedTurnTelemetry)turnTelemetry.close();}])try{results.push({status:'fulfilled',value:await method()});}catch(reason){results.push({status:'rejected',reason});}assertTemporalRuntimeCleanup(results);})();
+ const close=()=>closing??=(async()=>{fence.lose('RUNTIME_STOPPING');readCredentialRelay?.close();nativeAllocations?.close();memoryContextRelay?.close();occurrenceRelay?.close();officeDiscovery?.close();externalSignal?.removeEventListener('abort',onExternalAbort);const results=[];try{officeKey?.fill(0);}catch{}for(const method of [()=>listener?.close(),()=>privateListener?.close(),()=>candidate?.close(),()=>nativeHostTeardown?.close?.(),()=>assembly?.browserHosts?.close(),()=>assembly?.close(),()=>uploadsNative?.inspection?.close?.(),()=>connection?.close(),()=>pool?.end(),()=>telemetry?.close(),()=>routeCounters.flush(),()=>{if(!injectedTurnTelemetry)turnTelemetry.close();}])try{results.push({status:'fulfilled',value:await method()});}catch(reason){results.push({status:'rejected',reason});}assertTemporalRuntimeCleanup(results);})();
  try{
   signal?.throwIfAborted();
   // Declared telemetry starts first and closes last so every request span is flushed; the SDK is loaded only when enabled.
@@ -444,8 +449,8 @@ export async function startControl(configuration,options={}){
   const workspaceGeneration=getCoreServiceSecret?createWorkspaceGenerationApplication({sessions:assembly.sessions,service:assembly.service,getServiceSecret:getCoreServiceSecret,now:Date.now,maxRequestMs:configuration.limits.requestMs,observeMs:Math.min(workspaceGenerationLimits.observeMs,configuration.limits.requestMs)}):null;
   const retentionWitness=getCoreServiceSecret&&assembly.retention?createRetentionWitnessApplication({startup:assembly.retention.startup,getServiceSecret:getCoreServiceSecret,maxRequestMs:Math.min(configuration.limits.requestMs,10000)}):null;
   const separated=configuration.privateHttp===undefined?null:createControlRouteApplications({assembly:assembly.application,candidate:candidate?.application,objectiveReader,approvalMetadataReader,objectiveRuns:objectiveRuns.application,objectiveStart,routinesOccurrences:routinesOccurrences.application,sourceEvents,workspaceGeneration,retentionWitness,office:assembly.office?.application??null,nativeObserver:nativeHostTeardown?.observerApplication??null});
-  const publicApplication=fence.wrap(separated?.public??mountedApplication),application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
-  const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(fence.wrap(separated.private)):fence.wrap(separated.private);
+  const publicApplication=routeCounters.observe('public',fence.wrap(separated?.public??mountedApplication)),application=telemetry?telemetry.instrumentApplication(publicApplication):publicApplication;
+  const privateApplication=separated===null?null:telemetry?telemetry.instrumentApplication(routeCounters.observe('private',fence.wrap(separated.private))):routeCounters.observe('private',fence.wrap(separated.private));
   async function readiness({signal}){fence.check();signal?.throwIfAborted();await pool.query("SELECT to_regclass('meri_conversations.runs') AS runs, to_regclass('meri_conversations.events') AS events, to_regclass('meri_conversations.controls') AS controls, to_regclass('meri_conversations.selected_outputs') AS selected_outputs, to_regclass('meri_conversations.initial_inputs') AS initial_inputs").then(result=>{if(!result.rows[0]||typeof result.rows[0].initial_inputs!=='string'||Object.values(result.rows[0]).some(v=>v===null))throw fault('DATABASE_SCHEMA_UNAVAILABLE');});
    // Declared retention serving needs its projections present and a recovered watermark: a fenced or stale projection is reconciled from
    // the ledger here before serving, and a missing dependency is exposed, never bypassed.

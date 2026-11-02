@@ -45,7 +45,8 @@ function setup(operation='create_research_portfolio_snapshot',{selected=true}={}
  const request=REQUESTS(binding)[operation];
  const state={paths:[],effects:0,prepares:0,loseCreate:false,loseApprove:false,proposal:null,scopeRevoked:false,bodies:[]};
  const client=createResearchActionCoreClient({origin:'https://core.invalid',now:()=>NOW,getServiceSecret:async()=>'service-secret',reservedCredentials:async()=>new Set(),
-  getCredentials:async()=>({credential:'user-session',expiresAtMs:NOW+60000}),async fetchImpl(url,init){
+  async getCredentials(){state.credentialCalls=(state.credentialCalls??0)+1;if(state.credentialsError)throw state.credentialsError;if(state.credentialsFailAt===state.credentialCalls)throw Object.assign(Error('SESSION_UNAVAILABLE'),{code:'SESSION_UNAVAILABLE'});return {credential:'user-session',expiresAtMs:NOW+60000};},async fetchImpl(url,init){
+   if(state.fetchError)throw state.fetchError;
    const path=new URL(url).pathname,body=init.body===undefined?null:JSON.parse(init.body);state.paths.push({path,method:init.method});state.bodies.push(body);
    assert.equal(init.headers.authorization,'Bearer user-session');assert.equal(init.headers['x-internal-service-secret'],'service-secret');assert.equal(init.redirect,'error');assert.equal(init.credentials,'omit');
    if(path==='/api/clio/tools/manage_research_portfolio'){
@@ -53,6 +54,8 @@ function setup(operation='create_research_portfolio_snapshot',{selected=true}={}
     state.afterRead?.();return Response.json(state.readResult??[]);
    }
    if(path==='/api/clio/action-proposals'&&init.method==='POST'){
+    // An edge or Core answer other than 201 (the preview listener's fixed 404, a Core 4xx or 5xx): Core's create never ran.
+    if(state.edge)return Response.json(state.edge.body,{status:state.edge.status});
     state.prepares++;assert.equal(body.version,1);assert.deepEqual(body.currentTurn,{tenantId:binding.tenantId,userId:binding.actorId,conversationId:binding.conversationId,selectedClientId:selected?clientId:null});
     assert.equal(body.proposal.tool,operation);assert.equal(body.proposal.surface,'chat');assert.equal(body.proposal.conversationId,binding.conversationId);
     state.proposal={proposalId:id(10),status:'proposed',tool:operation,preview:{label:'Run '+operation,fields:{action:body.proposal.input.action??null,name:body.proposal.input.name??null},...(body.proposal.input.clientId?{client:{id:body.proposal.input.clientId,name:'Example client'}}:{}),riskTier:null,leavesFirm:false,reversible:true,counts:{},reason:'This action requires explicit approval.'},createdAt:new Date(NOW).toISOString(),expiresAt:new Date(NOW+50000).toISOString(),resultSummary:null};
@@ -108,11 +111,66 @@ test('management read rejects unknown fields, revoked rights and foreign convers
 });
 test('unknown actions and writes without confirmation never take the management read path; persisted rule preview remains governed',async()=>{
  const f=setup('manage_research_portfolio');
- for(const action of ['unknown_action','portfolio_archive','rule_preview'])await assert.rejects(f.prepare({...f.call,arguments:{conversationId:f.binding.conversationId,action,parameters:{}}}),{code:'INVALID_ARGUMENTS'});
- assert.equal(f.state.paths.length,0);assert.equal(f.store.rows.size,0);
+ // Each refused request is its own delivery: it is journaled FAILED with the schema's detail (a card, a replayable refusal) and never reaches Core.
+ let n=2;
+ for(const action of ['unknown_action','portfolio_archive','rule_preview']){
+  const refusal=await f.prepare({...f.call,deliveryId:delivery(n++),arguments:{conversationId:f.binding.conversationId,action,parameters:{}}}).catch(error=>error);
+  assert.equal(refusal.code,'INVALID_ARGUMENTS',action);assert.match(refusal.detail,/action|confirmed/u,action);
+ }
+ assert.equal(f.state.paths.length,0);assert.deepEqual([...f.store.rows.values()].map(r=>[r.state,r.outcome.code]),Array(3).fill(['FAILED','INVALID_ARGUMENTS']));
+ const replayed=await f.prepare({...f.call,deliveryId:delivery(2),arguments:{conversationId:f.binding.conversationId,action:'unknown_action',parameters:{}}}).catch(error=>error);
+ assert.equal(replayed.code,'INVALID_ARGUMENTS');assert.equal(f.store.rows.size,3,'a repeat replays the journaled refusal without a new row');
  const prepared=await f.prepare({...f.call,arguments:{conversationId:f.binding.conversationId,action:'rule_preview',parameters:{},confirmed:true}});
- assert.equal(prepared.status,'approval_required');assert.equal(f.state.prepares,1);assert.equal(f.state.effects,0);assert.equal(f.store.rows.size,1);
+ assert.equal(prepared.status,'approval_required');assert.equal(f.state.prepares,1);assert.equal(f.state.effects,0);assert.equal(f.store.rows.size,4);
 });
+test('a definite 4xx answer to the proposal POST settles FAILED with who answered, never UNKNOWN; 409 and 5xx stay UNKNOWN',async()=>{
+ // The 2 Nov preview: the listener in front of Core answered POST /api/clio/action-proposals with its fixed 404 and the
+ // delivery was journaled UNKNOWN ("Result uncertain"), although Core never saw the request and nothing was prepared.
+ const f=setup('manage_research_portfolio');f.state.edge={status:404,body:{error:'PREVIEW_ROUTE_NOT_FOUND'}};
+ const refusal=await f.prepare().catch(error=>error);
+ assert.equal(refusal.code,'REFUSED');assert.equal(refusal.detail,'the proposal request was answered before any proposal was created (HTTP 404)');assert.equal(refusal.reason,'PREVIEW_ROUTE_NOT_FOUND');
+ assert.deepEqual([...f.store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'REFUSED',detail:refusal.detail}]]);
+ assert.equal(f.state.prepares,0);assert.equal(f.state.proposal,null);
+ // The journal replays the explained refusal without a second Core call; the card is a failed preparation, not an uncertain one.
+ const again=await f.prepare().catch(error=>error);assert.equal(again.code,'REFUSED');assert.equal(again.detail,refusal.detail);assert.equal(again.reason,undefined,'the journal replays the words, never the constant');
+ const listed=await f.list();assert.equal(listed.intents.length,1);assert.equal(listed.intents[0].state,'failed');assert.equal(listed.intents[0].code,'REFUSED');
+ // A Nest message, an HTML body or a host name is never a reason: the status is. Only a constant-shaped token names the answering owner.
+ for(const [status,body,code,reason] of [[403,{message:'Forbidden'},'ACCESS_DENIED','HTTP_403'],[400,{message:'Action proposal request is invalid'},'REFUSED','HTTP_400'],[404,'<html>','REFUSED','HTTP_404'],[422,{error:'core.internal.example'},'REFUSED','HTTP_422']]){
+  const g=setup('create_research_portfolio_snapshot');g.state.edge={status,body};const e=await g.prepare().catch(error=>error);
+  assert.equal(e.code,code,String(status));assert.equal(e.detail,'the proposal request was answered before any proposal was created (HTTP '+status+')',String(status));assert.equal(e.reason,reason,String(status));
+  assert.deepEqual([...g.store.rows.values()].map(r=>r.state),['FAILED'],String(status));
+ }
+ // A conflict or a server failure after dispatch may have left a proposal behind: those stay UNKNOWN and are never repeated.
+ for(const [status,klass] of [[409,'4xx'],[500,'5xx'],[503,'5xx']]){
+  const u=setup('create_research_portfolio_snapshot');u.state.edge={status,body:{error:'later'}};const e=await u.prepare().catch(error=>error);
+  assert.equal(e.code,'UNKNOWN',String(status));assert.equal(e.detail,'the proposal request was answered HTTP '+klass,String(status));assert.equal(e.reason,'HTTP_'+status,String(status));
+  assert.deepEqual([...u.store.rows.values()].map(r=>r.state),['UNKNOWN'],String(status));
+ }
+ // Core answered 201 and the credential check after it refused (expired or reserved): the proposal exists, so the effect is
+ // unknown and the delivery is journaled UNKNOWN, never FAILED (a FAILED row would invite a second proposal under a new delivery).
+ const released=setup('create_research_portfolio_snapshot');released.state.credentialsFailAt=3;
+ const expired=await released.prepare().catch(error=>error);
+ assert.equal(expired.code,'UNKNOWN');assert.equal(expired.detail,'the proposal request was answered but could not be released');assert.equal(expired.reason,'SESSION_UNAVAILABLE');
+ assert.equal(released.state.prepares,1,'Core created the proposal');assert.deepEqual([...released.store.rows.values()].map(r=>r.state),['UNKNOWN']);
+});
+
+test('a proposal request that was never sent or never answered names its own reason for the control log, not a bare code',async()=>{
+ // Before dispatch: the session owner has no relay-eligible session bound to this run (the 2 Nov new-conversation runs): nothing
+ // was sent, the delivery settles FAILED UNAVAILABLE and the reason is the owner's constant.
+ const f=setup('manage_research_portfolio');f.state.credentialsError=Object.assign(Error('SESSION_UNAVAILABLE'),{code:'SESSION_UNAVAILABLE'});
+ const unsent=await f.prepare().catch(error=>error);
+ assert.equal(unsent.code,'UNAVAILABLE');assert.equal(unsent.detail,'the proposal request was not sent');assert.equal(unsent.reason,'SESSION_UNAVAILABLE');assert.equal(f.state.prepares,0);
+ assert.deepEqual([...f.store.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'UNAVAILABLE',detail:unsent.detail}]]);
+ // After dispatch: a transport failure (connection refused, name or certificate failure) may have reached Core: UNKNOWN, journaled
+ // without a detail, while the thrown fault carries the transport's own code for the log line.
+ for(const [cause,expected] of [[{code:'ECONNREFUSED'},'ECONNREFUSED'],[{code:'UNABLE_TO_VERIFY_LEAF_SIGNATURE'},'UNABLE_TO_VERIFY_LEAF_SIGNATURE'],[undefined,undefined]]){
+  const g=setup('create_research_portfolio_snapshot');g.state.fetchError=Object.assign(new TypeError('fetch failed'),cause===undefined?{}:{cause:Object.assign(Error('x'),cause)});
+  const lost=await g.prepare().catch(error=>error);assert.equal(lost.code,'UNKNOWN',expected);
+  assert.equal(lost.detail,'the proposal request got no answer',expected);assert.equal(lost.reason,expected,expected);
+  assert.deepEqual([...g.store.rows.values()].map(r=>[r.state,r.outcome]),[['UNKNOWN',null]],expected);
+ }
+});
+
 test('lost preparation acknowledgement never repeats a Core proposal',async()=>{
  const f=setup();f.state.loseCreate=true;await assert.rejects(f.prepare(),{code:'UNKNOWN'});f.state.loseCreate=false;
  await assert.rejects(f.prepare(),{code:'UNKNOWN'});assert.equal(f.state.prepares,1);assert.equal(f.state.effects,0);

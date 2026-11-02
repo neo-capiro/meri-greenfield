@@ -3,6 +3,8 @@ import {own,data} from '../commands-0.2/execution-boundary.mjs';
 import {validateShape,canonicalSha256} from '../validate.mjs';
 const fault=()=>{throw Object.assign(Error('SELECTED_WIRE_REFUSED'),{code:'SELECTED_WIRE_REFUSED'});};
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v),uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u.test(v);
+/** The selected-task operations of this wire, as served under `/internal/conversations/selected/` and `/v1/runner/selected/`. */
+export const SELECTED_OPERATIONS=Object.freeze(['prepare','read','finish','publish']);
 export function assertSelectedRequest(operation,raw){const v=data(raw);if(operation==='prepare')own(v,['binding','requestSha256']);else{
  const keys=['binding','sessionId','requestSha256','selectionSha256'];if(operation==='read')keys.push('operation','arguments','deliveryId');else if(operation==='finish')keys.push('structuredOutput');else if(operation==='publish')keys.push('completionId');else fault();own(v,keys);if(!uuid(v.sessionId)||!digest(v.selectionSha256))fault();
  if(operation==='read'&&(!/^sdk:[a-f0-9]{64}$/u.test(v.deliveryId)||!v.arguments||typeof v.arguments!=='object'||Array.isArray(v.arguments)))fault();if(operation==='publish'&&!uuid(v.completionId))fault();

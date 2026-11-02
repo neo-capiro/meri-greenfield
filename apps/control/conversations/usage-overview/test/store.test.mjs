@@ -132,7 +132,7 @@ test('empty known zero, absent policy and a reached cap do not invent configured
 test('malformed, unsafe, duplicated and contradictory canonical aggregates fail closed',()=>{
  for(const change of [f=>f.rows[0].charge='-1',f=>f.rows[0].attempts='9007199254740992',f=>f.rows[0].state='invented',f=>f.rows[0].recording='estimated',
   f=>f.rows.push({...f.rows[0]}),f=>f.rows[2].charge='1',f=>f.rows[0].attempts='0',f=>f.currentRows.push({state:'completed',attempts:'1'}),
-  f=>{f.ledgerRows=[]},f=>{f.policyRows[0].revision='0'},f=>{f.policyRows[0].monthly_cap_micro_usd='0'},f=>{f.policyRows[0].sdk_max_turns=101},
+  f=>{f.ledgerRows=[]},f=>{f.policyRows[0].revision='0'},f=>{f.policyRows[0].monthly_cap_micro_usd='0'},f=>{f.policyRows[0].sdk_max_turns=1001},
   f=>f.threadRows.push({period:'day',threads:'1',attempts:'5'}),f=>f.threadRows.push({period:'year',threads:'1',attempts:'1'}),
   f=>f.jobRows[0].charge='-1',f=>f.jobRows[0].closure='assumed',f=>f.jobRows[3].state='invented',f=>f.jobRows.push({...f.jobRows[0]}),
   f=>f.jobRows[0].steerInputSha256='short',f=>{f.jobRows[3].childAssignments='1';f.jobRows[3].childResults='2'},

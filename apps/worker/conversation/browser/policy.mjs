@@ -8,8 +8,10 @@
  *   admits every public origin; `destinations:'listed'` admits only `allowedOrigins`. Capiro supplies the platform
  *   record (`resolution.mjs`); tenant admins may narrow to a list or narrow a list further, never widen. An empty
  *   `listed` set means the browser opens nothing external (`browserStatus` says so).
- * - `deniedHosts` are platform denials carried inside the policy (preview and internal application hosts, identity
- *   providers): a tenant may add entries, never remove them, and the egress grant enforces them on the host.
+ * - `deniedHosts` are platform denials carried inside the policy (Meri's own zone: production, preview and internal
+ *   application hosts; an entry denies every name below it): a tenant may add entries, never remove them, and the
+ *   egress grant enforces them on the host. Identity providers are NOT denied: sign-in happens through user takeover
+ *   on the same host, so denying them would block the user; the model is kept off credential fields instead.
  * - The platform security limits (`public-web.mjs`: non-public addresses, internal names, credentials in URLs) are
  *   unremovable denials on top of any mode.
  * - Interaction tools need a per-call decision before execution (`permissions.mjs`): typing into credential fields

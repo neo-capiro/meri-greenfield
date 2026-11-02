@@ -18,7 +18,7 @@ import {renderMaterial,readBrowserActivationEvidence} from './render-material.mj
 import {NATIVE_PATHS} from './native-processing-material.mjs';
 import {configurationMaxBytes,validateConfiguration} from '../../../apps/runtime/config.mjs';
 import {compileBrowserPlatform} from '../../../apps/runtime/product-ports/browser-policy.mjs';
-import {isDeniedHostEntry} from '../../../apps/worker/conversation/browser/public-web.mjs';
+import {isDeniedHostEntry,hostDenied} from '../../../apps/worker/conversation/browser/public-web.mjs';
 import {EGRESS_REQUIREMENTS_SHA256,BROWSER_ACTIVATION_RENDER_VERIFICATION} from '../../../apps/worker/conversation/browser/activation.mjs';
 import {startControl,assembleControl} from '../../../apps/runtime/control.mjs';
 import {agentcoreControlFixture} from '../../../apps/runtime/test/agentcore-fixture.mjs';
@@ -42,7 +42,11 @@ test('the committed browserPlatform renders into control as the runtime compiles
  for(const policy of [committed.maximum,committed.defaults,...Object.values(committed.roleCeilings)]){
   assert.equal(policy.destinations,'public-web');assert.equal(policy.allowedOrigins,undefined,'no list under the open default');
   assert.deepEqual(policy.deniedHosts,committed.maximum.deniedHosts,'every record carries the platform denials');assert.ok(policy.deniedHosts.length>0);
-  for(const host of policy.deniedHosts)assert.ok(isDeniedHostEntry(host)&&host.endsWith('.capiro.ai'),host);}
+  for(const host of policy.deniedHosts)assert.ok(isDeniedHostEntry(host),host);
+  // The zone entry denies every Capiro name: production, previews, internal services and the per-environment application hosts.
+  for(const host of ['capiro.ai','app.capiro.ai','meri-preview.capiro.ai','first-chat-preview.app-dev.capiro.ai','app-dev.capiro.ai','os.capiro.ai','meri-native.capiro.ai','onboarding.capiro.ai'])
+   assert.equal(hostDenied(host,policy.deniedHosts),true,host);
+  assert.equal(hostDenied('example.com',policy.deniedHosts),false);assert.equal(hostDenied('notcapiro.ai',policy.deniedHosts),false);}
  assert.deepEqual(Object.keys(committed.roleCeilings).sort(),['capiro_admin','standard_user','user_admin']);
  assert.deepEqual(c.browserActivation,{...OPEN,renderVerification:receiptFor(i)},'the control record carries the renderer\'s verification receipt');
  assert.deepEqual(r.summary.features.browserActivation,{state:'open',evidence:OPEN.evidence,evidenceSha256:OPEN.evidenceSha256,evidenceVerified:true});

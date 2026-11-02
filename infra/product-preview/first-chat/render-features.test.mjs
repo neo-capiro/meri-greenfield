@@ -356,6 +356,9 @@ test('the committed deployment inputs render the approved roster once; the contr
  const operations=example.features.reads.approvedReads.operations,key=x=>`${x.id}@${x.version}`;
  // An operation may be approved at more than one version (a staged SQL installation admits both retained versions), never twice at one.
  assert.equal(new Set(operations.map(key)).size,operations.length);
+ // Saved-memory recall is the slowest read (two credential borrows, up to three semantic pages, an eligibility recheck) and
+ // timed out under 20 s: every read gets the contract ceiling (packages/contracts/runtime-0.2/reads.mjs admits 1-30000).
+ assert.equal(example.features.reads.approvedReads.maxExecuteMs,30000);
  for(const version of ['0.2.0','0.3.0'])for(const id of ['describe_capiro_data','query_capiro_data'])assert.ok(operations.some(x=>key(x)===`${id}@${version}`),`${id}@${version}`);
  const secrets={'reads.serviceSecret':{secretArn:example.features.reads.serviceSecretArn,versionId:VERSION,bytes:Buffer.from(SECRET.service)}};
  const rendered=await render(i=>{i.deployment.features=structuredClone(example.features);},{featureSecrets:secrets});

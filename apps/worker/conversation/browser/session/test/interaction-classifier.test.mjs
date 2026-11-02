@@ -10,10 +10,12 @@ function page(refs,{frames=1,throwing=false}={}){
   const nodes=refs[ref]??[];return fn(nodes.map(describe),selectors);}};}};
  return {frames:()=>Array.from({length:frames},()=>frame)};
 }
-/** Builds a DOM-like node from a terse description: {tag,type?,autocomplete?,form?:{fields:[...]}} */
+/** Builds a DOM-like node from a terse description: {tag,type?,autocomplete?,form?:{fields:[...]},owner?:{fields:[...]}}
+ * `form` is the enclosing form (closest), `owner` the IDL form owner (a control outside its form that names it via form=). */
 function describe(d){
  const attrs={type:d.type,autocomplete:d.autocomplete};
- const node={tagName:d.tag.toUpperCase(),getAttribute:name=>attrs[name]??null,matches:selector=>d.matches===selector,closest:selector=>selector==='form'&&d.form?form(d.form):null};
+ const node={tagName:d.tag.toUpperCase(),getAttribute:name=>attrs[name]??null,matches:selector=>d.matches===selector,closest:selector=>selector==='form'&&d.form?form(d.form):null,
+  ...(['button','input','textarea','select'].includes(d.tag)?{form:d.owner?form(d.owner):d.form?form(d.form):null}:{})};
  return node;
 }
 function form(f){return {querySelectorAll:()=>f.fields.map(describe)};}
@@ -32,15 +34,22 @@ test('typing: credential fields refuse, submit flag asks, ordinary text is routi
  assert.equal(await classifyInteraction({tool:'browser_fill_form',input:{fields:[{ref:'e2',value:'a'}]},pages:[p]}),'routine');
 });
 test('clicks: submit controls ask, links and buttons outside forms are routine; keys and dialogs by their effect',async()=>{
- const p=page({b1:[{tag:'button',form:searchForm}],b2:[{tag:'button',type:'button',form:searchForm}],b3:[{tag:'button'}],i1:[{tag:'input',type:'submit',form:loginForm}],a1:[{tag:'a'}],i2:[{tag:'input',type:'image'}]});
+ const p=page({b1:[{tag:'button',form:searchForm}],b2:[{tag:'button',type:'button',form:searchForm}],b3:[{tag:'button'}],i1:[{tag:'input',type:'submit',form:loginForm}],a1:[{tag:'a'}],i2:[{tag:'input',type:'image'}],
+  b4:[{tag:'button',owner:searchForm}],b5:[{tag:'button',type:'sumbit',form:searchForm}],b6:[{tag:'button',type:'reset',form:searchForm}],i3:[{tag:'input',type:'text',owner:loginForm}]});
  assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'b1'},pages:[p]}),'submission','a default-type button inside a form submits it');
  assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'b2'},pages:[p]}),'routine');
  assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'b3'},pages:[p]}),'routine','a button outside any form submits nothing');
+ assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'b4'},pages:[p]}),'submission','a button outside its form that names it via form= still submits it');
+ assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'b5'},pages:[p]}),'submission','an invalid type defaults to submit');
+ assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'b6'},pages:[p]}),'routine','reset is not a submission');
+ assert.equal(await classifyInteraction({tool:'browser_type',input:{ref:'i3',text:'x'},pages:[p]}),'routine','typing a non-credential field of a login form is routine; only the credential field itself refuses');
  assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'i1'},pages:[p]}),'submission');
  assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'i2'},pages:[p]}),'submission');
  assert.equal(await classifyInteraction({tool:'browser_click',input:{ref:'a1'},pages:[p]}),'routine');
- assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key:'Enter'},pages:[p]}),'submission');
- assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key:'ArrowDown'},pages:[p]}),'routine');
+ for(const key of ['Enter','NumpadEnter','Control+Enter','Meta+Enter','Shift+Enter','Space',' '])
+  assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key},pages:[p]}),'submission',key);
+ for(const key of ['ArrowDown','Tab','Escape','Control+a','PageDown'])
+  assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key},pages:[p]}),'routine',key);
  assert.equal(await classifyInteraction({tool:'browser_handle_dialog',input:{accept:true},pages:[p]}),'submission');
  assert.equal(await classifyInteraction({tool:'browser_handle_dialog',input:{accept:false},pages:[p]}),'routine');
  assert.equal(await classifyInteraction({tool:'browser_hover',input:{ref:'a1'},pages:[p]}),'routine');

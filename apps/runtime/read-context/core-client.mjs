@@ -84,5 +84,25 @@ export function createNativeToolAuthorityClient(configuration={}){
   }
   life.check();return result.sort((a,b)=>a.id.localeCompare(b.id));
  }catch(error){throw failure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}
- return Object.freeze({available,origin,readCurrent,readConversation,readClientReference,readModeObservation,readChatAttachmentSource,readMailboxes});
+ /** The mailboxes Core would send from for the caller (`GET /api/engagement/mail/mailboxes`): connected, owned by the caller,
+  * holding a token and an address, the same predicate Core applies at send. The address is lower-cased as a sender. */
+ async function readSendingMailboxes(raw){let life,acquired;try{
+  if(!available)refuse('UNAVAILABLE');const v=own(raw,['credential','deadlineMs'],['signal']);nativeSignal(v.signal);
+  if(typeof v.credential!=='string'||!/^\S{1,8192}$/u.test(v.credential)||!Number.isSafeInteger(v.deadlineMs))refuse('INVALID_ARGUMENTS');
+  const cutoff=Math.min(v.deadlineMs,now()+maxRequestMs);
+  life=createOperationLifetime({now,deadlineMs:cutoff,signal:v.signal,errorFactory:nativeReadFault});
+  const response=await life.run(async signal=>{
+   const result=await c.fetchImpl(new URL('/api/engagement/mail/mailboxes',origin).href,{method:'GET',redirect:'error',credentials:'omit',cache:'no-store',signal,
+    headers:{authorization:`Bearer ${v.credential}`,accept:'application/json','accept-encoding':'identity'}});
+   acquired=result;try{life.check();return result;}catch(error){try{cancelBody(responseBody(result));}catch{}throw error;}
+  });
+  const rows=await readJsonResponse(response,{lifetime:life,maxResponseBytes:262144});
+  if(!Array.isArray(rows)||rows.length>4096)refuse('RESOURCE_LIMIT');
+  const seen=new Set(),result=rows.map(row=>{
+   if(!row||typeof row!=='object'||Array.isArray(row)||!UUID.test(row.id)||seen.has(row.id)||typeof row.accountEmail!=='string'||!row.accountEmail.trim())refuse('INVALID_RESULT');
+   seen.add(row.id);return {id:row.id,accountEmail:row.accountEmail.trim().toLowerCase()};
+  });
+  life.check();return result;
+ }catch(error){throw failure(error);}finally{try{if(acquired)cancelBody(responseBody(acquired));}catch{}life?.close();}}
+ return Object.freeze({available,origin,readCurrent,readConversation,readClientReference,readModeObservation,readChatAttachmentSource,readMailboxes,readSendingMailboxes});
 }

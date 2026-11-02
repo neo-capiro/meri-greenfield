@@ -10,6 +10,8 @@
 import {readGuidance,MAIL_COVERAGE_REASONS,MAIL_COVERAGE_UNKNOWN} from './guidance.mjs';
 import {SQL_TOOL_IDS} from './tools.mjs';
 const NOTHING='No evidence, absence or completeness is established.';
+/** Closes every SQL refusal notice: the 2 November acceptance saw a refusal's statement and names reach the user verbatim. */
+const REFUSAL_FOR_MODEL='This notice is for correcting the request, never for the user: show them neither the statement nor this message, codes or data set and column names; if the request cannot be corrected, say in plain words which data could not be queried.';
 /** @type {Readonly<Record<string,string>>} */
 const TEXTS=Object.freeze({
  UNAVAILABLE:`This source cannot be read in this conversation right now: it is not connected, not enabled or not served for this request (not a permission refusal and not an empty result). This may be temporary. Tell the user plainly that it could not be read right now and suggest trying again in a minute, unless a more specific next step follows. ${NOTHING}`,
@@ -134,18 +136,18 @@ export function readNotices(operation,result,parsed){
  if(page?.ok===false){
   const code=page.error?.code,refusals=readGuidance(operation.id)?.refusals??{},guidance=Object.hasOwn(refusals,code)?` ${refusals[code]}`:'';
   const diagnostics=page.error&&typeof page.error==='object'?sqlDiagnostics(page.error,code):null;
-  return [notice(`Notice: ${operation.id} refused this request with ${code}.${guidance}${diagnostics===null?'':` ${diagnostics}`} ${NOTHING}`)];
+  return [notice(`Notice: ${operation.id} refused this request with ${code}.${guidance}${diagnostics===null?'':` ${diagnostics}`} ${REFUSAL_FOR_MODEL} ${NOTHING}`)];
  }
  if(operation.id==='describe_capiro_data'){
   if(page?.ok!==true||!Array.isArray(page.relations))return [];
   const names=page.relations.map(r=>r?.name).filter(name=>typeof name==='string');
-  return [notice(`Notice: ${names.length} ${page.scope?.kind??'public'} table(s) described: ${names.join(', ')}. Spell table and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each table's grain and limitations; rowLimit default ${page.limits?.defaultRowLimit}, max ${page.limits?.maxRowLimit}.`)];
+  return [notice(`Notice: ${names.length} ${page.scope?.kind??'public'} data set(s) described: ${names.join(', ')}. Spell data set and column names exactly as listed, filter enum columns by their listed values, join on the listed relationships, and respect each data set's grain and limitations; rowLimit default ${page.limits?.defaultRowLimit}, max ${page.limits?.maxRowLimit}. These names are for writing queries, never for the user: when no described data set holds the subject asked about, tell the user in plain words that this data is not available for structured queries yet and offer what is (for example a search by topic).`)];
  }
  if(operation.id!=='query_capiro_data'||page?.ok!==true)return [];
  const lines=[`Notice: ${page.rowCount} row(s) returned of rowLimit ${page.limits?.rowLimit} from ${(page.relationsUsed??[]).join(', ')}.`];
  if(page.rowLimitReached)lines.push('rowLimitReached: more rows matched; narrow the filters, aggregate, or page by keyset (ORDER BY the full key, WHERE key > $n).');
  if(page.byteTruncated)lines.push('byteTruncated: whole rows were dropped at the 256 KiB output budget; select fewer columns or lower rowLimit.');
- if(page.rowCount===0)lines.push('Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the table coverage limitations before concluding.');
+ if(page.rowCount===0)lines.push('Zero rows is not proof of absence: check parameter values, ILIKE wildcards (%) and the data set coverage limitations before concluding.');
  return [notice(lines.join(' '))];
 }
 /** Closed code of a failure: the gateway's own code (carried as `code` or as the message of a `GatewayDenied`) when it

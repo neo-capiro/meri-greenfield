@@ -43,13 +43,13 @@ for(const kind of ['user','tenant'])test(`${kind}: concurrent initial writers us
  assert.equal(p.calls.some(v=>v.id===1&&v.sql==='ROLLBACK'),true);assert.equal(p.calls.some(v=>v.sql.startsWith('SELECT')),false);
  assert.equal(p.released.length,2);assert.ok(p.released.every(v=>v.error===undefined));
  const params=p.calls.find(v=>v.id===0&&insert(kind).test(v.sql)).params;
- assert.deepEqual(params,kind==='user'?['tenant-synthetic','subject-synthetic',1,JSON.stringify(value),hash(value),'writer-synthetic']:['tenant-synthetic',1,JSON.stringify(value),hash(value),'writer-synthetic',null,20,2000000]);
+ assert.deepEqual(params,kind==='user'?['tenant-synthetic','subject-synthetic',1,JSON.stringify(value),hash(value),'writer-synthetic']:['tenant-synthetic',1,JSON.stringify(value),hash(value),'writer-synthetic',...Object.values(defaultModel)]);
 });
 
 for(const kind of ['user','tenant'])test(`${kind}: existing revision is locked and conditionally updated with an atomic audit`,async()=>{
  const before={theme:'light'},value={theme:'dark'},p=scriptedPool([{steps:[
   {match:locked(kind),rows:[row(1,before)],inspect(params){assert.deepEqual(params,kind==='user'?['tenant-synthetic','subject-synthetic']:['tenant-synthetic']);}},
-  {match:update(kind),rows:[row(2,value)],inspect(params){assert.deepEqual(params.slice(kind==='user'?2:1),[2,JSON.stringify(value),hash(value),'writer-synthetic',1,...(kind==='tenant'?[null,20,2000000]:[])]);}},
+  {match:update(kind),rows:[row(2,value)],inspect(params){assert.deepEqual(params.slice(kind==='user'?2:1),[2,JSON.stringify(value),hash(value),'writer-synthetic',1,...(kind==='tenant'?Object.values(defaultModel):[])]);}},
   {match:auditSql,inspect(params){assert.deepEqual(params.slice(5,9),[1,2,hash(view(kind,before)),hash(view(kind,value))]);}},
  ]}]),store=createPostgresSettingsStore({pool:p.pool});
  assert.deepEqual(await store.save(input(kind,{revision:1})),response(kind,2,value));

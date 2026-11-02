@@ -56,8 +56,8 @@ runs).
   (`guard_allocation` five purpose gates, `guard_native_observer` `V2_CONTEXT_REQUIRED`) and the 0005/0006/0007
   constraints (`native_physical_phase`, `native_declaration_shape`, `host_allocation_certificate_window`) with
   `'native-processing'` widened to the two provisioned purposes; predecessor pins on the exact function bodies; legacy
-  rows and historical native rows untouched; the 0004 browser-only teardown receipt branch unchanged. Ordinal 84 in
-  `first-chat-migrate.mjs`. `browser-only-provisioning-migration.test.mjs` recomputes the derivation.
+  rows and historical native rows untouched; the 0004 browser-only teardown receipt branch unchanged. Ordinal 85 in
+  `first-chat-migrate.mjs` (after main's 0032 at 84). `browser-only-provisioning-migration.test.mjs` recomputes the derivation.
 - `native-reservations.mjs`, `postgres-allocations.mjs`, `allocation.mjs`, `native-physical-state.mjs`: provisioned
   purposes reserve, claim, record, bootstrap and admit same-row; a provisioned admission without a reservation refuses
   (the direct active insert remains legacy-only); `createPostgresHostAllocationReader.ready` answers the browser-only
@@ -101,10 +101,10 @@ Preconditions: PR 540, PR 2 and PR 3 merged; native processing (runbook step 2) 
 host-to-control currentness listener (`browserHosts.tls.hostServer` + `bind`) rendered and reachable from the host
 subnet on port 443 of `control.meri-preview.internal` (runbook 3a). No step below deploys anything without Release.
 
-1. **Database (Release).** Snapshot `capiro-newstack-preview-clone`. Apply ordinal 84
+1. **Database (Release).** Snapshot `capiro-newstack-preview-clone`. Apply ordinal 85
    (`0008_browser_only_provisioning.sql`) with the existing `first-chat-migrate.mjs integration` stage. Verify:
    `guard_allocation()` and `guard_native_observer()` `prosrc` hashes changed from `ee96403b…`/`24b99863…`; the three
-   constraints are `convalidated`; the ledger has 84 rows. Rollback: the forward migration is reversible only by
+   constraints are `convalidated`; the ledger has 85 rows. Rollback: the forward migration is reversible only by
    restoring the snapshot (no browser-only rows exist before the first browser run).
 2. **Image.** Build `Dockerfile.browser-host` once for `linux/arm64`, push to the `meri-greenfield/browser-host` ECR
    repository, record the digest, run the scanner (0 HIGH/CRITICAL), and bake the AMI with the same recipe as the native

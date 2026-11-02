@@ -10,6 +10,8 @@ export const STAGES = Object.freeze(['send.admit.received','send.submit.accepted
   'runner.process.start','runner.load.done','runner.query.start','delta.first.durable','run.terminal']);
 export const CORE_ROUTES = Object.freeze(['identity','context','membership','current','other']);
 export const STATUS_CLASSES = Object.freeze(['2xx','401','403','409','4xx','503','5xx','timeout','unanswered']);
+/** Response status classes of control's own listeners (route-counters.mjs); every response has exactly one. */
+export const HTTP_STATUS_CLASSES = Object.freeze(['2xx','3xx','401','403','404','409','4xx','503','5xx']);
 export const AWS_OPERATIONS = Object.freeze(['DescribeTasks','ListTasks','DescribeServices','DescribeClusters',
   'DescribeTaskDefinition','DescribeNetworkInterfaces','DescribeInstances','DescribeSecurityGroups','DescribeSubnets',
   'DescribeVpcs','DescribeTags','ListTagsForResource','RunTask','StopTask','InvokeModel','InvokeModelWithResponseStream',
@@ -37,11 +39,21 @@ const ID=/^(?:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a
 const CODE=/^[A-Za-z0-9_.:-]{1,64}$/u;
 export const safeId=value=>typeof value==='string'&&ID.test(value)?value:'invalid';
 export const safeCode=value=>typeof value==='string'&&CODE.test(value)&&(codeVocabulary.has(value)||['none','other'].includes(value))?value:'other';
+/** One bounded line of plain owner detail (a schema field path, "answered HTTP 4xx"); never an identifier, credential, host,
+ * URL or free text: only letters, digits, spaces, parentheses and `_ . : ' -`, at most 160 characters, and nothing shaped like a
+ * UUID, a hex digest or a dotted host name, else `none`. */
+const TEXT=/^[A-Za-z0-9 _.:'()-]{1,160}$/u,IDENTIFIER=/[0-9a-f]{8}-[0-9a-f]{4}|[0-9a-f]{24}|(?:^|[^A-Za-z0-9])[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?![A-Za-z0-9])/iu;
+export const safeText=value=>typeof value==='string'&&TEXT.test(value)&&!IDENTIFIER.test(value)?value:'none';
+/** One owner constant (`SESSION_UNAVAILABLE`, `ECONNREFUSED`, `HTTP_404`): upper-case letters, digits and underscores only. */
+const TOKEN=/^[A-Z][A-Z0-9_]{1,62}$/u;
+export const safeToken=value=>typeof value==='string'&&TOKEN.test(value)?value:'none';
 const choice=(values,fallback='other')=>value=>values.includes(value)?value:fallback;
 const number=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=Number.MAX_SAFE_INTEGER?value:0;
 const nullable=value=>value===null||value===undefined?null:number(value);
 const dictionary=(keys,clean)=>value=>Object.fromEntries(keys.filter(k=>Object.hasOwn(value??{},k)).map(k=>[k,clean(value[k])]));
-const statusCounts=dictionary(STATUS_CLASSES,number);
+const statusCounts=dictionary(STATUS_CLASSES,number),httpStatusCounts=dictionary(HTTP_STATUS_CLASSES,number);
+// A route pattern is an allowlisted fixed path whose identifier segments are already `:id` (route-counters.mjs); anything else is `other`.
+const routePatternField=value=>typeof value==='string'&&value.length<=160&&/^\/(?:[A-Za-z0-9._-]{1,64}|:id)(?:\/(?:[A-Za-z0-9._-]{1,64}|:id)){0,11}$/u.test(value)?value:'other';
 const core=dictionary(CORE_ROUTES,statusCounts),aws=dictionary(AWS_OPERATIONS,dictionary(OUTCOMES,number));
 const exchanges=dictionary(['operation','capture','admission'],dictionary(['OPEN','OPERATION','POLL','REPLY'],number));
 const db=value=>({statements:number(value?.statements),ms:number(value?.ms)});
@@ -64,11 +76,18 @@ export const LINE_SCHEMAS=Object.freeze({
  // A governed-intent availability offer that failed: the layer whose bound answered (the worker, the runner client or control) and its
  // closed code, so an UNAVAILABLE write tool is explained in the run's own log stream. Emitted by the runner and by control.
  'meri.intent.availability':{...COMMON,layer:choice(['worker','runner','control']),code:safeCode,elapsedMs:number},
+ // A governed-intent preparation that failed in control: its closed code, whether the canonical owner was reached (`owner`) or the
+ // failure was decided before it (`before-owner`, so nothing was prepared) and the mount's bounded detail (a field path or the
+ // answering owner's token, never values), so a FAILED or UNKNOWN card is attributable from control's own log stream.
+ 'meri.intent.prepare':{...COMMON,layer:choice(['control']),code:safeCode,dispatched:choice(['owner','before-owner'],'other'),elapsedMs:number,detail:safeText,reason:safeToken},
  // The general-read availability snapshot that failed, in the same shape: the run's reads answer "cannot be read right now" for that turn.
  'meri.read.availability':{...COMMON,layer:choice(['worker','runner','control']),code:safeCode,elapsedMs:number},
  'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable','reproven']),code:safeCode},
  'meri.budget.quarantined':{...COMMON,reason:safeCode},
  'meri.process.rollup':{service:choice(SERVICES),atMs:number,windowMs:number,...COUNTERS,ownerExchanges:exchanges,telemetryDropped:number},
+ // Responses of one control listener for one route pattern over one window: counts per status class, never a request, an
+ // identifier, a header or a body. Emitted at most once per route per window by route-counters.mjs.
+ 'meri.http.routes':{service:choice(SERVICES),atMs:number,windowMs:number,listener:choice(['public','private'],'public'),route:routePatternField,statuses:httpStatusCounts},
 });
 for(const schema of Object.values(LINE_SCHEMAS))Object.freeze(schema);
 
@@ -102,6 +121,11 @@ function metricsFor(event,line){
   line.StatusClass=line.statusClass;
   if(line.attribution==='background')line.Attribution='background';
   add('CoreCalls',line.count,'Count',line.attribution==='background'?[['Service','StatusClass'],['Service','StatusClass','Attribution']]:[['Service','StatusClass']]);
+ }else if(event==='meri.http.routes'){
+  // One line per route and window; the three class totals are separate metrics so one EMF root carries them all.
+  // `listener` stays a log field only (Logs Insights can split by it); the Route dimension is the closed allowlist value.
+  line.Route=line.route;const s=line.statuses??{},total=keys=>keys.reduce((n,k)=>n+(s[k]??0),0),dimensions=[['Service'],['Service','Route']];
+  add('HttpResponses',total(HTTP_STATUS_CLASSES),'Count',dimensions);add('HttpClientErrors',total(['401','403','404','409','4xx']),'Count',dimensions);add('HttpServerErrors',total(['503','5xx']),'Count',dimensions);
  }else if(event==='meri.turn.failure'){line.Stage=line.stage;add('RunnerFailures',1,'Count',[['Service','Stage']]);
   if(line.timeoutClass&&line.timeoutClass!=='none')add('TimeoutFailures',1);}
  else if(event==='meri.health'){line.Component=line.component;add('HealthEvents',1,'Count',[['Service'],['Service','Component']]);}

@@ -23,7 +23,8 @@ export const READ_FAMILIES=Object.freeze({'watch-state':Object.freeze({clientSco
  'capiro-data-v4':Object.freeze({clientScope:'optional'}),
  'connected-apps':Object.freeze({clientScope:'optional'}),
  'teams-channels':Object.freeze({clientScope:'optional'}),
- 'meeting-source':Object.freeze({clientScope:'optional'}),
+ // Debriefs belong to one client (Core requires it; the gateway admits only the selected client): hidden in General.
+ 'meeting-source':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['meeting.query_debriefs'])}),
  'action-items-complete':Object.freeze({clientScope:'required'}),
  'operational-reads':Object.freeze({clientScope:'optional',requiredClientOperations:Object.freeze(['query_action_items'])}),
  'tenant-contacts':Object.freeze({clientScope:'optional'}),

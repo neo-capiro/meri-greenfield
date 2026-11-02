@@ -5,21 +5,28 @@
  *
  * The element behind a Playwright MCP `ref` is inspected in the pinned Playwright utility world, where DOM prototypes
  * are pristine (the same world `snapshot.mjs` uses), so a hostile page cannot relabel a password field or hide a form.
- * Structural facts only are read: tag, type, autocomplete, the enclosing form and its credential fields. Anything that
- * cannot be inspected (no page, unknown ref, several matches, an evaluation error) is `submission`, so the user is
- * asked instead of the call running unexamined. Nothing here executes a page effect. */
+ * Structural facts only are read: tag, type, autocomplete, the owning form (the `form` IDL attribute, so a control that
+ * names a form through `form=` outside it still counts) and its credential fields. A `<button>` whose `type` is neither
+ * `button` nor `reset` submits (an invalid value defaults to submit). Anything that cannot be inspected (no page,
+ * unknown ref, several matches, an evaluation error) is `submission`, so the user is asked instead of the call running
+ * unexamined. Nothing here executes a page effect. */
 import {CREDENTIAL_AUTOCOMPLETE} from './confidentiality.mjs';
 export const INTERACTION_CLASSES=Object.freeze(['routine','submission','credential']);
 const REF=/^[a-z][a-z0-9]{0,31}$/u;
-const SUBMISSION_TOOLS=Object.freeze({browser_press_key:input=>String(input?.key??'').toLowerCase()==='enter',browser_handle_dialog:input=>input?.accept===true});
+/** Keys that activate or submit: Enter in any chord (Control+Enter, Meta+Enter, Shift+Enter, NumpadEnter) and Space,
+ * which activates a focused submit control; focus cannot be inspected ahead of the press, so Space asks. */
+const SUBMIT_KEY=/(^|\+)(numpad)?enter$|^(shift\+)?(space| )$/u;
+const SUBMISSION_TOOLS=Object.freeze({browser_press_key:input=>SUBMIT_KEY.test(String(input?.key??'').toLowerCase()),browser_handle_dialog:input=>input?.accept===true});
 /** Runs in the page's utility world over the elements a ref resolves to; returns plain facts, never page text. */
 function inspectTargets(nodes,selectors){
  return nodes.map(node=>{
-  const form=typeof node.closest==='function'?node.closest('form'):null;
+  // The IDL form owner honours `form="id"`; non-form-associated elements fall back to the enclosing form.
+  const owner=node.form;
+  const form=owner&&typeof owner==='object'?owner:typeof node.closest==='function'?node.closest('form'):null;
   const tag=node.tagName.toLowerCase(),type=(node.getAttribute('type')||'').toLowerCase();
   const credential=(el)=>{const t=(el.getAttribute('type')||'').toLowerCase(),a=(el.getAttribute('autocomplete')||'').toLowerCase().split(/\s+/u);
    return t==='password'||a.some(x=>CREDENTIAL_AUTOCOMPLETE.includes(x))||selectors.some(s=>el.matches(s));};
-  const submitControl=tag==='button'&&(type===''||type==='submit')&&form!==null||tag==='input'&&(type==='submit'||type==='image');
+  const submitControl=tag==='button'&&type!=='button'&&type!=='reset'&&form!==null||tag==='input'&&(type==='submit'||type==='image');
   return {tag,type,credential:credential(node),inForm:form!==null,submitControl,
    formHasCredential:form!==null&&Array.from(form.querySelectorAll('input,textarea,[autocomplete]')).some(credential)};
  });

@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {createNativeMailPreparer} from '../../../runtime/native-authority/native-mail-preparer.mjs';
 import {createCoreApprovalForwarder,CORE_APPROVAL_ROUTES} from '../../../runtime/native-authority/approval-forwarder.mjs';
 import {createMetadataPoolFixture} from '../../commands/approval-metadata/test/fixture.mjs';
+import {intentFault} from '../faults.mjs';
 const id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),attemptId:id(5),workerId:id(6),writerFence:1};
 const scopes=[{tenantId:binding.tenantId,kind:'client',resourceId:id(7),policyRevision:'p1'}];
@@ -15,15 +16,19 @@ import {createMailFixture,uuid,bodyText} from '../../../gateway/sources/mail/tes
 import {assertMailThreadSourcePage} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {receiveIntentsResponse} from '../../../../packages/contracts/dist/intents-application.mjs';
 const NOW=Date.parse('2026-10-27T12:00:00.000Z'),deliveryId='sdk:'+'a'.repeat(64);
-async function fixture({mode='send',general=false,clientId}={}){
+const SENDER=Object.freeze({senderConnectionId:id(800),senderEmail:'owner@example.test'});
+async function fixture({mode='send',general=false,extra={},resolveSender=async()=>SENDER}={}){
  const admitted=general?[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:'p1'}]:scopes;
  const selected=general?null:admitted[0].resourceId;
- const args={mode,clientId:clientId===undefined?selected:clientId,senderConnectionId:id(800),senderEmail:'owner@example.test',to:['reader@example.test'],cc:[],bcc:[],subject:'Reviewed subject',bodyHtml:'<p>Reviewed content</p>',files:[],original:mode==='send'?null:{threadId:id(801),messageId:id(802),updatedAt:'2026-10-27T10:00:00.000Z',bodySha256:mode==='forward'?'a'.repeat(64):null}};
+ // The model supplies the message only; the client association and the sending mailbox come from the trusted run.
+ const message={mode,to:['reader@example.test'],cc:[],bcc:[],subject:'Reviewed subject',bodyHtml:'<p>Reviewed content</p>',files:[],original:mode==='send'?null:{threadId:id(801),messageId:id(802),updatedAt:'2026-10-27T10:00:00.000Z',bodySha256:mode==='forward'?'a'.repeat(64):null},...extra};
+ const args={...message,clientId:selected,...SENDER};
  const sql=createMetadataPoolFixture(),pool={options:sql.pool.options,async connect(){const c=await sql.pool.connect();return {async query(q){const text=typeof q==='string'?q:q.text;if(/^(BEGIN|COMMIT|ROLLBACK|SET )/u.test(text))return {rows:[]};return c.query(q);},release:e=>c.release(e)};}};
  const state={rights:0,session:true,dispatches:0,stored:null,loseAck:false,unknown:false,mutate:null,decision:null};
- const preparer=createNativeMailPreparer({pool,binding,scopes:admitted,selectedClientId:selected,policyRevision:admitted[0].policyRevision,expiresAtMs:NOW+60000,now:()=>NOW,maxRequestMs:1000,
+ const preparer=createNativeMailPreparer({pool,binding,scopes:admitted,selectedClientId:selected,policyRevision:admitted[0].policyRevision,expiresAtMs:NOW+60000,now:()=>NOW,maxRequestMs:1000,resolveSender,
  async currentRights(){state.rights++;return {tenantId:binding.tenantId,actorId:binding.actorId,scopes:admitted,checkedAtMs:NOW,expiresAtMs:NOW+60000};}});
- const prepared=await preparer.prepare({arguments:args,deliveryId,signal:undefined}),p=prepared.proposal;
+ const prepared=await preparer.prepare({arguments:message,deliveryId,signal:undefined}),p=prepared.proposal;
+ assert.deepEqual(p.command.arguments,args);
  assertMailSendProposal(p,{binding});assertPreparedResult('command',{id:'mail_send',version:'0.2.0'},prepared,binding,{scopes:admitted,nowMs:NOW});
  const decision={proposalId:p.proposalId,commandSha256:p.commandSha256,decision:'approved',decidedAt:new Date(NOW).toISOString(),expiresAt:p.expiresAt,approver:p.requiredApprover,policyRevision:admitted[0].policyRevision};
  const outcome={execution:{kind:'native-mail',proposalId:p.proposalId,commandSha256:p.commandSha256,idempotencyKey:p.command.idempotencyKey,binding,approvalDecisionSha256:hash(decision)},result:{state:'accepted',intentId:id(803),requestKey:p.proposalId,retryable:false,threadId:id(804),messageId:id(805),provider:'gmail',senderConnectionId:args.senderConnectionId,senderEmail:args.senderEmail,mode,original:args.original,signaturePolicy:'actor',signatureAppended:true,mailboxConfirmation:null}};
@@ -55,9 +60,22 @@ for(const mode of ['reply_all','forward'])test('typed mail read keeps exact '+mo
  action.original.messageId=uuid('8');assert.throws(()=>assertMailThreadSourcePage(page,request));
 });
 test('a General conversation never carries a model-supplied client association on a mail proposal',async()=>{
- await assert.rejects(fixture({general:true,clientId:scopes[0].resourceId}),{code:'ACCESS_DENIED'});
+ for(const extra of [{clientId:scopes[0].resourceId},{clientId:null},{senderConnectionId:id(999)}])
+  await assert.rejects(fixture({general:true,extra}),{code:'INVALID_ARGUMENTS',effect:'none'});
  // The command contract refuses the same association under a private-user scope, independent of the preparer.
  const f=await fixture({general:true});
  assert.throws(()=>assertMailSendCommand({...f.p.command,arguments:{...f.p.command.arguments,clientId:scopes[0].resourceId}},{binding}),/Invalid native mail command/u);
  assertMailSendCommand(f.p.command,{binding});
+});
+
+test('mail preparation refuses without a connected sending mailbox and never reports an uncertain preparation',async()=>{
+ const none='senderEmail: no connected mailbox can send; ask the user to connect Outlook or Gmail in Settings, Connections';
+ await assert.rejects(fixture({resolveSender:async()=>{throw intentFault('INVALID_ARGUMENTS','none',none);}}),e=>e.code==='INVALID_ARGUMENTS'&&e.effect==='none'&&e.detail===none);
+ await assert.rejects(fixture({resolveSender:null}),{code:'UNAVAILABLE',effect:'none'});
+});
+test('a chosen sender address reaches the resolver and an invalid message is a correctable refusal, not UNKNOWN',async()=>{
+ let asked;const f=await fixture({extra:{senderEmail:'owner@example.test'},resolveSender:async v=>{asked=v.senderEmail;return SENDER;}});
+ assert.equal(asked,'owner@example.test');assert.equal(f.p.command.arguments.senderEmail,'owner@example.test');
+ for(const extra of [{to:['Reader@Example.test']},{to:['reader@example.test'],cc:['reader@example.test']},{subject:'two'+String.fromCharCode(10)+'lines'}])
+  await assert.rejects(fixture({extra}),e=>e.code==='INVALID_ARGUMENTS'&&e.effect==='none'&&typeof e.detail==='string');
 });

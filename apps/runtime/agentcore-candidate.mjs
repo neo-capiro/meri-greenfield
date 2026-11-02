@@ -1,5 +1,6 @@
 /** Control composition for one immutable AgentCore deployment. Core admits turns; the existing journals own runs and SDK data. */
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
+import {MAX_RUN_WALL_CLOCK_MS} from '../../packages/contracts/run-limits.mjs';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertNativeConversationScope} from '../../packages/contracts/runtime-0.2/session.mjs';
 import {assertForkBootstrapReceipt} from '../../packages/contracts/conversation-lifecycle/validate.mjs';
@@ -181,8 +182,9 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   // Attribute current access only after the durable run and scope agree.
   try{turnTelemetry?.bind(run.binding);}catch{}
   const current=await readCurrent({binding,run,context,signal,beforeExecution:true});
-  // This is the execution lifetime, not a cached permission receipt. Business-data access rechecks Core through its own gateway.
-  return {run,expiresAtMs:current.routine?current.expiresAtMs:now()+config.runWindowMs,settings:{sourceEnabled:configuration.sourceEnabled,
+  // This is the execution lifetime (the platform wall-clock ceiling for an interactive run), not a cached permission receipt:
+  // business-data access rechecks Core through its own gateway on every read. Routine runs keep their occurrence window.
+  return {run,expiresAtMs:current.routine?current.expiresAtMs:now()+MAX_RUN_WALL_CLOCK_MS,settings:{sourceEnabled:configuration.sourceEnabled,
    ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),
    ...(configuration.intents===undefined?{}:{intents:{enabled:configuration.intents.enabled}}),
    // Control's configured activation record (config.mjs `browserActivation`) is the only thing that mounts the
