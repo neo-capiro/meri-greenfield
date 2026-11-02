@@ -47,7 +47,10 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
    signal?.throwIfAborted();
    return receipt;
   };
+  // Ends this host's own opening work (the first current site-workflow read) at its deadline or when the host closes.
+  const opening=new AbortController(),openSignal=AbortSignal.any([opening.signal,AbortSignal.timeout(Math.max(1,q.deadlineMs-now()))]);
   const close=({trigger})=>closing??=(async()=>{
+   opening.abort(Object.assign(Error('BROWSER_SESSION_CLOSED'),{code:'BROWSER_SESSION_CLOSED'}));
    pendingResume=undefined;
    // Both native input channels are revoked before teardown. Relay acknowledgements
    // do not stand in for the host's actual process-absence and filesystem proofs.
@@ -99,7 +102,7 @@ export function createBrowserSessionHost({binding,cwd,installation,upstream,cont
     if(typeof siteWorkflows?.resolve!=='function')fail('BROWSER_WORKFLOW_CURRENT_REQUIRED');
     workflow=await prepareCurrentSiteWorkflow({binding:q.binding,policy,
      selection:{siteId:manifest.siteId,workflowId:manifest.workflowId,version:manifest.version,manifestSha256:canonicalSha256(manifest)},
-     resolve:value=>siteWorkflows.resolve(value)});
+     resolve:value=>siteWorkflows.resolve(value),signal:openSignal});
     if(canonicalSha256(workflow.policy)!==canonicalSha256(policy))fail('BROWSER_WORKFLOW_POLICY_REFUSED');
    }
    context=await contexts.create({binding:q.binding,policy,paths,installation:installed,deadlineMs:q.deadlineMs});

@@ -12,9 +12,12 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {assertProcedureAdmission,assertProcedureSelector,narrowProcedureTools,procedureContextSuffix} from './guidance.mjs';
+import {RUNNER_LOAD_MAX_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
 const fault=code=>Object.assign(Error('PROCEDURE_'+code),{code:'PROCEDURE_'+code});
-/** One bounded resolution per activity. The task transport caps an ordinary operation at 3 s, so this matches it. */
-export const PROCEDURE_RESOLVE_MAX_MS=3000;
+/** One bounded resolution per activity, at most the runner's session allowance: control resolves the selection through
+ * its task authority and Core, which can outlive the native client's 3 s default. The runner transport (conversation-runner
+ * runnerCall) applies the run's own session allowance and original cutoff inside this bound. */
+export const PROCEDURE_RESOLVE_MAX_MS=RUNNER_LOAD_MAX_MS;
 
 /** The run's selected client is derived from the run's own canonical client scope, never from the selector. */
 export const selectedClientFromScopes=scopes=>{const clientScope=(Array.isArray(scopes)?scopes:[]).find(scope=>scope?.kind==='client');return clientScope&&typeof clientScope.resourceId==='string'?clientScope.resourceId:null;};

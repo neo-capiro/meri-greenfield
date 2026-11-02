@@ -12,6 +12,7 @@ import {binding,scopes,versions,id} from '../../test/store-fixture.mjs';
 import {createProcedureCoreClient,PROCEDURE_RUNTIME_ROUTE} from '../core-client.mjs';
 import {createProcedureResolver} from '../resolver.mjs';
 import {createProcedureRuntime,PROCEDURE_RESOLVE_MAX_MS} from '../../../../worker/conversation/procedures/runtime.mjs';
+import {RUNNER_LOAD_MAX_MS} from '../../../../../packages/runtime/runner-load-budget.mjs';
 import {createTaskProcedurePort} from '../../../../worker/conversation/procedures/task-port.mjs';
 import {BUILTIN_PROCEDURE_IDS,PROCEDURE_CONTEXT_MARKER,narrowProcedureTools,assertProcedureSelector} from '../../../../worker/conversation/procedures/guidance.mjs';
 
@@ -156,5 +157,14 @@ test('the port the conversation activity consumes is normalised for exactly one 
  assert.equal(typeof port.prepare,'function');
  assert.equal(port.prepare.length,1);
  assert.equal(typeof createProcedureRuntime({resolve:async()=>{}}).prepare,'function');
- assert.equal(PROCEDURE_RESOLVE_MAX_MS,3000);
+ assert.equal(PROCEDURE_RESOLVE_MAX_MS,RUNNER_LOAD_MAX_MS);
+});
+
+test('a resolution slower than the 3 s native default completes within the session allowance; past it the activity refuses',async()=>{
+ for(const [elapsedMs,succeeds] of [[3500,true],[RUNNER_LOAD_MAX_MS+1,false]]){
+  let at=NOW;const selection=stored('briefing');
+  const runtime=createProcedureRuntime({now:()=>at,resolve:async()=>{at+=elapsedMs;return admissionFor(selection,{validUntil:NOW+120_000});}});
+  if(succeeds)assert.equal((await prepareFor(runtime,selection)).identity.id,'briefing');
+  else assert.equal(await codeOf(()=>prepareFor(runtime,selection)),'PROCEDURE_DEADLINE');
+ }
 });
