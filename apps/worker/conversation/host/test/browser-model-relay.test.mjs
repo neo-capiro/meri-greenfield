@@ -15,7 +15,7 @@ test('an authenticated native stream lost before binding cannot expose a model s
  const incoming=new PassThrough(),outgoing=new PassThrough(),policy=validateBrowserPolicy(enabledPolicy());
  const owner=createNativeBrowserModelRelay({binding,policy,installation,paths:browserPaths(cwd),readable:incoming,writable:outgoing,onDisconnect:()=>{}});
  incoming.destroy();
- await assert.rejects(owner.bind({binding,installation,tools:async()=>[],call:async()=>({})}),/BROWSER_RELAY_REFUSED/);
+ await assert.rejects(owner.bind({binding,installation,approvalWindowMs:120000,tools:async()=>[],call:async()=>({})}),/BROWSER_RELAY_REFUSED/);
  assert.throws(()=>createNativeBrowserModelRelay({binding,policy,installation,paths:browserPaths(cwd),readable:incoming,writable:outgoing,onDisconnect:()=>{}}),/BROWSER_RELAY_REFUSED/);
  outgoing.destroy();
 });
@@ -24,7 +24,7 @@ async function fixture(t){
  const incoming=new PassThrough(),outgoing=new PassThrough(),policy=validateBrowserPolicy(enabledPolicy()),fence=createControlFence({now:Date.now});
  const state={calls:[],disconnected:0,raw:'',mode:'text'};outgoing.on('data',chunk=>{state.raw+=chunk;});
  const owner=createNativeBrowserModelRelay({binding,policy,installation,paths:browserPaths(cwd),readable:incoming,writable:outgoing,onDisconnect:()=>{state.disconnected++;}});
- const server=await owner.bind({binding,installation,tools:async()=>{if(state.mode==='throw')throw Error('CONFIDENTIAL_NATIVE_ERROR');return [{name:'browser_snapshot',description:'Snapshot',inputSchema:{type:'object',properties:{}}}];},
+ const server=await owner.bind({binding,installation,approvalWindowMs:120000,tools:async()=>{if(state.mode==='throw')throw Error('CONFIDENTIAL_NATIVE_ERROR');return [{name:'browser_snapshot',description:'Snapshot',inputSchema:{type:'object',properties:{}}}];},
   async call(input){assert.equal(input.signal.aborted,false);state.calls.push(input);fence.admit({requestId:input.requestId,tool:input.tool,timeoutMs:1000});
    if(state.mode==='throw')throw Error('CONFIDENTIAL_NATIVE_ERROR');
    if(state.mode==='park')await new Promise(resolve=>input.signal.addEventListener('abort',resolve,{once:true}));
@@ -42,7 +42,7 @@ test('native model stream exposes only listed browser tools and forwards filtere
  assert.match(f.state.calls[0].requestId,/^[0-9a-f]{64}$/);assert.equal(f.state.calls[0].signal.aborted,true);
  await assert.rejects(f.client.request({method:'takeover.begin',params:{}},EmptyResultSchema));
  assert.equal(f.state.calls.length,1);
- await assert.rejects(f.owner.bind({binding,installation,call:async()=>{},tools:async()=>[]}));
+ await assert.rejects(f.owner.bind({binding,installation,approvalWindowMs:120000,call:async()=>{},tools:async()=>[]}));
 });
 test('native private errors and images cannot cross the model stream',async t=>{
  const f=await fixture(t);

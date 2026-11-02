@@ -7,7 +7,7 @@ import {browserRefusalResult} from '../refusals.mjs';
 import {binding} from '../../../../control/conversations/test/store-fixture.mjs';
 const descriptor={name:'browser_snapshot',description:'Pinned upstream snapshot',inputSchema:{type:'object',properties:{filename:{type:'string',description:'Exact upstream parameter'}},additionalProperties:false}};
 async function fixture(t,over={}){
- const calls=[],owner=createBrowserSdkServer({binding,policy:{enabled:true,tools:['browser_snapshot']},deadlineMs:Date.now()+30000,
+ const calls=[],owner=createBrowserSdkServer({binding,policy:{enabled:true,tools:['browser_snapshot']},deadlineMs:Date.now()+30000,approvalDeadlineMs:120000,
   tools:async()=>[descriptor],call:async input=>{calls.push(input);return {content:[{type:'text',text:'Filtered host snapshot'}]};},...over});
  const client=new Client({name:'synthetic-sdk-client',version:'1.0.0'}),[clientTransport,serverTransport]=InMemoryTransport.createLinkedPair();
  await owner.server.instance.connect(serverTransport);await client.connect(clientTransport);

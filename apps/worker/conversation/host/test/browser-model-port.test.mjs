@@ -6,7 +6,7 @@ import {binding,enabledPolicy} from '../../browser/test/fixtures.mjs';
 const policy=enabledPolicy(),request={binding,requestId:'a'.repeat(64),tool:'browser_snapshot',args:{}};
 const descriptor={name:'browser_snapshot',description:'Snapshot',inputSchema:{type:'object',properties:{}}};
 const result={content:[{type:'text',text:'filtered snapshot'}]};
-const fixture=(overrides={})=>createBoundBrowserModelPort({binding,policy,tools:async()=>[descriptor],call:async()=>result,...overrides});
+const fixture=(overrides={})=>createBoundBrowserModelPort({binding,policy,tools:async()=>[descriptor],call:async()=>result,approvalWindowMs:120000,...overrides});
 const refused=promise=>assert.rejects(promise,error=>error.code==='BROWSER_CALL_REFUSED'&&error.message==='BROWSER_CALL_REFUSED');
 
 test('disabled browser policy cannot construct a model tool boundary',()=>{
@@ -68,7 +68,7 @@ test('tools listing cancellation reaches the borrowed port and refuses late sche
 
 test('operation result after either the run expiry or selected policy budget is refused',async()=>{
  for(const expiry of [1001,1000000]){
-  let now=1000;const port=fixture({now:()=>now,deadlineMs:expiry,call:async()=>{now=expiry===1001?expiry:1000+policy.timeouts.actionMs+policy.timeouts.navigationMs;return result;}});
+  let now=1000;const port=fixture({now:()=>now,deadlineMs:expiry,call:async()=>{now=expiry===1001?expiry:1000+policy.timeouts.actionMs+policy.timeouts.navigationMs+120000;return result;}});
   await refused(port.call(request));port.close();
  }
 });

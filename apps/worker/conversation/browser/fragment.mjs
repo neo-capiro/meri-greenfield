@@ -36,6 +36,8 @@ export function buildOpenBrowserFragment({binding,cwd,policy,installation:rawIns
   allowedTools:Object.freeze(gate.preApproved.map(name)),
   disallowedTools:Object.freeze(unadmitted.map(name)),
   canUseTool:gate.canUseTool,
+  // The session's network-level submission gate asks through the same canonical approval owner (permissions.mjs).
+  submissions:gate.submissions,
   hooks:Object.freeze({
    PreToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([gate.preToolUse])})]),
    PostToolUse:Object.freeze([Object.freeze({matcher,hooks:Object.freeze([createReceiptHook({binding,paths,cwd,server:BROWSER_SERVER_NAME,tools:policy.tools,receipts,now,siteWorkflow}),tracking.post])})]),

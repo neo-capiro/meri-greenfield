@@ -48,10 +48,10 @@ export function createBrowserHostRuntimePort(raw){
  return Object.freeze({
   installation,sourceScopes,...(c.modelTransport===undefined?{}:{modelTransport:c.modelTransport}),
   ...(c.sessions?{sessions:Object.freeze({async open(request){
-   const q=own(request,['binding','policy','deadlineMs','manifest']);assertBinding(q.binding);
+   const q=own(request,['binding','policy','deadlineMs','manifest','submissions']);assertBinding(q.binding);
    return storageMethod(c.sessions,'open')(q);
   },...(typeof c.sessions.adopt==='function'?{async adopt(request){
-   const q=own(request,['binding','policy','deadlineMs','manifest','handoff'],['signal']);assertBinding(q.binding);signalOf({signal:q.signal});
+   const q=own(request,['binding','policy','deadlineMs','manifest','handoff','submissions'],['signal']);assertBinding(q.binding);signalOf({signal:q.signal});
    return storageMethod(c.sessions,'adopt')(q);
   }}:{})})}:{}),
   ...(c.approvalDeadlineMs===undefined?{}:{approvalDeadlineMs:c.approvalDeadlineMs}),

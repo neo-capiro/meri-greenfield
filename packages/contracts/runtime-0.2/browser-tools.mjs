@@ -48,10 +48,12 @@ export function assertBrowserApprovalResult(raw,{input,toolUseId}){
  if(value.behavior==='allow'&&canonicalSha256(value.updatedInput)!==canonicalSha256(input))fail();return value;
 }
 /** Only a ceiling for named routes. The current-policy owner clamps again to its
- * selected policy and remaining canonical run time before executing an effect. */
+ * selected policy and remaining canonical run time before executing an effect. A browser call may hold a request the
+ * page sends until the user decides (session/submission-gate.mjs), so its ceiling includes the longest approval window. */
 export function browserOperationCeilingMs(operation){
  const name=browserOperationName(operation);if(!name)return null;
  if(name==='browser-approve')return BROWSER_NATIVE_LIMITS.approvalMs;
+ if(name==='browser-call')return BROWSER_NATIVE_LIMITS.executionMs+BROWSER_NATIVE_LIMITS.approvalMs;
  if(name==='browser-hook')return BROWSER_NATIVE_LIMITS.metadataMs;
  return BROWSER_NATIVE_LIMITS.executionMs;
 }
@@ -62,7 +64,11 @@ export function browserOperationBudgetMs(operation,{policy,approvalDeadlineMs=BR
  }
  if(['browser-call','browser-tools'].includes(name)){
   const a=policy?.timeouts?.actionMs,n=policy?.timeouts?.navigationMs;
-  if(!Number.isSafeInteger(a)||a<1000||a>60000||!Number.isSafeInteger(n)||n<1000||n>120000)fail();return Math.min(a+n,BROWSER_NATIVE_LIMITS.executionMs);
+  if(!Number.isSafeInteger(a)||a<1000||a>60000||!Number.isSafeInteger(n)||n<1000||n>120000)fail();
+  if(name==='browser-tools')return Math.min(a+n,BROWSER_NATIVE_LIMITS.executionMs);
+  // The page effect plus the selected approval window for a request the page sends during it.
+  if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<1000||approvalDeadlineMs>BROWSER_NATIVE_LIMITS.approvalMs)fail();
+  return Math.min(a+n,BROWSER_NATIVE_LIMITS.executionMs)+approvalDeadlineMs;
  }
  return name==='browser-hook'?BROWSER_NATIVE_LIMITS.metadataMs:BROWSER_NATIVE_LIMITS.executionMs;
 }

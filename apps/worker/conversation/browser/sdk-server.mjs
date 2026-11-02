@@ -13,10 +13,12 @@ const MAX_BYTES=262144;
 const fail=()=>{throw Object.assign(Error('BROWSER_CALL_REFUSED'),{code:'BROWSER_CALL_REFUSED'});};
 const refused=()=>browserRefusalResult('BROWSER_CALL_REFUSED');
 export function createBrowserSdkServer(configuration){
- const c=own(configuration,['binding','policy','tools','call','deadlineMs'],['now','signal']),binding=data(c.binding),policy=validateBrowserPolicy(c.policy),now=c.now??Date.now;
+ const c=own(configuration,['binding','policy','tools','call','deadlineMs','approvalDeadlineMs'],['now','signal']),binding=data(c.binding),policy=validateBrowserPolicy(c.policy),now=c.now??Date.now;
  validateShape('RunBinding',binding);
- if(!policy.enabled||typeof c.tools!=='function'||typeof c.call!=='function'||typeof now!=='function'||!Number.isSafeInteger(c.deadlineMs)||c.deadlineMs<=now())fail();
- const owner=new AbortController(),timeout=Math.min(policy.timeouts.actionMs+policy.timeouts.navigationMs,130000);
+ if(!policy.enabled||typeof c.tools!=='function'||typeof c.call!=='function'||typeof now!=='function'||!Number.isSafeInteger(c.deadlineMs)||c.deadlineMs<=now()||
+  !Number.isSafeInteger(c.approvalDeadlineMs)||c.approvalDeadlineMs<1)fail();
+ // A call may wait for the user on a request its page sends (the host's submission gate) within the run's approval window.
+ const owner=new AbortController(),timeout=Math.min(policy.timeouts.actionMs+policy.timeouts.navigationMs,130000)+c.approvalDeadlineMs;
  const sdk=createSdkMcpServer({name:BROWSER_SERVER_NAME,version:'1.0.0',tools:[]});
  // McpServer's public protocol server preserves the pinned upstream JSON Schema
  // exactly. It avoids a second tool-schema vocabulary or a lossy conversion.

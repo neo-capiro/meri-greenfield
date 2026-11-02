@@ -10,14 +10,17 @@ export const BROWSER_MODEL_MAX_BYTES=262144;
 const fail=()=>{throw Object.assign(Error('BROWSER_CALL_REFUSED'),{code:'BROWSER_CALL_REFUSED'});};
 const wire=value=>{const result=data(value);if(Buffer.byteLength(JSON.stringify(result))>BROWSER_MODEL_MAX_BYTES)fail();return result;};
 
-export function createBoundBrowserModelPort({binding,policy,tools,call,deadlineMs=Number.MAX_SAFE_INTEGER,now=Date.now}){
+/** `approvalWindowMs` is how long a call may additionally wait while the user decides on a request the page sends during
+ * it (the session's network submission gate). */
+export function createBoundBrowserModelPort({binding,policy,tools,call,approvalWindowMs,deadlineMs=Number.MAX_SAFE_INTEGER,now=Date.now}){
  const bound=data(binding);validateShape('RunBinding',bound);const digest=canonicalSha256(bound),admitted=validateBrowserPolicy(policy);
- if(!admitted.enabled||typeof tools!=='function'||typeof call!=='function'||typeof now!=='function'||!Number.isSafeInteger(deadlineMs)||deadlineMs<=now())fail();
+ if(!admitted.enabled||typeof tools!=='function'||typeof call!=='function'||typeof now!=='function'||!Number.isSafeInteger(deadlineMs)||deadlineMs<=now()||
+  !Number.isSafeInteger(approvalWindowMs)||approvalWindowMs<1)fail();
  const owner=new AbortController();let closed=false;
  const input=(raw,keys)=>{const q=own(raw,['binding',...keys],['signal']);nativeSignal(q.signal);
   if(closed||q.signal?.aborted||canonicalSha256(data(q.binding))!==digest)fail();return q;};
- const run=async(signal,operation)=>{
-  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+Math.min(admitted.timeouts.actionMs+admitted.timeouts.navigationMs,130000)),
+ const run=async(signal,operation,extraMs=0)=>{
+  const life=createOperationLifetime({deadlineMs:Math.min(deadlineMs,now()+Math.min(admitted.timeouts.actionMs+admitted.timeouts.navigationMs,130000)+extraMs),
    now,signal:signal?AbortSignal.any([signal,owner.signal]):owner.signal,errorFactory:()=>Object.assign(Error('BROWSER_CALL_REFUSED'),{code:'BROWSER_CALL_REFUSED'})});
   try{const value=await life.run(operation);life.check();if(closed)fail();return value;}
   catch{fail();}finally{life.close();}
@@ -45,7 +48,7 @@ export function createBoundBrowserModelPort({binding,policy,tools,call,deadlineM
      if(Object.hasOwn(result,'isError')&&!isBrowserRefusalResult(result))fail();
      if(!Array.isArray(result.content)||!result.content.length||result.content.some(x=>!x||Object.keys(x).sort().join(',')!=='text,type'||x.type!=='text'||typeof x.text!=='string'))fail();
      return result;
-    });
+    },approvalWindowMs);
    }catch{fail();}
   },
   close(){closed=true;owner.abort();},

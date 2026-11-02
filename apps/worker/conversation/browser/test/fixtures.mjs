@@ -49,3 +49,7 @@ export async function startFrom(cap,url,tool,input,id){
 export function openFragment({cwd,policy=enabledPolicy(),r=recorders(),approvals,...rest}={}){
  return {r,cap:buildOpenBrowserFragment({binding,cwd,policy:validateBrowserPolicy(policy),installation,sourceScopes,artifacts:r.artifactPort,receipts:r.receiptPort,approvals,now:clock,...rest})};
 }
+
+/** The run's network submission approval port as the permission gate exposes it (permissions.mjs `submissions`): asks
+ * nothing and approves nothing unless a test replaces it. */
+export const submissions=Object.freeze({approve:async()=>false,claim:()=>null,windowMs:120000});

@@ -2,9 +2,10 @@
  * The upstream MCP transport is private to the host. Its tool output is discarded by
  * the owner; SDK transport and user input use separate caller-supplied native relays. */
 import {createBrowserSessionOwner} from './owner.mjs';
+import {createSubmissionGate} from './submission-gate.mjs';
 import {PLAYWRIGHT_MCP_VERSION} from '../policy.mjs';
 const fail=code=>{throw Object.assign(Error(code),{code});};
-export async function createPinnedBrowserSession({upstream,context,policy,manifest,current,hold,ports,now=Date.now,deadlineMs}){
+export async function createPinnedBrowserSession({upstream,context,policy,manifest,current,hold,ports,submissions,now=Date.now,deadlineMs}){
  if(upstream?.version!==PLAYWRIGHT_MCP_VERSION||typeof upstream.createConnection!=='function')fail('BROWSER_CONFIGURATION');
  const config={browser:{browserName:'chromium',isolated:false},webmcp:false,saveSession:false,imageResponses:'omit',
   snapshot:{mode:'none'},codegen:'none',timeouts:{action:policy.timeouts.actionMs,navigation:policy.timeouts.navigationMs,idle:0}};
@@ -29,14 +30,18 @@ export async function createPinnedBrowserSession({upstream,context,policy,manife
  try{
   await request('initialize',{protocolVersion:'2025-11-25',capabilities:{},clientInfo:{name:'meri-browser-session',version:'1'}});
   transport.onmessage({jsonrpc:'2.0',method:'notifications/initialized'});
-  const owner=createBrowserSessionOwner({context,policy,manifest,current,hold,ports,now,deadlineMs,
+  let fenceState=()=>'agent';
+  const gate=await createSubmissionGate({context,policy,approve:submissions?.approve,userDriving:()=>fenceState()==='user'});
+  const owner=createBrowserSessionOwner({context,policy,manifest,current,hold,ports,now,deadlineMs,gate,
+   claimSubmission:input=>submissions.claim(input),approvalWindowMs:submissions.windowMs,
    invoke:async({tool,args,signal})=>{const result=await request('tools/call',{name:tool,arguments:args},signal);
     if(result?.isError!==false&&result?.isError!==undefined)fail('BROWSER_UPSTREAM_REFUSED');}});
+  fenceState=()=>owner.state().state;
   return Object.freeze({...owner,
    async resume(input){const result=await owner.prepareResume(input);await owner.completeResume({snapshot:result,signal:input?.signal});return result;},
    async tools({signal}={}){const result=await request('tools/list',{},signal);if(!Array.isArray(result?.tools))fail('BROWSER_UPSTREAM_REFUSED');
     return result.tools.filter(tool=>policy.tools.includes(tool.name));},
-   async destroy(input){try{return await owner.destroy(input);}finally{await server.close();}},
+   async destroy(input){try{return await owner.destroy(input);}finally{await gate.close();await server.close();}},
   });
  }catch(error){await server.close();await context.close();throw error;}
 }

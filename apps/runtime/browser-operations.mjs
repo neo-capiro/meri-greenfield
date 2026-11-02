@@ -28,7 +28,8 @@ export function createBrowserOperations({hosts,readCapabilityRole,readBrowserPol
   // The approval owner pins its selected timeout during host preparation; the
   // SDK client also uses that validated metadata. Control is only the outer
   // transport ceiling here, never a replacement 120 s approval decision.
-  const budget=operation==='browser-approve'?browserOperationCeilingMs(operation):browserOperationBudgetMs(operation,{policy});
+  // A call may wait for the user on a request its page sends (the host's submission gate), inside the same selected window.
+  const budget=['browser-approve','browser-call'].includes(operation)?browserOperationCeilingMs(operation):browserOperationBudgetMs(operation,{policy});
   const until=Math.min(execution.expiresAtMs,now()+budget);
   return Object.freeze({deadlineMs:until,async execute({signal}){
    if(descriptor===null){

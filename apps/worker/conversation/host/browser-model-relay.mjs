@@ -16,10 +16,10 @@ export function createNativeBrowserModelRelay({binding,policy,installation,paths
   readable.destroyed||readable.readableEnded||writable.destroyed||writable.writableEnded)fail();
  const expected=canonicalSha256(binding);let bound=false;
  return Object.freeze({async bind(raw){
-  const q=own(raw,['binding','installation','call','tools']);
+  const q=own(raw,['binding','installation','call','tools','approvalWindowMs']);
   if(bound||readable.destroyed||readable.readableEnded||writable.destroyed||writable.writableEnded||canonicalSha256(q.binding)!==expected||canonicalSha256(q.installation)!==canonicalSha256(installation)||typeof q.call!=='function'||typeof q.tools!=='function')fail();
   bound=true;
-  const model=createBoundBrowserModelPort({binding,policy,tools:q.tools,call:q.call});
+  const model=createBoundBrowserModelPort({binding,policy,tools:q.tools,call:q.call,approvalWindowMs:q.approvalWindowMs});
   const server=new Server({name:'meri-browser-session',version:'1.0.0'},{capabilities:{tools:{}}});
   const transport=new StdioServerTransport(readable,writable,{maxBufferSize:262144});
   let closed=false;

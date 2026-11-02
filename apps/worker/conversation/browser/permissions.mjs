@@ -17,9 +17,15 @@
  *   BROWSER_APPROVAL_UNAVAILABLE, the port's signal is aborted on either, and an answer that arrives after the race is
  *   settled is ignored. An unknown page, a missing port, an error or any other answer denies.
  *
+ * - `submissions` serves the network-level submission gate of the session (`session/submission-gate.mjs`): `approve`
+ *   asks the same canonical owner about one request the page tries to send during an agent action (the subject's action
+ *   names the method and destination host; its input is {method,host,path,initiator}), and `claim` hands the gate the
+ *   page host an approved structural submission of that exact tool call already covers, so the user is asked once.
+ *
  * Neither a PostToolUse hook nor a receipt can stop an action; they only record it. */
 import {INTERACTION_TOOLS,checkBrowserUrl} from './policy.mjs';
 import {approvalRequest,approvalSubject,createReplayLedger,receiptRefusal} from './approval-binding.mjs';
+import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
 export {APPROVAL_REQUEST_SCHEMA} from './approval-binding.mjs';
 const MAX_APPROVAL_INPUT=16384;
 /** Approval deadline bounds in milliseconds; the runtime may configure a value inside them. */
@@ -56,6 +62,12 @@ function browserAdmission({policy,tools},action,input){
  return null;
 }
 const CLASSES=Object.freeze(['routine','submission','credential']);
+/** The plain action an approval card shows for one held network request (display field limit 128). */
+export function networkAction(method,host){
+ const text=`Send data to ${host} (${method})`;
+ return text.length<=128?text:`Send data to …${host.slice(-(127-`Send data to … (${method})`.length))} (${method})`;
+}
+const MAX_COVERED=32;
 /** `pages` is the run's page tracker (`createPageContext`); `policySha256` the digest of the effective policy; `classify`
  * is the host's live-page classifier (`{tool,input,toolUseId,signal}` to one of `CLASSES`), absent on a host that has
  * no page to inspect, in which case every interaction is a submission and asks. */
@@ -63,6 +75,8 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
  if(assertCurrent!==undefined&&typeof assertCurrent!=='function'||classify!==undefined&&typeof classify!=='function')throw Object.assign(Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  if(!Number.isSafeInteger(approvalDeadlineMs)||approvalDeadlineMs<APPROVAL_DEADLINE_MS.min||approvalDeadlineMs>APPROVAL_DEADLINE_MS.max||typeof now!=='function'||['begin','capture','isCurrent','cancel'].some(m=>typeof pages?.[m]!=='function')||typeof policySha256!=='string')throw Object.assign(new Error('BROWSER_CONFIGURATION'),{code:'BROWSER_CONFIGURATION'});
  const prefix=`mcp__${server}__`,tools=policy.tools,interactions=tools.filter(t=>INTERACTION_TOOLS.includes(t)),ledger=createReplayLedger();
+ // Approved structural submissions by exact tool and input digest -> the host of the page they act on (consumed once).
+ const covered=new Map();
  const actionOf=name=>typeof name==='string'&&name.startsWith(prefix)?name.slice(prefix.length):null;
  /** The class of one interaction; an unavailable or malformed classification asks rather than runs. */
  const classOf=async(action,input,toolUseId,signal)=>{
@@ -104,8 +118,27 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
   if(signal?.aborted||now()>request.expiresAtMs)return refusal('BROWSER_APPROVAL_EXPIRED');
   if(!ledger.claim(answer))return refusal('BROWSER_APPROVAL_REPLAY');
   if(!pages.isCurrent(options.toolUseID,captured))return refusal('BROWSER_APPROVAL_PAGE_CHANGED');
+  if(covered.size>=MAX_COVERED)covered.delete(covered.keys().next().value);
+  covered.set(`${action}:${canonicalSha256(approvedInput)}`,new URL(pageOrigin).hostname);
   return {behavior:'allow',updatedInput:approvedInput,toolUseID:options.toolUseID};
  }
+ /** One request the page tries to send during an agent action: true only for a consumed canonical approval of exactly
+  * this method, destination and path, asked on the page it came from. Every other answer is false (the gate aborts). */
+ async function approveRequest({method,host,path,pageOrigin,tool,requestKey,signal}){
+  try{
+   if(typeof approvals?.decide!=='function'||signal?.aborted||typeof requestKey!=='string'||requestKey.length>200)return false;
+   if(!checkBrowserUrl(policy,pageOrigin).ok)return false;
+   const input={method,host,path,initiator:tool},requestedAtMs=now();
+   const subject=approvalSubject({binding,server,action:networkAction(method,host),toolUseId:`network:${requestKey}`,input,pageOrigin,policySha256});
+   const request=approvalRequest({subject,input,requestedAtMs,expiresAtMs:requestedAtMs+approvalDeadlineMs});
+   const answer=await decideWithin(approvals,structuredClone(request),signal,approvalDeadlineMs);
+   if(answer===EXPIRED||answer===ABORTED||signal?.aborted||now()>request.expiresAtMs||receiptRefusal(answer,request,now())!==null)return false;
+   await assertCurrent?.({signal});
+   return !signal?.aborted&&now()<=request.expiresAtMs&&ledger.claim(answer);
+  }catch{return false;}
+ }
+ const submissions=Object.freeze({approve:approveRequest,windowMs:approvalDeadlineMs,
+  claim({tool,args}){const key=`${tool}:${canonicalSha256(args??{})}`,host=covered.get(key)??null;covered.delete(key);return host;}});
  /** Composable SDK `canUseTool`: returns undefined for tools that are not this server's. A refused call never ran,
   * so its page is restored in the tracker. */
  const canUseTool=async(name,input,options={})=>{
@@ -127,5 +160,5 @@ export function createPermissionGate({binding,policy,policySha256,server,approva
   if(decision.behavior!=='allow')pages.cancel(options.toolUseID);
   return decision;
  };
- return Object.freeze({preToolUse,canUseTool,preApproved:Object.freeze(tools.filter(t=>!INTERACTION_TOOLS.includes(t))),interactions:Object.freeze(interactions)});
+ return Object.freeze({preToolUse,canUseTool,submissions,preApproved:Object.freeze(tools.filter(t=>!INTERACTION_TOOLS.includes(t))),interactions:Object.freeze(interactions)});
 }

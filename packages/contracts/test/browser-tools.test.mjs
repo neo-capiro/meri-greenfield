@@ -11,9 +11,12 @@ test('browser calls retain exact delivery and binding; changed reply binding and
  assert.deepEqual(assertBrowserOperationResponse({binding,result:{content:[]}},binding),{content:[]});
  assert.throws(()=>assertBrowserOperationResponse({binding:{...binding,writerFence:2},result:{}},binding));assert.throws(()=>assertBrowserOperationResponse({binding,result:{},hostSecret:'not allowed'},binding));
 });
-test('only named browser operations get selected policy bounds; approval is a separate allowance',()=>{
- const policy={timeouts:{actionMs:5000,navigationMs:60000}};assert.equal(browserOperationBudgetMs('browser-call',{policy}),65000);assert.equal(browserOperationBudgetMs('browser-tools',{policy}),65000);
- assert.equal(browserOperationBudgetMs('browser-call',{policy:{timeouts:{actionMs:60000,navigationMs:120000}}}),130000);
+test('only named browser operations get selected policy bounds; approval is a separate allowance, also inside a call',()=>{
+ // A call adds the selected approval window: a request its page sends may wait for the user (session/submission-gate.mjs).
+ const policy={timeouts:{actionMs:5000,navigationMs:60000}};assert.equal(browserOperationBudgetMs('browser-call',{policy}),65000+120000);assert.equal(browserOperationBudgetMs('browser-tools',{policy}),65000);
+ assert.equal(browserOperationBudgetMs('browser-call',{policy:{timeouts:{actionMs:60000,navigationMs:120000}},approvalDeadlineMs:300000}),130000+300000);
+ assert.equal(browserOperationCeilingMs('browser-call'),130000+900000);assert.equal(browserOperationCeilingMs('browser-tools'),130000);
+ assert.throws(()=>browserOperationBudgetMs('browser-call',{policy,approvalDeadlineMs:900001}));
  assert.equal(browserOperationBudgetMs('browser-approve',{policy}),120000);assert.equal(browserOperationBudgetMs('browser-hook',{policy}),10000);assert.equal(browserOperationCeilingMs('runner/load'),null);
  assert.throws(()=>browserOperationBudgetMs('browser-call',{policy:{timeouts:{actionMs:1,navigationMs:999999}}}));assert.throws(()=>browserOperationBudgetMs('browser-approve',{approvalDeadlineMs:900001}));
 });
