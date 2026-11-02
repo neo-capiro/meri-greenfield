@@ -191,7 +191,9 @@ any other TTL value.
 conversation's original (first) input allocation has expired now answers its own public `409` `INITIAL_INPUT_EXPIRED` on admit and
 submit instead of collapsing to `502` `CONVERSATION_UNAVAILABLE`; allocate answers it as `409` with outcome `NOT_DISPATCHED`, and
 its earlier `408` stays admitted for older producers. Control answers it only for an allocation that was never accepted, so nothing
-was dispatched for that request and the UI may release it rather than saying Capiro is not reachable. A first input that was
-already accepted (and possibly dispatched) is never refused this way: admit and submit replay its accepted request, and allocate
-answers `503` `INITIAL_INPUT_UNAVAILABLE` with outcome `UNKNOWN`, also after a deploy changes the run versions. Validation grants
+was dispatched for that request: the UI may release a request with no earlier attempt rather than saying Capiro is not reachable.
+It proves nothing about an earlier attempt of the same request whose answer was lost, so a retry stays uncertain. A first input
+that was already accepted (and possibly dispatched) is never refused this way: admit and submit replay its accepted request, and
+allocate answers `503` `INITIAL_INPUT_UNAVAILABLE` with outcome `UNKNOWN`, also after a deploy changes the run versions or the
+conversation's scopes, policy revision or selected client change. Validation grants
 no authority: control's original-input journal decides every value.

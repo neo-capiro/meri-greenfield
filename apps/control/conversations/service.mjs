@@ -110,13 +110,15 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    const {modelSelection,...originalInput}=i;sameInput=f.inputSha256===hash(originalInput);
   }
   // This exact, unchanged request's original input is already accepted: its run exists and may be dispatched, so neither
-  // an expiry nor a deploy's changed versions may answer that it was not. Admit and submit replay the accepted request (the
-  // retained branch, which dispatches only through the exact workflow ID); without that row (allocate, or a read racing the
-  // acceptance) the outcome is unknown. Only a never-accepted (RESERVED) allocation, or another request, is refused.
-  if(!same(f.binding,context.binding)||!same(f.scopes,context.scopes)||f.selectedClientId!==context.selectedClientId||f.requestId!==i.requestId||!sameInput)fail('INITIAL_INPUT_CONFLICT');
+  // an expiry nor a changed context (scopes, policy revision, selected client) nor a deploy's changed versions may answer
+  // that it was not. Admit and submit replay the accepted request through the retained branch, which applies its own
+  // scope and version checks and dispatches only through the exact workflow ID; without that row (allocate, or a read
+  // racing the acceptance) the outcome is unknown. Only a never-accepted (RESERVED) allocation, another request or changed
+  // bytes is refused definitively.
+  if(!same(f.binding,context.binding)||f.requestId!==i.requestId||!sameInput)fail('INITIAL_INPUT_CONFLICT');
   const accepted=saved.state==='ACCEPTED';
-  if(!same(f.versions,versions))fail(accepted?'INITIAL_INPUT_UNAVAILABLE':'INITIAL_INPUT_CONFLICT');
   if(accepted&&retained)return f;
+  if(!same(f.scopes,context.scopes)||f.selectedClientId!==context.selectedClientId||!same(f.versions,versions))fail(accepted?'INITIAL_INPUT_UNAVAILABLE':'INITIAL_INPUT_CONFLICT');
   try{assertOriginalInputActive(f,now());}catch(error){if(accepted)fail('INITIAL_INPUT_UNAVAILABLE');throw error;}
   life.limitDeadline(f.expiresAtMs);return f;
  }

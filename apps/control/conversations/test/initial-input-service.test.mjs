@@ -50,6 +50,15 @@ test('an accepted original input replays after its allocation expired; allocate 
  await assert.rejects(f.allocate(),e=>e.code==='INITIAL_INPUT_UNAVAILABLE');assert.equal((await f.admit()).replayed,true);assert.equal((await f.submit()).replayed,true);
  assert.equal(f.allocations.get(f.key()).allocation.expiresAtMs,a.allocation.expiresAtMs);assert.equal(queued(f).length,1);assert.deepEqual(f.state.starts,[binding,binding]);
  const out=await createConversationInitialInputApplication({service:f.service,now:f.now}).handle(request());assert.equal(out.status,503);assert.deepEqual((await out.json()).error,{code:'INITIAL_INPUT_UNAVAILABLE',outcome:'UNKNOWN'});});
+test('an accepted original input retried after a policy revision or scope change is unknown on allocate, never NOT_DISPATCHED',async()=>{
+ const f=fixture();await f.allocate();await f.admit();await f.submit();assert.equal(f.state.starts.length,1);
+ f.state.context.scopes=f.state.context.scopes.map(scope=>({...scope,policyRevision:'policy-changed'}));
+ const out=await createConversationInitialInputApplication({service:f.service,now:f.now}).handle(request());assert.equal(out.status,503);assert.deepEqual((await out.json()).error,{code:'INITIAL_INPUT_UNAVAILABLE',outcome:'UNKNOWN'});
+ // Admit and submit replay through the retained branch, whose own scope check refuses the changed scope.
+ await assert.rejects(f.admit(),/SCOPE_REFUSED/);assert.equal(queued(f).length,1);assert.equal(f.state.starts.length,1);
+ // A never-accepted allocation under a changed policy is still refused definitively.
+ const reserved=fixture();await reserved.allocate();reserved.state.context.scopes=reserved.state.context.scopes.map(scope=>({...scope,policyRevision:'policy-changed'}));
+ await assert.rejects(reserved.allocate(),/INITIAL_INPUT_CONFLICT/);assert.equal(reserved.state.runs.size,0);});
 test('an accepted original input retried across a deploy is never answered NOT_DISPATCHED',async()=>{const f=fixture();await f.allocate();await f.admit();await f.submit();f.deploy({...versions,imageDigest:'sha256:'+'c'.repeat(64)});
  const out=await createConversationInitialInputApplication({service:f.service,now:f.now}).handle(request());assert.equal(out.status,503);assert.deepEqual((await out.json()).error,{code:'INITIAL_INPUT_UNAVAILABLE',outcome:'UNKNOWN'});
  await assert.rejects(f.admit(),e=>e.code!=='INITIAL_INPUT_EXPIRED'&&e.code!=='INITIAL_INPUT_CONFLICT');assert.equal(queued(f).length,1);
