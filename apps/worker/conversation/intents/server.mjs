@@ -17,7 +17,7 @@ import {createSdkMcpServer} from '@anthropic-ai/claude-agent-sdk';
 import {randomUUID} from 'node:crypto';
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
-import {researchActionValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {researchActionValidators,officeEditValidators} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {INTENT_SERVER_NAME,INTENT_TOOL_PREFIX,intentToolName} from './catalog.mjs';
 import {defineIntentTool} from './tools.mjs';
@@ -82,10 +82,11 @@ export function createIntentServer(c){
    correlations.delete(token);if(closed)throw fault('UNAVAILABLE');
    life=createOperationLifetime({deadlineMs:Math.min(c.now()+c.timeoutMs,c.deadlineMs),now:c.now,signal:extra?.signal,errorFactory:fault});
    if(!await life.run(signal=>c.stillAvailable(row.operation,signal)))throw fault('UNAVAILABLE');
-   started=!(row.owner==='research-action'&&researchActionValidators.isManagementRead(row.operation.id,args,{binding}));
+   started=!(row.owner==='research-action'&&researchActionValidators.isManagementRead(row.operation.id,args,{binding})||row.owner==='office'&&officeEditValidators.isRead(args));
    const result=await life.run(signal=>c.prepare({operation:row.operation,arguments:args,deliveryId:entry.deliveryId,signal}));life.check();
    const prepared=assertPreparedResult(row.owner,row.operation,result,binding,{scopes:c.scopes,nowMs:c.now()}),json=JSON.stringify(prepared.value);
-   if(prepared.status==='read'&&canonicalSha256(prepared.value.request)!==entry.argumentsSha256)throw fault('INVALID_RESULT');
+   // A read answers the exact arguments it was asked with: the office read is the one closed `{action:'read'}`.
+   if(prepared.status==='read'&&canonicalSha256(row.owner==='office'?{action:'read'}:prepared.value.request)!==entry.argumentsSha256)throw fault('INVALID_RESULT');
    if(prepared.status!=='read')receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:row.operation,argumentsSha256:entry.argumentsSha256,outcome:'prepared',status:prepared.status,reference:prepared.reference,resultSha256:canonicalSha256(prepared.value)}));
    return preparedResult(json,prepared.status,row.operation.id);
   }catch(error){

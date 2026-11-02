@@ -26,6 +26,13 @@ async function proposal(value,conversationId){
   if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||selected!==null&&value.request.clientId!==selected)conflict();
   legislativeDocumentRequest(value.operation,value.request);return;
  }
+ if(value.kind==='office_edit'){
+  const {commandSha256,...bound}=value,selected=value.context.selectedClientId,[s]=value.scopes;
+  if(await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||
+   value.requiredApprover.tenantId!==value.binding.tenantId||value.requiredApprover.actorId!==value.binding.actorId||!value.document.filename.toLowerCase().endsWith('.'+value.document.format)||
+   value.operations.some(o=>o.kind==='replace_text'?typeof o.before!=='string'||typeof o.after!=='string':o.kind==='insert_after'?o.before!==null||typeof o.after!=='string':typeof o.before!=='string'||o.after!==null))conflict();
+  return;
+ }
  if(value.kind==='client_record_action'){
   const {commandSha256,...bound}=value,selected=value.context.selectedClientId,[s]=value.scopes;
   if(value.operation!==value.request.operation||await sha(bound)!==commandSha256||value.binding.conversationId!==conversationId||value.context.conversationId!==conversationId||parsed(value.expiresAt)<=parsed(value.createdAt)||s.tenantId!==value.binding.tenantId||s.kind!==(selected===null?'private-user':'client')||s.resourceId!==(selected??value.binding.actorId)||value.operation==='update_client_profile'&&selected!==null&&value.request.input.clientId!==selected)conflict();return;
@@ -173,6 +180,14 @@ function legislativeDocumentRequest(operation,request){
  if(briefing!==Object.hasOwn(request,'template')||request.citations.some(c=>c.end<=c.start))conflict();
  if(briefing&&!Number.isFinite(Date.parse(request.cutoff)))conflict();
 }
+/** The durable reading of one office proposal: an applied result names the new version of the same artifact, the exact
+ * parent and the same filename (its package digest is the owner's, the proposal pins the parts); every other status
+ * carries no version. */
+function officeEditResult(value,retained){
+ if(value.proposalId!==retained.proposalId||(value.proposalStatus==='applied')!==(value.version!==null))conflict();
+ const v=value.version;
+ if(v!==null&&(v.artifactId!==retained.document.artifactId||v.parentVersionId!==retained.document.versionId||v.filename!==retained.document.filename))conflict();
+}
 function legislativeDocumentResult(value,retained){
  if(value.operation!==retained.operation||value.proposalId!==retained.proposalId||!same(value.request,retained.request)||!same(value.context,retained.context)||value.createdAt!==retained.createdAt||value.expiresAt!==retained.expiresAt)conflict();
  const r=value.receipt;
@@ -249,6 +264,7 @@ async function item(value,conversationId){
  if(value.kind==='saved_note'){savedNote(value,conversationId);return;}
  if(value.kind==='legiwatch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await legiwatchResult(value.result,value.proposal);return;}
  if(value.kind==='legislative_document_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')legislativeDocumentResult(value.result,value.proposal);return;}
+ if(value.kind==='office_edit'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')officeEditResult(value.result,value.proposal);return;}
  if(value.kind==='client_record_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')await clientRecordResult(value.result,value.proposal);return;}
  if(value.kind==='bizdev_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')bizdevResult(value.result,value.proposal);return;}
  if(value.kind==='watch_action'){if(!Object.hasOwn(value,'proposal'))return;if(value.operation.id!==value.proposal.operation)conflict();await proposal(value.proposal,conversationId);if(value.result!=='unavailable')watchResult(value.result,value.proposal);return;}
@@ -322,6 +338,10 @@ export async function decide(value,request,retained){
  }
  if(retained.kind==='legiwatch_action'){
   if(value.status!=='legiwatch_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();await legiwatchResult(value.result,retained);return value;
+ }
+ if(retained.kind==='office_edit'){
+  if(value.status!=='office_edit_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();
+  if(request.decision==='rejected'&&value.result.proposalStatus==='applied')conflict();officeEditResult(value.result,retained);return value;
  }
  if(retained.kind==='legislative_document_action'){
   if(value.status!=='legislative_document_decided'||retained.proposalId!==request.proposalId||retained.commandSha256!==request.commandSha256||value.deliveryId!==request.deliveryId||value.proposalId!==request.proposalId)conflict();legislativeDocumentResult(value.result,retained);return value;

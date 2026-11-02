@@ -9,7 +9,7 @@ function unique(values, label) {
 // binding may declare `sinceCatalogVersion`: a catalog must carry every binding its own version
 // includes, and is never required to carry a later successor's. Neither value is caller-controlled,
 // and a preserved catalog therefore keeps asserting at its own exact counts.
-export const CURRENT_CATALOG_VERSION = '0.2.31';
+export const CURRENT_CATALOG_VERSION = '0.2.32';
 function compareCatalogVersions(left, right) {
   const parts = value => String(value).split('.').map(Number);
   const a = parts(left), b = parts(right);
@@ -61,6 +61,7 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
   Object.freeze({id:'apply_legiwatch_suggestion',nativeId:'apply_legiwatch_suggestion',group:'legiwatch-action',input:'LegiwatchInput',output:'LegiwatchPrepared',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,request)=>({input:v.legiwatchValidators.normalizeInput(request)}),outputAssert:(v,page,request)=>v.legiwatchValidators.assertOutput(page,request)}),
   Object.freeze({id:'save_business_development_brief',nativeId:'save_business_development_brief',group:'bizdev-action',input:'BizdevInput',output:'BizdevPrepared',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,request)=>({input:v.bizdevValidators.normalizeInput(request)}),outputAssert:(v,page,request)=>v.bizdevValidators.assertOutput(page,request)}),
   Object.freeze({id:'inspect_watch_state',nativeId:'inspect_watch_state',group:'watch-state',input:'WatchStateRequest',output:'WatchStateOutput',version:'0.2.0',contextKeys:Object.freeze(['watchStateScope']),normalize:(v,r,c)=>v.watchStateValidators.normalizeInput(r,c),outputAssert:(v,p,r,c)=>v.watchStateValidators.assertOutput(p,r,c)}),
+ Object.freeze({id:'propose_office_edit',nativeId:'propose_office_edit',group:'office-edit-action',input:'OfficeEditInput',output:'OfficeEditPrepared',version:'0.2.0',sinceCatalogVersion:'0.2.32',contextKeys:Object.freeze([]),normalize:(v,request)=>({input:v.officeEditValidators.normalizeInput(request)}),outputAssert:(v,page,request)=>v.officeEditValidators.assertOutput(page,request)}),
  Object.freeze({id:'watch_action',nativeId:'watch_action',group:'watch-action',input:'WatchInput',output:'WatchPrepared',version:'0.2.0',contextKeys:Object.freeze([]),normalize:(v,request)=>({input:v.watchValidators.normalizeInput(request)}),outputAssert:(v,page,request)=>v.watchValidators.assertOutput(page,request)}),
   ...['get_research_portfolio_share_links','publish_research_portfolio_share_link','revoke_research_portfolio_share_link'].map((id,index)=>Object.freeze({id,nativeId:id,group:'research-portfolio-sharing',input:['ResearchShareListInput','ResearchSharePublishInput','ResearchShareRevokeInput'][index],output:index?'ResearchSharePrepared':'ResearchShareListOutput',version:'0.2.0',contextKeys:Object.freeze(['binding','selectedClientId','visibleClientIds']),
     normalize:(v,request,context)=>({input:v.researchShareValidators.normalizeInput(id,request,context)}),outputAssert:(v,page,request,context)=>v.researchShareValidators.assertOutput(id,page,request,context)})),
@@ -519,7 +520,8 @@ function assertCatalog(catalog) {
   const advancedFunding = compareCatalogVersions(catalog.catalogVersion,'0.2.25') >= 0 ? 3 : 0;
   const buyerWorkspace = compareCatalogVersions(catalog.catalogVersion,'0.2.26') >= 0 ? 1 : 0;
   const graphPaths = compareCatalogVersions(catalog.catalogVersion,'0.2.27') >= 0 ? 1 : 0;
-  if (selected.filter(row=>!additive.includes(row.id)).length !== 110 + advancedFunding + buyerWorkspace + graphPaths || catalog.originals.length - selected.length !== 12 - advancedFunding - buyerWorkspace - graphPaths) fail('D012 disposition mismatch');
+  const officeEdit = compareCatalogVersions(catalog.catalogVersion,'0.2.32') >= 0 ? 1 : 0;
+  if (selected.filter(row=>!additive.includes(row.id)).length !== 110 + advancedFunding + buyerWorkspace + graphPaths + officeEdit || catalog.originals.length - selected.length !== 12 - advancedFunding - buyerWorkspace - graphPaths) fail('D012 disposition mismatch');
   const operations = new Map();
   const aliases = new Map();
   for (const operation of catalog.operations) {

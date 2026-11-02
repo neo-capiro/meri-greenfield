@@ -5,7 +5,7 @@ import {createIntentApprovalOwner} from './approval.mjs';
 import {createIntentApplication} from './http.mjs';
 import {createNativeIntentApprovals} from './native-approvals.mjs';
 export function composeIntentApprovals(configuration){
- const c=own(configuration,['pool','native','gate','now','limits'],['enabled','decisions','documents','tasks','filing','mail','memory','retention','sharing','researchAction','legiwatch','browser','clientRecord','bizdev','legislativeDocument','watch']);
+ const c=own(configuration,['pool','native','gate','now','limits'],['enabled','decisions','documents','tasks','filing','mail','memory','retention','sharing','researchAction','legiwatch','browser','clientRecord','bizdev','legislativeDocument','watch','office']);
  const limits=own(c.limits,['maxRequestMs','maxRequestBytes','maxResponseBytes','maxFactBytes']);
  if(typeof c.native?.call!=='function')throw Error('INTENT_APPROVAL_CONFIGURATION');
  // `decisions` lets the trusted composer share ONE native decision adapter (over this same `native`) with the per-run
@@ -15,7 +15,7 @@ export function composeIntentApprovals(configuration){
  // Approval history borrows only reads; download reservations remain with their existing owner.
  const {read,list,listForActor,countForActor}=createPostgresIntentJournalStore({pool:c.pool});
  const owner=createIntentApprovalOwner({journal:{read,list,listForActor,countForActor},decisions,
-  ...(c.documents?{documents:c.documents}:{}),...(c.tasks?{tasks:c.tasks}:{}),...(c.mail?{mail:c.mail}:{}),...(c.memory?{memory:c.memory}:{}),...(c.filing?{filing:c.filing}:{}),...(c.sharing?{sharing:c.sharing}:{}),...(c.researchAction?{researchAction:c.researchAction}:{}),...(c.clientRecord?{clientRecord:c.clientRecord}:{}),...(c.legiwatch?{legiwatch:c.legiwatch}:{}),...(c.bizdev?{bizdev:c.bizdev}:{}),...(c.watch?{watch:c.watch}:{}),...(c.legislativeDocument?{legislativeDocument:c.legislativeDocument}:{}),// The public approval path receives NO consume port: list/decide can record a decision and read status,
+  ...(c.documents?{documents:c.documents}:{}),...(c.tasks?{tasks:c.tasks}:{}),...(c.mail?{mail:c.mail}:{}),...(c.memory?{memory:c.memory}:{}),...(c.filing?{filing:c.filing}:{}),...(c.sharing?{sharing:c.sharing}:{}),...(c.researchAction?{researchAction:c.researchAction}:{}),...(c.clientRecord?{clientRecord:c.clientRecord}:{}),...(c.legiwatch?{legiwatch:c.legiwatch}:{}),...(c.bizdev?{bizdev:c.bizdev}:{}),...(c.watch?{watch:c.watch}:{}),...(c.legislativeDocument?{legislativeDocument:c.legislativeDocument}:{}),...(c.office?{office:c.office}:{}),// The public approval path receives NO consume port: list/decide can record a decision and read status,
  // never spend the approval or dispatch a browser effect.
  ...(c.browser?{browser:{record:c.browser.record,...(c.browser.status?{status:c.browser.status}:{}),
   ...(c.browser.result?{result:c.browser.result}:{})}}:{}),now:c.now,limits:{maxRequestMs:limits.maxRequestMs},enabled:c.enabled??false});

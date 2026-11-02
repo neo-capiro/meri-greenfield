@@ -3,7 +3,7 @@ import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/va
 import {createIntentJournal} from '../control/intents/journal.mjs';
 import {createPostgresIntentJournalStore} from '../control/intents/postgres-journal.mjs';
 import {createArtifactService} from './service.mjs';
-import {officeEditSource,officeEditRequestSha256} from '../../packages/contracts/office-edit.mjs';
+import {officeRevisionSource,officeRevisionDeliveryId,officeRevisionOutputSha256,officeEditRequestSha256,isOfficeProposal} from '../../packages/contracts/office-edit.mjs';
 import {inspectOfficeEdit} from './edit-sessions/inspect-office.mjs';
 import {createOfficeOriginalPublisher} from './office-original.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
@@ -62,15 +62,18 @@ export function createPostgresArtifactService(options){
   catch(cause){throw Object.assign(Error('ARTIFACT_EFFECT_UNKNOWN'),{code:'ARTIFACT_EFFECT_UNKNOWN',cause,versionId:invocation.versionId,versionCommitted:true});}
   return result;
  }
- /** Private explicit Publish only. The browser/model never supplies this port or
-  * its source record. A draft sequence has one durable attempt across reconnects. */
- async function executeOfficeEdit(value,byteValue,signal,recoveryOnly=false){
+ /** Private explicit Publish (an editor draft sequence) or an approved Meri proposal, one durable attempt
+  * each across reconnects. The browser/model never supplies this port or its source record. */
+ /** One durable row per office revision delivery. `execute` publishes once and replays afterwards; `recover` only
+  * reads that row; `reject` (an approved proposal the user declined) settles an unclaimed row as a definite refusal,
+  * so no later Apply can publish it, and reports an already settled row as it is. */
+ async function executeOfficeEdit(value,byteValue,signal,mode='execute'){
   if(c.officeEditWrites!==true||c.selectedInvocationId!==undefined||context.analysisAdmission)fail('EDITOR_PUBLISH_UNAVAILABLE');
-  const call=v.snapshot(own(value,['deliveryId','baseVersionId','request']));call.request=officeEditSource(call.request);
-  const edit=call.request.edit,binding=context.binding;
-  if(call.deliveryId!==`office:${edit.sessionId}:${edit.draftSequence}`||call.baseVersionId!==edit.baseVersionId||!Buffer.isBuffer(byteValue))fail('EDITOR_SAVE_INVALID');
+  const call=v.snapshot(own(value,['deliveryId','baseVersionId','request']));call.request=officeRevisionSource(call.request);
+  const binding=context.binding;
+  if(call.deliveryId!==officeRevisionDeliveryId(call.request)||!Buffer.isBuffer(byteValue))fail('EDITOR_SAVE_INVALID');
   const bytes=Buffer.from(byteValue),requestSha256=officeEditRequestSha256(v,call.request,context,call.baseVersionId);
-  if(bytes.length>context.maxBytes||inspectOfficeEdit(bytes,call.request.format).sha256!==edit.draftSha256)fail('EDITOR_SAVE_INVALID');
+  if(bytes.length>context.maxBytes||inspectOfficeEdit(bytes,call.request.format).sha256!==officeRevisionOutputSha256(call.request))fail('EDITOR_SAVE_INVALID');
   const invocationId='sdk:'+hash({kind:'office-edit',tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId:call.deliveryId});
   const invocation={invocationId,versionId:id(invocationId,'version'),requestSha256};
   const record={operation:{id:call.request.operation,version:'0.2.0'},argumentsSha256:requestSha256},key={binding,deliveryId:invocationId,record,signal};
@@ -79,10 +82,18 @@ export function createPostgresArtifactService(options){
   const read=()=>storage.read({key:{tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,deliveryId:invocationId},signal});
   async function replay(prior){
    if(!prior||!same(prior.record.operation,record.operation))fail('ARTIFACT_REPLAY_EVIDENCE');
-   if(prior.state==='FAILED')fail(prior.outcome?.code==='CONFLICT'?'ARTIFACT_STALE_PARENT':'EDITOR_PUBLISH_REFUSED');
+   if(prior.state==='FAILED'){
+    if(prior.outcome?.code==='CONFLICT')fail('ARTIFACT_STALE_PARENT');
+    if(mode==='reject')return {rejected:true};
+    fail('EDITOR_PUBLISH_REFUSED');
+   }
    if(!['PENDING','UNKNOWN','PREPARED'].includes(prior.state))fail('ARTIFACT_REPLAY_EVIDENCE');
    const evidence={...invocation,requestSha256:prior.record.argumentsSha256};
-   const recovered=await service.recoverOfficeEdit(call.baseVersionId,call.request,context,{signal,evidence});
+   // A proposal's published package was packed by the build that applied it: recovery binds to the digest that
+   // publication recorded, not to the digest this build's compressor produces for the same parts.
+   const published=prior.outcome?.result?.version?.object?.sha256;
+   const request=isOfficeProposal(call.request)&&typeof published==='string'?officeRevisionSource({...call.request,proposal:{...call.request.proposal,outputSha256:published}}):call.request;
+   const recovered=await service.recoverOfficeEdit(call.baseVersionId,request,context,{signal,evidence});
    const result=prior.outcome?.result;
    if(result&&(!same(result.version,recovered.version)||!same(result.inspection,recovered.inspection)||result.execution?.invocationId!==invocationId||result.execution?.requestSha256!==evidence.requestSha256))fail('ARTIFACT_REPLAY_EVIDENCE');
    check();return recovered;
@@ -91,18 +102,25 @@ export function createPostgresArtifactService(options){
   // Core may have committed its private-draft Publish barrier before a caller
   // lost the acknowledgement or reached this journal. Absence is not permission
   // to dispatch from recovery: the original caller could still be in flight.
-  if(recoveryOnly)fail('EDITOR_PUBLISH_UNRESOLVED');
+  if(mode==='recover')fail('EDITOR_PUBLISH_UNRESOLVED');
   let claim;
   try{claim=await journal.begin(key);}
   catch(error){if(!['UNKNOWN','CONFLICT','UNAVAILABLE'].includes(error.code))throw error;const retained=await read();if(retained)return replay(retained);throw error;}
   check();if(claim.replayed)return replay(await read());
+  if(mode==='reject'){
+   // Nothing is dispatched: the claim settles at once as a definite refusal under this delivery.
+   try{await journal.settle({...key,state:'FAILED',outcome:{code:'REFUSED'}});}
+   catch(cause){throw Object.assign(Error('EDITOR_PUBLISH_UNRESOLVED'),{code:'EDITOR_PUBLISH_UNRESOLVED',cause});}
+   return {rejected:true};
+  }
   let result;
   try{result=await service.publishOfficeEdit(call.baseVersionId,call.request,bytes,context,{signal,invocation});check();}
   catch(cause){
-   // Only the canonical stale-head refusal proves publication did not happen.
-   // All other post-claim failures retain the existing uncertainty barrier.
-   const conflict=cause?.code==='ARTIFACT_STALE_PARENT';
-   try{await journal.settle({...key,state:conflict?'FAILED':'UNKNOWN',outcome:conflict?{code:'CONFLICT'}:null});}catch{}
+   // Only the canonical stale-head refusal and the owner's own pre-write structure refusals (a malformed package,
+   // a dropped chart workbook: raised before any object or version write) prove publication did not happen. All
+   // other post-claim failures retain the existing uncertainty barrier.
+   const conflict=cause?.code==='ARTIFACT_STALE_PARENT',refused=['EDITOR_STRUCTURE_REFUSED','EDITOR_SAVE_INVALID'].includes(cause?.code);
+   try{await journal.settle({...key,state:conflict||refused?'FAILED':'UNKNOWN',outcome:conflict?{code:'CONFLICT'}:refused?{code:'REFUSED'}:null});}catch{}
    throw cause;
   }
   try{await journal.settle({...key,state:'PREPARED',outcome:{result,release:{binding,scopes:context.scopes,expiresAtMs:context.deadlineMs}}});check();}
@@ -110,5 +128,5 @@ export function createPostgresArtifactService(options){
   return result;
  }
  return Object.freeze({...createOfficeOriginalPublisher({options:c,context,journal,storage,id}),execute,executeOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal),
-  recoverOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal,true)});
+  rejectOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal,'reject'),recoverOfficeEdit:(value,bytes,signal)=>executeOfficeEdit(value,bytes,signal,'recover')});
 }

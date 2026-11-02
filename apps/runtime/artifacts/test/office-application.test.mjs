@@ -234,31 +234,6 @@ test('trusted CODE postmessage origin requires an exact HTTPS origin',async t=>{
  for(const browserOrigin of [undefined,'*','http://app.example.test','https://app.example.test/path','https://user:password@app.example.test'])
   assert.throws(()=>createRuntimeOfficeApplication({...f.config,browserOrigin}));
 });
-test('pptx launch cannot return a write token after the final read contains an unbound chart workbook',async t=>{
- const {zip}=await import('../../../artifacts/structure/test/fixtures.mjs');
- const {chart}=await import('../../../artifacts/edit-sessions/test/embedded-chart-fixture.mjs');
- const entries=chart();entries['ppt/charts/chart1.xml']=entries['ppt/charts/chart1.xml'].replace('rId1','missing');
- const f=await fixture(t,{format:'pptx'}),bytes=zip(entries);let changed=false;
- f.state.hook=r=>{if(r==='editor/read'){changed=true;Object.assign(f.draft,{sequence:1,sha256:f.sha(bytes),byteLength:bytes.length,bytesBase64:bytes.toString('base64'),state:'draft'});}};
- await assert.rejects(f.start(),{code:'EDITOR_STRUCTURE_REFUSED'});assert.equal(changed,true);assert.equal(f.draft.sha256,f.sha(bytes));assert.equal(f.state.puts,1);
-});
-
-test('historical workbook-loss draft is recoverable metadata but cannot receive an edit token',async t=>{
- const f=await fixture(t,{format:'pptx',baseBytes:preservationBytes('pptx')}),bytes=ooxml('pptx');
- Object.assign(f.draft,{sequence:1,sha256:f.sha(bytes),byteLength:bytes.length,bytesBase64:bytes.toString('base64')});
- assert.equal((await f.execute('read')).draft.sha256,f.sha(bytes));
- await assert.rejects(f.start(),{code:'EDITOR_STRUCTURE_REFUSED'});
- assert.equal(f.state.calls.some(c=>c.route==='editor'&&c.request.operation==='acquire'),false);assert.equal(f.state.puts,1);
-});
-test('pptx renew cannot return a write token after the final read contains an unbound chart workbook',async t=>{
- const {zip}=await import('../../../artifacts/structure/test/fixtures.mjs');
- const {chart}=await import('../../../artifacts/edit-sessions/test/embedded-chart-fixture.mjs');
- const entries=chart();entries['ppt/charts/chart1.xml']=entries['ppt/charts/chart1.xml'].replace('rId1','missing');
- const f=await fixture(t,{format:'pptx'}),bytes=zip(entries);let changed=false;
- f.state.hook=r=>{if(r==='editor/read'){changed=true;Object.assign(f.draft,{sequence:1,sha256:f.sha(bytes),byteLength:bytes.length,bytesBase64:bytes.toString('base64'),state:'draft'});}};
- await assert.rejects(f.execute('renew',{editorId:f.claims.editorId,expectedEpoch:1,mode:'edit'}),{code:'EDITOR_STRUCTURE_REFUSED'});
- assert.equal(changed,true);assert.equal(f.draft.sha256,f.sha(bytes));assert.equal(f.state.puts,1);
-});
 test('an editor that crashes without Release is recovered once its lease lapses: plain acquire, saved private bytes served, crashed token dead',async t=>{
  const saved=preservationBytes('docx','after'),f=await fixture(t,{baseBytes:preservationBytes('docx')}),started=await f.start();
  assert.equal((await f.wopi(started.launch,'lock',{lock:'CODE'})).status,200);

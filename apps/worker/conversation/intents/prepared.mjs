@@ -9,7 +9,7 @@
  * - document: `{status:'draft', version}` with an immutable artifact version in `generationStatus:'draft'`. */
 import {own,data} from '../../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertProposalIntegrity,canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
-import {artifactValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
+import {artifactValidators,researchShareValidators,researchActionValidators,legiwatchValidators,savedNoteValidators,watchValidators,bizdevValidators,legislativeDocumentValidators,clientRecordValidators,officeEditValidators,validateShape as toolShape} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {assertMailSendProposal,assertTaskUpdateProposal,assertMemoryProposeCommand} from '../../../../packages/contracts/commands-0.2/validate.mjs';
 // Only the client-record admission reads the disjoint 0.3 family, so a sourced create proposal is admitted here too.
 import {clientRecordValidators as clientRecord3Validators} from '../../../../packages/contracts/retrieval-0.3/client-record-action-validation.mjs';
@@ -27,7 +27,7 @@ const currentScopes=(scopes,binding,current)=>Array.isArray(scopes)&&scopes.leng
  validateShape('Scope',s);return s.tenantId===binding.tenantId&&current.some(c=>canonicalSha256(c)===canonicalSha256(s));
 });
 /**
- * @param {'note'|'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'research-action'|'legiwatch'|'watch'|'client-record'|'bizdev'|'legislative-document'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
+ * @param {'note'|'command'|'schedule'|'document'|'artifact'|'memory'|'research-sharing'|'research-action'|'legiwatch'|'watch'|'client-record'|'bizdev'|'legislative-document'|'office'} owner @param {{id:string,version:string}} operation @param {unknown} value @param {any} binding
  * @param {{scopes:any[],nowMs:number}} current
  * @returns {{status:'approval_required'|'draft'|'analysis_pending'|'review_pending'|'saved'|'withheld'|'blocked'|'unknown'|'failed'|'read',reference:string,value:any}}
  */
@@ -36,6 +36,16 @@ export function assertPreparedResult(owner,operation,value,binding,current){
   if(!Array.isArray(current?.scopes)||!current.scopes.length||!Number.isSafeInteger(current.nowMs))refuse();
   for(const s of current.scopes){validateShape('Scope',s);if(s.tenantId!==binding.tenantId)refuse();}
   const v=/** @type {any} */(data(value));
+  if(owner==='office'){
+   if(v.status==='read'){
+    const read=officeEditValidators.readResult(v);
+    if(operation.id!==read.operation||operation.version!=='0.2.0'||!sameRun(read.binding,binding)||!currentScopes(read.scopes,binding,current.scopes)||Date.parse(read.observedAt)>current.nowMs||Date.parse(read.expiresAt)<=current.nowMs)refuse();
+    return {status:'read',reference:read.document.versionId,value:read};
+   }
+   officeEditValidators.assertOutput(v);const p=v.proposal;
+   if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();
+   return {status:'approval_required',reference:p.proposalId,value:v};
+  }
   if(owner==='watch'){
    watchValidators.assertOutput(v);const p=v.proposal;
    if(p.operation!==operation.id||operation.version!=='0.2.0'||!sameRun(p.binding,binding)||!currentScopes(p.scopes,binding,current.scopes)||Date.parse(p.createdAt)>current.nowMs||Date.parse(p.expiresAt)<=current.nowMs)refuse();

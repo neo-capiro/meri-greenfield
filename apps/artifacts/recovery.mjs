@@ -1,5 +1,5 @@
 /** Exact native document recovery. The existing delivery journal never grants generation twice. */
-import {officeEditSource,officeEditRequestSha256,officeOriginalSource,officeOriginalRequestSha256} from '../../packages/contracts/office-edit.mjs';
+import {officeRevisionSource,officeEditRequestSha256,officeOriginalSource,officeOriginalRequestSha256} from '../../packages/contracts/office-edit.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u;
 export const recoverArtifact=(owner,baseVersionId,request,context,options)=>recover(owner,baseVersionId,request,context,options,false);
@@ -7,7 +7,7 @@ export const recoverOfficeEdit=(owner,baseVersionId,request,context,options)=>re
 export const recoverOfficeOriginal=(owner,request,context,options)=>recover(owner,null,request,context,options,false,true);
 async function recover(owner,baseVersionId,requestValue,contextValue,{signal,evidence}={},office=false,original=false){
  const {v,operation,authority,scopeVersion,bytesFor,inspectBytes,versions,servable=async()=>{},recoverTenant=async()=>{}}=owner;
- const request=original?officeOriginalSource(requestValue):office?officeEditSource(requestValue):v.request(requestValue),context=v.context(contextValue),requestSha256=office||original?evidence?.requestSha256:v.nativeRequestSha256(request,context,baseVersionId),life=operation(context,signal);
+ const request=original?officeOriginalSource(requestValue):office?officeRevisionSource(requestValue):v.request(requestValue),context=v.context(contextValue),requestSha256=office||original?evidence?.requestSha256:v.nativeRequestSha256(request,context,baseVersionId),life=operation(context,signal);
  let verified=false;
  try{
   if(!evidence||Object.keys(evidence).sort().join()!=='invocationId,requestSha256,versionId'||!/^sdk:[a-f0-9]{64}$/u.test(evidence.invocationId)||!uuid.test(evidence.versionId)||!/^[a-f0-9]{64}$/u.test(requestSha256)||evidence.requestSha256!==requestSha256||request.format==='sandbox'||context.analysisAdmission)fail('ARTIFACT_REPLAY_EVIDENCE');

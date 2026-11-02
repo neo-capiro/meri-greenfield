@@ -148,3 +148,15 @@ routes; the inbox grants nothing. `INTENTS_UNAVAILABLE` names a workspace withou
 `clientScope`, `state` in `not_installed | policy_off | client_required | available`, `requires`) and the retained SQL relations
 with their state. Operation names are not on the wire. `DATA_ACCESS_UNAVAILABLE` names a workspace without the family. Validation
 grants no authorization.
+
+## Same-document Office proposals — package 0.1.49
+
+`retrieval-0.2/office-edit-action` 0.2.0 (catalog 0.2.32) and the additive `intents-application` item `office_edit` with the
+`office_edit_decided` decide answer carry the governed `propose_office_edit` family: `action:"read"` returns the exact selected
+Office version (artifact, version, object digest, format, title, filename) with an addressable outline; `action:"propose"` carries
+bounded unit operations with their current `before` text. A proposal pins `result.{partsSha256, parts}`, the digest of the
+decompressed package parts the operations produce, never the packed bytes, so a compressor change between propose and Apply cannot
+read a valid proposal as a mismatch. The decide answer's `proposalStatus` is one of `applied` (with the published `version` of the
+same artifact and parent), `rejected` (durable: the same answer from any tab afterwards), `conflict`, `refused`, `expired`,
+`unknown`; a `rejected` request answered `applied` is a contradiction the receiver refuses. Validation grants no authority:
+the office access owner and the artifact publisher decide every read and write.

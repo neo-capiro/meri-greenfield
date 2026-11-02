@@ -434,6 +434,9 @@
         },
         {
           "$ref": "#/$defs/Canonical_LegislativeDocumentProposal_3d80036f"
+        },
+        {
+          "$ref": "#/$defs/Canonical_OfficeEditProposal_e1d57a77"
         }
       ]
     },
@@ -1669,6 +1672,83 @@
       ],
       "additionalProperties": false
     },
+    "IntentsOfficeEditItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "office_edit"
+        },
+        "proposal": {
+          "$ref": "#/$defs/Canonical_OfficeEditProposal_e1d57a77"
+        },
+        "result": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_OfficeEditResult_1cbfeabd"
+            },
+            {
+              "const": "unavailable"
+            }
+          ]
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "proposal",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "IntentsWithheldOfficeEditItem": {
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "$ref": "#/$defs/IntentsDeliveryId"
+        },
+        "createdAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$"
+        },
+        "operation": {
+          "$ref": "#/$defs/IntentsOperation"
+        },
+        "state": {
+          "const": "prepared"
+        },
+        "kind": {
+          "const": "office_edit"
+        },
+        "withheld": {
+          "const": true
+        }
+      },
+      "required": [
+        "deliveryId",
+        "createdAt",
+        "operation",
+        "state",
+        "kind",
+        "withheld"
+      ],
+      "additionalProperties": false
+    },
     "IntentsClientRecordItem": {
       "type": "object",
       "properties": {
@@ -2314,6 +2394,12 @@
           "$ref": "#/$defs/IntentsWithheldLegislativeDocumentItem"
         },
         {
+          "$ref": "#/$defs/IntentsOfficeEditItem"
+        },
+        {
+          "$ref": "#/$defs/IntentsWithheldOfficeEditItem"
+        },
+        {
           "$ref": "#/$defs/IntentsBrowserActionItem"
         },
         {
@@ -2422,6 +2508,31 @@
             },
             "result": {
               "$ref": "#/$defs/Canonical_LegislativeDocumentCoreResult_05815d48"
+            }
+          },
+          "required": [
+            "status",
+            "deliveryId",
+            "proposalId",
+            "result"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "status": {
+              "const": "office_edit_decided"
+            },
+            "deliveryId": {
+              "$ref": "#/$defs/IntentsDeliveryId"
+            },
+            "proposalId": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "result": {
+              "$ref": "#/$defs/Canonical_OfficeEditResult_1cbfeabd"
             }
           },
           "required": [
@@ -7137,6 +7248,292 @@
       ],
       "additionalProperties": false
     },
+    "Canonical_OfficeEditContext_9f9189a5": {
+      "type": "object",
+      "properties": {
+        "conversationId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "selectedClientId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^[a-f0-9-]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "conversationId",
+        "selectedClientId"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_OfficeEditFormat_207e302a": {
+      "enum": [
+        "docx",
+        "xlsx",
+        "pptx"
+      ]
+    },
+    "Canonical_OfficeEditDocument_450519db": {
+      "type": "object",
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "versionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "objectSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "format": {
+          "$ref": "#/$defs/Canonical_OfficeEditFormat_207e302a"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "artifactId",
+        "versionId",
+        "objectSha256",
+        "format",
+        "title",
+        "filename"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_OfficeEditUnitId_e002d78b": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "Canonical_OfficeEditText_4b73c218": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "Canonical_OfficeEditOperation_98514085": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "$ref": "#/$defs/Canonical_OfficeEditUnitId_e002d78b"
+        },
+        "kind": {
+          "enum": [
+            "replace_text",
+            "insert_after",
+            "delete"
+          ]
+        },
+        "before": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_OfficeEditText_4b73c218"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "after": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_OfficeEditText_4b73c218"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "unit",
+        "kind",
+        "before",
+        "after"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "replace_text"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "before": {
+                "type": "string"
+              },
+              "after": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "insert_after"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "before": {
+                "type": "null"
+              },
+              "after": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "delete"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "before": {
+                "type": "string"
+              },
+              "after": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Canonical_OfficeEditResultParts_cd394612": {
+      "description": "The document a proposal produces, pinned by the digest of its decompressed parts (name and content, in name order) and their count: independent of how a compressor packs the package.",
+      "type": "object",
+      "properties": {
+        "partsSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "parts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000
+        }
+      },
+      "required": [
+        "partsSha256",
+        "parts"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_OfficeEditProposal_e1d57a77": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "const": "office_edit"
+        },
+        "operation": {
+          "const": "propose_office_edit"
+        },
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "commandSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 1
+        },
+        "context": {
+          "$ref": "#/$defs/Canonical_OfficeEditContext_9f9189a5"
+        },
+        "document": {
+          "$ref": "#/$defs/Canonical_OfficeEditDocument_450519db"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_OfficeEditOperation_98514085"
+          },
+          "minItems": 1,
+          "maxItems": 50
+        },
+        "result": {
+          "$ref": "#/$defs/Canonical_OfficeEditResultParts_cd394612"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "requiredApprover": {
+          "$ref": "#/$defs/Canonical_Identity_aba0a4e9"
+        }
+      },
+      "required": [
+        "kind",
+        "operation",
+        "proposalId",
+        "commandSha256",
+        "binding",
+        "scopes",
+        "context",
+        "document",
+        "summary",
+        "operations",
+        "result",
+        "createdAt",
+        "expiresAt",
+        "requiredApprover"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_ApprovalDecision_5e8bdbcf": {
       "type": "object",
       "properties": {
@@ -9929,6 +10326,98 @@
         "expiresAt",
         "receipt",
         "effect"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_OfficeEditVersion_61a4f684": {
+      "type": "object",
+      "properties": {
+        "artifactId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "versionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "parentVersionId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20971520
+        },
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "artifactId",
+        "versionId",
+        "parentVersionId",
+        "sha256",
+        "bytes",
+        "filename"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_OfficeEditResult_1cbfeabd": {
+      "type": "object",
+      "properties": {
+        "proposalId": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[a-f0-9-]+$"
+        },
+        "proposalStatus": {
+          "enum": [
+            "proposed",
+            "applied",
+            "rejected",
+            "conflict",
+            "refused",
+            "unknown",
+            "expired"
+          ]
+        },
+        "version": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Canonical_OfficeEditVersion_61a4f684"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "code": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "proposalId",
+        "proposalStatus",
+        "version",
+        "code"
       ],
       "additionalProperties": false
     },

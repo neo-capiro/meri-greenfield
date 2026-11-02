@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.31",
+  "catalogVersion": "0.2.32",
   "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
@@ -1499,6 +1499,16 @@
       "boundary": "Prepare user-initiated watch subscription action for explicit approval; Core owns authorization, optimistic version and durable receipt. No subscription activation or model execution.",
       "replacement": {
         "id": "watch_action",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "propose_office_edit",
+      "disposition": "selected",
+      "boundary": "Read the exact selected Office version outline and prepare bounded unit edits for explicit user approval; the artifact owner publishes the new version with CAS on the same parent. No typed regeneration, rendering or automatic retry.",
+      "replacement": {
+        "id": "propose_office_edit",
         "version": "0.2.0"
       },
       "state": "mapped"
@@ -9942,6 +9952,75 @@
       ],
       "fixtureIds": [
         "catalog.binding.watch_action"
+      ]
+    },
+    {
+      "operation": {
+        "id": "propose_office_edit",
+        "version": "0.2.0"
+      },
+      "displayName": "Read the selected Office document and propose a bounded edit",
+      "whenToUse": "With a Word, Excel or PowerPoint version selected in this conversation: action \"read\" returns its exact version identity and an addressable outline (paragraphs, cells or slide shapes with their current text); action \"propose\" prepares bounded operations on those units for the signed-in user to apply as a new version of the same document.",
+      "limitations": [
+        "Only the exact selected Office version (artifact, version and object hash) is read or edited; a filename, extracted text or an unselected document is never a target.",
+        "Operations name outline units and must state the current text as \"before\"; a unit that changed, is unknown or is a formula cell is refused before any proposal exists.",
+        "Applying publishes a new immutable version only after the user approves it and only while the parent is still the head; a manual Publish in the meantime makes the proposal a conflict, and every other byte of the manual document is preserved.",
+        "No typed body replacement, no rendering, no recalculation and no automatic retry of an unknown effect."
+      ],
+      "positiveExamples": [
+        "Read the outline of the selected document.",
+        "Replace the second paragraph with the shorter wording below, leaving everything else as the user wrote it."
+      ],
+      "negativeExamples": [
+        "Regenerate the whole document from a typed outline.",
+        "Edit a document that is not the selected version, or guess a unit id.",
+        "Retry an apply whose outcome is unknown."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "artifact_versions",
+          "authority": "authoritative",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:office-edit-action:0.2.0#/$defs/OfficeEditInput",
+        "sha256": "faf0b9f669f12d59296c2aa61e06baab187858d0ccebc16cd51d5f7a0ead4f3e"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:office-edit-action:0.2.0#/$defs/OfficeEditPrepared",
+        "sha256": "faf0b9f669f12d59296c2aa61e06baab187858d0ccebc16cd51d5f7a0ead4f3e"
+      },
+      "aliases": [],
+      "sideEffect": "source-command",
+      "requiredGrants": [
+        "command.execute"
+      ],
+      "approvalBoundary": "immutable-proposal",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.propose_office_edit"
       ]
     },
     {

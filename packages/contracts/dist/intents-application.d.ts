@@ -59,6 +59,8 @@ export type IntentsApplicationEnvelope =
   | IntentsLegiwatchItem
   | IntentsLegislativeDocumentItem
   | IntentsWithheldLegislativeDocumentItem
+  | IntentsOfficeEditItem
+  | IntentsWithheldOfficeEditItem
   | IntentsClientRecordItem
   | IntentsWithheldLegiwatchItem
   | IntentsWithheldClientRecordItem
@@ -169,7 +171,8 @@ export type IntentsProposal =
   | Canonical_WatchProposal_14Eddeec
   | Canonical_ClientRecordProposalD98D004E
   | Canonical_BizdevProposalA770314C
-  | Canonical_LegislativeDocumentProposal_3D80036F;
+  | Canonical_LegislativeDocumentProposal_3D80036F
+  | Canonical_OfficeEditProposalE1D57A77;
 export type Canonical_LegiwatchRequest_5Cff194F =
   Canonical_SuggestionLegiwatchRequestD59A433F | Canonical_RelevanceRequest_3250901F;
 export type Canonical_WatchRequest_1E607664 = {
@@ -193,6 +196,20 @@ export type Canonical_ClientRecordRequest_878F71B2 =
       operation: 'update_client_profile';
       input: Canonical_UpdateClientProfileInputAea70647;
     };
+export type Canonical_OfficeEditFormat_207E302A = 'docx' | 'xlsx' | 'pptx';
+export type Canonical_OfficeEditOperation_98514085 = {
+  unit: Canonical_OfficeEditUnitIdE002D78B;
+  kind: 'replace_text' | 'insert_after' | 'delete';
+  before: Canonical_OfficeEditText_4B73C218 | null;
+  after: Canonical_OfficeEditText_4B73C218 | null;
+} & {
+  unit: Canonical_OfficeEditUnitIdE002D78B;
+  kind: 'replace_text' | 'insert_after' | 'delete';
+  before: Canonical_OfficeEditText_4B73C218 | null;
+  after: Canonical_OfficeEditText_4B73C218 | null;
+};
+export type Canonical_OfficeEditUnitIdE002D78B = string;
+export type Canonical_OfficeEditText_4B73C218 = string;
 export type IntentsMailSendResult =
   | {
       state: 'failed';
@@ -2027,6 +2044,8 @@ export type IntentsItem =
   | IntentsWithheldBizdevItem
   | IntentsLegislativeDocumentItem
   | IntentsWithheldLegislativeDocumentItem
+  | IntentsOfficeEditItem
+  | IntentsWithheldOfficeEditItem
   | IntentsBrowserActionItem
   | IntentsWithheldBrowserActionItem;
 export type IntentsDecideResponse =
@@ -2047,6 +2066,12 @@ export type IntentsDecideResponse =
       deliveryId: IntentsDeliveryId;
       proposalId: string;
       result: Canonical_LegislativeDocumentCoreResult_05815D48;
+    }
+  | {
+      status: 'office_edit_decided';
+      deliveryId: IntentsDeliveryId;
+      proposalId: string;
+      result: Canonical_OfficeEditResult_1Cbfeabd;
     }
   | {
       status: 'legiwatch_decided';
@@ -3625,6 +3650,49 @@ export interface Canonical_LegislativeDocumentContext_6C736Cef {
   membershipRevision: string;
   contextRevision: string;
 }
+export interface Canonical_OfficeEditProposalE1D57A77 {
+  kind: 'office_edit';
+  operation: 'propose_office_edit';
+  proposalId: string;
+  commandSha256: string;
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 1
+   */
+  scopes: [Canonical_ScopeF882Edb5];
+  context: Canonical_OfficeEditContext_9F9189A5;
+  document: Canonical_OfficeEditDocument_450519Db;
+  summary: string;
+  /**
+   * @minItems 1
+   * @maxItems 50
+   */
+  operations: [Canonical_OfficeEditOperation_98514085, ...Canonical_OfficeEditOperation_98514085[]];
+  result: Canonical_OfficeEditResultPartsCd394612;
+  createdAt: string;
+  expiresAt: string;
+  requiredApprover: Canonical_IdentityAba0A4E9;
+}
+export interface Canonical_OfficeEditContext_9F9189A5 {
+  conversationId: string;
+  selectedClientId: string | null;
+}
+export interface Canonical_OfficeEditDocument_450519Db {
+  artifactId: string;
+  versionId: string;
+  objectSha256: string;
+  format: Canonical_OfficeEditFormat_207E302A;
+  title: string;
+  filename: string;
+}
+/**
+ * The document a proposal produces, pinned by the digest of its decompressed parts (name and content, in name order) and their count: independent of how a compressor packs the package.
+ */
+export interface Canonical_OfficeEditResultPartsCd394612 {
+  partsSha256: string;
+  parts: number;
+}
 export interface Canonical_ApprovalDecision_5E8Bdbcf {
   proposalId: string;
   commandSha256: string;
@@ -4369,6 +4437,37 @@ export interface IntentsWithheldLegislativeDocumentItem {
   operation: IntentsOperation;
   state: 'prepared';
   kind: 'legislative_document_action';
+  withheld: true;
+}
+export interface IntentsOfficeEditItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'office_edit';
+  proposal: Canonical_OfficeEditProposalE1D57A77;
+  result: Canonical_OfficeEditResult_1Cbfeabd | 'unavailable';
+}
+export interface Canonical_OfficeEditResult_1Cbfeabd {
+  proposalId: string;
+  proposalStatus: 'proposed' | 'applied' | 'rejected' | 'conflict' | 'refused' | 'unknown' | 'expired';
+  version: Canonical_OfficeEditVersion_61A4F684 | null;
+  code: string | null;
+}
+export interface Canonical_OfficeEditVersion_61A4F684 {
+  artifactId: string;
+  versionId: string;
+  parentVersionId: string;
+  sha256: string;
+  bytes: number;
+  filename: string;
+}
+export interface IntentsWithheldOfficeEditItem {
+  deliveryId: IntentsDeliveryId;
+  createdAt: string;
+  operation: IntentsOperation;
+  state: 'prepared';
+  kind: 'office_edit';
   withheld: true;
 }
 export interface IntentsClientRecordItem {

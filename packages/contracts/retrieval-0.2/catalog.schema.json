@@ -136,6 +136,7 @@
                 "prepare_legiwatch_briefing",
                 "save_legislative_research",
                 "watch_action",
+                "propose_office_edit",
                 "save_note",
                 "inspect_watch_state",
                 "manage_research_portfolio",
@@ -586,7 +587,7 @@
             "$ref": "urn:meri:retrieval:catalog:0.2.0#/$defs/NativeMapping"
           },
           "minItems": 153,
-          "maxItems": 155,
+          "maxItems": 156,
           "uniqueItems": true
         },
         "operations": {

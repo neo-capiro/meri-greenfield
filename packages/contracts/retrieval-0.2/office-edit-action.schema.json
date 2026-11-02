@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:meri:retrieval:office-edit-action:0.2.0",
+  "$defs": {
+    "OfficeEditFormat": {
+      "enum": ["docx", "xlsx", "pptx"]
+    },
+    "OfficeEditUnitId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "OfficeEditText": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "OfficeEditDocument": {
+      "type": "object",
+      "properties": {
+        "artifactId": {"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"},
+        "versionId": {"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"},
+        "objectSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "format": {"$ref": "#/$defs/OfficeEditFormat"},
+        "title": {"type": "string", "minLength": 1, "maxLength": 200},
+        "filename": {"type": "string", "minLength": 1, "maxLength": 255}
+      },
+      "required": ["artifactId", "versionId", "objectSha256", "format", "title", "filename"],
+      "additionalProperties": false
+    },
+    "OfficeEditUnit": {
+      "type": "object",
+      "properties": {
+        "unit": {"$ref": "#/$defs/OfficeEditUnitId"},
+        "kind": {"enum": ["paragraph", "cell", "shape"]},
+        "text": {"$ref": "#/$defs/OfficeEditText"},
+        "editable": {"type": "boolean"}
+      },
+      "required": ["unit", "kind", "text", "editable"],
+      "additionalProperties": false
+    },
+    "OfficeEditOutline": {
+      "type": "object",
+      "properties": {
+        "format": {"$ref": "#/$defs/OfficeEditFormat"},
+        "units": {"type": "array", "items": {"$ref": "#/$defs/OfficeEditUnit"}, "maxItems": 2000},
+        "truncated": {"type": "boolean"}
+      },
+      "required": ["format", "units", "truncated"],
+      "additionalProperties": false
+    },
+    "OfficeEditOperation": {
+      "type": "object",
+      "properties": {
+        "unit": {"$ref": "#/$defs/OfficeEditUnitId"},
+        "kind": {"enum": ["replace_text", "insert_after", "delete"]},
+        "before": {"anyOf": [{"$ref": "#/$defs/OfficeEditText"}, {"type": "null"}]},
+        "after": {"anyOf": [{"$ref": "#/$defs/OfficeEditText"}, {"type": "null"}]}
+      },
+      "required": ["unit", "kind", "before", "after"],
+      "additionalProperties": false,
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "replace_text"}}}, "then": {"properties": {"before": {"type": "string"}, "after": {"type": "string"}}}},
+        {"if": {"properties": {"kind": {"const": "insert_after"}}}, "then": {"properties": {"before": {"type": "null"}, "after": {"type": "string"}}}},
+        {"if": {"properties": {"kind": {"const": "delete"}}}, "then": {"properties": {"before": {"type": "string"}, "after": {"type": "null"}}}}
+      ]
+    },
+    "OfficeEditInput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {"action": {"const": "read"}},
+          "required": ["action"],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "action": {"const": "propose"},
+            "summary": {"type": "string", "minLength": 1, "maxLength": 500},
+            "operations": {"type": "array", "items": {"$ref": "#/$defs/OfficeEditOperation"}, "minItems": 1, "maxItems": 50}
+          },
+          "required": ["action", "summary", "operations"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "OfficeEditContext": {
+      "type": "object",
+      "properties": {
+        "conversationId": {"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"},
+        "selectedClientId": {"anyOf": [{"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"}, {"type": "null"}]}
+      },
+      "required": ["conversationId", "selectedClientId"],
+      "additionalProperties": false
+    },
+    "OfficeEditReadResult": {
+      "type": "object",
+      "properties": {
+        "status": {"const": "read"},
+        "operation": {"const": "propose_office_edit"},
+        "binding": {"$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"},
+        "scopes": {"type": "array", "items": {"$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"}, "minItems": 1, "maxItems": 100},
+        "document": {"$ref": "#/$defs/OfficeEditDocument"},
+        "outline": {"$ref": "#/$defs/OfficeEditOutline"},
+        "observedAt": {"type": "string", "format": "date-time"},
+        "expiresAt": {"type": "string", "format": "date-time"}
+      },
+      "required": ["status", "operation", "binding", "scopes", "document", "outline", "observedAt", "expiresAt"],
+      "additionalProperties": false
+    },
+    "OfficeEditResultParts": {
+      "description": "The document a proposal produces, pinned by the digest of its decompressed parts (name and content, in name order) and their count: independent of how a compressor packs the package.",
+      "type": "object",
+      "properties": {
+        "partsSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "parts": {"type": "integer", "minimum": 1, "maximum": 5000}
+      },
+      "required": ["partsSha256", "parts"],
+      "additionalProperties": false
+    },
+    "OfficeEditProposal": {
+      "type": "object",
+      "properties": {
+        "kind": {"const": "office_edit"},
+        "operation": {"const": "propose_office_edit"},
+        "proposalId": {"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"},
+        "commandSha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "binding": {"$ref": "urn:meri:contracts:0.1.0#/$defs/RunBinding"},
+        "scopes": {"type": "array", "items": {"$ref": "urn:meri:contracts:0.1.0#/$defs/Scope"}, "minItems": 1, "maxItems": 1},
+        "context": {"$ref": "#/$defs/OfficeEditContext"},
+        "document": {"$ref": "#/$defs/OfficeEditDocument"},
+        "summary": {"type": "string", "minLength": 1, "maxLength": 500},
+        "operations": {"type": "array", "items": {"$ref": "#/$defs/OfficeEditOperation"}, "minItems": 1, "maxItems": 50},
+        "result": {"$ref": "#/$defs/OfficeEditResultParts"},
+        "createdAt": {"type": "string", "format": "date-time"},
+        "expiresAt": {"type": "string", "format": "date-time"},
+        "requiredApprover": {"$ref": "urn:meri:contracts:0.1.0#/$defs/Identity"}
+      },
+      "required": ["kind", "operation", "proposalId", "commandSha256", "binding", "scopes", "context", "document", "summary", "operations", "result", "createdAt", "expiresAt", "requiredApprover"],
+      "additionalProperties": false
+    },
+    "OfficeEditPrepared": {
+      "type": "object",
+      "properties": {
+        "status": {"const": "approval_required"},
+        "proposal": {"$ref": "#/$defs/OfficeEditProposal"}
+      },
+      "required": ["status", "proposal"],
+      "additionalProperties": false
+    },
+    "OfficeEditVersion": {
+      "type": "object",
+      "properties": {
+        "artifactId": {"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"},
+        "versionId": {"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"},
+        "parentVersionId": {"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"},
+        "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "bytes": {"type": "integer", "minimum": 1, "maximum": 20971520},
+        "filename": {"type": "string", "minLength": 1, "maxLength": 255}
+      },
+      "required": ["artifactId", "versionId", "parentVersionId", "sha256", "bytes", "filename"],
+      "additionalProperties": false
+    },
+    "OfficeEditResult": {
+      "type": "object",
+      "properties": {
+        "proposalId": {"type": "string", "format": "uuid", "pattern": "^[a-f0-9-]+$"},
+        "proposalStatus": {"enum": ["proposed", "applied", "rejected", "conflict", "refused", "unknown", "expired"]},
+        "version": {"anyOf": [{"$ref": "#/$defs/OfficeEditVersion"}, {"type": "null"}]},
+        "code": {"anyOf": [{"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,79}$"}, {"type": "null"}]}
+      },
+      "required": ["proposalId", "proposalStatus", "version", "code"],
+      "additionalProperties": false
+    }
+  }
+}

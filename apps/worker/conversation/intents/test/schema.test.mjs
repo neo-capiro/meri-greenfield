@@ -22,7 +22,7 @@ test('every intent row advertises its canonical schema, a declared narrowing, or
   prepare_research_portfolio_brief:'canonical',prepare_research_portfolio_meeting:'canonical',
   create_word:'declared',create_excel:'declared',create_powerpoint:'declared',run_analysis:'record',
   schedule_task:'record',update_scheduled_task:'record',cancel_scheduled_task:'canonical',
-  create_task:'canonical',update_task:'canonical',save_memory:'declared',save_chat_attachments:'canonical'});
+  create_task:'canonical',update_task:'canonical',save_memory:'declared',save_chat_attachments:'canonical',propose_office_edit:'canonical'});
  // A tool is only as precise as its least precise row: one record row keeps the tool's open record.
  assert.equal(intentToolArguments([row('create_excel')]).mode,'declared');
  assert.equal(intentToolArguments([row('save_memory')]).mode,'declared');

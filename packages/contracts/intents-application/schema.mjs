@@ -15,6 +15,7 @@ const legacySchedule=name=>({$ref:'urn:meri:schedules:tool-interface:0.2.0#/$def
 const scheduleInspection=name=>({$ref:'urn:meri:schedules:inspection:0.3.0#/$defs/'+name});
 const scheduleLifecycle=name=>({$ref:'urn:meri:schedules:lifecycle:0.3.0#/$defs/'+name});
 const legislativeDocument=name=>({$ref:'urn:meri:retrieval:legislative-document-action:0.2.0#/$defs/'+name});
+const officeEdit=name=>({$ref:'urn:meri:retrieval:office-edit-action:0.2.0#/$defs/'+name});
 // Client-record moved to its disjoint 0.3 family: the retained proposal shape is unchanged, and only this owner
 // carries the bounded source provenance on a create input and the bounded preflight on a live answer.
 const clientRecord=name=>({$ref:'urn:meri:retrieval:client-record-action:0.3.0#/$defs/'+name});
@@ -56,7 +57,7 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
   object({conversationId:ref('IntentsConversationId'),deliveryId:ref('IntentsBrowserDeliveryId'),proposalId:{type:'string',pattern:UUID},subjectSha256:{type:'string',pattern:'^[a-f0-9]{64}$'},decision:{enum:['approved','rejected']}}),
  ]},
  IntentsNativeProposal:{oneOf:[pub('ApprovalProposal'),update('TaskUpdateApprovalProposal'),mail('MailSendApprovalProposal'),document('DocumentDraftApprovalProposal')]},
- IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),ref('IntentsBrowserProposal'),sharing('ResearchShareProposal'),researchAction('ResearchActionProposal'),legiwatch('LegiwatchProposal'),watch('WatchProposal'),clientRecord('ClientRecordProposal'),bizdev('BizdevProposal'),legislativeDocument('LegislativeDocumentProposal')]},
+ IntentsProposal:{oneOf:[ref('IntentsNativeProposal'),ref('IntentsBrowserProposal'),sharing('ResearchShareProposal'),researchAction('ResearchActionProposal'),legiwatch('LegiwatchProposal'),watch('WatchProposal'),clientRecord('ClientRecordProposal'),bizdev('BizdevProposal'),legislativeDocument('LegislativeDocumentProposal'),officeEdit('OfficeEditProposal')]},
  IntentsClientRecordProposal:clientRecord('ClientRecordProposal'),
  IntentsLegiwatchProposal:legiwatch('LegiwatchProposal'),
  IntentsBizdevProposal:bizdev('BizdevProposal'),
@@ -112,6 +113,8 @@ export function intentsSchema({errorStatuses,errorOutcomes,failureCodes,fieldPat
  IntentsLegiwatchItem:item({state:{const:'prepared'},kind:{const:'legiwatch_action'},proposal:legiwatch('LegiwatchProposal'),result:{anyOf:[legiwatch('LegiwatchCoreResult'),{const:'unavailable'}]}}),
  IntentsLegislativeDocumentItem:item({state:{const:'prepared'},kind:{const:'legislative_document_action'},proposal:legislativeDocument('LegislativeDocumentProposal'),result:{anyOf:[legislativeDocument('LegislativeDocumentCoreResult'),{const:'unavailable'}]}}),
  IntentsWithheldLegislativeDocumentItem:item({state:{const:'prepared'},kind:{const:'legislative_document_action'},withheld:{const:true}}),
+ IntentsOfficeEditItem:item({state:{const:'prepared'},kind:{const:'office_edit'},proposal:officeEdit('OfficeEditProposal'),result:{anyOf:[officeEdit('OfficeEditResult'),{const:'unavailable'}]}}),
+ IntentsWithheldOfficeEditItem:item({state:{const:'prepared'},kind:{const:'office_edit'},withheld:{const:true}}),
  IntentsClientRecordItem:item({state:{const:'prepared'},kind:{const:'client_record_action'},proposal:clientRecord('ClientRecordProposal'),result:{anyOf:[clientRecord('ClientRecordCoreResult'),{const:'unavailable'}]}},undefined,'IntentsClientRecordOperation'),
  IntentsWithheldLegiwatchItem:item({state:{const:'prepared'},kind:{const:'legiwatch_action'},withheld:{const:true}}),
  IntentsWithheldClientRecordItem:item({state:{const:'prepared'},kind:{const:'client_record_action'},withheld:{const:true}},undefined,'IntentsClientRecordOperation'),
@@ -127,12 +130,13 @@ IntentsWithheldSavedNoteItem:item({state:{const:'prepared'},kind:{const:'saved_n
  IntentsWithheldResearchShareItem:item({state:{const:'prepared'},kind:{const:'research_share'},withheld:{const:true}}),
  IntentsProposalItem:item({state:{const:'prepared'},kind:{const:'proposal'},proposal:ref('IntentsNativeProposal'),decision:{anyOf:[ref('IntentsDecision'),{type:'null'},{const:'unavailable'}]},
   execution:{anyOf:[ref('IntentsExecution'),{type:'null'},{const:'unavailable'}]},phase:{enum:[...INTENT_PHASES]}}),
- IntentsItem:{oneOf:['SavedNote','WithheldSavedNote','Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal','ResearchShare','WithheldResearchShare','ResearchAction','WithheldResearchAction','Legiwatch','WithheldLegiwatch','Watch','WithheldWatch','ClientRecord','WithheldClientRecord','Bizdev','WithheldBizdev','LegislativeDocument','WithheldLegislativeDocument','BrowserAction','WithheldBrowserAction'].map(name=>ref('Intents'+name+'Item'))},
+ IntentsItem:{oneOf:['SavedNote','WithheldSavedNote','Pending','Unknown','Failed','Draft','WithheldDraft','MemoryReview','WithheldMemoryReview','ScheduleProposal','ScheduleReview','WithheldSchedule','WithheldProposal','Proposal','ResearchShare','WithheldResearchShare','ResearchAction','WithheldResearchAction','Legiwatch','WithheldLegiwatch','Watch','WithheldWatch','ClientRecord','WithheldClientRecord','Bizdev','WithheldBizdev','LegislativeDocument','WithheldLegislativeDocument','OfficeEdit','WithheldOfficeEdit','BrowserAction','WithheldBrowserAction'].map(name=>ref('Intents'+name+'Item'))},
  IntentsListResponse:object({conversationId:ref('IntentsConversationId'),intents:{type:'array',items:ref('IntentsItem'),maxItems:50},next:{anyOf:[ref('IntentsDeliveryId'),ref('IntentsBrowserDeliveryId'),{type:'null'}]}}),
  IntentsDecideResponse:{oneOf:[
   object({status:{const:'browser_decision_recorded'},deliveryId:ref('IntentsBrowserDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsBrowserDecision')}),
   object({status:{const:'browser_rejected'},deliveryId:ref('IntentsBrowserDeliveryId'),proposalId:{type:'string',pattern:UUID},decision:ref('IntentsBrowserDecision')}),
   object({status:{const:'legislative_document_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:legislativeDocument('LegislativeDocumentCoreResult')}),
+  object({status:{const:'office_edit_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:officeEdit('OfficeEditResult')}),
   object({status:{const:'legiwatch_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:legiwatch('LegiwatchCoreResult')}),
   object({status:{const:'client_record_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:clientRecord('ClientRecordCoreResult')}),
   object({status:{const:'bizdev_decided'},deliveryId:ref('IntentsDeliveryId'),proposalId:{type:'string',pattern:UUID},result:bizdev('BizdevCoreResult')}),

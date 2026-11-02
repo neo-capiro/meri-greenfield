@@ -35,7 +35,7 @@ import {routinesReservedSecretFiles} from '../native-authority/routines-configur
 import {createRoutinesServiceSecret} from '../native-authority/routines-core-client.mjs';
 import {createCoreApprovalForwarder,createReservedCredentialDigests,registerApprovalSessionBinder} from '../native-authority/approval-forwarder.mjs';
 import {compilePreparedCandidateConfiguration} from '../prepared-candidate-config.mjs';
-import {documentApprovalOwnerFor,filingApprovalOwnerFor} from '../artifacts/intent-binding.mjs';
+import {documentApprovalOwnerFor,filingApprovalOwnerFor,officeApprovalOwnerFor} from '../artifacts/intent-binding.mjs';
 import {createCoreFilingClient} from '../artifacts/core-filing-client.mjs';
 import {currentNativeApprovalSession,currentAttendedSession} from '../native-authority/approval-session.mjs';
 import {createPostgresApprovalMetadataReader} from '../../control/commands/approval-metadata/postgres-store.mjs';
@@ -228,6 +228,7 @@ function compose(context,transport){
  const composed=composeIntentApprovals({pool:c.pool,native:c.native,decisions,
   documents:{execute:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=documentApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
   filing:{execute:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.execute(value);},read:value=>{const owner=filingApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner.read(value);}},
+  office:Object.fromEntries(['apply','reject','read'].map(method=>[method,value=>{const owner=officeApprovalOwnerFor(context);if(!owner)throw executionOwnerUnavailable();return owner[method](value);}])),
   ...(core?{memory:{execute:value=>core.forwarder.executeMemory(value),read:value=>core.forwarder.readMemoryExecution(value)},watch:{read:value=>core.watch.read(value),decide:value=>core.watch.decide(value)},legislativeDocument:{read:value=>core.legislativeDocument.read(value),decide:value=>core.legislativeDocument.decide(value)},bizdev:{read:value=>core.bizdev.read(value),decide:value=>core.bizdev.decide(value)},mail:{execute:value=>core.forwarder.executeMail(value),read:value=>core.forwarder.readMailExecution(value)},tasks:{execute:value=>core.forwarder.executeTask(value),read:value=>core.forwarder.readTaskExecution(value)},sharing:{read:value=>core.sharing.read(value),decide:value=>core.sharing.decide(value)},researchAction:{read:value=>core.researchAction.read(value),decide:value=>core.researchAction.decide(value)},legiwatch:{read:value=>core.legiwatch.read(value),decide:value=>core.legiwatch.decide(value)},clientRecord:{read:value=>core.clientRecord.read(value),decide:value=>core.clientRecord.decide(value)}}:{}),
   ...(core?{browser:shared.browser}:{}),
   gate,now,limits,retention,enabled:true});

@@ -22,7 +22,7 @@ import {createIntentMount} from '../../control/intents/mount.mjs';
 import {createPostgresIntentJournalStore} from '../../control/intents/postgres-journal.mjs';
 import {createIntentResultReleaseAuthority} from '../../control/intents/result-release-authority.mjs';
 import {intentFault} from '../../control/intents/faults.mjs';
-import {documentIntentPreparersFor} from '../artifacts/intent-binding.mjs';
+import {documentIntentPreparersFor,officeIntentPreparersFor} from '../artifacts/intent-binding.mjs';
 import {assertExecutionIdentity} from '../../control/conversations/execution-boundary.mjs';
 import {assertNativeConversationScope} from '../../../packages/contracts/runtime-0.2/session.mjs';
 import {createNativeTaskPreparers} from './native-task-preparers.mjs';
@@ -115,6 +115,7 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
     expiresAtMs:first.execution.expiresAtMs,currentRights,now,maxRequestMs:configuration.limits.requestMs,...(resolveClient?{async resolveClientReference(value){await fresh(value.signal);const result=await resolveClient({...value,binding,selectedClientId:first.selectedClientId});await fresh(value.signal);return result;}}:{})})]:[]),
    ...(nativeSharing?createResearchSharingPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeSharing,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
    ...(nativeResearchAction?createResearchActionPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeResearchAction,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
+   ...await officeIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,currentRights,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}),
    ...(configuration.memory?.enabled?memoryIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),
     async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};}}):[])];
   if(!preparers.length)throw intentFault('UNAVAILABLE');
