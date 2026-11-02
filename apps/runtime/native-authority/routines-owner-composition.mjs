@@ -132,13 +132,25 @@ export function createNativeRoutinesContextOwner({base,sessions,scheduleOwner,st
     // An initial binding keeps its positive budget even if the run persists during this request.
     persistedManagement??=managementOnly&&saved!==null;
     if(saved===null){
-     if(persistedManagement)throw contextRefuse();
-     if(typeof store.initialBindings?.readPreparation!=='function'||typeof store.readCurrentModelPolicy!=='function')throw contextRefuse();
-     const initial=await store.initialBindings.readPreparation({binding:b},check);check();const record=initial?.record;
-     if(!record||initial.recordSha256!==hash(record)||!same(record.binding,b)||!same(record.versions,c.versions)||record.selectedClientId!==current.selectedClientId||
-      record.policyRevision!==current.scopes[0].policyRevision||record.expiresAtMs<=now())throw contextRefuse();
-     policy=await store.readCurrentModelPolicy(b,check);check();
-     const after=await store.initialBindings.readPreparation({binding:b},check);check();if(!same(initial,after))throw contextRefuse();
+     if(persistedManagement||typeof store.readCurrentModelPolicy!=='function')throw contextRefuse();
+     // A finished conversation's fresh session binds its reserved next run, which persists only with that run's first
+     // message. The reservation (still the live successor of the latest run, same scopes and policy) is the current run here,
+     // exactly as it is for that next message, which is accepted under this deployment's versions whenever it was reserved.
+     const reservation=typeof store.nextRuns?.readTarget==='function'?await store.nextRuns.readTarget(b,check):null;check();
+     if(reservation!==null){
+      const head=await readHead(b,check);check();
+      if(reservation.state!=='RESERVED'||!same(reservation.target,b)||head.reserved!==true||!same(head.binding,b)||!same(head.scopes,current.scopes)||
+       !same(reservation.scopes,current.scopes)||reservation.policyRevision!==current.scopes[0].policyRevision||head.policyRevision!==reservation.policyRevision)throw contextRefuse();
+      policy=await store.readCurrentModelPolicy(b,check);check();
+      if(!same(reservation,await store.nextRuns.readTarget(b,check)))throw contextRefuse();check();
+     }else{
+      if(typeof store.initialBindings?.readPreparation!=='function')throw contextRefuse();
+      const initial=await store.initialBindings.readPreparation({binding:b},check);check();const record=initial?.record;
+      if(!record||initial.recordSha256!==hash(record)||!same(record.binding,b)||!same(record.versions,c.versions)||record.selectedClientId!==current.selectedClientId||
+       record.policyRevision!==current.scopes[0].policyRevision||record.expiresAtMs<=now())throw contextRefuse();
+      policy=await store.readCurrentModelPolicy(b,check);check();
+      const after=await store.initialBindings.readPreparation({binding:b},check);check();if(!same(initial,after))throw contextRefuse();
+     }
     }else{
      const {run}=saved,head=await readHead(b,check);if(!persistedManagement)policy=await readModelPolicy(b,check);check();
      validateShape('RuntimeVersions',run.versions);

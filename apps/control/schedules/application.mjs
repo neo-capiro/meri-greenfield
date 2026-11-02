@@ -199,9 +199,12 @@ export function createRoutinesService(configuration){
    }finally{l.close();}
   },
   async approve(value){
-   const {v,b}=input(value,raw=>decisionBody(raw,true)),l=life(v);let known=false;
+   // `absent`: the schedule owner holds no intent for this proposal, so no attempt has claimed or applied it. Until this request
+   // starts its own mutation, any refusal is then a definite NOT_DISPATCHED, never an unconfirmed outcome.
+   const {v,b}=input(value,raw=>decisionBody(raw,true)),l=life(v);let known=false,absent=false,mutating=false;
    try{
     const auth=await current(v,b,l),saved=await retained(v,b,l,auth),row=await l.run(()=>readIntent({tenantId:principal(auth).tenantId,intentId:b.proposalId},l.check)),prior=intent(row,b,principal(auth).tenantId);
+    absent=row===null;
     if(prior){
      if(row.state!=='ACKNOWLEDGED')deny('UNKNOWN','UNKNOWN');known=true;
      const result=acknowledged(prior);await current(v,b,l);l.check();return result;
@@ -216,6 +219,7 @@ export function createRoutinesService(configuration){
     // the approval before anything is dispatched; a narrowing that fails is reported and the mutation proceeds.
     const consent=auth.kind==='routine-management'||readConsents===null?null:await l.run(signal=>readConsents.before({intent:resolved.prepared.intent,attended:{binding:resolved.current.binding,selectedClientId:resolved.current.selectedClientId},
      clientId:resolved.current.selectedClientId,policyRevision:auth.scopes[0].policyRevision,signal,deadlineMs:expires}));
+    mutating=true;
     return await l.run(async signal=>{
      let result;
      try{result=await tools(resolved).execute({operation:b.operation,request:resolved.prepared.input,context:{scheduleContext:{...resolved.context.scheduleContext,approval}},signal});}
@@ -230,7 +234,11 @@ export function createRoutinesService(configuration){
      if(consent!==null&&known)await readConsents.after({tenantId:auth.binding.tenantId,intent:resolved.prepared.intent,consent:consent.consent},l.check);
      return result;
     });
-   }catch(error){if(known)throw Object.assign(Error('ROUTINES_RESULT_NOT_RELEASED'),{code:'ROUTINES_ACCESS_DENIED',outcome:'ACKNOWLEDGED_NOT_RELEASED'});throw error;}finally{l.close();}
+   }catch(error){
+    if(known)throw Object.assign(Error('ROUTINES_RESULT_NOT_RELEASED'),{code:'ROUTINES_ACCESS_DENIED',outcome:'ACKNOWLEDGED_NOT_RELEASED'});
+    if(absent&&!mutating){const code=typeof error?.code==='string'?error.code:'ROUTINES_REQUEST_FAILED';throw Object.assign(Error(code),{code,outcome:'NOT_DISPATCHED'});}
+    throw error;
+   }finally{l.close();}
   },
   async list(value){
    // MR-04 visibility opt-in: `observation:'consent'` is a RECEIVING-BOUNDARY field, not a schedule tool argument. It is
@@ -335,6 +343,8 @@ export function createRoutinesService(configuration){
   async reconcile(value){
    const {v,b}=input(value,raw=>decisionBody(raw,false)),l=life(v);let known=false,acknowledgementStarted=false;try{
     const auth=await current(v,b,l);await retained(v,b,l,auth);
+    // No stored intent: no approval of this proposal was ever claimed, so nothing was applied and nothing can be observed.
+    if(await l.run(()=>readIntent({tenantId:principal(auth).tenantId,intentId:b.proposalId},l.check))===null)deny('STALE','NOT_DISPATCHED');
     // The existing reconciler only observes the exact old effect. Fresh current authority also gates its metadata acknowledgement.
     const owner={async readIntent(selection,check){await current(v,b,l);const row=await readIntent(selection,check);intent(row,b,principal(auth).tenantId);if(row?.state==='ACKNOWLEDGED')known=true;return row;},async acknowledgeReconciled(selection,check){await current(v,b,l);acknowledgementStarted=true;const receipt=await storageMethod(c.scheduleOwner,'acknowledgeReconciled')(selection,check);known=receipt.state==='ACKNOWLEDGED';return receipt;}};
     const reconciler=createScheduleIntentReconciler({scheduleOwner:owner,scheduleClient:c.scheduleClient,workflowClient:c.workflowClient,scheduleNotFoundError:c.scheduleNotFoundError,clock:c.now,maxRequestMs:Math.max(1,Math.min(c.maxRequestMs,v.deadlineMs-c.now()))});
