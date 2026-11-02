@@ -28386,9 +28386,9 @@ var conversationErrorStatuses = freeze({
   // Run admission refused: this month's recorded spend reached the tenant's monthly cap. Decided before any run is queued;
   // only an administrator raising the cap (or the next month) admits another run.
   TENANT_MONTHLY_CAP_REACHED: [429],
-  // The conversation's original (first) input allocation expired before this request could be admitted or dispatched. Fresh
-  // authorization never extends it, so this exact request can never be admitted again: a definitive refusal, never an outage.
-  // A run already accepted for it stays visible in history and is settled by control.
+  // The conversation's original (first) input allocation expired before this request was ever accepted, so nothing was
+  // dispatched for it and fresh authorization never extends it: a definitive refusal, never an outage. An accepted original
+  // input is never refused this way (admit and submit replay it).
   INITIAL_INPUT_EXPIRED: [409]
 });
 var RUN_REASON_CODES = freeze([

@@ -14,8 +14,8 @@
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "12b5bd58d89a8214412f1216f81c4bb381e87b5662312e11cd134c613d5ffbad",
-      "bytes": 41309
+      "sha256": "7840f09795ecc961ef9dbd67522673872f3c4c8804cc93c9341587c35800cf29",
+      "bytes": 42032
     },
     {
       "path": "../skills/./originals/bill_watch/1.1.1/manifest.json",
@@ -194,8 +194,8 @@
     },
     {
       "path": "conversation-application/protocol.mjs",
-      "sha256": "999ed651042933875e3c1bef2ff168c6d9bcbe951fd599eb3c6466ccb1f10a56",
-      "bytes": 4855
+      "sha256": "60fbd194a326e264410be5a026029b5d06c408e3f046ae4d40a5339b7208910f",
+      "bytes": 4828
     },
     {
       "path": "conversation-application/receive.mjs",

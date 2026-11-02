@@ -190,6 +190,8 @@ any other TTL value.
 `conversation-application` 0.1.18, `conversation-input` 0.1.10 and `conversation-initial-input` 0.1.13 are additive. A request whose
 conversation's original (first) input allocation has expired now answers its own public `409` `INITIAL_INPUT_EXPIRED` on admit and
 submit instead of collapsing to `502` `CONVERSATION_UNAVAILABLE`; allocate answers it as `409` with outcome `NOT_DISPATCHED`, and
-its earlier `408` stays admitted for older producers. Fresh authorization never extends an expired allocation, so the exact request
-can never be admitted again: the UI releases it and lets the person send the message again rather than saying Capiro is not
-reachable. Validation grants no authority: control's original-input journal decides every value.
+its earlier `408` stays admitted for older producers. Control answers it only for an allocation that was never accepted, so nothing
+was dispatched for that request and the UI may release it rather than saying Capiro is not reachable. A first input that was
+already accepted (and possibly dispatched) is never refused this way: admit and submit replay its accepted request, and allocate
+answers `503` `INITIAL_INPUT_UNAVAILABLE` with outcome `UNKNOWN`, also after a deploy changes the run versions. Validation grants
+no authority: control's original-input journal decides every value.
