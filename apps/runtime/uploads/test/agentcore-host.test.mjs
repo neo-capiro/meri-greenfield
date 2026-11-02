@@ -13,7 +13,8 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {realpath,mkdtemp,writeFile} from 'node:fs/promises';
 import {RENDERER_PROBE_SCHEMA} from '../../../artifacts/renderer-qualification.mjs';
-import {UPLOAD_CHILD_ENV} from '../native-sandbox.mjs';
+import {UPLOAD_CHILD_ENV,UPLOAD_DEFINITIONS_ROOT,UPLOAD_BAKED_DEFINITIONS_ROOT,UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS} from '../native-sandbox.mjs';
+import {createSignedDefinitionUpdater} from '../native-definitions.mjs';
 import {RUNTIME_CREDENTIAL_PATHS} from '../../credential-inventory.mjs';
 import {validateUploadInspection} from '../../../control/uploads/extraction.mjs';
 import {uploadHash,UPLOAD_MIME} from '../../../control/uploads/policy.mjs';
@@ -54,13 +55,16 @@ const inspectionRequest=({requestId,imageDigest=IMAGE,declaration=DECLARATION,by
   bytesBase64:bytes.toString('base64'),inputSha256:uploadHash(bytes),deadlineMs})})};
 };
 
-test('the container declaration is closed: it names one image digest and nothing else',()=>{
+test('the container declaration is closed: one image digest from the environment, the baked root and its age as fixed image facts',()=>{
  const absent=uploadInspectionHostConfiguration({});
  assert.deepEqual(absent.uploads.native,{enabled:false},'an absent digest declares no native inspection at all');
  assert.deepEqual(uploadInspectionHostConfiguration({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:'sha256:short'}).uploads.native,{enabled:false});
  const enabled=uploadInspectionHostConfiguration({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE,
-  DEFINITIONS_ROOT:'/tmp/elsewhere',PATH:'/tmp/elsewhere',EXTRACTOR:'/tmp/nope',AWS_REGION:'us-east-1'});
- assert.deepEqual(enabled.uploads.native,{enabled:true,imageDigest:IMAGE},'no root, program, region or budget is selectable');
+  DEFINITIONS_ROOT:'/tmp/elsewhere',MERI_UPLOAD_DEFINITIONS_ROOT:'/tmp/elsewhere',PATH:'/tmp/elsewhere',EXTRACTOR:'/tmp/nope',AWS_REGION:'us-east-1'});
+ assert.deepEqual(enabled.uploads.native,{enabled:true,imageDigest:IMAGE,definitionsRoot:UPLOAD_BAKED_DEFINITIONS_ROOT,
+  maxDefinitionsAgeMs:UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS},'no root, program, region or budget is selectable from the environment');
+ assert.equal(UPLOAD_BAKED_DEFINITIONS_ROOT.startsWith('/opt/meri/'),true,'the baked root is an image path, never the task-local volume');
+ assert.notEqual(UPLOAD_BAKED_DEFINITIONS_ROOT,UPLOAD_DEFINITIONS_ROOT);
 });
 
 test('the REAL default startup path on an unattested host yields no port, and the purpose answers 503',async()=>{
@@ -119,34 +123,40 @@ test('the live AgentCore startup shape: an unlimited root cgroup leaves boundedR
  await app.close({deadlineMs:Date.now()+5000});
 });
 
-test('an attested host is REALLY composed, and the real application serves its own fixed owner',async()=>{
- const tempRoot=await realpath(tmpdir()),definitionsRoot=await mkdtemp(join(tempRoot,'meri-defs-container-'));
- // The task-local definitions root this image's own volume provides. The check is given its own root so it never
- // resolves a snapshot another process published there; the empty root is exactly what a cold container starts with,
- // so the bounded startup attempt below is the real one. Nothing under the shared image path is read or written.
- const now=Date.now;
- const freshclam=[],children=[];
- // The one injected port: a fixed program port, exactly as the composition's own checks inject it. It synthesises the
- // probe observation, both tool identities, one signed snapshot publication and the two fixed inspection children.
- // No real freshclam, sigtool, ClamAV, extractor, image or corpus is executed, and none of this is qualification
- // evidence for the image: it is evidence that the JOIN carries real admissions into the real owner.
- const run=async(first,second,third)=>{
-  const options=typeof second==='object'&&!Array.isArray(second)?second:(third??{});
-  children.push({role:String(first),mode:options.mode??'default'});
-  if(first==='freshclam'){freshclam.push({cwd:options.cwd,deadlineMs:options.deadlineMs});
-   await writeFile(join(options.cwd,'database','main.cvd'),Buffer.from('fixture-main-cvd'));
-   await writeFile(join(options.cwd,'database','daily.cvd'),Buffer.from('fixture-daily-cvd'));
-   return {stdout:Buffer.alloc(0)};}
-  if(first==='sigtool')return {stdout:Buffer.alloc(0)};
-  if(first==='probe')return {stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd,options.input)))};
-  children.push({role:first,mode:options.mode??'default'});
-  if(first==='scan')return options.mode==='version'?{stdout:Buffer.from('ClamAV 1.4.2/27450/x\n')}:{stdout:Buffer.alloc(0),receipt:{exitCode:0}};
-  if(first==='extract')return options.mode==='version'?{stdout:Buffer.from('Python 3.13.16\n')}:
-   {stdout:Buffer.from(JSON.stringify({status:'available',segments:[{...SEGMENT}],limitations:[]})),receipt:{exitCode:0}};
-  throw Object.assign(Error('UPLOAD_SANDBOX_REFUSED'),{code:'UPLOAD_SANDBOX_REFUSED'});
- };
- const handle=await composeUploadInspectionHost({environment:{[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE},now,
-  run,readFileImpl:async path=>Buffer.from('bin:'+path),scratchRoot:tempRoot,definitionsRoot,deadlineMs:now()+30000});
+/** The fixed definition programs as the composition's checks inject them: `freshclam` publishes two containers (only
+ * ever at BUILD time here), `sigtool` verifies anything. `calls` records which program ran, so a check can prove that
+ * a running container never fetched. */
+const definitionPrograms=calls=>async(program,args,options={})=>{
+ calls.push(program);
+ if(program==='freshclam'){await writeFile(join(options.cwd,'database','main.cvd'),Buffer.from('fixture-main-cvd'));
+  await writeFile(join(options.cwd,'database','daily.cvd'),Buffer.from('fixture-daily-cvd'));return {stdout:Buffer.alloc(0)};}
+ if(program==='sigtool')return {stdout:Buffer.alloc(0)};
+ throw Object.assign(Error('UPLOAD_DEFINITIONS_PROGRAM_REFUSED'),{code:'UPLOAD_DEFINITIONS_PROGRAM_REFUSED'});
+};
+/** The fixed inspection children through the sandbox port: the probe observation, both tool identities, one scan and
+ * one extraction. Never a definition program: those have their own port above. */
+const inspectionChildren=children=>async(role,options={})=>{
+ children.push({role,mode:options.mode??'default'});
+ if(role==='probe')return {stdout:Buffer.from(JSON.stringify(sandboxed(options.cwd,options.input)))};
+ if(role==='scan')return options.mode==='version'?{stdout:Buffer.from('ClamAV 1.4.2/27450/x\n')}:{stdout:Buffer.alloc(0),receipt:{exitCode:0}};
+ if(role==='extract')return options.mode==='version'?{stdout:Buffer.from('Python 3.13.16\n')}:
+  {stdout:Buffer.from(JSON.stringify({status:'available',segments:[{...SEGMENT}],limitations:[]})),receipt:{exitCode:0}};
+ throw Object.assign(Error('UPLOAD_SANDBOX_REFUSED'),{code:'UPLOAD_SANDBOX_REFUSED'});
+};
+/** What `apps/runtime/Dockerfile` does once per image: publish the signed snapshot into the baked root. */
+const bake=async(definitionsRoot,{now=Date.now}={})=>{
+ const published=await createSignedDefinitionUpdater({root:definitionsRoot,run:definitionPrograms([]),now}).provision({deadlineMs:now()+30000});
+ return published.sha256;
+};
+const composeBaked=({definitionsRoot,tempRoot,now=Date.now,definitionCalls=[],children=[],environment={[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE}})=>
+ composeUploadInspectionHost({environment,now,run:inspectionChildren(children),definitionsRun:definitionPrograms(definitionCalls),
+  readFileImpl:async path=>Buffer.from('bin:'+path),scratchRoot:tempRoot,definitionsRoot,deadlineMs:now()+30000});
+
+test('an attested host serves the snapshot BAKED into its image, pinned: no download at startup, none inside a scan',async()=>{
+ const tempRoot=await realpath(tmpdir()),definitionsRoot=await mkdtemp(join(tempRoot,'meri-defs-baked-'));
+ const now=Date.now,definitionCalls=[],children=[];
+ const baked=await bake(definitionsRoot,{now});
+ const handle=await composeBaked({definitionsRoot,tempRoot,now,definitionCalls,children});
  assert.deepEqual(handle.missing,[],'an attested host reports no unmet declaration');
  assert.notEqual(handle.inspection,null,'the real ports are passed to the inspection application');
  assert.equal(typeof handle.inspection.inspect,'function');
@@ -158,13 +168,16 @@ test('an attested host is REALLY composed, and the real application serves its o
  assert.equal(describe.expectedImageDigest,IMAGE);
  assert.equal(describe.imageObserved,false,'a declared digest is never reported as an observed one');
  assert.equal(handle.host.admission.imageDigest,IMAGE,'the admission carries the expectation this purpose was built for');
+ // The startup probe resolved the baked snapshot and reports WHICH one; nothing was provisioned by this container.
  const state=handle.host.definitionsProvisioningState();
- assert.equal(state.provisioned,true,'the cold root is answered by exactly one bounded startup publication');
+ assert.equal(state.pinned,true,'the image snapshot is served through a pinned store');
  assert.equal(state.reason,null);
- assert.equal(state.attempted,true);
- assert.equal(freshclam.length,1,'the startup probe publishes exactly one snapshot through the serialized owner');
- assert.equal(handle.host.definitionsProvisioningState().provisioned,true);
- // A fresh snapshot resolves, so the fixed owner really runs its scan/extract children through the real application.
+ assert.equal(state.provisioned,false,'a pinned host never provisions');
+ assert.equal(state.snapshot.sha256,baked,'the startup event can name the baked snapshot');
+ assert.equal(typeof state.snapshot.publishedAt,'string');
+ assert.deepEqual(definitionCalls.filter(program=>program==='freshclam'),[],'the running container never runs freshclam');
+ assert.ok(definitionCalls.includes('sigtool'),'the baked containers are still re-verified against the publisher signature on resolve');
+ // The fixed owner really runs its scan/extract children through the real application, bound to the baked snapshot.
  const app=createAgentCoreApplication({execute:()=>assert.fail('the inspection purpose must never reach SDK execution'),
   inspection:createUploadInspectionApplication({inspection:handle.inspection,imageDigest:IMAGE})});
  const call=inspectionRequest({requestId:'b'.repeat(64),deadlineMs:now()+30000});
@@ -174,7 +187,7 @@ test('an attested host is REALLY composed, and the real application serves its o
  assert.equal(body.kind,'upload-inspection-result');
  assert.equal(body.requestId,'b'.repeat(64));
  assert.equal(body.scan.status,'clean','a fully examined original scans clean through the composed host');
- assert.match(body.scan.definitionsSha256,/^[a-f0-9]{64}$/u,'the receipt names the signed snapshot the child was bound to');
+ assert.equal(body.scan.definitionsSha256,baked,'the receipt names the baked snapshot the child was bound to');
  assert.equal(body.extraction.status,'available');
  assert.equal(body.extraction.segments.length,1);
  assert.equal(body.provenance.expectedImageDigest,IMAGE);
@@ -184,23 +197,60 @@ test('an attested host is REALLY composed, and the real application serves its o
   {fromMs:now()-60000,toMs:now()+60000});
  assert.equal(accepted.extraction.segments[0].trust,'external_untrusted');
  // Only the fixed programs of this owner were ever reached, and the fixed inspection pair ran exactly once each.
- const roles=new Set(children.map(entry=>entry.role));
- assert.deepEqual([...roles].sort(),['extract','freshclam','probe','scan','sigtool'],'no caller-supplied program is reachable');
- assert.equal(children.some(entry=>entry.role==='scan'&&entry.mode==='default'),true,'the fixed scan child really ran');
- assert.equal(children.some(entry=>entry.role==='extract'&&entry.mode==='default'),true,'the fixed extractor child really ran');
- assert.equal(children.filter(entry=>entry.mode==='version').length,4,'both tool identities are observed, never assumed');
- assert.equal(freshclam.length,1);
- // A host that is already fresh starts no second provisioning attempt, and one that is not is answered by the very
- // same serialized owner on the caller's own absolute budget (never a scan deadline).
- const idle=beginUploadNativeProvisioning({handle,configuration:uploadInspectionHostConfiguration({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE}),
-  now,signal:undefined});
+ assert.deepEqual([...new Set(children.map(entry=>entry.role))].sort(),['extract','probe','scan'],'no caller-supplied program is reachable');
+ assert.equal(children.filter(entry=>entry.role==='scan'&&entry.mode==='default').length,1,'the fixed scan child really ran, once');
+ assert.equal(children.filter(entry=>entry.role==='extract'&&entry.mode==='default').length,1,'the fixed extractor child really ran, once');
+ assert.equal(children.filter(entry=>entry.mode==='version').length,2,'both tool identities are observed, never assumed');
+ assert.deepEqual(definitionCalls.filter(program=>program==='freshclam'),[],'and the scan itself fetched nothing either');
+ // The lifecycle owner has nothing to provision on a pinned host: it stays idle with no fault.
+ const idle=beginUploadNativeProvisioning({handle,configuration:uploadInspectionHostConfiguration({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE}),now,signal:undefined});
  assert.equal(idle.started,false);
  assert.equal(idle.error,null);
- assert.equal(idle.state().provisioned,true);
- const provisioningMs=uploadInspectionHostConfiguration({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE}).uploads.native;
- assert.equal(Object.hasOwn(provisioningMs,'provisionMs'),false,'the container declares no provisioning budget of its own');
+ const declared=uploadInspectionHostConfiguration({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE}).uploads.native;
+ assert.equal(Object.hasOwn(declared,'provisionMs'),false,'the container declares no provisioning budget of its own');
  assert.equal(UPLOAD_NATIVE_DEFAULT_PROVISION_MS,120000);
  await app.close({deadlineMs:now()+5000});
+});
+
+test('runtime v33 reproduced: an image root with NO baked snapshot composes, never fetches, and every scan is honestly UPLOAD_DEFINITIONS_UNAVAILABLE',async()=>{
+ // This is the live 2 November shape: the host attested its sandbox and tools, the control plane dispatched the
+ // inspection, and the receipt that landed in custody said scan unavailable / UPLOAD_DEFINITIONS_UNAVAILABLE. The
+ // pinned store makes that outcome immediate and content-free instead of a doomed download racing the deadline.
+ const tempRoot=await realpath(tmpdir()),definitionsRoot=await mkdtemp(join(tempRoot,'meri-defs-empty-'));
+ const now=Date.now,definitionCalls=[];
+ const handle=await composeBaked({definitionsRoot,tempRoot,now,definitionCalls});
+ assert.deepEqual(handle.missing,[],'the sandbox and tools are attested; the definitions are a per-scan verdict');
+ const state=handle.host.definitionsProvisioningState();
+ assert.equal(state.pinned,true);assert.equal(state.reason,'UPLOAD_DEFINITIONS_UNAVAILABLE');assert.equal(state.snapshot,null);
+ assert.deepEqual(definitionCalls,[],'nothing is downloaded or verified on an empty pinned root');
+ const idle=beginUploadNativeProvisioning({handle,configuration:uploadInspectionHostConfiguration({[UPLOAD_INSPECTION_IMAGE_ENVIRONMENT]:IMAGE}),now,signal:undefined});
+ // The lifecycle owner would start an attempt for an UNAVAILABLE root, but on a pinned host that attempt is a no-op.
+ await idle.completion;
+ assert.deepEqual(definitionCalls,[],'a pinned host cannot be provisioned at runtime');
+ const app=createUploadInspectionApplication({inspection:handle.inspection,imageDigest:IMAGE});
+ const response=await app.handle(inspectionRequest({requestId:'d'.repeat(64),deadlineMs:now()+30000}).request);
+ assert.equal(response.status,200,'the verdict is a settled receipt, not a transport fault to retry');
+ const body=await response.json();
+ assert.equal(body.scan.status,'unavailable');
+ assert.equal(body.scan.reason,'UPLOAD_DEFINITIONS_UNAVAILABLE');
+ assert.equal(body.extraction.status,'unavailable','nothing is extracted from an unscanned original');
+ assert.deepEqual(definitionCalls,[],'the scan did not try to fetch either');
+ await app.close({deadlineMs:now()+5000});
+});
+
+test('a baked snapshot older than its image age bound is UPLOAD_DEFINITIONS_STALE, never refreshed in the session',async()=>{
+ const tempRoot=await realpath(tmpdir()),definitionsRoot=await mkdtemp(join(tempRoot,'meri-defs-stale-'));
+ const definitionCalls=[];
+ const builtAt=Date.now()-UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS-60000;
+ await bake(definitionsRoot,{now:()=>builtAt});
+ const handle=await composeBaked({definitionsRoot,tempRoot,definitionCalls});
+ assert.equal(handle.host.definitionsProvisioningState().reason,'UPLOAD_DEFINITIONS_STALE');
+ const app=createUploadInspectionApplication({inspection:handle.inspection,imageDigest:IMAGE});
+ const response=await app.handle(inspectionRequest({requestId:'e'.repeat(64),deadlineMs:Date.now()+30000}).request);
+ const body=await response.json();
+ assert.equal(body.scan.status,'unavailable');assert.equal(body.scan.reason,'UPLOAD_DEFINITIONS_STALE');
+ assert.deepEqual(definitionCalls.filter(program=>program==='freshclam'),[],'the remedy is a rebuilt image, not a fetch');
+ await app.close({deadlineMs:Date.now()+5000});
 });
 
 test('the platform evidence is the verified AgentCore runtime environment, never a flag',t=>{

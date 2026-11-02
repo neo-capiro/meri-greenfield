@@ -55,13 +55,17 @@ export function createUploadDefinitionsComposition({definitionsRoot,now=Date.now
   ...(maxDefinitionsAgeMs===undefined?{}:{maxAgeMs:maxDefinitionsAgeMs})});
  const updater=pinned===undefined?createSignedDefinitionUpdater({root:definitionsRoot,run:definitionsRun,now,
   ...(chmodEffect===undefined?{}:{chmod:chmodEffect})}):null;
- let inFlight=null,disposition=null,provisioned=false,attempted=false,reason=null,storageUnavailable=false;
+ let inFlight=null,disposition=null,provisioned=false,attempted=false,reason=null,storageUnavailable=false,snapshot=null;
+ /** Content-free identity of the snapshot this host last proved: the public hash of the published ClamAV containers
+  * and when they were published. It is what the startup event reports, so a deployed container's log says WHICH
+  * definitions it serves and how old they are, instead of only that a root exists. */
+ const observed=snap=>{snapshot=Object.freeze({sha256:snap.sha256,publishedAt:snap.publishedAt,publishedAtMs:snap.publishedAtMs});};
  const refresh=({signal,deadlineMs:until}={})=>{
   if(inFlight!==null)return inFlight;
   attempted=true;
   if(updater===null)return Promise.resolve(Object.freeze({skipped:true,reason:'HOST_PINNED_SNAPSHOT'}));
   const attempt=(async()=>{
-   await updater.provision({signal,deadlineMs:until});
+   observed(await updater.provision({signal,deadlineMs:until}));
    provisioned=true;reason=null;
    try{disposition=await definitions.prune({signal});storageUnavailable=disposition.storage.overBound!==false;}
    catch{disposition=null;}
@@ -74,29 +78,19 @@ export function createUploadDefinitionsComposition({definitionsRoot,now=Date.now
  };
  const provisioningState=()=>Object.freeze({attempted,provisioned,reason,storageUnavailable,
   storageFault:storageUnavailable?'UPLOAD_DEFINITIONS_STORAGE_UNAVAILABLE':null,
-  disposition:disposition===null?null:disposition});
+  disposition:disposition===null?null:disposition,pinned:pinned!==undefined,snapshot});
  const probe=async({signal,deadlineMs}={})=>{
-
   try{const snap=await definitions.snapshot({deadlineMs,signal});
-
-   attempted=true;reason=null;
-
+   attempted=true;reason=null;observed(snap);
    try{snap.reader.release({completed:true});}catch{}
-
   }catch(initial){
-
    const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';
-
    attempted=true;reason=code;
-
   }
-
   return provisioningState();
-
  };
-
  const startup=async({signal,deadlineMs}={})=>{
-  try{const probe=await definitions.snapshot({deadlineMs,signal});try{probe.reader.release({completed:true});}catch{}}
+  try{const probe=await definitions.snapshot({deadlineMs,signal});observed(probe);try{probe.reader.release({completed:true});}catch{}}
   catch(initial){const code=typeof initial?.code==='string'?initial.code:'UPLOAD_DEFINITIONS_UNAVAILABLE';
    attempted=true;reason=code;
    if(REFRESHABLE.has(code)){try{await refresh({signal,deadlineMs});}catch{}}}

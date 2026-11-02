@@ -128,7 +128,16 @@ export function createUploadCustody({store,objects,inspection,current,retention,
    if(r.state==='prepared')return guard(check=>move(r,{state:'removed'},check)); // No native attempt exists; cancellation is a single guarded SQL transition.
    if(r.state!=='stored'&&r.state!=='removing')fail('UPLOAD_REMOVAL_UNCERTAIN');
    if(r.state==='stored')r=await guard(check=>move(r,{state:'removing'},check)); // Serving stops before physical deletion.
-   const receipt=await life.run(signal=>removeOriginal({object:r.object,owner:r.owner,signal,deadlineMs:life.deadline(),assertCurrent:fresh}));
+   let receipt;
+   try{receipt=await life.run(signal=>removeOriginal({object:r.object,owner:r.owner,signal,deadlineMs:life.deadline(),assertCurrent:fresh}));}
+   catch(error){
+    // A held original (a legal hold, or the bucket's Object Lock retention window) cannot be deleted yet. What the
+    // caller asked for -- that this file stops being served -- already holds: the record is `removing`, nothing reads
+    // or sends it, and the exact version is retained until a later remove deletes it once the hold lapses. That is
+    // the settled answer, reported as the record; it is not an unknown outcome to retry.
+    if(error?.code==='UPLOAD_REMOVAL_HELD')return r;
+    throw error;
+   }
    if(receipt?.deleted!==true||receipt.objectId!==r.object.objectId||receipt.versionId!==r.object.versionId)fail('UPLOAD_REMOVAL_UNCERTAIN');
    return move(r,{state:'removed',inspection:null});
   });},

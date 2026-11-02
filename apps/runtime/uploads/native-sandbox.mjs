@@ -29,6 +29,18 @@ export const RENDERER_PROBE_HELPER_PATH=join(dirname(RENDERER_PROBE_PATH),'rende
  * the bound workspace; the shared probe counts such a chain as traversable, not readable (`renderer-probe.mjs`). */
 export const UPLOAD_NATIVE_SCRATCH='/run/meri/upload-scratch';
 export const UPLOAD_DEFINITIONS_ROOT='/run/meri/upload-definitions';
+/** The signed definition snapshot BAKED into the runtime image at build time (apps/runtime/Dockerfile runs
+ * `uploads/definitions-bake-cli.mjs`), root-owned and read-only. The AgentCore inspection purpose resolves THIS root,
+ * pinned: a one-use inspection session is a cold microVM invoked seconds after boot under a 60 s wire deadline, so it
+ * can never amortize a full signed CVD download into the task-local `/run/meri` root, and must never try (every cold
+ * session doing so is also one more full download from the vendor CDN through one NAT address). The snapshot ages
+ * with the image; past `UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS` a scan honestly reports UPLOAD_DEFINITIONS_STALE and the
+ * remedy is a rebuilt image, never a fetch from inside the session. */
+export const UPLOAD_BAKED_DEFINITIONS_ROOT='/opt/meri/upload-definitions';
+/** The longest a baked snapshot may serve. Seven days is the ceiling the CONTROL declaration compiler admits for
+ * `maxDefinitionsAgeMs`; it trades signature currency for not turning a quiet week into "uploads unavailable" when the
+ * image is rebuilt on the ordinary release cadence. */
+export const UPLOAD_BAKED_DEFINITIONS_MAX_AGE_MS=7*24*60*60*1000;
 export const UPLOAD_EXTRACTOR_PATH='/opt/meri/apps/control/uploads/native/extract.py';
 export const UPLOAD_SCAN_MILLISECONDS=30000;
 export const UPLOAD_IMAGE_PATHS=Object.freeze({bwrap:'/usr/bin/bwrap',prlimit:'/usr/bin/prlimit',nodeExecutable:'/usr/local/bin/node',
