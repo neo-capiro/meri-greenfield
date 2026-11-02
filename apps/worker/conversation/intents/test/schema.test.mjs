@@ -6,6 +6,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {z} from 'zod';
 import {INTENT_ROWS,intentDescriptor} from '../catalog.mjs';
 import {canonicalIntentInputSchema,intentRowArguments,intentRowBinding,intentToolArguments,SCHEDULE_CADENCES,SCHEDULE_DEFAULTS} from '../schema.mjs';
+import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
 import {validators as scheduleValidators} from '../../../../../packages/contracts/test/schedule-tool-interface-fixtures.mjs';
 import {watchValidators,validateShape} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {WATCH_SUPPORTED,WATCH_TARGET_KINDS} from '../../../../../packages/contracts/retrieval-0.2/watch-action-validation.mjs';
@@ -158,6 +159,22 @@ test('a schema document that does not match the descriptor byte pin fails closed
   {id:'urn:meri:commands:unknown:0.2.0#/$defs/Anything',sha256:inputSchema.sha256},{id:inputSchema.id},{}])
   assert.throws(()=>canonicalIntentInputSchema(tampered),CONFIGURATION,JSON.stringify(tampered));
  assert.throws(()=>intentRowArguments({operation:{id:'save_memory'}}),CONFIGURATION);
+});
+
+test('the offer\'s declared document formats select the advertised branches, never wider than the canonical request',()=>{
+ const formatsOf=(id,offered)=>{const schema=z.toJSONSchema(intentRowArguments(row(id),offered).arguments,{io:'input'});return (schema.anyOf??[schema]).flatMap(b=>b.anyOf??[b]).map(b=>b.properties.format.const);};
+ // A composition that admits PDF (explicit switch plus an available renderer) advertises it; the canonical WordRequest already names it.
+ assert.deepEqual(formatsOf('create_word',['docx','txt','xml','pdf']),['docx','pdf','txt','xml']);
+ // The default advertisement is unchanged without an offer.
+ assert.deepEqual(formatsOf('create_word'),['docx','txt','xml']);
+ // An offered format no canonical branch admits is dropped, so the tool stays contained in the owner's contract.
+ assert.deepEqual(formatsOf('create_word',['docx','zip']),['docx']);
+ // The per-tool map is keyed by exact operation; rows the offer does not describe keep the default.
+ const key=o=>canonicalSha256({id:o.id,version:o.version});
+ const word=intentToolArguments([row('create_word')],new Map([[key(row('create_word').operation),['docx','pdf']]])).arguments;
+ assert.equal(word.safeParse({format:'pdf',title:'Brief',content:{blocks:[{kind:'paragraph',style:'Normal',runs:[{text:'Hello'}]}]}}).success,true);
+ assert.equal(intentToolArguments([row('create_word')]).arguments.safeParse({format:'pdf',title:'Brief',content:{blocks:[{kind:'paragraph',style:'Normal',runs:[{text:'Hello'}]}]}}).success,false);
+ for(const offered of [[],['nope'],'docx'])assert.throws(()=>intentRowArguments(row('create_word'),offered),CONFIGURATION,JSON.stringify(offered));
 });
 
 test('the schedule tool asks for cadence, day, time and time zone; the run completes the routine request its owner validates',()=>{

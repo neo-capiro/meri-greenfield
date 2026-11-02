@@ -178,7 +178,7 @@ export function assembleControl(options){
  if(productContext)bindApprovalSessions(productContext,sessions,retention?.gate,store);
  const nativeIntentsEnabled=Boolean(productContext&&configuration.sourceEnabled&&configuration.intents?.enabled&&ports.transitionAuthority);
  const nativeIntents=createRunnerIntentsApplication({now,enabled:nativeIntentsEnabled,telemetry:turnTelemetry,
-  resolveRun:productContext&&ports.transitionAuthority?createAgentCoreIntentResolver({context:productContext,execution,transitionAuthority:ports.transitionAuthority,nativeCredentials:sessions}):async()=>{throw fault('UNAVAILABLE');},
+  resolveRun:productContext&&ports.transitionAuthority?createAgentCoreIntentResolver({context:productContext,execution,transitionAuthority:ports.transitionAuthority,nativeCredentials:sessions,store}):async()=>{throw fault('UNAVAILABLE');},
   ...(retention?{retention:retention.gate}:{})});
  const dispatcher=createTemporalConversationDispatcher({client,taskQueue:configuration.temporal.taskQueue,lifecycle:true,now,maxRequestMs:configuration.limits.requestMs});
  const capabilityPolicy=configuration.capabilityPlatform===undefined?undefined:createConfiguredRunCapabilityPolicy(configuration,{pool});

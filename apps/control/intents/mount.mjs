@@ -14,6 +14,7 @@ import {data,own,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createIntentJournal} from './journal.mjs';
 import {intentFault,intentFaultDetail,intentFaultReason,INTENT_FAILURE_CODES,INTENT_DETAIL_MAX} from './faults.mjs';
+import {isDeclaredFormats} from '../../../packages/runtime/intent-formats.mjs';
 import {createIntentResultRelease} from './result-release.mjs';
 import {COMMAND_INTENT_OPERATIONS} from './command-preparer.mjs';
 import {SCHEDULE_INTENT_OPERATIONS,scheduleOperationDeclared} from './schedule-preparer.mjs';
@@ -40,18 +41,27 @@ const closed=code=>CODES.has(code)?code:'UNKNOWN';
  * tells the model what to correct; undefined when the schema validates it (the owner refused on its own terms) or is not
  * registered with the canonical validator. */
 const explain=(operation,value)=>{try{return describeInputProblem(resolveOperationContract(operation).descriptor.inputSchema.id,value)?.slice(0,INTENT_DETAIL_MAX);}catch{return undefined;}};
-/** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object}} configuration */
+/** A document preparer may declare the formats its owner admits for this composition (`formats`), so the offer tells the
+ * worker exactly what the tool may advertise (PDF only when the document application admits it). Lowercase tokens only. */
+const declaredFormats=p=>{if(p.formats===undefined)return undefined;if(!isDeclaredFormats(p.formats))throw intentFault('INTENT_CONFIGURATION');return Object.freeze([...p.formats]);};
+/** @param {{binding:object,preparers:readonly object[],journalStore:object,now:()=>number,limits:{maxRequestMs:number},enabled?:boolean,resultRelease?:object,
+ *  publishDraft?:(value:{version:object,signal?:AbortSignal})=>Promise<unknown>}} configuration
+ *  `publishDraft`: the trusted composition's conversation publication for a document draft the owner just created (the run's
+ *  `artifact.available` event, so the transcript shows the file). Called after the first preparation and again on each
+ *  replay of that delivery, so a publication the first call lost is made good by the model's retry; the publication is
+ *  idempotent (a deterministic event, acknowledged by the store as its own replay). A publication failure never withdraws
+ *  the draft, which the intent journal and the library already hold. */
 export function createIntentMount(configuration){
- const c=own(configuration,['binding','preparers','journalStore','now','limits'],['enabled','resultRelease']),binding=data(c.binding),limits=data(c.limits);
+ const c=own(configuration,['binding','preparers','journalStore','now','limits'],['enabled','resultRelease','publishDraft']),binding=data(c.binding),limits=data(c.limits);
  validateShape('RunBinding',binding);own(limits,['maxRequestMs']);
- if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>60000||!Array.isArray(c.preparers))throw intentFault('INTENT_CONFIGURATION');
+ if(typeof c.now!=='function'||typeof(c.enabled??false)!=='boolean'||!Number.isSafeInteger(limits.maxRequestMs)||limits.maxRequestMs<1||limits.maxRequestMs>60000||!Array.isArray(c.preparers)||c.publishDraft!==undefined&&typeof c.publishDraft!=='function')throw intentFault('INTENT_CONFIGURATION');
  const journal=createIntentJournal(c.journalStore),release=createIntentResultRelease({authority:c.resultRelease,binding,now:c.now}),byOperation=new Map();
  for(const p of c.preparers){
   // Only owner kinds with a canonical prepare-only path, for this run's exact binding, one preparer per operation.
   if(!OWNER_OPERATIONS[p?.owner]?.includes(p.operation?.id)||!(p.owner==='schedule'?scheduleOperationDeclared(p.operation?.version):VERSION.test(p.operation?.version))||typeof p.prepare!=='function'||canonicalSha256(p.binding)!==canonicalSha256(binding)||byOperation.has(p.operation.id))throw intentFault('INTENT_CONFIGURATION');
   byOperation.set(p.operation.id,p);
  }
- const operations=Object.freeze([...byOperation.values()].map(p=>p.operation));
+ const operations=Object.freeze([...byOperation.values()].map(p=>{const formats=declaredFormats(p);return Object.freeze({...p.operation,...(formats?{formats}:{})});}));
  const lifetime=signal=>createOperationLifetime({deadlineMs:c.now()+limits.maxRequestMs,now:c.now,signal,errorFactory:code=>intentFault(code)});
  return Object.freeze({
   async readAvailability(value={}){
@@ -86,7 +96,13 @@ export function createIntentMount(configuration){
     }
     const begun=await life.run(s=>journal.begin({...key,signal:s}));
     const selected={operation:preparer.operation,deliveryId:v.deliveryId,argumentsSha256:record.argumentsSha256,life};
-    if(begun.replayed)return await release.release({...selected,owner:preparer.owner,result:begun.result,original:begun.release});
+    // The draft is durable; its conversation event is a projection of it, published only after the release check (Core's live
+    // revocation and the original expiry) admits the result, so a refused release never shows a card. A lost publication is not a
+    // lost draft: the replay of the same delivery releases and publishes again (idempotently) rather than leaving the transcript
+    // without its card.
+    const publish=async result=>{if(!c.publishDraft||preparer.owner!=='document'||result?.status!=='draft')return;
+     try{await life.run(s=>c.publishDraft({version:result.version,signal:s}));}catch(error){if(['DEADLINE','CANCELLED'].includes(error?.code))throw error;}};
+    if(begun.replayed){const released=await release.release({...selected,owner:preparer.owner,result:begun.result,original:begun.release});await publish(begun.result);return released;}
     // A refusal is journaled with its explanation when the journal keeps one (intents/0006); a journal that refuses the explained row
     // (the 0002 CHECK admitted only {code}: on 2 Nov every explained refusal rolled back and the deliveries stayed PENDING, cards
     // "Preparing" for good) still settles the code alone, so a refused delivery never stays PENDING.
@@ -115,7 +131,9 @@ export function createIntentMount(configuration){
     // A lost settlement acknowledgement leaves the delivery PENDING: the result is withheld as UNKNOWN, never retried.
     // Custody is durable, but release still requires fresh authority and the original expiry. A refused release never redispatches.
     try{await life.run(s=>journal.settle({...key,state:'PREPARED',outcome:{result,release:original},signal:s}));}catch{throw intentFault('UNKNOWN');}
-    return await release.release({...selected,owner:preparer.owner,result,original});
+    const released=await release.release({...selected,owner:preparer.owner,result,original});
+    await publish(result);
+    return released;
    // The journal keeps a detail only on FAILED rows; the thrown fault keeps it for every code so the control log line can name
    // the owner's own reason behind an UNKNOWN too (the answer that never came is not a secret, only unconfirmed).
    }catch(error){throw intentFault(closed(error?.code),undefined,intentFaultDetail(error),intentFaultReason(error));}finally{life.close();}

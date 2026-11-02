@@ -51,7 +51,8 @@ const refusalDetail=(/** @type {unknown} */error)=>{const d=error!==null&&typeof
  * `available` answers UNAVAILABLE through `stillAvailable`. Without it exactly the available rows are registered, as before.
  * `unchecked` (profile mount only, with nothing available): the run's offer was not answered rather than refused or empty, so the
  * instructions and every UNAVAILABLE answer say whether a request can be prepared could not be checked.
- * @param {{available:readonly import('./catalog.mjs').IntentRow[],mounted?:readonly import('./catalog.mjs').IntentRow[],unchecked?:boolean,binding:any,scopes:any[],expectedSessionId?:string,maxCalls?:number,timeoutMs:number,deadlineMs:number,now:()=>number,
+ * `formats` (by exact `id@version` key, see `runtime.mjs`): the offer's declared document formats, advertised by the tool schema.
+ * @param {{available:readonly import('./catalog.mjs').IntentRow[],mounted?:readonly import('./catalog.mjs').IntentRow[],unchecked?:boolean,formats?:Map<string,readonly string[]>,binding:any,scopes:any[],expectedSessionId?:string,maxCalls?:number,timeoutMs:number,deadlineMs:number,now:()=>number,
  *  stillAvailable:(operation:OperationRef,signal:AbortSignal)=>Promise<boolean>,
  *  prepare:(call:{operation:OperationRef,arguments:unknown,deliveryId:string,signal:AbortSignal})=>Promise<unknown>}} c
  */
@@ -60,7 +61,7 @@ export function createIntentServer(c){
  if(!Array.isArray(c.available)||!Array.isArray(registered)||!registered.length||!profile&&!c.available.length||registered.some(r=>r.unavailable!==null)||c.available.some(r=>!registered.includes(r))||typeof c.prepare!=='function'||typeof c.stillAvailable!=='function'||typeof c.now!=='function'||
   !Number.isSafeInteger(c.timeoutMs)||c.timeoutMs<INTENT_TIMEOUT_MS.min||c.timeoutMs>INTENT_TIMEOUT_MS.max||!Number.isSafeInteger(c.deadlineMs)||
   !Number.isSafeInteger(maxCalls)||maxCalls<1||maxCalls>MAX_INTENT_CALLS||c.expectedSessionId!==undefined&&!SESSION.test(c.expectedSessionId)||
-  c.unchecked!==undefined&&typeof c.unchecked!=='boolean'||unchecked&&(!profile||c.available.length))throw fault('INTENT_SERVER_CONFIGURATION');
+  c.unchecked!==undefined&&typeof c.unchecked!=='boolean'||unchecked&&(!profile||c.available.length)||c.formats!==undefined&&!(c.formats instanceof Map))throw fault('INTENT_SERVER_CONFIGURATION');
  const binding=data(c.binding),correlations=new Map(),seenToolUses=new Set(),receipts=/** @type {IntentReceipt[]} */([]);
  let session=c.expectedSessionId??null,closed=false,admitted=0;
  /** @type {Map<string,import('./catalog.mjs').IntentRow[]>} */
@@ -103,7 +104,7 @@ export function createIntentServer(c){
    // A read answers the exact arguments it was asked with: the office read is the one closed `{action:'read'}`.
    if(prepared.status==='read'&&canonicalSha256(row.owner==='office'?{action:'read'}:prepared.value.request)!==entry.argumentsSha256)throw fault('INVALID_RESULT');
    if(prepared.status!=='read')receipts.push(Object.freeze({deliveryId:entry.deliveryId,operation:row.operation,argumentsSha256:entry.argumentsSha256,outcome:'prepared',status:prepared.status,reference:prepared.reference,resultSha256:canonicalSha256(prepared.value)}));
-   return preparedResult(json,prepared.status,row.operation.id);
+   return preparedResult(json,prepared.status,row.operation.id,{officeEditing:c.available.some(r=>r.owner==='office')});
   }catch(error){
    let code=intentFailureCode(error);
    // Once the port call started, a timeout or cancellation cannot show that nothing was prepared.
@@ -112,7 +113,7 @@ export function createIntentServer(c){
    return intentFailureResult(code,name,code==='UNAVAILABLE'&&(unchecked||uncheckedRefusal(error))?UNCHECKED_REASON:code==='INVALID_ARGUMENTS'||code==='REFUSED'?refusalDetail(error):undefined);
   }finally{life?.close();}
  };
- const tools=[...byTool].map(([name,rows])=>defineIntentTool(rows[0].tool,rows,handler(name)));
+ const tools=[...byTool].map(([name,rows])=>defineIntentTool(rows[0].tool,rows,handler(name),c.formats));
  const instructions=['Requests prepared for the user\'s approval in this conversation. Each call returns an immutable proposal awaiting the user\'s approval or an immutable draft; nothing here applies a change. Memory preparation creates no candidate and publishes nothing. Approved memory submission creates a pending candidate; historical review_pending receipts describe a candidate submitted for review, not active memory.',
   ...(profile?[c.available.length?`Available now: ${c.available.map(r=>r.operation.id).join(', ')}.`:unchecked?'Whether a request can be prepared for the user\'s approval could not be checked right now, so no request can be prepared in this message. This is temporary, not a disabled capability; ask the user to try again in a new message.':'No write request can be prepared in this conversation right now.','Any other request listed here cannot be prepared in this conversation and will say so.']:[`Available: ${c.available.map(r=>r.operation.id).join(', ')}.`]),'Any other write, external action or memory change is not available in this conversation.'].join('\n');
  const server=createSdkMcpServer({name:INTENT_SERVER_NAME,version:'1.0.0',instructions,tools:tools.map(t=>t.definition),alwaysLoad:true,timeout:c.timeoutMs});

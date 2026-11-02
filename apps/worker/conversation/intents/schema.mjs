@@ -23,8 +23,9 @@
  *   application admits (`apps/control/document-application/format-admission.mjs`, never a copied table), and a
  *   canonical `oneOf` becomes one advertised branch per admitted format: every advertised branch is contained in
  *   the canonical branch it was narrowed from, and a row's branches stay disjoint on `format`, so no accepted body
- *   falls outside the canonical request. Default admission is advertised; a composition that additionally admits
- *   PDF is narrower here than its owner, never wider.
+ *   falls outside the canonical request. Default admission is advertised unless the run's offer declares the owner's
+ *   formats for the operation (`formats`, from the composed preparer: PDF only when the document application admits
+ *   it); an offered format outside the canonical branch is never advertised, so the tool stays narrower than its owner.
  * - `watch_action`: the canonical `WatchInput` couples its fields with `if/then` conditionals (the operations and target
  *   kinds each family admits, and the delivery flag only with `set_delivery`), which the conversion cannot express, so
  *   the row used to advertise an open record and the model guessed the fields. The watch owner's own tables
@@ -48,6 +49,7 @@ import {createHash} from 'node:crypto';
 import {z} from 'zod';
 import {executionSchemaDependencies,executionSchemaSources} from '../../../../packages/contracts/retrieval-0.2/execution-schema-sources.mjs';
 import {canonicalSha256} from '../../../../packages/contracts/validate.mjs';
+import {isDeclaredFormats} from '../../../../packages/runtime/intent-formats.mjs';
 import {WORK_SELECTION_SCHEMA_ID,workSelectionSchema} from '../../../../packages/contracts/schedules-0.2/lifecycle-validation.mjs';
 import {admitDocumentDescriptor} from '../../../control/document-application/format-admission.mjs';
 import {WATCH_SUPPORTED,WATCH_TARGET_KINDS} from '../../../../packages/contracts/retrieval-0.2/watch-action-validation.mjs';
@@ -170,9 +172,10 @@ function admittedFormats(operation){
  return admission.formats;
 }
 /** The document rows' model-facing branches, one per admitted format of each canonical branch.
- * @param {{id:string,version:string}} operation @param {any} canonical @returns {Declaration[]} */
-function documentInput(operation,canonical){
- const admitted=admittedFormats(operation),branches=Array.isArray(canonical?.oneOf)?canonical.oneOf:[canonical],declarations=[];
+ * @param {{id:string,version:string}} operation @param {any} canonical @param {readonly string[]} [offered] the run's declared formats
+ * @returns {Declaration[]} */
+function documentInput(operation,canonical,offered){
+ const admitted=offered??admittedFormats(operation),branches=Array.isArray(canonical?.oneOf)?canonical.oneOf:[canonical],declarations=[];
  for(const branch of branches){
   const properties=branch?.properties;
   if(branch?.type!=='object'||branch.additionalProperties!==false||!properties||!Array.isArray(branch.required))fail();
@@ -240,7 +243,7 @@ function watchInput(_operation,canonical){
  return declarations;
 }
 /** Owner-lane declarations, by operation: the model-facing branches of that operation's canonical request.
- * @type {Readonly<Record<string,(operation:{id:string,version:string},canonical:any)=>Declaration[]>>} */
+ * @type {Readonly<Record<string,(operation:{id:string,version:string},canonical:any,offered?:readonly string[])=>Declaration[]>>} */
 const DECLARED=Object.freeze({save_memory:memoryInput,mail_send:mailInput,create_word:documentInput,create_excel:documentInput,create_powerpoint:documentInput,watch_action:watchInput});
 /** The model-facing projection of a canonical request that names its conversation: `conversationId` is the trusted run's
  * own identity (the server binds it before the port, `server.mjs`), so each canonical branch is advertised without it required
@@ -298,13 +301,15 @@ function operationOf(row){
 }
 /** The open record a row advertises while no canonical contract has been proved for it. */
 const record=()=>z.record(z.string(),z.unknown());
-/** The advertised `arguments` schema of one intent row.
- * @param {{operation:{id:string,version:string}}} row @returns {{operation:{id:string,version:string},mode:'bound'|'declared'|'canonical'|'record',arguments:z.ZodType}} */
-export function intentRowArguments(row){
+/** The advertised `arguments` schema of one intent row. `offered`: the run's declared formats for a document row.
+ * @param {{operation:{id:string,version:string}}} row @param {readonly string[]} [offered]
+ * @returns {{operation:{id:string,version:string},mode:'bound'|'declared'|'canonical'|'record',arguments:z.ZodType}} */
+export function intentRowArguments(row,offered){
  const operation=operationOf(row),canonical=canonicalIntentInputSchema(intentDescriptor(operation).inputSchema);
+ if(offered!==undefined&&!isDeclaredFormats(offered))fail();
  const bound=BOUND[operation.id];
  if(bound)return {operation,mode:'bound',arguments:bound.arguments()};
- const declared=DECLARED[operation.id]?.(operation,canonical)??(conversationBound(row)?conversationInput(operation,canonical):undefined);
+ const declared=DECLARED[operation.id]?.(operation,canonical,offered)??(conversationBound(row)?conversationInput(operation,canonical):undefined);
  if(declared){
   const converted=declared.map(branch=>prove(branch.advertised,branch.canonical,branch.rebound));
   return {operation,mode:'declared',arguments:converted.length===1?converted[0]:z.union(/** @type {[z.ZodType,z.ZodType,...z.ZodType[]]} */(converted))};
@@ -327,10 +332,10 @@ export function conversationBound(row){
  return requires(canonical);
 }
 /** The `arguments` schema of one intent tool over its rows: its rows' advertised schemas, or the open record
- * while any of them still advertises none.
- * @param {readonly {operation:{id:string,version:string}}[]} rows */
-export function intentToolArguments(rows){
- const resolved=(Array.isArray(rows)?rows:[]).map(intentRowArguments);
+ * while any of them still advertises none. `formats`: the offer's declared document formats by `id@version` key.
+ * @param {readonly {operation:{id:string,version:string}}[]} rows @param {Map<string,readonly string[]>} [formats] */
+export function intentToolArguments(rows,formats){
+ const resolved=(Array.isArray(rows)?rows:[]).map(row=>intentRowArguments(row,formats?.get(canonicalSha256({id:row?.operation?.id,version:row?.operation?.version}))));
  if(!resolved.length)fail();
  if(resolved.some(row=>row.mode==='record'))return {mode:'record',arguments:record()};
  return {mode:resolved.some(row=>row.mode==='bound')?'bound':resolved.some(row=>row.mode==='declared')?'declared':'canonical',

@@ -35,9 +35,11 @@ export function intentFailureResult(code,tool,reason){
  if(tool.endsWith('propose_memory')&&!(known==='UNAVAILABLE'&&explained!==undefined))return {isError:true,content:[{type:/** @type {const} */('text'),text:`${known}: the memory proposal result was not released; do not repeat the request. Check the original conversation request. This is not confirmation of submission or active memory.`}]};
  return {isError:true,content:[{type:/** @type {const} */('text'),text:TEXTS[known](tool,explained)}]};
 }
-/** The prepared result exactly as the owner returned it, then one fixed instruction block.
- * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status @param {string} [operation] */
-export function preparedResult(json,status,operation){
+/** The prepared result exactly as the owner returned it, then one fixed instruction block. `officeEditing`: the run offers
+ * Office editing (an `office` owner is available), so a draft's notice may say Office documents open in the Workspace.
+ * @param {string} json @param {'approval_required'|'draft'|'analysis_pending'|'review_pending'|'read'} status @param {string} [operation]
+ * @param {{officeEditing?:boolean}} [facts] */
+export function preparedResult(json,status,operation,{officeEditing=false}={}){
  const notice=operation==='save_memory'&&status==='approval_required'
   ?'PREPARED MEMORY PROPOSAL: review this exact text and destination scope. No memory candidate has been submitted and no memory has been published. Approve this exact proposal in Meri to submit a pending candidate; publication requires a later Core review result.'
   :status==='read'
@@ -47,7 +49,7 @@ export function preparedResult(json,status,operation){
   :status==='analysis_pending'
   ?'ANALYSIS OUTPUTS PENDING: the admitted analysis owner returned durable output references. Inspection and publication remain pending; do not say these outputs are published or filed.'
   :status==='draft'
-  ?'PREPARED DRAFT: an immutable draft version was created for the user to review. Nothing else has been changed; filing or sharing it is a separate request.'
+  ?`PREPARED DRAFT: an immutable draft version was created. The user sees it as a file card under "Files in this conversation" below your answer (Download, Details${officeEditing?'; Office documents open in the Workspace':''}), and under Files > My files, or the selected client's files in a client conversation. Do not say it is shown above or that it was filed. Nothing else has been changed; filing it into a client's documents is a separate request that is offered only in a client conversation.`
   :'PREPARED PROPOSAL: nothing has been changed. The user must approve this exact proposal in Meri\'s approval control before anything happens, and current permissions are checked again then. Do not say it is done.';
  return {content:[{type:/** @type {const} */('text'),text:json},{type:/** @type {const} */('text'),text:notice}]};
 }

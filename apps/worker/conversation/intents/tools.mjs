@@ -27,12 +27,12 @@ function description(rows){
  const text=userVocabulary(lines.join('\n'));return text.length>MAX_DESCRIPTION?text.slice(0,MAX_DESCRIPTION):text;
 }
 /** @param {string} name intent tool name @param {readonly import('./catalog.mjs').IntentRow[]} rows available rows of this tool
- * @param {(raw:any,extra:any)=>Promise<any>} handler */
-export function defineIntentTool(name,rows,handler){
+ * @param {(raw:any,extra:any)=>Promise<any>} handler @param {Map<string,readonly string[]>} [formats] offered document formats by operation key */
+export function defineIntentTool(name,rows,handler,formats){
  const ids=/** @type {[string,...string[]]} */(rows.map(r=>r.operation.id));
  // The advertised arguments are the owner's canonical request schema (proof of the narrowing in `schema.mjs`),
  // never an untyped object: an untyped object tells the model nothing and accepts calls the owner must refuse.
- const shape={operation:z.enum(ids),arguments:intentToolArguments(rows).arguments.describe('The request object for the selected operation'),
+ const shape={operation:z.enum(ids),arguments:intentToolArguments(rows,formats).arguments.describe('The request object for the selected operation'),
   _meriInvocation:z.string().optional().describe('Reserved correlation supplied only by the trusted SDK hook')};
  return Object.freeze({name:intentToolName(name),definition:tool(name,description(rows),shape,handler,{annotations:INTENT_ANNOTATIONS,alwaysLoad:true})});
 }

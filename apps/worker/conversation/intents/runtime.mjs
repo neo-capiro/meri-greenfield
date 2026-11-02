@@ -19,6 +19,7 @@ import {own,data,nativeSignal} from '../../../../packages/contracts/commands-0.2
 import {canonicalSha256,validateShape} from '../../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {INTENT_AVAILABILITY_WORKER_MS} from '../../../../packages/runtime/runner-load-budget.mjs';
+import {isDeclaredFormats} from '../../../../packages/runtime/intent-formats.mjs';
 import {availabilityFailure} from '../capabilities/availability-failure.mjs';
 import {resolveOperationContract} from '../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import catalog from '../../../../packages/contracts/retrieval-0.3/catalog.json' with {type:'json'};
@@ -46,15 +47,16 @@ const offerFailure=availabilityFailure;
  * composed), and an absent port, ACCESS_DENIED or a malformed offer is decided: those keep the plain "not available" wording and
  * never invite a retry. @param {{code:string,layer:string}} failure */
 const transient=failure=>failure.code==='DEADLINE'||failure.code==='CANCELLED'||failure.code==='UNAVAILABLE'&&failure.layer==='runner';
-/** Validate the port's availability facts for this run; anything malformed, foreign or stale refuses.
- * @param {unknown} raw @param {any} binding @param {number} at @returns {Set<string>} */
+/** Validate the port's availability facts for this run; anything malformed, foreign or stale refuses. The result is keyed by
+ * exact `id@version` and carries each operation's declared formats (document rows), or undefined.
+ * @param {unknown} raw @param {any} binding @param {number} at @returns {Map<string,readonly string[]|undefined>} */
 export function assertIntentAvailability(raw,binding,at){
  try{
   const s=/** @type {any} */(data(own(raw,['binding','operations','checkedAtMs','expiresAtMs'])));
   if(canonicalSha256(s.binding)!==canonicalSha256(binding)||!Array.isArray(s.operations)||s.operations.length>INTENT_ROWS.length||
    !Number.isSafeInteger(s.checkedAtMs)||!Number.isSafeInteger(s.expiresAtMs)||s.checkedAtMs>at||s.expiresAtMs<=at)throw 0;
-  const keys=new Set();
-  for(const o of s.operations){own(o,['id','version']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible(o)||keys.has(key(o)))throw 0;keys.add(key(o));}
+  const keys=new Map();
+  for(const o of s.operations){own(o,['id','version'],['formats']);if(typeof o.id!=='string'||!OPERATION.test(o.id)||!admissible({id:o.id,version:o.version})||keys.has(key(o))||o.formats!==undefined&&!isDeclaredFormats(o.formats))throw 0;keys.set(key(o),o.formats===undefined?undefined:Object.freeze([...o.formats]));}
   return keys;
  }catch{throw fault('INTENT_AVAILABILITY_REFUSED');}
 }
@@ -86,6 +88,8 @@ export async function createIntentRuntime(configuration){
  try{initial=await read(c.signal);}catch(error){if(!profile)return null;unchecked=transient(report(error,started));}
  const available=gates(initial);if(!profile&&!available.length)return null;
  const exposed=new Set(available.map(r=>key(r.operation)));
+ /** The offered document formats by exact operation: the tool advertises these (never wider than the canonical request). */
+ const formats=new Map([...initial].filter(([k,value])=>value!==undefined&&exposed.has(k)));
  // Mid-run revocation or a narrowed composition makes a listed intent unavailable; it is never widened mid-run. A mid-run offer
  // loss is reported the same way; when transient this one call answers "could not be checked" instead of "not available".
  const stillAvailable=async(/** @type {{id:string,version:string}} */operation,/** @type {AbortSignal} */signal)=>{
@@ -94,7 +98,7 @@ export async function createIntentRuntime(configuration){
   try{offered=await read(signal);}catch(error){if(signal.aborted)throw fault('CANCELLED');if(transient(report(error,started)))throw Object.assign(fault('UNAVAILABLE'),{unchecked:true});return false;}
   return gates(offered).some(r=>key(r.operation)===key(operation));
  };
- const server=createIntentServer({available,...(mounted?{mounted,unchecked}:{}),binding,scopes,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,
+ const server=createIntentServer({available,...(mounted?{mounted,unchecked}:{}),...(formats.size?{formats}:{}),binding,scopes,...(c.expectedSessionId?{expectedSessionId:c.expectedSessionId}:{}),timeoutMs,deadlineMs:c.deadlineMs,now:c.now,stillAvailable,
   prepare:call=>port.prepare.call(c.port,call)});
  return Object.freeze({available:Object.freeze(available.map(r=>r.operation)),
   sdkOptions:Object.freeze({mcpServers:Object.freeze({[INTENT_SERVER_NAME]:server.server}),allowedTools:server.allowedTools,canUseTool:server.canUseTool,hooks:server.hooks}),
