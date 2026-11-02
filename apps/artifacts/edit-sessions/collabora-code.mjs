@@ -59,7 +59,9 @@ export function createCollaboraCodeLaunch({editorOrigin,wopiOrigin,discoveryByte
    const url=new URL(action),wopiSrc=`${host}/api/meri/office/wopi/files/${encodeURIComponent(claims.fileId)}`;
    url.searchParams.set('WOPISrc',wopiSrc);
    return Object.freeze({edition:'collabora-code',editorOrigin:editor,actionUrl:url.href,method:'POST',
-    fields:Object.freeze({access_token:token,access_token_ttl:String(expiresAtMs)}),expiresAtMs});
+    // The zero TTL keeps CODE's own expiry countdown off: the token lives at most as long as the current native session (about a
+    // minute), so CODE would warn on every load and renewal. The host frame and the WOPI handler enforce expiresAtMs.
+    fields:Object.freeze({access_token:token,access_token_ttl:'0'}),expiresAtMs});
   },
  });
 }

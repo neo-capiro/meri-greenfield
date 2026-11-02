@@ -27,7 +27,7 @@ export interface OfficeDraft {
 export interface OfficeEditor {readonly editorId:string|null;readonly epoch:number;readonly expiresAt:string|null;}
 export interface OfficeLaunch {
  readonly edition:'collabora-code';readonly editorOrigin:string;readonly actionUrl:string;readonly method:'POST';
- readonly fields:Readonly<{access_token:string;access_token_ttl:string}>;readonly expiresAtMs:number;
+ readonly fields:Readonly<{access_token:string;access_token_ttl:'0'}>;readonly expiresAtMs:number;
 }
 type CanonicalInspection=Extract<DocumentInspectionResponse,{inspection:unknown}>['inspection'];
 type Excel=Extract<CanonicalInspection,{format:'xlsx'}>;
