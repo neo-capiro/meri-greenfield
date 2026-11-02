@@ -1,13 +1,18 @@
 /** Interaction classification over a scripted page: structural facts only, fail toward asking. */
 import test from 'node:test';import assert from 'node:assert/strict';
-import {classifyInteraction,INTERACTION_CLASSES} from '../interaction-classifier.mjs';
+import vm from 'node:vm';
+import {classifyInteraction,INTERACTION_CLASSES,inspectTargets} from '../interaction-classifier.mjs';
+/** The page function as Playwright runs it: compiled from its source text in an empty context, so a reference to any
+ * module constant throws exactly as it does in Chromium. */
+const pageFunction=vm.runInNewContext(`(${inspectTargets.toString()})`,{});
 
 /** A page whose frames answer `aria-ref=<ref>` with the given element facts (already in utility-world shape). */
 function page(refs,{frames=1,throwing=false,focused=[]}={}){
- const frame={locator(selector){const ref=selector===':focus'?null:selector.replace(/^aria-ref=/u,'');return {async evaluateAll(fn,selectors,options){
-  if(throwing)throw Error('frame detached');
-  assert.equal(options?.world,'utility','inspection runs in the pristine utility world');
-  const nodes=ref===null?focused:refs[ref]??[];return fn(nodes.map(describe),selectors);}};}};
+ const frame={locator(selector){const ref=selector===':focus'?null:selector.replace(/^aria-ref=/u,'');const nodes=()=>ref===null?focused:refs[ref]??[];
+  return {async count(){if(throwing)throw Error('frame detached');return nodes().length;},
+   async evaluate(_fn,argument){if(throwing)throw Error('frame detached');
+    // The page function runs as in the browser: recompiled from its source, with no module scope.
+    const list=nodes();if(list.length!==1)throw Error('strict mode violation');return pageFunction(describe(list[0]),argument);}};}};
  return {frames:()=>Array.from({length:frames},()=>frame)};
 }
 /** Builds a DOM-like node from a terse description: {tag,type?,autocomplete?,form?:{fields:[...]},owner?:{fields:[...]}}
@@ -91,4 +96,16 @@ test('one-time-code fields without autocomplete are credentials by name, id, lab
   o4:[{tag:'input',type:'tel',label:'Authentication code'}],n1:[{tag:'input',type:'text',inputmode:'numeric',maxlength:'5',name:'zip'}],n2:[{tag:'input',type:'text',name:'promo-code'}]});
  for(const ref of ['o1','o2','o3','o4'])assert.equal(await classifyInteraction({tool:'browser_type',input:{ref,text:'123456'},pages:[p]}),'credential',ref);
  for(const ref of ['n1','n2'])assert.equal(await classifyInteraction({tool:'browser_type',input:{ref,text:'12345'},pages:[p]}),'routine',ref);
+});
+
+test('the page function uses only its arguments: compiled with no module scope it inspects ordinary and credential elements',()=>{
+ const isolated=vm.runInNewContext(`(${inspectTargets.toString()})`,{});
+ const facts=[describe({tag:'a'}),describe({tag:'input',type:'text',autocomplete:'cc-number'}),describe({tag:'input',type:'text'})].map(node=>isolated(node,{selectors:[],autocomplete:['cc-number']}));
+ assert.deepEqual(facts.map(f=>f.credential),[false,true,false]);
+ assert.throws(()=>vm.runInNewContext('CREDENTIAL_AUTOCOMPLETE',{}),/not defined/,'a module constant would throw in the page');
+});
+test('Space in any chord asks; other modified keys stay routine',async()=>{
+ const p=page({});
+ for(const key of ['Control+Space','Alt+Space','Meta+Space','Shift+Space'])assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key},pages:[p]}),'submission',key);
+ for(const key of ['Control+a','Alt+ArrowLeft'])assert.equal(await classifyInteraction({tool:'browser_press_key',input:{key},pages:[p]}),'routine',key);
 });
