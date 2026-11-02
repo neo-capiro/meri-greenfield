@@ -140,7 +140,7 @@ export const READ_GUIDANCE=Object.freeze({
   usage:Object.freeze([
    MAIL_SOURCE,
    'Arguments: subject (as above), folder (all, inbox or sent; default all), withinDays (1-3650; null, the default, for no window), limit (1-50 candidates per page, default 15), offset (nextOffset of the previous page) and asOf (ISO timestamp anchoring the page; the window is the withinDays days ending at asOf). Returns the newest stored candidates first; use mail_search_messages to filter by sender, participant or words.',
-   'To summarize a day or a short period, list it with limit 50 (for one past day: asOf at that day\'s end and withinDays 1), continue with nextOffset while hasMore, and summarize from the rows grouped by thread and sender; open at most a few threads, only for what the previews cannot answer.',
+   'To summarize a day or a short period, list it with limit 50 (for one past day: asOf at that day\'s end and withinDays 1) and read on with nextOffset while hasMore, up to 100 messages; summarize from the rows grouped by thread and sender, say when the summary covers only the newest 100 and how many more match, and open at most a few threads, only for what the previews cannot answer.',
    MAIL_CANDIDATES,
   ]),
   limitations:Object.freeze([MAIL_STORED]),

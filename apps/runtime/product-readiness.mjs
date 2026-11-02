@@ -1,5 +1,5 @@
 /** Named composition gaps, separate from infrastructure liveness. Presence never claims release or live qualification. */
-export function productReadiness({ports,retention,sourceEnabled,userPreferences,memoryRetentionBound=false}){
+export function productReadiness({ports,retention,sourceEnabled,userPreferences,memoryRetentionBound=false,renderer}){
  const available=new Set(ports.configuredOwners??[]),owners=[];
  for(const [name,port] of [['authority.identity','identityContext'],['lifecycle.currentAuthority','transitionAuthority'],['lifecycle.admissionRetirement','continuationAdmission'],
   ['lifecycle.approvals','approvals'],['browser.hosts','browserHosts'],['artifacts.options','artifactOptionsOwner'],['artifacts.privateStore','artifactStore'],
@@ -18,6 +18,9 @@ export function productReadiness({ports,retention,sourceEnabled,userPreferences,
   {name:'schedules.dispatchWorker',state:'separate-service-required'});
  const recovery=retention?.artifactRecovery?.();if(recovery?.required)owners.push({name:'retention.artifactRecovery',state:recovery.state});
  if(userPreferences!==undefined)owners.push({name:'settings.userPreferences',state:userPreferences});
+ // A declared renderer (PDF and office previews) reports its startup qualification; a refusal carries its closed code.
+ if(renderer!==undefined)owners.push({name:'artifacts.renderer',state:renderer.state==='composed'?'composed':'unavailable',
+  ...(renderer.state!=='composed'&&typeof renderer.reason==='string'?{reason:renderer.reason}:{})});
  return Object.freeze({schema:'meri.product-readiness/1',ready:owners.every(o=>o.state==='composed'),owners:Object.freeze(owners.map(Object.freeze)),
   missingOwners:Object.freeze(owners.filter(o=>o.state!=='composed').map(o=>o.name))});
 }

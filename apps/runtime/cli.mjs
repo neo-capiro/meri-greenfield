@@ -48,7 +48,7 @@ export async function main(argv=process.argv.slice(2)){
    const coreFetch=countingFetch(globalThis.fetch,controlTurnTelemetry,{origin:c.agentcore.identity.origin});
    const documents=await composeDocumentsFamily({configuration:c,fetchImpl:coreFetch,nativeCredentials:relay.port});
    if(c.artifacts?.enabled===true&&documents.missing.length)process.stderr.write(JSON.stringify({event:'runtime.documents.unavailable',missing:documents.missing})+'\n');
-   productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),...(relay?{readCredentialRelay:relay}:{}),...(receipt?{sourceCommit:receipt.sourceCommit}:{})};
+   productPorts={turnTelemetry:controlTurnTelemetry,productPortsFactory:createProductPortsFactory({families:PRODUCT_FAMILIES.map(([name,factory])=>[name,name==='documents'?documents.family:name==='memory'?memoryFamily:name==='routines'?context=>routinesOwners?.family(context)??factory(context):factory])}),...(relay?{readCredentialRelay:relay}:{}),...(receipt?{sourceCommit:receipt.sourceCommit}:{}),...(documents.renderer?{rendererReadiness:documents.renderer}:{})};
   }
   // Read transport is constructed with the actual execution owner by the candidate, after control startup.
   if(role==='control'&&c.reads?.enabled===true){

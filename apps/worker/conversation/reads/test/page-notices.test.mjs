@@ -85,3 +85,11 @@ test('the model reads a mail candidate page as compact rows: a full 50-message p
  assert.equal(modelResultText({id:'mail.read_thread'},JSON.stringify(thread),thread),JSON.stringify(thread));
  assert.equal(modelResultText({id:'search_memory'},'{"kind":"mail-candidate-source-page"}',{kind:'mail-candidate-source-page'}),'{"kind":"mail-candidate-source-page"}');
 });
+
+test('a period summary reads on to 100 messages, then stops and offers the rest, never naming offsets',()=>{
+ const list=createMailFixture('mail.list_messages');list.state.total=150;const op={id:'mail.list_messages'};
+ const text=offset=>{const page=list.page(list.input({...list.args,limit:50,offset,asOf:list.anchor}));return readNotices(op,JSON.stringify(page),page)[0].text;};
+ assert.match(text(0),/^Notice: 50 stored message candidate\(s\) in 1 thread\(s\) of 150 matching; more exist: continue with the same arguments, offset 50 and asOf \S+ to summarize the whole period \(up to 100 messages\) or when the question needs them, otherwise tell the user how many more match and offer to show them, never mentioning offsets or pages\./);
+ assert.match(text(50),/^Notice: 50 stored message candidate\(s\) in 1 thread\(s\) of 150 matching; more exist: stop here, say the answer covers the newest 100 and how many more match, and offer to show them, never mentioning offsets or pages\./);
+ assert.doesNotMatch(text(100),/more exist/,'the last page');
+});

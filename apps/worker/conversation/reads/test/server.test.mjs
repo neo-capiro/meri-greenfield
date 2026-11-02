@@ -28,7 +28,7 @@ test('lists exactly the available mail reads, derived from descriptors, with sch
 test('an authorized read returns the page and one receipt bound to the SDK delivery and the canonical page',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',f.search,{toolUseId:'toolu_receipt'});assert.equal(r.isError,undefined);assert.equal(r.content.length,2,'the page and one orientation notice');
-  assert.match(r.content[1].text,/^Notice: 1 stored message candidate\(s\) in 1 thread\(s\) of 2 matching; more exist, continue with offset 1 when the question needs them/);
+  assert.match(r.content[1].text,/^Notice: 1 stored message candidate\(s\) in 1 thread\(s\) of 2 matching; more exist: continue with the same arguments, offset 1 and asOf \S+ to summarize the whole period/);
   // The model reads a candidate page as compact rows (results.mjs mailCandidateView); the receipt binds the canonical page.
   assert.equal(JSON.parse(text(r)).binding,undefined);
   assert.equal(f.calls.filter(p=>p.startsWith('/api/clio/tools/')).length,1);assert.equal(f.records.size,1);

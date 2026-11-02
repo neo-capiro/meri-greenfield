@@ -22,8 +22,8 @@ test('SQL routing is admitted only with both actual query tools, and only as rou
  assert.doesNotMatch(prompt,/say which path you used|not source freshness|to evade a refusal/);
  // The retired contract envelope and the per-tool argument and result detail stay out of the prompt.
  assert.doesNotMatch(prompt,/contract grammar|rowLimitReached|byteTruncated|keyset|legacy global query tools|Use read_saved_record/);
- // The grounding, user-terms and forecast-routing sentences (2 November acceptance) add about 900 characters.
- assert.ok(prompt.length<3500,`${prompt.length} characters`);
+ // 3,300: the no-gap-filling and government-forecast sentences (2 November acceptance R06, R07) added about 520 characters.
+ assert.ok(prompt.length<3300,`${prompt.length} characters`);
 });
 
 const DATE_BASIS='When a question asks for the most recent, latest, newest or oldest records without naming a date, rank by the latest action or activity date when the data has one and otherwise by the introduction or creation date, say in one clause which date the ranking used, and when two plausible dates would change the answer say so in one sentence.';

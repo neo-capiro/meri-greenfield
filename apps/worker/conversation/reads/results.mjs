@@ -70,6 +70,8 @@ function memoryNotice(page){
  return parts.join(' ');
 }
 const MAIL_PREVIEW_VIEW_MAX=400,MAIL_TO_VIEW_MAX=3;
+/** Messages a period summary reads before it says it covers only the newest ones and offers the rest (two 50-row pages). */
+export const MAIL_SUMMARY_MAX=100;
 /** @param {any} p a mail participant {name, email} @returns {string|null} */
 const person=p=>{const name=typeof p?.name==='string'&&p.name?p.name:null,email=typeof p?.email==='string'&&p.email?p.email:null;return name&&email?`${name} <${email}>`:name??email;};
 /** What the model reads of a canonical mail candidate page (list or search): the fields a summary or a follow-up read needs,
@@ -97,7 +99,10 @@ function mailNotice(page){
  if(page?.kind==='mail-candidate-source-page'){
   const messages=Array.isArray(page.messages)?page.messages:[],n=messages.length;
   const threads=new Set(messages.map(m=>m?.threadId)).size;
-  const parts=[`${n} stored message candidate(s)${n?` in ${threads} thread(s)`:''}${Number.isInteger(page.totalMatches)?` of ${page.totalMatches} matching`:''}${page.hasMore===true&&Number.isInteger(page.nextOffset)?`; more exist, continue with offset ${page.nextOffset} when the question needs them, otherwise tell the user how many more match and offer to show them, never mentioning offsets or pages`:''}.`];
+  const more=page.hasMore===true&&Number.isInteger(page.nextOffset)?page.nextOffset<MAIL_SUMMARY_MAX
+   ?`; more exist: continue with the same arguments, offset ${page.nextOffset} and asOf ${page.queryScope?.asOfInclusive} to summarize the whole period (up to ${MAIL_SUMMARY_MAX} messages) or when the question needs them, otherwise tell the user how many more match and offer to show them`
+   :`; more exist: stop here, say the answer covers the newest ${page.nextOffset} and how many more match, and offer to show them`:'';
+  const parts=[`${n} stored message candidate(s)${n?` in ${threads} thread(s)`:''}${Number.isInteger(page.totalMatches)?` of ${page.totalMatches} matching`:''}${more}${more?', never mentioning offsets or pages':''}.`];
   parts.push(n===0?'An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.'
    :'Summarize from these senders, subjects, dates and previews and say the summary is based on previews; previews are incomplete excerpts, so read a thread with mail_read_thread only to quote it or when one message\'s full content changes the answer, a few threads at most.');
   parts.push(...coverageReasons(page));const stale=staleness(page,messages);if(stale!==null)parts.push(stale);

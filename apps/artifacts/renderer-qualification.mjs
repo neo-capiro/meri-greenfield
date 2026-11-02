@@ -22,6 +22,11 @@ export const RENDERER_PROBE_PATH=fileURLToPath(new URL('./renderer-probe.mjs',im
 export const RENDERER_PROBE_SCHEMA='meri-renderer-sandbox-observation/1';
 /** The only environment a converter child may receive: exactly what `process.mjs` sets. Any other name fails `noCredentials`. */
 export const RENDERER_CHILD_ENV=Object.freeze(['HOME','LANG','MPLCONFIGDIR','OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','PATH','PYTHONDONTWRITEBYTECODE','TMPDIR']);
+/** The environment of a child started through bubblewrap: the same allowlist plus `PWD`, which `bwrap` unconditionally
+ * sets to the child's working directory before exec (`xsetenv("PWD", new_cwd, 1)`, bubblewrap.c). `PWD` is the
+ * already-attested private workspace path, not a credential. Every bwrap runner (the AgentCore renderer purpose and the
+ * upload inspection children) evaluates against this list; without it `noCredentials` can never be attested there. */
+export const BWRAP_CHILD_ENV=Object.freeze([...RENDERER_CHILD_ENV,'PWD']);
 const WORKSPACE_PREFIX='meri-renderer-probe-',MAX_OBSERVATION_BYTES=65536,UNLIMITED=2n**62n;
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const sha=value=>createHash('sha256').update(value).digest('hex');
@@ -35,9 +40,10 @@ function finiteLimit(value,{quota=false}={}){
  const n=BigInt(first);return n>0n&&n<UNLIMITED;
 }
 /** Pure: one observation -> the eight requirement flags plus a finding per false flag. Never throws; malformed input is all false.
+ * `childEnv` is one of the two fixed allowlists (`BWRAP_CHILD_ENV` for a bubblewrap runner); any other value is the plain list.
  * `boundedBy` records which layer attested `boundedResources`: `'cgroup'` for finite observed bounds, `'agentcore-microvm'`
  * when the platform evidence in `platform` and the observed single-root shape attest it (`platformBoundedCgroup`), null otherwise. */
-export function evaluateRendererSandbox(observation,{tempRoot,platform=null}={}){
+export function evaluateRendererSandbox(observation,{tempRoot,platform=null,childEnv=RENDERER_CHILD_ENV}={}){
  const o=observation!==null&&typeof observation==='object'&&!Array.isArray(observation)?observation:{};
  const linux=o.schema===RENDERER_PROBE_SCHEMA&&o.platform==='linux';
  const caps=o.capabilities&&typeof o.capabilities==='object'?o.capabilities:{};
@@ -60,7 +66,7 @@ export function evaluateRendererSandbox(observation,{tempRoot,platform=null}={})
   noCredentials:false,
  };
  // Without network isolation a child can reach instance/task credential endpoints, so noCredentials also requires noNetwork.
- sandbox.noCredentials=linux&&sandbox.noNetwork&&env!==null&&env.every(name=>RENDERER_CHILD_ENV.includes(name))&&creds!==null&&creds.every(c=>c&&c.readable===false);
+ sandbox.noCredentials=linux&&sandbox.noNetwork&&env!==null&&env.every(name=>(childEnv===BWRAP_CHILD_ENV?BWRAP_CHILD_ENV:RENDERER_CHILD_ENV).includes(name))&&creds!==null&&creds.every(c=>c&&c.readable===false);
  const findings=RENDERER_SANDBOX_REQUIREMENTS.filter(k=>sandbox[k]!==true).map(requirement=>({requirement,reason:linux?'NOT_OBSERVED':'NOT_LINUX'}));
  return {sandbox:Object.freeze(sandbox),findings:Object.freeze(findings),boundedBy:finite?'cgroup':bound?.boundedBy??null};
 }
@@ -74,8 +80,9 @@ function configuration(value){
  if(!absolute(c.executable)||!absolute(c.nodeExecutable)||!absolute(c.tempRoot)||typeof c.imageDigest!=='string'||!/^sha256:[a-f0-9]{64}$/u.test(c.imageDigest)||
   typeof c.qualificationId!=='string'||!/^[A-Za-z0-9._:-]{1,128}$/u.test(c.qualificationId)||!Array.isArray(c.credentialPaths??[])||!(c.credentialPaths??[]).every(absolute)||
   (c.credentialPaths??[]).length>64||!Number.isSafeInteger(c.deadlineMs)||c.run!==undefined&&typeof c.run!=='function'||
-  c.platform!==undefined&&c.platform!==null&&typeof c.platform!=='object')fail('RENDERER_QUALIFICATION_CONFIGURATION');
- return {...c,credentialPaths:[...(c.credentialPaths??[])],run:c.run??runArtifactProcess,platform:c.platform??null};
+  c.platform!==undefined&&c.platform!==null&&typeof c.platform!=='object'||
+  c.childEnv!==undefined&&c.childEnv!==RENDERER_CHILD_ENV&&c.childEnv!==BWRAP_CHILD_ENV)fail('RENDERER_QUALIFICATION_CONFIGURATION');
+ return {...c,credentialPaths:[...(c.credentialPaths??[])],run:c.run??runArtifactProcess,platform:c.platform??null,childEnv:c.childEnv??RENDERER_CHILD_ENV};
 }
 /** Observe, evaluate and bind. Returns `{port,admission,evaluation,receipt}`; `port` is always a renderer port, available only
  * when every requirement was observed. A probe or version failure yields an unadmitted port and a closed `failure` code. */
@@ -85,6 +92,8 @@ export async function qualifyLibreOfficeRenderer(options){
  const owned=async(executable,args,input)=>{
   const workspace=await mkdtemp(join(c.tempRoot,WORKSPACE_PREFIX));
   try{const run=await c.run(executable,args,{cwd:workspace,input:Buffer.from(input),signal:c.signal,deadlineMs:c.deadlineMs});receipt.processes.push(run.receipt??null);return {stdout:Buffer.from(run.stdout??''),workspace};}
+  // A failed child keeps its process receipt (exit code, signal, spawn error; never output) so the refusal names it.
+  catch(error){receipt.processes.push(Object.freeze({...(error?.receipt??{}),failure:typeof error?.code==='string'?error.code:null}));throw error;}
   finally{await rm(workspace,{recursive:true,force:true});if(await stat(workspace).then(()=>true,()=>false))fail('RENDERER_PROBE_CLEANUP_FAILED');}
  };
  let version,observation;
@@ -94,7 +103,7 @@ export async function qualifyLibreOfficeRenderer(options){
   if(out.length>MAX_OBSERVATION_BYTES)return unadmitted('RENDERER_PROBE_INVALID');receipt.observationSha256=sha(out);observation=JSON.parse(out.toString('utf8'));}
  catch(error){return unadmitted(error?.code==='RENDERER_PROBE_CLEANUP_FAILED'?error.code:error instanceof SyntaxError?'RENDERER_PROBE_INVALID':'RENDERER_PROBE_FAILED');}
  // The probe reports getcwd(), which resolves symlinks, so the workspace parent is compared with the resolved temp root.
- const evaluation=evaluateRendererSandbox(observation,{tempRoot:await realpath(c.tempRoot).catch(()=>null),platform:c.platform});
+ const evaluation=evaluateRendererSandbox(observation,{tempRoot:await realpath(c.tempRoot).catch(()=>null),platform:c.platform,childEnv:c.childEnv});
  const admission={rendererId:'libreoffice',rendererVersion:version,executable:c.executable,imageDigest:c.imageDigest,qualificationId:c.qualificationId,sandbox:{...evaluation.sandbox}};
  // The probe and every later conversion must use the identical host-owned child runner, including its namespace boundary.
  const port=createLibreOfficeRendererPort({admission,executable:c.executable,tempRoot:c.tempRoot,run:c.run});
