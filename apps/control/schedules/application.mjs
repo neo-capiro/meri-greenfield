@@ -343,8 +343,9 @@ export function createRoutinesService(configuration){
   async reconcile(value){
    const {v,b}=input(value,raw=>decisionBody(raw,false)),l=life(v);let known=false,acknowledgementStarted=false;try{
     const auth=await current(v,b,l);await retained(v,b,l,auth);
-    // No stored intent: no approval of this proposal was ever claimed, so nothing was applied and nothing can be observed.
-    if(await l.run(()=>readIntent({tenantId:principal(auth).tenantId,intentId:b.proposalId},l.check))===null)deny('STALE','NOT_DISPATCHED');
+    // No stored intent: no approval of this proposal has been claimed yet, so nothing is applied and nothing can be observed.
+    // An approval request still in flight may claim it later; the caller decides when an earlier send can no longer land.
+    if(await l.run(()=>readIntent({tenantId:principal(auth).tenantId,intentId:b.proposalId},l.check))===null)throw Object.assign(Error('ROUTINES_NOT_APPLIED'),{code:'ROUTINES_NOT_APPLIED',outcome:'NOT_DISPATCHED'});
     // The existing reconciler only observes the exact old effect. Fresh current authority also gates its metadata acknowledgement.
     const owner={async readIntent(selection,check){await current(v,b,l);const row=await readIntent(selection,check);intent(row,b,principal(auth).tenantId);if(row?.state==='ACKNOWLEDGED')known=true;return row;},async acknowledgeReconciled(selection,check){await current(v,b,l);acknowledgementStarted=true;const receipt=await storageMethod(c.scheduleOwner,'acknowledgeReconciled')(selection,check);known=receipt.state==='ACKNOWLEDGED';return receipt;}};
     const reconciler=createScheduleIntentReconciler({scheduleOwner:owner,scheduleClient:c.scheduleClient,workflowClient:c.workflowClient,scheduleNotFoundError:c.scheduleNotFoundError,clock:c.now,maxRequestMs:Math.max(1,Math.min(c.maxRequestMs,v.deadlineMs-c.now()))});

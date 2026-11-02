@@ -225,11 +225,11 @@ for(const change of ['accepted','scopes','policy'])test(`a reserved next run who
  f.nativeState.reservation=reservation;
  assert.notEqual((await f.post('approve',approveBody(prepared))).status,200);assert.equal(f.temporal.calls.create,0);
 });
-test('an approval refused before its mutation is a definite NOT_DISPATCHED, and reconciliation finds nothing applied',async t=>{
+test('an approval refused before its mutation is a definite NOT_DISPATCHED, and reconciliation reports it not applied',async t=>{
  const f=await fixture(t),prepared=await f.prepare();f.nativeState.budget=1000;
  const refused=await f.post('approve',approveBody(prepared));assert.equal(refused.status,409,await refused.clone().text());
  assert.deepEqual(await refused.json(),{error:{code:'SCHEDULE_CONTEXT_STALE',outcome:'NOT_DISPATCHED'}});
- const reconciled=await f.post('reconcile',decisionOf(prepared));assert.equal(reconciled.status,409,await reconciled.clone().text());
- assert.deepEqual(await reconciled.json(),{error:{code:'ROUTINES_STALE',outcome:'NOT_DISPATCHED'}});
+ const reconciled=await f.post('reconcile',decisionOf(prepared));assert.equal(reconciled.status,502,await reconciled.clone().text());
+ assert.deepEqual(await reconciled.json(),{error:{code:'ROUTINES_NOT_APPLIED',outcome:'NOT_DISPATCHED'}});
  assert.deepEqual(f.temporal.calls,{describe:0,create:0,update:0,patch:0,delete:0});
 });
