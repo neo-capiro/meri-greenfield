@@ -171,6 +171,9 @@ function admittedFormats(operation){
  if(!Array.isArray(admission?.formats)||!admission.formats.length)fail();
  return admission.formats;
 }
+/** The formats a document row offers in this run: the offer's declared formats, else the document application's own admission.
+ * @param {{id:string,version:string}} operation @param {Map<string,readonly string[]>} [formats] the offer's formats by operation key */
+export const offeredDocumentFormats=(operation,formats)=>formats?.get(canonicalSha256({id:operation.id,version:operation.version}))??admittedFormats(operation);
 /** The document rows' model-facing branches, one per admitted format of each canonical branch.
  * @param {{id:string,version:string}} operation @param {any} canonical @param {readonly string[]} [offered] the run's declared formats
  * @returns {Declaration[]} */

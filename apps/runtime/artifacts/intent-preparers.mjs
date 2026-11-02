@@ -14,7 +14,7 @@ import {assertActionSessionReceipt,borrowedRunSession} from '../../control/actio
 import {createDocumentIntentPreparer,DOCUMENT_INTENT_OPERATIONS} from '../../control/intents/document-preparer.mjs';
 import {referencedAssetIds} from '../../control/intents/document-revision.mjs';
 import {createAnalysisIntentPreparer,ANALYSIS_INTENT_OPERATIONS} from '../../control/intents/analysis-preparer.mjs';
-import {intentFault} from '../../control/intents/faults.mjs';
+import {intentFault,intentFaultReason} from '../../control/intents/faults.mjs';
 import {documentLimits} from '../../control/document-application/current.mjs';
 import {admitDocumentDescriptor} from '../../control/document-application/format-admission.mjs';
 import {createRuntimeArtifactApplication} from './application.mjs';
@@ -89,15 +89,15 @@ export function createRuntimeDocumentIntentPreparers(configuration){
      session=assertActionSessionReceipt(session,c.now());
      clip(session.expiresAtMs);
      const selected=session.context;
-     if(selected.tenantId!==binding.tenantId||selected.actorId!==binding.actorId||selected.conversationId!==binding.conversationId||selected.runId!==binding.runId||selected.selectedClientId!==c.selectedClientId)throw intentFault('ACCESS_DENIED','none');
+     if(selected.tenantId!==binding.tenantId||selected.actorId!==binding.actorId||selected.conversationId!==binding.conversationId||selected.runId!==binding.runId||selected.selectedClientId!==c.selectedClientId)throw intentFault('ACCESS_DENIED','none',undefined,'DOCUMENT_SESSION_RUN');
      async function current(){
       const authentication=await life.run(signal=>authenticate({credential:session.credential,signal,deadlineMs}));
       const state=data(await life.run(signal=>read({authentication,signal,deadlineMs})));
       own(state,['authenticationSha256','binding','scopes','selectedClientId','checkedAtMs','expiresAtMs']);
       if(state.authenticationSha256!==hash(authentication)||!same(state.binding,binding)||state.selectedClientId!==c.selectedClientId||
-       !Array.isArray(state.scopes)||state.scopes.length<1||state.scopes.length>100||!Number.isSafeInteger(state.checkedAtMs)||state.checkedAtMs>c.now())throw intentFault('ACCESS_DENIED','none');
-      try{assertNativeConversationScope(state);}catch{throw intentFault('ACCESS_DENIED','none');}
-      clip(state.expiresAtMs);if(native()!==credential)throw intentFault('ACCESS_DENIED','none');life.check();
+       !Array.isArray(state.scopes)||state.scopes.length<1||state.scopes.length>100||!Number.isSafeInteger(state.checkedAtMs)||state.checkedAtMs>c.now())throw intentFault('ACCESS_DENIED','none',undefined,'DOCUMENT_CURRENT_STATE');
+      try{assertNativeConversationScope(state);}catch{throw intentFault('ACCESS_DENIED','none',undefined,'DOCUMENT_CURRENT_SCOPE');}
+      clip(state.expiresAtMs);if(native()!==credential)throw intentFault('ACCESS_DENIED','none',undefined,'DOCUMENT_CREDENTIAL_REPLACED');life.check();
      }
      await current();
      // The retained revision capability is created here, in-process, from the private current-authorized source
@@ -140,7 +140,9 @@ export function createRuntimeDocumentIntentPreparers(configuration){
      // Only the owner's own definite refusal survives a started write; a later current-authority refusal withholds a draft that exists.
      if(started)throw ownerRefusal!==null&&error===ownerRefusal?error:intentFault('UNKNOWN','unknown');
      const code=['INVALID_ARGUMENTS','UNAVAILABLE','ACCESS_DENIED','CONFLICT','DEADLINE','CANCELLED'].includes(error?.code)?error.code:'ACCESS_DENIED';
-     throw intentFault(code,'none');
+     // The refusing step's own constant (or the session owner's code, such as SESSION_REFUSED) rides to control's log line only, so a
+     // refusal before dispatch is attributable there (2 Nov: two document requests ended ACCESS_DENIED with nothing naming the step).
+     throw intentFault(code,'none',undefined,intentFaultReason(error)??(typeof error?.code==='string'?error.code:'DOCUMENT_PREPARE_ERROR'));
     }finally{life?.close();}
    }});
  });

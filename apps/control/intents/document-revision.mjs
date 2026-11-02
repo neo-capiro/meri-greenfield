@@ -110,5 +110,5 @@ export function admitDocumentRevisionSource(raw,{selection,binding,request,prese
   if(requiresPreservation&&owner===null)throw intentFault('UNAVAILABLE','none');
   const preserved=requiresPreservation?preservedProvenance(retained,owner({retained,request,baseVersionId:s.versionId}),version,source.specSha256):null;
   return Object.freeze({selection:s,request:original,specSha256:source.specSha256,version,preserved});
- }catch(error){if(['CONFLICT','UNAVAILABLE'].includes(error?.code)&&error.effect==='none')throw error;throw intentFault('ACCESS_DENIED','none');}
+ }catch(error){if(['CONFLICT','UNAVAILABLE'].includes(error?.code)&&error.effect==='none')throw error;throw intentFault('ACCESS_DENIED','none',undefined,'DOCUMENT_REVISION_SOURCE');}
 }

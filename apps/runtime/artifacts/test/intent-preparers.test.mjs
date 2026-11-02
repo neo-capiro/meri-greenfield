@@ -8,12 +8,13 @@ import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.m
 import {createLocalDocumentFixture} from '../../../control/document-application/local/fixture.mjs';
 import {mount,delivery} from '../../../control/intents/test/fixture.mjs';
 import {borrowedRunSession} from '../../../control/action-host/session/owner.mjs';
+import {intentFaultReason} from '../../../control/intents/faults.mjs';
 import {createRuntimeDocumentIntentPreparers} from '../intent-preparers.mjs';
 
 const python=process.env.MERI_DOCUMENT_PYTHON??'/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3';
 const pptxModulePath=process.env.MERI_PPTXGENJS??'/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/pptxgenjs';
 const spec={operation:'create_word',format:'txt',title:'Conversation draft',content:{text:'A durable conversation draft.\n'}};
-const code=(wanted,effect)=>error=>error?.code===wanted&&(effect===undefined||error.effect===effect);
+const code=(wanted,effect,reason)=>error=>error?.code===wanted&&(effect===undefined||error.effect===effect)&&(reason===undefined||intentFaultReason(error)===reason);
 async function fixture(t,operation='create_word'){
  process.env.MERI_REVIEW_SOURCE_ROOT=fileURLToPath(new URL('../../../../',import.meta.url));
  const f=await createLocalDocumentFixture({mode:'synthetic-local',pythonExecutable:python,operation,...(operation==='create_powerpoint'?{pptxModulePath}:{})});t.after(()=>f.close());
@@ -110,20 +111,21 @@ test('unavailable and expired native credentials stop before any derived session
 test('the complete run binding and selected-client receipt are checked before runtime dispatch',async t=>{
  const h=await fixture(t);
  for(const change of [value=>({...value,binding:{...value.binding,attemptId:'00000000-0000-4000-8000-000000000099'}}),value=>({...value,selectedClientId:'00000000-0000-4000-8000-000000000099'}),value=>({...value,scopes:[]})]){
-  h.state.onCurrent=change;await assert.rejects(h.prepare(),code('ACCESS_DENIED','none'));
+  // The refusing step is named for control's log line, never for the model.
+  h.state.onCurrent=change;await assert.rejects(h.prepare(),code('ACCESS_DENIED','none','DOCUMENT_CURRENT_STATE'));
  }
  assert.equal(h.state.resolved.length,0);assert.equal(h.f.stats().generations,0);assert.equal(h.f.sessions.status().sessions,1);
 });
 
 test('current identity revocation before preparation performs no runtime work',async t=>{
- const h=await fixture(t);h.f.revoke();await assert.rejects(h.prepare(),code('ACCESS_DENIED','none'));
+ const h=await fixture(t);h.f.revoke();await assert.rejects(h.prepare(),code('ACCESS_DENIED','none','SESSION_REFUSED'));
  assert.equal(h.state.resolved.length,0);assert.equal(h.f.stats().generations,0);assert.equal(h.f.sessions.status().sessions,0,'the refused originating session is invalidated');
 });
 
 test('native credential replacement during current checks refuses without revoking the borrowed session',async t=>{
  const h=await fixture(t);let lookups=0;
  h.state.native=()=>({credential:++lookups===1?h.f.nativeCredential:'different-current-credential',expiresAtMs:h.f.now()+10000});
- await assert.rejects(h.prepare(),code('ACCESS_DENIED','none'));
+ await assert.rejects(h.prepare(),code('ACCESS_DENIED','none','DOCUMENT_CREDENTIAL_REPLACED'));
  assert.equal(h.state.resolved.length,0);assert.equal(h.state.revoked.length,0);assert.equal(h.f.sessions.status().sessions,1);
 });
 

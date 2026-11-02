@@ -5,7 +5,7 @@ import {canonicalSha256 as hash} from '../../../../packages/contracts/validate.m
 import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {createIntentResultRelease} from '../result-release.mjs';
 import {createIntentResultReleaseAuthority} from '../result-release-authority.mjs';
-import {intentFault} from '../faults.mjs';
+import {intentFault,intentFaultReason} from '../faults.mjs';
 const NOW=Date.parse('2026-10-18T14:00:00.000Z'),POLICY='a'.repeat(64),id=n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={tenantId:'org_t',actorId:'user_a',conversationId:id(1),runId:id(2),attemptId:id(3),workerId:id(4),writerFence:1};
 const scope={tenantId:'org_t',kind:'client',resourceId:id(9),policyRevision:POLICY};
@@ -38,6 +38,8 @@ test('the receipt binds the selection hash, binding, scopes and the tightest exp
  for(const bad of [{...selection,resultSha256:null},{...selection,original:null},{...selection,binding:{...binding,writerFence:2}}])
   await assert.rejects(authority.check({selection:bad,selectionSha256:hash(bad),limitDeadline:()=>{}}),code('ACCESS_DENIED'));
  await assert.rejects(authority.check({selection,selectionSha256:'0'.repeat(64),limitDeadline:()=>{}}),code('ACCESS_DENIED'));
+ // Control's log line names which check refused (the reason never reaches the model or the journal).
+ await assert.rejects(authority.check({selection,selectionSha256:'0'.repeat(64),limitDeadline:()=>{}}),e=>intentFaultReason(e)==='RELEASE_AUTHORITY_REFUSED');
 });
 test('a changed run, stale or foreign rights, a scope no longer current, or a policy change before release refuse',async()=>{
  const denied=async(options,original)=>{const {release,life}=setup(options);

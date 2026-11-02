@@ -6,7 +6,7 @@ const UNCHANGED='Nothing has been changed.';
 /** @type {Readonly<Record<string,(tool:string,reason?:string)=>string>>} */
 const TEXTS=Object.freeze({
  UNAVAILABLE:(tool,reason='is not available in this conversation')=>`UNAVAILABLE: ${tool} ${reason}. ${UNCHANGED}`,
- ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} is not permitted for this user, client or conversation now. ${UNCHANGED}`,
+ ACCESS_DENIED:tool=>`ACCESS_DENIED: ${tool} was refused by the current permission check, so nothing was prepared. ${UNCHANGED} Tell the user it could not be prepared; do not guess a cause or send them to another conversation.`,
  REFUSED:(tool,detail)=>`REFUSED: ${tool} was refused by its owner (${detail??'arguments, permissions or current state'}). ${UNCHANGED}`,
  INVALID_ARGUMENTS:(tool,detail)=>`INVALID_ARGUMENTS: ${tool} refused these arguments${detail===undefined?'':` (${detail})`}; correct the named fields and supply literal arguments matching its input schema. ${UNCHANGED}`,
  DEADLINE:tool=>`DEADLINE: ${tool} did not finish preparing within its time limit and nothing was prepared. ${UNCHANGED}`,

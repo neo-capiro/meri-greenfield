@@ -7,6 +7,7 @@ import {z} from 'zod';
 import {INTENT_ROWS,intentDescriptor} from '../catalog.mjs';
 import {canonicalIntentInputSchema,intentRowArguments,intentRowBinding,intentToolArguments,SCHEDULE_CADENCES,SCHEDULE_DEFAULTS} from '../schema.mjs';
 import {canonicalSha256} from '../../../../../packages/contracts/validate.mjs';
+import {defineIntentTool} from '../tools.mjs';
 import {validators as scheduleValidators} from '../../../../../packages/contracts/test/schedule-tool-interface-fixtures.mjs';
 import {watchValidators,validateShape} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {WATCH_SUPPORTED,WATCH_TARGET_KINDS} from '../../../../../packages/contracts/retrieval-0.2/watch-action-validation.mjs';
@@ -175,6 +176,25 @@ test('the offer\'s declared document formats select the advertised branches, nev
  assert.equal(word.safeParse({format:'pdf',title:'Brief',content:{blocks:[{kind:'paragraph',style:'Normal',runs:[{text:'Hello'}]}]}}).success,true);
  assert.equal(intentToolArguments([row('create_word')]).arguments.safeParse({format:'pdf',title:'Brief',content:{blocks:[{kind:'paragraph',style:'Normal',runs:[{text:'Hello'}]}]}}).success,false);
  for(const offered of [[],['nope'],'docx'])assert.throws(()=>intentRowArguments(row('create_word'),offered),CONFIGURATION,JSON.stringify(offered));
+});
+
+test('the document tool routes a PDF request to the Word operation exactly when the offer admits PDF, and never to a command line',()=>{
+ // 2 Nov: the catalog calls create_word "a Word document", so a PDF request in a General conversation never reached it and the
+ // model told the user a shell tool was missing. The routing follows the run's offered formats, the same ones the schema advertises.
+ const rows=INTENT_ROWS.filter(r=>r.tool==='request_document'),key=o=>canonicalSha256({id:o.id,version:o.version});
+ const describe=offered=>defineIntentTool('request_document',rows,async()=>({}),offered&&new Map([[key(row('create_word').operation),offered]])).definition.description;
+ const withPdf=describe(['docx','txt','xml','pdf']),without=describe();
+ assert.match(withPdf,/Formats: docx, txt, xml, pdf\. For a PDF, use this operation with format "pdf" and the same content as a Word document/u);
+ assert.match(withPdf,/To give a document already drafted here as a PDF, request it again with format "pdf"/u);
+ assert.match(without,/Formats: docx, txt, xml\. PDF is not available right now; offer a Word document instead\./u);
+ assert.doesNotMatch(without,/format "pdf"/u);
+ for(const text of [withPdf,without]){
+  assert.match(text,/Every Word, PDF, Excel or PowerPoint file Meri produces comes from this tool\. There is no command line, shell or script in Meri: never try one or mention one to the user\./u);
+  // The routing line follows its own operation's header, before the next operation.
+  assert.ok(text.indexOf('operation "create_word"')<text.indexOf('Formats: ')&&text.indexOf('Formats: ')<text.indexOf('operation "create_excel"'));
+ }
+ // Tools without a document row are unchanged.
+ assert.doesNotMatch(defineIntentTool('propose_task',[row('create_task')],async()=>({})).definition.description,/command line|Formats:/u);
 });
 
 test('the schedule tool asks for cadence, day, time and time zone; the run completes the routine request its owner validates',()=>{
