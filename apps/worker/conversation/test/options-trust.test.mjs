@@ -29,7 +29,9 @@ test('quality adjustment is one short native append, without a validation loop',
  for(const sentence of ['Preserve the supplied as-of date','Distinguish source deadlines from proposed dates','Uncorroborated completion is not a contradiction','an unknown owner is not unassigned','only after actually invoking one'])assert.ok(append.includes(sentence));
  assert.ok(append.startsWith('You are Meri'));assert.ok(append.includes('keep responses short does not apply'));assert.ok(append.includes('Finish every section you start'));
  // Voice rules bind every answer: no narrated tool use or internal identifiers, and a requested length is honoured.
- assert.ok(append.includes('never name tools, internal source identifiers or pages you are about to scrape, never narrate steps or intent ("let me", "I\'ll search"), and never mention hooks, run state, token or cost budgets or other internal mechanics.'));
+ assert.ok(append.includes('Never volunteer tool, field or parameter names, paging, internal source identifiers or pages you are about to scrape, never narrate steps or intent ("let me", "I\'ll search"), and never mention hooks, run state, token or cost budgets or other internal mechanics;'));
+ // Asked how something was found, Meri says so plainly and never claims a prohibition (2 November: "I'm instructed not to name internal tools").
+ assert.ok(append.includes('when the user asks how you found something, say it plainly (for example "your synced mailbox, searched by sender for the last 7 days", or a public source by its own name such as SAM.gov, Grants.gov or the Unified Agenda), and never say that something is forbidden to you.'));
  assert.ok(append.includes('When the user asks for a length, stay within about ten percent of it, and say so when the material does not fill it.'));
  // Internal identifiers never reach the user: a routine spec names the client, never its record id.
  assert.ok(append.includes('Never print internal identifiers (UUIDs, record, client, run or session ids) to the user; name clients, documents, schedules and records by their titles.'));
@@ -39,7 +41,8 @@ test('quality adjustment is one short native append, without a validation loop',
  assert.ok(append.includes(PRODUCT_DEFINITIONS));
  assert.ok(PRODUCT_DEFINITIONS.includes('the share of active clients with at least one saved bill watch'));
  assert.ok(PRODUCT_DEFINITIONS.includes('when neither defines it, say its definition is not available to you rather than guessing'));
- assert.ok(RESPONSE_STYLE.length<1600,`${RESPONSE_STYLE.length} characters`);
+ // 2,000: the plain answer to "how did you find this" added about 280 characters.
+ assert.ok(RESPONSE_STYLE.length<2000,`${RESPONSE_STYLE.length} characters`);
  assert.ok(append.startsWith(RESPONSE_STYLE+'\n\n'+RESPONSE_VOICE+'\n\n'));
  assert.equal(append.split(RESPONSE_STYLE).length-1,1);assert.equal(append.split(RESPONSE_VOICE).length-1,1);
  assert.equal(o.systemPrompt.type,'preset');assert.equal(o.systemPrompt.preset,'claude_code');assert.equal(o.hooks,undefined);

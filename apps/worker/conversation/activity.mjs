@@ -19,6 +19,7 @@ import {assertAutomaticClientContext} from './automatic-client-context.mjs';
 import {createConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {terminalReasonCode} from './terminal-reason.mjs';
+import {turnBudgetHooks} from './turn-budget.mjs';
 import {unavailableSkillSources} from '../../../packages/contracts/selected-skills/sources.mjs';
 import {familyReads,scopeAdmitsRead} from './reads/availability.mjs';
 import {READ_FAMILIES} from './reads/families.mjs';
@@ -198,7 +199,8 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    // Wave5 MO01/ST16: the resolved procedure is appended as data that grants no additional authority, and the
    // narrowing can only remove a mounted Capiro read tool the procedure did not grant — never add or widen one.
    if(procedureRuntime){options.systemPrompt.append+=procedureRuntime.systemPromptAppend;options.allowedTools=procedureRuntime.narrow(options.allowedTools);}
-    options.hooks=mergeHookSets([options.hooks??{},uploadRuntime?.hooks??{},nativeAudit.hooks]);
+    // The turn-limit notice counts against the run's final maxTurns (after any selected-skill narrowing above).
+    options.hooks=mergeHookSets([options.hooks??{},uploadRuntime?.hooks??{},turnBudgetHooks(options.maxTurns),nativeAudit.hooks]);
     setupLife?.check();setupLife?.close();setupLife=undefined;
     diagnostic('stage','activity-running');await publish('run.status',{state:'running',reasonCode:null});
    heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},5000);heartbeatTimer.unref?.();

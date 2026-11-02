@@ -17,11 +17,13 @@ test('every mail tool states its stored-mail source, subject rule and arguments 
  }finally{await m.close();}
 });
 
-test('a connected search returns the page plus one notice with counts, continuation and the mailbox state',async()=>{
+test('a connected search returns compact rows plus one notice with counts, continuation and the mailbox state',async()=>{
  const f=await generalReadFixture(),m=await mountReads(f);
  try{const r=await m.call('mail_search_messages',f.search);assert.equal(r.isError,undefined,JSON.stringify(r));
   const page=JSON.parse(text(r));assert.equal(page.kind,'mail-candidate-source-page');assert.equal(page.messages.length,1);
-  assert.equal(r.content[1].text,'Notice: 1 stored message candidate(s) of 2 matching; more exist, continue with offset 1. Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content. Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations.');
+  assert.deepEqual(Object.keys(page.messages[0]),['threadId','messageId','receivedAt','from','to','subject','preview','connectionStatus']);
+  assert.deepEqual([page.totalMatches,page.hasMore,page.nextOffset,page.threads],[2,true,1,1]);
+  assert.equal(r.content[1].text,'Notice: 1 stored message candidate(s) in 1 thread(s) of 2 matching; more exist: continue with the same arguments, offset 1 and asOf 2026-10-13T11:59:59.000Z to summarize the whole period (up to 100 messages) or when the question needs them, otherwise tell the user how many more match and offer to show them, never mentioning offsets or pages. Summarize from these senders, subjects, dates and previews and say the summary is based on previews; previews are incomplete excerpts, so read a thread with mail_read_thread only to quote it or when one message\'s full content changes the answer, a few threads at most. Mailbox connection status disabled: stored mail up to the last synchronization, possibly stale; the user can reconnect it or run Sync now (or Retry sync) under Capiro Settings > Integrations.');
  }finally{await m.close();}
 });
 

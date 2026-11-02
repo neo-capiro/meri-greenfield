@@ -69,14 +69,42 @@ function memoryNotice(page){
  if(page.contentStatus==='metadata_only'||page.contentTruncated===true)parts.push('Content is partial: read an item\'s complete text with memoryItemId and the contentCursor from content.nextRead before quoting it.');
  return parts.join(' ');
 }
+const MAIL_PREVIEW_VIEW_MAX=400,MAIL_TO_VIEW_MAX=3;
+/** Messages a period summary reads before it says it covers only the newest ones and offers the rest (two 50-row pages). */
+export const MAIL_SUMMARY_MAX=100;
+/** @param {any} p a mail participant {name, email} @returns {string|null} */
+const person=p=>{const name=typeof p?.name==='string'&&p.name?p.name:null,email=typeof p?.email==='string'&&p.email?p.email:null;return name&&email?`${name} <${email}>`:name??email;};
+/** What the model reads of a canonical mail candidate page (list or search): the fields a summary or a follow-up read needs,
+ * one compact row per message. The canonical page stays the result of record (receipt hash, output accounting); its per-message
+ * provenance (scopes, read handles, citation, mailbox and record ids) made a 50-message page about 82,000 characters, past the
+ * SDK's tool-result limit, so the 2 November "summarize yesterday's email" run read the spilled file with Read/Grep until it
+ * exhausted its turns. A thread page is returned unchanged. @param {any} page */
+export function mailCandidateView(page){
+ const messages=Array.isArray(page.messages)?page.messages:[];
+ return {kind:page.kind,window:{fromInclusive:page.queryScope?.effectiveStartInclusive??null,asOf:page.queryScope?.asOfInclusive??null},
+  totalMatches:page.totalMatches,hasMore:page.hasMore,nextOffset:page.nextOffset,threads:new Set(messages.map(m=>m?.threadId)).size,
+  messages:messages.map(m=>{const preview=typeof m?.preview?.text==='string'?m.preview.text:null,to=Array.isArray(m?.to)?m.to.map(p=>p?.name||p?.email).filter(Boolean):[];
+   const more=to.length-MAIL_TO_VIEW_MAX+(m?.toTruncated===true?1:0);
+   return {threadId:m?.threadId,messageId:m?.messageId,...(m?.receivedAt?{receivedAt:m.receivedAt}:{}),...(m?.sentAt?{sentAt:m.sentAt}:{}),from:person(m?.from),
+    to:more>0?[...to.slice(0,MAIL_TO_VIEW_MAX),'and others']:to,...(Array.isArray(m?.cc)&&m.cc.length?{ccCount:m.cc.length+(m.ccTruncated===true?'+':'')}:{}),subject:m?.subjectText??null,
+    preview:preview!==null&&preview.length>MAIL_PREVIEW_VIEW_MAX?`${preview.slice(0,MAIL_PREVIEW_VIEW_MAX)}...`:preview,
+    ...(typeof m?.clientId==='string'?{clientId:m.clientId}:{}),...(m?.connectionStatus&&m.connectionStatus!=='connected'?{connectionStatus:m.connectionStatus}:{})};})};
+}
+/** The text the model receives for a successful read: the canonical result, except a mail candidate page, which it reads as
+ * `mailCandidateView`. @param {{id:string}} operation @param {string} result @param {any} parsed */
+export const modelResultText=(operation,result,parsed)=>MAIL_TOOLS.has(operation.id)&&parsed?.kind==='mail-candidate-source-page'?JSON.stringify(mailCandidateView(parsed)):result;
 /** One orientation line for a canonical mail page: counts, continuation, preview incompleteness and a stale mailbox.
  * @param {any} page */
 function mailNotice(page){
  if(page?.kind==='mail-candidate-source-page'){
   const messages=Array.isArray(page.messages)?page.messages:[],n=messages.length;
-  const parts=[`${n} stored message candidate(s)${Number.isInteger(page.totalMatches)?` of ${page.totalMatches} matching`:''}${page.hasMore===true&&Number.isInteger(page.nextOffset)?`; more exist, continue with offset ${page.nextOffset}`:''}.`];
+  const threads=new Set(messages.map(m=>m?.threadId)).size;
+  const more=page.hasMore===true&&Number.isInteger(page.nextOffset)?page.nextOffset<MAIL_SUMMARY_MAX
+   ?`; more exist: continue with the same arguments, offset ${page.nextOffset} and asOf ${page.queryScope?.asOfInclusive} to summarize the whole period (up to ${MAIL_SUMMARY_MAX} messages) or when the question needs them, otherwise tell the user how many more match and offer to show them`
+   :`; more exist: stop here, say the answer covers the newest ${page.nextOffset} and how many more match, and offer to show them`:'';
+  const parts=[`${n} stored message candidate(s)${n?` in ${threads} thread(s)`:''}${Number.isInteger(page.totalMatches)?` of ${page.totalMatches} matching`:''}${more}${more?', never mentioning offsets or pages':''}.`];
   parts.push(n===0?'An empty page is absence within this subject, folder, window and filter only, not proof that no email exists; widen withinDays or the folder, or search by from or participant.'
-   :'Previews are incomplete excerpts: read a thread with mail_read_thread before quoting or summarizing its content.');
+   :'Summarize from these senders, subjects, dates and previews and say the summary is based on previews; previews are incomplete excerpts, so read a thread with mail_read_thread only to quote it or when one message\'s full content changes the answer, a few threads at most.');
   parts.push(...coverageReasons(page));const stale=staleness(page,messages);if(stale!==null)parts.push(stale);
   return parts.join(' ');
  }
