@@ -5,6 +5,7 @@
 import {App,Stack,CfnOutput,BootstraplessSynthesizer,aws_ec2 as ec2,aws_iam as iam,aws_logs as logs,
  aws_servicediscovery as discovery,aws_elasticloadbalancingv2 as elbv2} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
+import {BROWSER_HOST_LISTENER_PORT} from '../browser-host/provisioned-stack.mjs';
 
 const ACCOUNT='967807252336',REGION='us-east-1';
 const fail=()=>{throw Error('FIRST_CHAT_FOUNDATION_BINDING_REFUSED');};
@@ -17,8 +18,12 @@ function closed(value,keys){
 export const FOUNDATION_SECRET_ROLES=Object.freeze(['control','worker','temporal','migrator']);
 const secretRoles=b=>[...FOUNDATION_SECRET_ROLES,...(Object.hasOwn(b.secretArns??{},'schedule')?['schedule']:[])];
 export function validateFoundationBinding(value){
+ // `browserHostSecurityGroupId` is optional: the provisioned browser hosts' group (infra/browser-host/provisioned-stack.mjs) that
+ // Control must reach on the one pinned listener port. Absent leaves the foundation exactly as before.
+ const optional=value!==null&&typeof value==='object'&&Object.hasOwn(value,'browserHostSecurityGroupId')?['browserHostSecurityGroupId']:[];
  const b=closed(value,['account','region','vpcId','vpcCidr','privateSubnetIds','clusterArn','ecrRepositoryArn','albSecurityGroupId',
-  'auroraSecurityGroupId','endpointSecurityGroupId','s3PrefixListId','checkpoint','secretArns','secretKmsKeyArns']);
+  'auroraSecurityGroupId','endpointSecurityGroupId','s3PrefixListId','checkpoint','secretArns','secretKmsKeyArns',...optional]);
+ if(optional.length&&(!sg.test(b.browserHostSecurityGroupId)||[b.albSecurityGroupId,b.auroraSecurityGroupId,b.endpointSecurityGroupId].includes(b.browserHostSecurityGroupId)))fail();
  if(b.account!==ACCOUNT||b.region!==REGION||!/^vpc-[a-f0-9]{8,17}$/u.test(b.vpcId)||!/^10\.\d{1,3}\.\d{1,3}\.\d{1,3}\/16$/u.test(b.vpcCidr)||
     !Array.isArray(b.privateSubnetIds)||b.privateSubnetIds.length<2||new Set(b.privateSubnetIds).size!==b.privateSubnetIds.length||
     !b.privateSubnetIds.every(s=>/^subnet-[a-f0-9]{8,17}$/u.test(s))||
@@ -57,6 +62,9 @@ export function synthesizeFirstChatFoundation(binding){
   g[key].addEgressRule(endpoints,ec2.Port.tcp(443),'interface endpoints: ECR, logs, secrets, KMS, STS');
   g[key].addEgressRule(ec2.Peer.prefixList(b.s3PrefixListId),ec2.Port.tcp(443),'S3 gateway: ECR layers, checkpoints');
  }
+ // Control reaches each provisioned browser host (viewer, named browser operations, lifecycle route) on its one pinned listener
+ // port; the group has allowAllOutbound false, so the path needs its own egress rule (the host group admits Control by group).
+ if(b.browserHostSecurityGroupId!==undefined)g.control.addEgressRule(existing(b.browserHostSecurityGroupId,'BrowserHostSg'),ec2.Port.tcp(BROWSER_HOST_LISTENER_PORT),'Control to the provisioned browser host listener');
  // The separate AgentCore stack owns SDK compute and direct Bedrock permissions.
  for(const key of ['control','worker'])g[key].addEgressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(443),'NAT 443: AWS APIs without endpoints, Core, Clerk, Bedrock');
  // One-shot Temporal schema task pulls the digest-pinned temporalio/admin-tools image from Docker Hub.

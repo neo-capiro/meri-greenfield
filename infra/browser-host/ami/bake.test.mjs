@@ -48,7 +48,7 @@ test('the builder is private, encrypted gp3 30 GiB, IMDSv2 with hop limit 1, on 
  assert.match(launch,/--instance-type c7g\.large/);assert.match(launch,/AssociatePublicIpAddress=false/);assert.match(launch,/--metadata-options HttpTokens=required,HttpPutResponseHopLimit=1,HttpEndpoint=enabled/);
  assert.match(launch,/"Encrypted":true,"VolumeSize":30,"VolumeType":"gp3","DeleteOnTermination":true/);assert.match(launch,/--iam-instance-profile Name=meri-browser-host-static-Profile-X/);
  assert.doesNotMatch(launch,/--key-name|--user-data|--associate-public/);
- assert.match(launch,/--client-token meri-bake-[0-9a-f]{24}/);
+ assert.match(launch,/--client-token meri-bake-[0-9a-f]{24}-[0-9a-f]{16} /);assert.match(launch,/Key=MeriBakeRun,Value=[0-9a-f]{16}/);
  assert.match(out,/--name meri-browser-host-aaaaaaaaaaaa-bbbbbbbbbbbb/);
 });
 

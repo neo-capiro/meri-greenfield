@@ -40,3 +40,23 @@ Image build: seal and upload the source exactly as `infra/product-preview/image-
 AMI bake: `BUILD_RESULT=<result.json> SUBNET_ID=<placement subnet> SECURITY_GROUP_ID=<host group> INSTANCE_PROFILE_NAME=<profile> EVIDENCE_OUT=<new file> bash infra/browser-host/ami/bake.sh --plan` prints every AWS call without making one; without `--plan` it creates one temporary builder and one AMI. The evidence file lists the deployment inputs it produces (`launch.ImageId`, `imageDigest`, `bootstrapSha256`, `bootstrapSpec.programSha256`, `bootstrapSpec.profileSha256`).
 
 Measured, not asserted, at the qualification host (runbook 4c): that the Debian-built Node binary runs on AL2023 (the guest bake fails before imaging if it does not), the namespace and nft behavior with Docker's firewall and bridge disabled, `ip netns` propagation through the shared `/run/netns` mount, the awslogs stream, and the encrypted-AMI launch permission of the worker role.
+
+### Live step: Control egress to the hosts (foundation stack; not executed by this change)
+
+The Control security group has `allowAllOutbound: false`, so Control cannot reach a host's pinned listener (TCP 9444) until the foundation grants it. The live `meri-first-chat-foundation` stack has drifted from the committed source in both directions (it still holds the issuer resources the source removed, and differs elsewhere), so deploying the foundation from freshly synthesized source is NOT safe. Instead:
+
+- The source now carries the rule: `browserHostSecurityGroupId` (optional, in `first-chat/foundation-binding.json`) makes `first-chat-foundation.mjs` add one standalone `AWS::EC2::SecurityGroupEgress` from the control group to the host group on the listener port, exactly like the existing egress to the endpoint group. Without the key the synthesis is unchanged.
+- `first-chat/foundation-egress-patch.mjs` takes that one resource from the source synthesis and adds it to the LIVE template, asserting that the result differs from live by exactly one added resource (no removal, no modification, no other section).
+
+Steps (release owner, one effect, read-backs between):
+
+1. `aws cloudformation get-template --stack-name meri-first-chat-foundation --template-stage Original --query TemplateBody --output json > live.json`.
+2. `node infra/product-preview/first-chat/foundation-egress-patch.mjs --live live.json --binding infra/product-preview/first-chat/foundation-binding.json --out patched.json`. Expected summary on the 2 November live template: `added` is exactly `ControlSgtoMeriFirstChatFoundationBrowserHostSg4770A6A39444C14D4ED1`, `removed` and `modified` empty, `sectionsChanged` empty, `inlineTemplateAllowed` true (24,715 bytes, below the 51,200 byte limit). Any other result: stop.
+3. `aws cloudformation create-change-set --stack-name meri-first-chat-foundation --change-set-type UPDATE --template-body file://patched.json --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM` (the stack has no parameters; its `meri=first-chat-preview` tag is kept when none is passed).
+4. Read the change set back. It must list exactly one change: `Add`, `AWS::EC2::SecurityGroupEgress`, that logical id, no replacement. A Modify, a Remove or a second change means the live stack moved or the patch is wrong: delete the change set and stop.
+5. Execute only with release authorization; wait for `UPDATE_COMPLETE`.
+6. Read back the control group: its egress now also lists TCP 9444 to the host group, every earlier egress rule is unchanged, the 8080, 8082 and 8443 ingress rules are untouched (the change cannot reach ingress), and the control, worker and schedule services stay 1/1 with healthy targets.
+
+Rollback: an UPDATE change set from `patched.json` back to the saved `live.json` shows exactly one Remove; or revoke the single rule.
+
+Follow-ups recorded, not done here: reconcile the foundation source to live (or live to source) so a source-driven foundation deploy becomes safe; extract the roughly 100 lines `image-build.sh` of the browser host shares with `infra/product-preview/image-build.sh` into one helper. The `no inline ingress` tests added to the foundation and private-edge suites keep the standalone ingress rules that the listener and observer stacks add to those groups from being reconciled away.
