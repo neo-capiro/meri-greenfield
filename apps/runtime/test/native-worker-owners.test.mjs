@@ -80,7 +80,8 @@ test('activity verifies the prompt ACK then requests canonical need and provisio
  const result=await activity({binding});
  assert.deepEqual(result,{state:'completed'});
  assert.equal(calls[0],'execution/kickoff');assert.equal(calls[1],'execution/native/prerequisite');assert.equal(calls[2],'provision');
- assert.ok(calls.filter(x=>x==='execution/kickoff/status').length>=2);assert.ok(heartbeat>=2);
+ const polls=calls.filter(x=>x==='execution/kickoff/status').length;assert.ok(polls>=2);
+ assert.ok(heartbeat>=polls,'every status poll heartbeats, so a long run is never stale against the 30 s heartbeatTimeout');
 });
 test('ordinary non-native activity performs no allocation and needs no provisioner',async()=>{
  const calls=[];

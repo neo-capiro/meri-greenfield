@@ -5,6 +5,7 @@ import {assertTenantCapabilitySettings} from '../../worker/conversation/capabili
 import {assertTenantBrowserSettings} from '../../worker/conversation/browser/resolution.mjs';
 import {ProductError,refuse} from '../product-access/errors.mjs';
 import {closed} from '../product-access/shape.mjs';
+import {MAX_RUN_TURNS} from '../../../packages/contracts/run-limits.mjs';
 import {USER_PREFERENCE_FIELDS,USER_PREFERENCE_DEFAULTS,userPreferencesDocument,storedUserPreferencesDocument,userPreferencesTimezone,userPreferencesDocumentFailure} from '../../../packages/contracts/user-preferences-application/document.mjs';
 export {USER_PREFERENCE_DEFAULTS};
 const documentCall=operation=>{try{return operation();}catch(error){const failure=userPreferencesDocumentFailure(error);if(failure)refuse(failure.code,null,failure.field);throw error;}};
@@ -21,12 +22,13 @@ export function releasedUserPreferences(stored,principal){
 }
 export const TENANT_SETTINGS_DEFAULTS=Object.freeze({defaultTimezone:'UTC',capabilityPolicy:Object.freeze({})});
 // Tenant execution limits are independent of catalog availability; model rows/defaults belong to the deployment policy.
-export const DEFAULT_MODEL_LIMITS=Object.freeze({maxTurns:20,maxBudgetMicroUsd:2000000});
+// Never-configured defaults (mirrored by migration 0032): 100 turns and USD 10 per run under the shared MAX_RUN_TURNS ceiling.
+export const DEFAULT_MODEL_LIMITS=Object.freeze({maxTurns:100,maxBudgetMicroUsd:10000000});
 /** Explicit admin input cannot clear a configured cap. A missing persisted cap refuses run admission. */
 export function modelSettings(value){
  const m=closed(value,['monthlyCapMicroUsd','maxTurns','maxBudgetMicroUsd'],[],'SETTINGS_MODEL_INVALID');
  for(const key of ['monthlyCapMicroUsd','maxBudgetMicroUsd'])if(!Number.isSafeInteger(m[key])||m[key]<1)refuse('SETTINGS_MODEL_INVALID',null,`model.${key}`);
- if(!Number.isSafeInteger(m.maxTurns)||m.maxTurns<1||m.maxTurns>100)refuse('SETTINGS_MODEL_INVALID',null,'model.maxTurns');
+ if(!Number.isSafeInteger(m.maxTurns)||m.maxTurns<1||m.maxTurns>MAX_RUN_TURNS)refuse('SETTINGS_MODEL_INVALID',null,'model.maxTurns');
  return Object.freeze({...m});
 }
 /** Existing typed columns are nullable only for the never-configured monthly cap. */

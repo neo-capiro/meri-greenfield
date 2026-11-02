@@ -12,7 +12,7 @@ export async function generateUsageContracts({check=false}={}){
  const [{default:Ajv},{default:formats},{default:standalone},esbuild,{compile}]=await Promise.all([import('ajv/dist/2020.js'),import('ajv-formats'),import('ajv/dist/standalone/index.js'),import('esbuild'),import('json-schema-to-typescript')]);
  try{
   const sources=[];
-  for(const path of ['meri.schema.json','generate-usage.mjs','runtime-0.2/usage.mjs','conversation-history/protocol.mjs',
+  for(const path of ['meri.schema.json','generate-usage.mjs','run-limits.mjs','runtime-0.2/usage.mjs','conversation-history/protocol.mjs',
    ...['protocol','schema','semantics','validate','receive'].flatMap(name=>['conversation-usage/'+name+'.mjs','conversation-usage/overview-'+name+'.mjs']),'document-application/boundary.mjs',
    ...['http','store','job-economics'].map(name=>'../../apps/control/conversations/usage-overview/'+name+'.mjs'),
    ...['http','projection'].map(name=>'../../apps/control/conversations/usage-read/'+name+'.mjs'),
