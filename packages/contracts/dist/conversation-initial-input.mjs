@@ -1224,7 +1224,7 @@ function validate29(data, { instancePath = "", parentData, parentDataProperty, r
 }
 validate29.evaluated = { "props": true, "dynamicProps": false, "dynamicItems": false };
 var validateError = validate31;
-var schema39 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "INVALID_REQUEST", "SKILL_SOURCES_UNAVAILABLE", "SKILL_SCOPE_REFUSED", "SESSION_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "INITIAL_INPUT_CONFLICT", "INITIAL_INPUT_ALREADY_EXISTS", "INITIAL_INPUT_EXPIRED", "DEADLINE", "CANCELLED", "INITIAL_INPUT_REQUIRED", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_UNAVAILABLE", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN"] }, "sources": { "$ref": "#/$defs/Canonical_SkillRefusalSources_54e0533a" }, "requiredScope": { "$ref": "#/$defs/Canonical_SkillRequiredScope_8806a8fe" } }, "required": ["code", "outcome"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
+var schema39 = { "type": "object", "properties": { "error": { "type": "object", "properties": { "code": { "enum": ["NOT_FOUND", "METHOD_NOT_ALLOWED", "INVALID_REQUEST", "SKILL_SOURCES_UNAVAILABLE", "SKILL_SCOPE_REFUSED", "SESSION_REFUSED", "SCOPE_REFUSED", "SESSION_CHANGED", "STALE_WRITER", "INITIAL_INPUT_CONFLICT", "INITIAL_INPUT_ALREADY_EXISTS", "INITIAL_INPUT_EXPIRED", "DEADLINE", "CANCELLED", "INITIAL_INPUT_REQUIRED", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_UNAVAILABLE", "REQUEST_TOO_LARGE", "UNSUPPORTED_MEDIA_TYPE", "MODEL_SELECTION_UNAVAILABLE", "MODEL_SETTINGS_UNAVAILABLE", "TENANT_MONTHLY_CAP_REACHED"] }, "outcome": { "enum": ["NOT_DISPATCHED", "UNKNOWN"] }, "sources": { "$ref": "#/$defs/Canonical_SkillRefusalSources_54e0533a" }, "requiredScope": { "$ref": "#/$defs/Canonical_SkillRequiredScope_8806a8fe" } }, "required": ["code", "outcome"], "additionalProperties": false } }, "required": ["error"], "additionalProperties": false };
 var schema41 = { "enum": ["client", "general"] };
 function validate31(data, { instancePath = "", parentData, parentDataProperty, rootData = data, dynamicAnchors = {} } = {}) {
   let vErrors = null;
@@ -1274,7 +1274,7 @@ function validate31(data, { instancePath = "", parentData, parentDataProperty, r
                     if (data0.code !== void 0) {
                       let data1 = data0.code;
                       const _errs5 = errors2;
-                      if (!(data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "INVALID_REQUEST" || data1 === "SKILL_SOURCES_UNAVAILABLE" || data1 === "SKILL_SCOPE_REFUSED" || data1 === "SESSION_REFUSED" || data1 === "SCOPE_REFUSED" || data1 === "SESSION_CHANGED" || data1 === "STALE_WRITER" || data1 === "INITIAL_INPUT_CONFLICT" || data1 === "INITIAL_INPUT_ALREADY_EXISTS" || data1 === "INITIAL_INPUT_EXPIRED" || data1 === "DEADLINE" || data1 === "CANCELLED" || data1 === "INITIAL_INPUT_REQUIRED" || data1 === "INITIAL_INPUT_CORRUPT" || data1 === "INITIAL_INPUT_UNAVAILABLE" || data1 === "REQUEST_TOO_LARGE" || data1 === "UNSUPPORTED_MEDIA_TYPE" || data1 === "MODEL_SELECTION_UNAVAILABLE" || data1 === "MODEL_SETTINGS_UNAVAILABLE")) {
+                      if (!(data1 === "NOT_FOUND" || data1 === "METHOD_NOT_ALLOWED" || data1 === "INVALID_REQUEST" || data1 === "SKILL_SOURCES_UNAVAILABLE" || data1 === "SKILL_SCOPE_REFUSED" || data1 === "SESSION_REFUSED" || data1 === "SCOPE_REFUSED" || data1 === "SESSION_CHANGED" || data1 === "STALE_WRITER" || data1 === "INITIAL_INPUT_CONFLICT" || data1 === "INITIAL_INPUT_ALREADY_EXISTS" || data1 === "INITIAL_INPUT_EXPIRED" || data1 === "DEADLINE" || data1 === "CANCELLED" || data1 === "INITIAL_INPUT_REQUIRED" || data1 === "INITIAL_INPUT_CORRUPT" || data1 === "INITIAL_INPUT_UNAVAILABLE" || data1 === "REQUEST_TOO_LARGE" || data1 === "UNSUPPORTED_MEDIA_TYPE" || data1 === "MODEL_SELECTION_UNAVAILABLE" || data1 === "MODEL_SETTINGS_UNAVAILABLE" || data1 === "TENANT_MONTHLY_CAP_REACHED")) {
                         validate31.errors = [{ instancePath: instancePath + "/error/code", schemaPath: "#/properties/error/properties/code/enum", keyword: "enum", params: { allowedValues: schema39.properties.error.properties.code.enum }, message: "must be equal to one of the allowed values" }];
                         return false;
                       }
@@ -1436,12 +1436,13 @@ var initialInputErrorStatuses = freeze({
   REQUEST_TOO_LARGE: [413],
   UNSUPPORTED_MEDIA_TYPE: [415],
   MODEL_SELECTION_UNAVAILABLE: [409],
-  MODEL_SETTINGS_UNAVAILABLE: [503]
+  MODEL_SETTINGS_UNAVAILABLE: [503],
+  TENANT_MONTHLY_CAP_REACHED: [429]
 });
 var initialInputUnknownCodes = Object.freeze(["DEADLINE", "CANCELLED", "INITIAL_INPUT_UNAVAILABLE", "INITIAL_INPUT_CORRUPT", "INITIAL_INPUT_REQUIRED"]);
 var initialInputErrorOutcomes = freeze(Object.fromEntries(Object.keys(initialInputErrorStatuses).map((code) => [code, initialInputUnknownCodes.includes(code) ? "UNKNOWN" : "NOT_DISPATCHED"])));
 var conversationInitialInputMetadata = freeze({
-  packageVersion: "0.1.11",
+  packageVersion: "0.1.12",
   initialInputVersion: conversationInitialInputVersion,
   schemaId: "urn:meri:conversation-initial-input:1.3.0",
   routes: { allocate: { method: "POST", path: conversationInitialInputPath, response: "json" } },

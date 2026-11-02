@@ -80,7 +80,8 @@ export interface ConversationInitialInputErrorResponse {
       | 'REQUEST_TOO_LARGE'
       | 'UNSUPPORTED_MEDIA_TYPE'
       | 'MODEL_SELECTION_UNAVAILABLE'
-      | 'MODEL_SETTINGS_UNAVAILABLE';
+      | 'MODEL_SETTINGS_UNAVAILABLE'
+      | 'TENANT_MONTHLY_CAP_REACHED';
     outcome: 'NOT_DISPATCHED' | 'UNKNOWN';
     sources?: Canonical_Canonical_SkillRefusalSources_0F6C1274F79D7367;
     requiredScope?: Canonical_Canonical_SkillRequiredScope_61C2E60CA52A55Eb;
@@ -99,7 +100,7 @@ export type AdmittedConversationInitialInputRequest=AdmittedConversationInputReq
 export type AdmittedConversationInitialInputReceipt=Readonly<ConversationInitialInputAllocatedResponse>&{readonly [initialInputReceipt]:true};
 export declare class ConversationInitialInputResponseError extends Error {readonly code:string;}
 export declare const conversationInitialInputMetadata: {
-  "packageVersion": "0.1.11",
+  "packageVersion": "0.1.12",
   "initialInputVersion": "1.3.0",
   "schemaId": "urn:meri:conversation-initial-input:1.3.0",
   "routes": {
@@ -152,7 +153,8 @@ export declare const conversationInitialInputMetadata: {
     "REQUEST_TOO_LARGE": "NOT_DISPATCHED",
     "UNSUPPORTED_MEDIA_TYPE": "NOT_DISPATCHED",
     "MODEL_SELECTION_UNAVAILABLE": "NOT_DISPATCHED",
-    "MODEL_SETTINGS_UNAVAILABLE": "NOT_DISPATCHED"
+    "MODEL_SETTINGS_UNAVAILABLE": "NOT_DISPATCHED",
+    "TENANT_MONTHLY_CAP_REACHED": "NOT_DISPATCHED"
   },
   "errorStatuses": {
     "NOT_FOUND": [
@@ -218,6 +220,9 @@ export declare const conversationInitialInputMetadata: {
     ],
     "MODEL_SETTINGS_UNAVAILABLE": [
       503
+    ],
+    "TENANT_MONTHLY_CAP_REACHED": [
+      429
     ]
   }
 };

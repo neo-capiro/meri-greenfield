@@ -7,7 +7,7 @@ import {conversationErrorStatuses} from '../../../packages/contracts/conversatio
 import {assertFeedbackShape} from '../../../packages/contracts/conversation-application/feedback-validate.mjs';
 import {createConversationEventSource} from './events.mjs';
 import {own,fail} from './boundary.mjs';
-import {SKILL_SELECTION_REFUSALS} from './service.mjs';
+import {inputRefusalCode,reportInputUnavailable} from './input-refusals.mjs';
 import {skillRefusalBody} from './skills/refusals.mjs';
 import {types} from 'node:util';
 import {randomUUID} from 'node:crypto';
@@ -16,14 +16,15 @@ const streamPath=/^\/api\/conversations\/events\/([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-
 function cursor(value){if(value===null)return 0;if(!/^(0|[1-9][0-9]*)$/u.test(value)||!Number.isSafeInteger(Number(value)))fail('INVALID_CURSOR');return Number(value);}
 function closedBody(body,required,optional=[]){try{return own(body,required,optional);}catch{fail('INVALID_REQUEST');}}
 function publicRequest(route,body){try{return receiveConversationRequest(route,new TextEncoder().encode(JSON.stringify(body)));}catch{fail('INVALID_REQUEST');}}
-export function createConversationApplication({service,now=Date.now,maxRequestBytes=131072,maxRequestMs=3000,historyDiagnostics=beginHistoryDiagnostic}){
+export function createConversationApplication({service,now=Date.now,maxRequestBytes=131072,maxRequestMs=3000,historyDiagnostics=beginHistoryDiagnostic,writeDiagnostic}){
  if(['submit','history','cancel'].some(k=>typeof service?.[k]!=='function')||!Number.isSafeInteger(maxRequestBytes)||maxRequestBytes<1||maxRequestBytes>131072||!Number.isSafeInteger(maxRequestMs)||maxRequestMs<1||maxRequestMs>30000)fail('HTTP_CONFIGURATION');
- return Object.freeze({async handle(request){let life,diagnostic;const finish=result=>{diagnostic?.finish(result.status);return result;};try{
+ return Object.freeze({async handle(request){let life,diagnostic,path;const finish=result=>{diagnostic?.finish(result.status);return result;};try{
    if(!request||types.isProxy(request))fail('INVALID_REQUEST');
    let info;try{info=Object.fromEntries(['url','method','headers','body','signal'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get.call(request)]));}catch{fail('INVALID_REQUEST');}
    const header=k=>Headers.prototype.get.call(info.headers,k),url=new URL(info.url);
    const route=/^\/api\/conversations\/(submit|history|cancel|events|feedback|feedback-read)$/u.exec(url.pathname),reconnect=streamPath.exec(url.pathname);
    if((!route&&!reconnect)||url.search||url.hash)return response({error:{code:'NOT_FOUND'}},404);
+   path=reconnect?'/api/conversations/events/{conversationId}/stream':url.pathname;
    if(info.method!==(reconnect?'GET':'POST'))return response({error:{code:'METHOD_NOT_ALLOWED'}},405);
    if(route?.[1]==='history')diagnostic=historyDiagnostics(header(historyTraceHeader));
    if(header('last-event-id')!==null||!reconnect&&header('x-meri-resume-sequence')!==null)fail('INVALID_CURSOR');
@@ -57,5 +58,5 @@ export function createConversationApplication({service,now=Date.now,maxRequestBy
    try{await life.run(()=>opening.promise);life.check();}catch(error){await events.cancel().catch(()=>{});throw error;}
    const result=meriLiveEventStreamResponse({messageId:randomUUID(),events});
    result.headers.set('cache-control','no-store');result.headers.set('x-content-type-options','nosniff');return result;
-  }catch(error){const observed=error?.code??error?.message,code=['INVALID_JSON','INVALID_UTF8','INVALID_BODY','INVALID_CONTENT_LENGTH',...SKILL_SELECTION_REFUSALS].includes(observed)?'INVALID_REQUEST':observed,status=Object.hasOwn(conversationErrorStatuses,code)?conversationErrorStatuses[code].at(-1):502;return finish(response({error:skillRefusalBody(error)??{code:status===502?'CONVERSATION_UNAVAILABLE':code}},status));}finally{life?.close();}}});
+  }catch(error){const observed=error?.code??error?.message,code=inputRefusalCode(observed),status=Object.hasOwn(conversationErrorStatuses,code)?conversationErrorStatuses[code].at(-1):502;if(status===502&&!diagnostic)reportInputUnavailable(path??'/api/conversations',observed,writeDiagnostic);return finish(response({error:skillRefusalBody(error)??{code:status===502?'CONVERSATION_UNAVAILABLE':code}},status));}finally{life?.close();}}});
 }
