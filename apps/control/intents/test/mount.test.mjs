@@ -135,3 +135,22 @@ test('a document draft is published to the conversation on preparation and on ea
  for(const formats of [[],['DOCX'],['docx','docx'],'docx'])assert.throws(()=>createIntentMount({binding:c.binding,preparers:[{...preparer,formats}],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000}}),code('INTENT_CONFIGURATION'),JSON.stringify(formats));
  assert.throws(()=>createIntentMount({binding:c.binding,preparers:[preparer],journalStore:store.port,now:()=>NOW,limits:{maxRequestMs:5000},publishDraft:'yes'}),code('INTENT_CONFIGURATION'));
 });
+
+test('a journal that refuses the explained row still settles the code: a refused delivery never stays PENDING',async()=>{
+ // 2 Nov: the 0002 outcome CHECK admitted a FAILED outcome of exactly {code}; every refusal settled with a detail rolled back and
+ // the three schedule deliveries stayed PENDING ("Preparing" for good). Until intents/0006 is applied, the code alone is journaled.
+ const base=createMemoryJournalStore(),detail='the routine owner answered: not a canonical routine request';
+ const attempts=[],store={...base,port:{...base.port,async settle(call){attempts.push(call.outcome);if(call.outcome!==null&&Object.hasOwn(call.outcome,'detail'))throw Error('synthetic CHECK violation');return base.port.settle(call);}}};
+ const c=commandComposition();let answer=intentFault('REFUSED','none',detail,'ROUTINES_INVALID_REQUEST');
+ const preparer={binding:c.binding,owner:'command',operation:CREATE,async prepare(){throw answer;}};
+ const {mount:m}=mount({binding:c.binding,preparers:[preparer],store});
+ const first=await call(m).catch(error=>error);
+ assert.equal(first.code,'REFUSED');assert.equal(first.detail,detail,'the live answer keeps the words');assert.equal(first.reason,'ROUTINES_INVALID_REQUEST');
+ assert.deepEqual([...base.rows.values()].map(r=>[r.state,r.outcome]),[['FAILED',{code:'REFUSED'}]]);assert.deepEqual(attempts,[{code:'REFUSED',detail},{code:'REFUSED'}],'explained first, then the code alone');
+ const replayed=await call(m).catch(error=>error);assert.equal(replayed.code,'REFUSED');assert.equal(replayed.detail,undefined,'the journal replays what it kept');
+ // A journal that refuses even the code leaves the row PENDING and the fault still explains itself; nothing is thrown past it.
+ const down={...base,port:{...base.port,async settle(){throw Error('synthetic journal down');}}};
+ const {mount:d}=mount({binding:c.binding,preparers:[preparer],store:down});answer=intentFault('REFUSED','none',detail);
+ const unsettled=await call(d,{deliveryId:delivery(2)}).catch(error=>error);assert.equal(unsettled.code,'REFUSED');assert.equal(unsettled.detail,detail);
+ assert.equal([...base.rows.values()].at(-1).state,'PENDING');
+});

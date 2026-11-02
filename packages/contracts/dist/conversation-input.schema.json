@@ -1462,7 +1462,8 @@
                 "FEEDBACK_LIMIT",
                 "FEEDBACK_WRITE_UNKNOWN",
                 "SKILL_SOURCES_UNAVAILABLE",
-                "SKILL_SCOPE_REFUSED"
+                "SKILL_SCOPE_REFUSED",
+                "TENANT_MONTHLY_CAP_REACHED"
               ]
             },
             "sources": {

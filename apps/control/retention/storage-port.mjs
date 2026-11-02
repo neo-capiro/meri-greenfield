@@ -42,13 +42,19 @@ export function createVersionStorage({send,bucket,expectedBucketOwner,permission
   if(head.outcome!=='PRESENT')fail('RETENTION_STORAGE_UNAVAILABLE');
   const retention=await call('GetObjectRetention',{Key:key,VersionId:versionId},options);
   const legal=await call('GetObjectLegalHold',{Key:key,VersionId:versionId},options);
-  if(retention.error||legal.error||status(retention.response)!==200||status(legal.response)!==200||
-     !['ON','OFF'].includes(legal.response?.LegalHold?.Status))fail('RETENTION_STORAGE_UNAVAILABLE');
-  const r=retention.response.Retention;
+  // In a bucket with Object Lock enabled, S3 answers a version that carries NO legal hold (or no retention) with a
+  // 404 `NoSuchObjectLockConfiguration`: that is the explicit "none" observation for this exact version, not a
+  // missing permission (a 403 stays unavailable). Treating it as unavailable made every removal of an unheld
+  // original fail as an unknown outcome and left the record in `removing`.
+  const noneDeclared=outcome=>outcome.error?.name==='NoSuchObjectLockConfiguration'&&status(outcome.error)===404;
+  const legalStatus=noneDeclared(legal)?'OFF':legal.response?.LegalHold?.Status;
+  if(!noneDeclared(retention)&&(retention.error||status(retention.response)!==200)||
+     !noneDeclared(legal)&&(legal.error||status(legal.response)!==200)||!['ON','OFF'].includes(legalStatus))fail('RETENTION_STORAGE_UNAVAILABLE');
+  const r=noneDeclared(retention)?undefined:retention.response.Retention;
   if(r!==undefined&&(r===null||typeof r!=='object'||Array.isArray(r)))fail('RETENTION_STORAGE_UNAVAILABLE');
   const until=r?.RetainUntilDate===undefined?null:new Date(r.RetainUntilDate).getTime();
   if(until!==null&&(!Number.isSafeInteger(until)||!['GOVERNANCE','COMPLIANCE'].includes(r.Mode))||until===null&&r?.Mode!==undefined)fail('RETENTION_STORAGE_UNAVAILABLE');
-  return {objectLockRetainUntilMs:until,legalHold:legal.response.LegalHold.Status==='ON'};
+  return {objectLockRetainUntilMs:until,legalHold:legalStatus==='ON'};
  }
  /** Exact-version delete; the receipt is a request record, never proof. A delete marker in the response fails the step. */
  async function deleteVersion({key,versionId},options){text(key,1024);text(versionId,1024);if(!p.deleteObjectVersion)fail('RETENTION_STORAGE_PERMISSION');

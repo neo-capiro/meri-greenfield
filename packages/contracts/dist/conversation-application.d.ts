@@ -2283,7 +2283,8 @@ export interface ConversationErrorResponse {
       | 'FEEDBACK_LIMIT'
       | 'FEEDBACK_WRITE_UNKNOWN'
       | 'SKILL_SOURCES_UNAVAILABLE'
-      | 'SKILL_SCOPE_REFUSED';
+      | 'SKILL_SCOPE_REFUSED'
+      | 'TENANT_MONTHLY_CAP_REACHED';
     sources?: SkillRefusalSources;
     requiredScope?: SkillRequiredScope;
   };
@@ -2393,7 +2394,7 @@ export type ConversationResponse<R extends ConversationRoute> = ConversationResp
 export interface ConversationCursor {readonly conversationId:string; readonly after:number; readonly [admittedCursor]:true;}
 export declare class ConversationResponseError extends Error {readonly code:string;}
 export declare const conversationApplicationMetadata: {
-  "packageVersion": "0.1.16",
+  "packageVersion": "0.1.17",
   "schemaId": "urn:meri:conversation-application:0.4.0",
   "wireContractVersion": "0.4.0",
   "routes": {
@@ -2541,6 +2542,9 @@ export declare const conversationApplicationMetadata: {
     ],
     "SKILL_SCOPE_REFUSED": [
       400
+    ],
+    "TENANT_MONTHLY_CAP_REACHED": [
+      429
     ]
   }
 };

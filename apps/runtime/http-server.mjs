@@ -5,8 +5,10 @@ import {fault} from './config.mjs';
 /** Idle keep-alive sockets outlive the private ALB's 120 s idle timeout (first-chat-private-edge.mjs), so the load balancer, not
  * this listener, closes them. A listener that closes first races the ALB's reuse of the socket, and the ALB answers 502. */
 export const RUNTIME_KEEP_ALIVE_MS=125000;
-export async function listenRuntime({configuration,application,readiness,signal,tls,exposeReadiness=true,testOwners={}}){
- const startServer=testOwners.serve??serve;if(Object.keys(testOwners).some(key=>key!=='serve')||typeof startServer!=='function'||typeof exposeReadiness!=='boolean')throw fault('HTTP_CONFIGURATION');
+/** `sourceCommit` is the serving material's commit (material-receipt.mjs); liveness names it so observers bind to the running source. */
+export async function listenRuntime({configuration,application,readiness,signal,tls,exposeReadiness=true,sourceCommit,testOwners={}}){
+ const startServer=testOwners.serve??serve;if(Object.keys(testOwners).some(key=>key!=='serve')||typeof startServer!=='function'||typeof exposeReadiness!=='boolean'||sourceCommit!==undefined&&!/^[a-f0-9]{40}$/u.test(sourceCommit))throw fault('HTTP_CONFIGURATION');
+ const liveness=sourceCommit===undefined?{}:{sourceCommit};
  signal?.throwIfAborted();
  let stopping=false,closeProgress=()=>{};const active=new Set(),sockets=new Set(),serving=new Map();const json=(body,status=200)=>Response.json(body,{status,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
  const server=startServer({hostname:configuration.http.hostname,port:configuration.http.port,overrideGlobalObjects:false,
@@ -16,7 +18,7 @@ export async function listenRuntime({configuration,application,readiness,signal,
   if(path==='/health/ready'&&!exposeReadiness)return json({error:{code:'ROUTE_NOT_FOUND'}},404);
   if(path==='/health/live'||path==='/health/ready'){
    if(request.method!=='GET'||new URL(request.url).search)return json({error:{code:'METHOD_NOT_ALLOWED'}},405);
-   if(path==='/health/live')return json({status:stopping?'stopping':'live'},stopping?503:200);
+   if(path==='/health/live')return json({status:stopping?'stopping':'live',...liveness},stopping?503:200);
    if(stopping)return json({status:'not-ready'},503);try{const details=await readiness({signal:request.signal});if(details?.product?.ready===false)return json({status:'not-ready',...details,releaseAcceptance:'held'},503);return json({status:'ready',profile:'isolated-preview',releaseAcceptance:'held',...(details??{})});}catch{return json({status:'not-ready'},503);}
   }
   if(stopping)return json({error:{code:'RUNTIME_STOPPING'}},503);
