@@ -41,7 +41,7 @@ export const PATHS=Object.freeze({
  serverCa:'/run/meri/control-ca.pem',
  // Delivered only when the matching feature is rendered (control only).
  readsServiceSecret:'/run/meri/core-service-secret',readsReadModeServiceSecret:'/run/meri/core-read-mode-service-secret',
- downloadLinkKey:'/run/meri/download-link.key'});
+ downloadLinkKey:'/run/meri/download-link.key',officeKey:'/run/meri/office-wopi.key'});
 const DAY_MS=86400000;
 /** Defaults for bounded timing values. Each is inside the validator range it is named after. */
 export const DEFAULTS=Object.freeze({validityDays:7,deploymentRevision:'first-chat-preview-1'});
@@ -106,7 +106,7 @@ export function parseRuntimeValues(raw){
 }
 
 /** Product-family activation (header: `features`). Returns null when absent; otherwise the closed, validated entries. Pure. */
-export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','nativeProcessing','browserPlatform','browserActivation']);
+export const FEATURE_KEYS=Object.freeze(['sourceEnabled','userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','memory','objectiveGeneration','uploads','nativeProcessing','browserPlatform','browserActivation','office']);
 /** --feature-secrets keys -> the deployment-inputs ARN field each must name. */
 export const FEATURE_SECRETS=Object.freeze({'reads.serviceSecret':'serviceSecretArn','reads.readModeServiceSecret':'readModeServiceSecretArn'});
 /** Exact (complete, suffixed) Secrets Manager secret ARN in this account and region. A bare name, another account/region/partition, a
@@ -222,12 +222,39 @@ export function parseFeatures(raw,{secrets={}}={}){
   if(declared.runs&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.objectiveGeneration reuses the reads Core service secret: it needs features.reads enabled');
   out.objectiveGeneration=structuredClone(f.objectiveGeneration);
  }
+ // Office (artifacts/office-configuration.mjs): the self-hosted editor origin and, optionally, the origin at which that editor
+ // reaches the control's private WOPI listener (default: the control private origin). The browser and Core origins come from
+ // the core values, the WOPI signing key is generated per render, and the Core service secret is the reads file. Discovery is
+ // always GET <editorOrigin>/hosting/discovery (office-composition.mjs); no path or secret is declarable here.
+ if(f.office!==undefined){
+  const o=record(f.office,'features.office',['enabled'],['editorOrigin','wopiOrigin']);
+  if(!bool(o.enabled,'features.office.enabled')){if(o.editorOrigin!==undefined||o.wopiOrigin!==undefined)fail('RENDER_INPUT_REFUSED','features.office: a disabled mount names no origins');out.office={enabled:false};}
+  else{
+   record(o,'features.office',['enabled','editorOrigin'],['wopiOrigin']);
+   origin(o.editorOrigin,'features.office.editorOrigin');
+   if(o.wopiOrigin!==undefined){origin(o.wopiOrigin,'features.office.wopiOrigin');if(o.wopiOrigin===o.editorOrigin)fail('RENDER_INPUT_REFUSED','features.office.wopiOrigin must differ from editorOrigin');}
+   out.office={enabled:true,editorOrigin:o.editorOrigin,...(o.wopiOrigin===undefined?{}:{wopiOrigin:o.wopiOrigin})};
+  }
+ }
+ if(out.office?.enabled===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.office reuses the reads Core service secret: it needs features.reads enabled');
  if(out.artifacts?.authority===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.artifacts.authority reuses the reads Core service secret: it needs features.reads enabled');
  if(out.memory?.enabled===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.memory reuses the reads Core service secret: it needs features.reads enabled');
  if(out.intents?.core===true&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.intents.core reuses the reads Core service secret: it needs features.reads enabled');
  if(out.routines?.core!==undefined&&out.reads?.enabled!==true)fail('RENDER_INPUT_REFUSED','features.routines.core reuses the reads Core service secret: it needs features.reads enabled');
  return out;
 }
+/** The control `office` key for a parsed `features.office`: the editor origin as declared, the WOPI origin defaulting to the
+ * control private origin (the private listener mounts /api/meri/office/wopi/files/), the browser origin equal to the frontend
+ * origin the validator requires, the Core origin, and the two material paths. The rendered bytes then pass the runtime
+ * validator (artifacts/office-configuration.mjs) and the material plan like every other key, in validateRendered. */
+export function renderOfficeControl(office,{coreOrigin,frontendOrigin,controlPrivate}){
+ if(office.enabled!==true)return {enabled:false};
+ const wopiOrigin=office.wopiOrigin??controlPrivate;
+ if(wopiOrigin===office.editorOrigin)fail('RENDER_INPUT_REFUSED','features.office.editorOrigin must not be the control private origin');
+ return {enabled:true,editorOrigin:office.editorOrigin,wopiOrigin,browserOrigin:frontendOrigin,coreOrigin,keyFile:PATHS.officeKey,serviceSecretFile:PATHS.readsServiceSecret};
+}
+/** Fresh WOPI signing key per render: 32 random bytes, base64url (43 printable bytes, above the composition's 32-byte floor). */
+export const officeSigningKey=()=>Buffer.from(randomBytes(32).toString('base64url'),'utf8');
 /** Operator-supplied secret bytes for the rendered features: exactly the keys the features need, each naming the same ARN as the
  * deployment inputs and the Secrets Manager VersionId it was read at. Values are never echoed in a refusal. */
 function featureSecretFiles(features,supplied={}){
@@ -387,6 +414,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
   ...(features.reads?.approvedReads===undefined?{}:{approvedReads:features.reads.approvedReads})});
  // Product families, each rendered as exactly its own control key, in a fixed order after every first-chat key (absent: none).
  const downloadLinkKey=features.downloadLinks?.enabled===true?Buffer.from(randomBytes(32).toString('base64url'),'utf8'):null;
+ const officeKey=features.office?.enabled===true?officeSigningKey():null;
  const featureKeys={};
  for(const key of ['userPreferences','tenantSettings','retention'])if(features[key]!==undefined)featureKeys[key]={...features[key]};
  if(features.intents!==undefined)featureKeys.intents={enabled:features.intents.enabled,...(features.intents.core===true?{core:{origin:k.coreOrigin,serviceSecretFile:PATHS.readsServiceSecret}}:{})};
@@ -427,6 +455,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  if(features.reads!==undefined)featureKeys.reads=features.reads.enabled?{enabled:true,serviceSecretFile:PATHS.readsServiceSecret,
   ...(features.reads.readModeServiceSecretArn===undefined?{}:{readModeServiceSecretFile:PATHS.readsReadModeServiceSecret}),
   ...(features.reads.defaultCongress===undefined?{}:{defaultCongress:features.reads.defaultCongress})}:{enabled:false};
+ if(features.office!==undefined)featureKeys.office=renderOfficeControl(features.office,{coreOrigin:k.coreOrigin,frontendOrigin:k.frontendOrigin,controlPrivate});
  const sourceEnabled=features.sourceEnabled===true;
 
  const temporal=()=>({address:o.temporalAddress,namespace:d.temporal.namespace,taskQueue:d.temporal.taskQueue,
@@ -465,7 +494,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
    // Feature material, control only and only when rendered: the Core service secrets for reads and the download-link signing key.
    ...(secretFiles['reads.serviceSecret']?[[PATHS.readsServiceSecret,secretFiles['reads.serviceSecret'].bytes]]:[]),
    ...(secretFiles['reads.readModeServiceSecret']?[[PATHS.readsReadModeServiceSecret,secretFiles['reads.readModeServiceSecret'].bytes]]:[]),
-   ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[]),...native.files.control]),
+   ...(downloadLinkKey?[[PATHS.downloadLinkKey,downloadLinkKey]]:[]),...(officeKey?[[PATHS.officeKey,officeKey]]:[]),...native.files.control]),
   'temporal-worker':new Map([[PATHS.worker,configBytes['temporal-worker']],[PATHS.controlCapability,capabilityBytes.control],...temporalFiles('temporal-worker'),...native.files.worker]),
  };
  if(schedule)files['schedule-worker']=new Map([[PATHS.schedule,configBytes['schedule-worker']],
@@ -489,7 +518,8 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  if(Object.keys(features).length)summary.features={sourceEnabled,controlKeys:Object.keys(featureKeys),approvedReads:features.reads?.approvedReads!==undefined,
   secretFiles:Object.fromEntries(Object.entries(secretFiles).map(([key,v])=>[key==='reads.serviceSecret'?PATHS.readsServiceSecret:PATHS.readsReadModeServiceSecret,
    {feature:key,secretArn:v.secretArn,versionId:v.versionId,sha256:sha(v.bytes)}])),
-  generatedFiles:downloadLinkKey?{[PATHS.downloadLinkKey]:'download-link signing key, fresh per render (32 random bytes, base64url)'}:{},
+  generatedFiles:{...(downloadLinkKey?{[PATHS.downloadLinkKey]:'download-link signing key, fresh per render (32 random bytes, base64url)'}:{}),
+   ...(officeKey?{[PATHS.officeKey]:'Office WOPI access-token signing key, fresh per render (32 random bytes, base64url)'}:{})},
   ...(features.browserActivation===undefined?{}:{browserActivation:features.browserActivation.state==='open'?{state:'open',evidence:features.browserActivation.evidence,evidenceSha256:features.browserActivation.evidenceSha256,evidenceVerified:true}:{state:'held'}})};
  return {roles,summary,...(native.observerMaterial===undefined?{}:{nativeObserverMaterial:native.observerMaterial})};
 }

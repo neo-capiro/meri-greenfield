@@ -11,11 +11,12 @@ import {fileURLToPath} from 'node:url';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
 const R=await import('./render-material.mjs');
-const {renderMaterial,readPrivateDirectory,readFeatureSecrets,withPosixPaths,parseFeatures,PATHS,ROLES,RUNTIME_USERS,SECRET_ARN,SOURCE_ROOT,main}=R;
+const {renderMaterial,readPrivateDirectory,readFeatureSecrets,withPosixPaths,parseFeatures,renderOfficeControl,PATHS,ROLES,RUNTIME_USERS,SECRET_ARN,SOURCE_ROOT,main}=R;
 const {createRenderFixture,addScheduleBindings,IDENTITY,FAKE_PASSWORDS}=await import('./render-material.fixture.mjs');
 const RV=await import('./runtime-values.mjs');
 const {validateConfiguration}=await import('../../../apps/runtime/config.mjs');
 const {compileProductMaterialPlan}=await import('../../../apps/runtime/material-init-plan.mjs');
+const {compileOfficeConfiguration}=await import('../../../apps/runtime/artifacts/office-configuration.mjs');
 const {validateStaticProductDelivery}=await import('../../../apps/runtime/material-init.mjs');
 const {PROPOSED_PREVIEW_CAPABILITY_PLATFORM,NO_CAPABILITY_PLATFORM,CORE_ROLES,APPROVED_READS_LITERAL,compileCapabilityPlatform}=await import('../../../apps/runtime/product-ports/capability-policy.mjs');
 const {resolveCapabilityPolicy}=await import('../../../apps/worker/conversation/capabilities/policy-resolution.mjs');
@@ -148,7 +149,8 @@ test('absent and empty features render the same two application service roles',a
  assert.deepEqual(candidate.identity,{origin:'https://core.synthetic.invalid'});
  for(const key of ['grantIntents','grantId','taskRequest','commandContext'])assert.equal(Object.hasOwn(candidate,key),false);
  assert.equal(Object.hasOwn(candidate,'modelCapabilityFile'),false);
- for(const key of ['userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','uploads'])assert.equal(Object.hasOwn(config(current,'control'),key),false);
+ for(const key of ['userPreferences','tenantSettings','intents','routines','retention','artifacts','downloadLinks','capabilityPlatform','reads','uploads','office'])assert.equal(Object.hasOwn(config(current,'control'),key),false);
+ assert.equal(Object.keys(current.roles.control.expected.sha256ByPath).includes(PATHS.officeKey),false);
 });
 
 /** Control differs from the default by exactly `keys`; unrelated service material stays identical. */
@@ -436,4 +438,37 @@ test('intents.core renders the Core approval forwarder block (origin and reads s
  assert.deepEqual(control.intents,{enabled:true,core:{origin:control.agentcore.identity.origin,serviceSecretFile:PATHS.readsServiceSecret}});
  await assert.rejects(render(withFeatures({intents:{enabled:true,core:{enabled:true}}})),/needs features.reads enabled/u);
  await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,intents:{enabled:false,core:{enabled:true}}}),{featureSecrets:featureSecrets()}),/needs features.intents.enabled true/u);
+});
+
+test('office renders the control Office mount: editor origin, private WOPI listener, Core/browser origins, a fresh control-only signing key and the reads secret file',async()=>{
+ await baseline();
+ const editorOrigin='https://office.synthetic.invalid',office={enabled:true,editorOrigin};
+ const rendered=await render(withFeatures({sourceEnabled:true,reads:READS,office}),{featureSecrets:featureSecrets()});
+ const control=assertOnly(rendered,['sourceEnabled','reads','office'],{worker:{sourceEnabled:true},extraControlFiles:[PATHS.readsServiceSecret,PATHS.readsReadModeServiceSecret,PATHS.officeKey]});
+ // Exactly the closed shape artifacts/office-configuration.mjs accepts: no discovery path, frame ancestor list or secret value rides along.
+ assert.deepEqual(control.office,{enabled:true,editorOrigin,wopiOrigin:control.privateHttp.frontendOrigin,browserOrigin:control.http.frontendOrigin,coreOrigin:control.agentcore.identity.origin,keyFile:PATHS.officeKey,serviceSecretFile:PATHS.readsServiceSecret});
+ assert.deepEqual(control.office,renderOfficeControl(office,{coreOrigin:control.agentcore.identity.origin,frontendOrigin:control.http.frontendOrigin,controlPrivate:control.privateHttp.frontendOrigin}));
+ withPosixPaths(()=>{validateConfiguration(control,'control');assert.deepEqual({...compileOfficeConfiguration(control)},control.office);});
+ // The signing key is generated material: control bundle only, 0600 and digest-pinned, at least the composition's 32-byte floor, never in any JSON.
+ const key=Buffer.from(rendered.roles.control.bundle.files.find(f=>f.path===PATHS.officeKey).base64,'base64');
+ assert.ok(key.length>=32);assert.equal(rendered.roles.control.expected.sha256ByPath[PATHS.officeKey],sha(key));assertNotInJson(rendered,key.toString('utf8'));
+ for(const role of ROLES.filter(role=>role!=='control'))assert.equal(rendered.roles[role].bundle.files.some(f=>f.path===PATHS.officeKey),false);
+ const again=await fixture.render(withFeatures({sourceEnabled:true,reads:READS,office}),{featureSecrets:featureSecrets()});
+ assert.notEqual(again.roles.control.expected.sha256ByPath[PATHS.officeKey],rendered.roles.control.expected.sha256ByPath[PATHS.officeKey]);
+ assert.deepEqual(rendered.summary.features.controlKeys,['capabilityPlatform','reads','office']);
+ assert.equal(rendered.summary.features.generatedFiles[PATHS.officeKey]!==undefined,true);
+ // An explicit WOPI origin (the editor reaches the private listener through another name) is carried as declared.
+ const explicit=config(await render(withFeatures({sourceEnabled:true,reads:READS,office:{...office,wopiOrigin:'https://wopi.synthetic.invalid'}}),{featureSecrets:featureSecrets()}),'control');
+ assert.equal(explicit.office.wopiOrigin,'https://wopi.synthetic.invalid');
+ // Disabled declares the inert form and delivers no key; absent (baseline) declares nothing (checked above).
+ const off=await render(withFeatures({office:{enabled:false}}));
+ assert.deepEqual(assertOnly(off,['office']).office,{enabled:false});assert.equal(off.roles.control.bundle.files.some(f=>f.path===PATHS.officeKey),false);
+ // Fail closed: the reads secret reuse, a non-boolean, a missing/non-https/pathed editor origin, an aliased WOPI origin, an editor at the
+ // control private origin, a retired discovery path or an unknown field, and origins on a disabled mount.
+ await assert.rejects(render(withFeatures({sourceEnabled:true,office})),/needs features.reads enabled/u);
+ await assert.rejects(render(withFeatures({sourceEnabled:true,reads:READS,office:{enabled:true,editorOrigin:control.privateHttp.frontendOrigin}}),{featureSecrets:featureSecrets()}),/must not be the control private origin/u);
+ for(const bad of [{enabled:'yes'},{enabled:true},{enabled:true,editorOrigin:'http://office.synthetic.invalid'},{enabled:true,editorOrigin:editorOrigin+'/hosting'},{enabled:true,editorOrigin:7},
+  {enabled:true,editorOrigin,wopiOrigin:editorOrigin},{enabled:true,editorOrigin,wopiOrigin:'https://wopi.synthetic.invalid/x'},{enabled:true,editorOrigin,discoveryPath:'/hosting/discovery'},
+  {enabled:true,editorOrigin,keyFile:'/run/meri/other.key'},{enabled:false,editorOrigin},{}])
+  assert.throws(()=>parseFeatures({sourceEnabled:true,reads:READS,office:bad}),error=>error.code==='RENDER_INPUT_REFUSED'||/must be a boolean/u.test(error.message));
 });
