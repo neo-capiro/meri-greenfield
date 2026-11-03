@@ -14,19 +14,19 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
  const check=signal=>()=>signal?.throwIfAborted();
  const deletions=createConversationDeletionService({status:deletionStatus});
  const management=store.management?createConversationManagementService({store,suppression}):null;
- async function servable(principal,conversationId){if(retention)await retention.assertServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId});}
+ async function servable(principal,conversationId,options){if(retention)await retention.assertServable({tenantId:principal.tenantId,kind:'conversation',subjectId:conversationId},options);}
  async function current(recheckConversation,conversation,readScheduleOriginRows){if(typeof recheckConversation!=='function')refuse('CONVERSATION_UNAVAILABLE');await recheckConversation({conversationId:conversation.conversationId,scopes:conversation.scopes},readScheduleOriginRows);}
  // Every row is still checked; the first refusal withholds the page once the reads already started have settled.
  async function readAll(conversations,read){let next=0,failure;const results=[];
   const worker=async()=>{while(!failure&&next<conversations.length){const index=next++,conversation=conversations[index];try{results[index]=await read(conversation);}catch(error){failure??={error};}}};
   await Promise.all(Array.from({length:Math.min(CURRENTNESS_CONCURRENCY,conversations.length)},worker));if(failure)throw failure.error;return results;}
  const currentAll=(recheckConversation,conversations,readScheduleOriginRows)=>readAll(conversations,c=>current(recheckConversation,c,readScheduleOriginRows));
- async function transcript({principal,request,signal,recheckConversation},deferCurrentness=false){
+ async function transcript({principal,request,signal,deadlineMs,recheckConversation},deferCurrentness=false){
   // Subject ownership/client authorization precedes subject-specific retention observations.
   const result=await store.history.transcript({principal,...request},check(signal));
-  await servable(principal,request.conversationId);if(!deferCurrentness)await current(recheckConversation,result.conversation);
+  await servable(principal,request.conversationId,{signal,deadlineMs});if(!deferCurrentness)await current(recheckConversation,result.conversation);
   // Keep both local retention observations; final fenced release checks retention again after its fresh Core read.
-  await servable(principal,request.conversationId);return result;
+  await servable(principal,request.conversationId,{signal,deadlineMs});return result;
  }
  return Object.freeze({
   deletions:guard(deletions.list),deletionStatus:guard(deletions.read),
@@ -36,7 +36,7 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
   // the final membership recheck. Checking it here as well would only repeat those reads, so the list keeps the retention filter.
   list:guard(async({principal,request,signal})=>{
    const result=await store.history.list({principal,...request},check(signal)),visible=[];
-   for(const c of result.conversations){try{await servable(principal,c.conversationId);}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(c);}
+   for(const c of result.conversations){try{await servable(principal,c.conversationId,{signal});}catch(error){if(error?.code==='RETENTION_SUPPRESSED')continue;throw error;}visible.push(c);}
    return {...result,conversations:visible};
   }),
   // Read-only transcript releases only through the final serving fence, like list; nextTurn keeps every early/fresh check.
@@ -84,16 +84,16 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
   }),
   nextTurn:guard(async({principal,request,signal,deadlineMs,recheckMembership,recheckConversation})=>{
    if(typeof nextRunOwner?.admitTurn!=='function')refuse('CONVERSATION_TURN_UNAVAILABLE','NOT_DISPATCHED');
-   let saved;try{saved=await transcript({principal,request:{conversationId:request.conversationId,after:0,limit:1},signal,recheckConversation});}
+   let saved;try{saved=await transcript({principal,request:{conversationId:request.conversationId,after:0,limit:1},signal,deadlineMs,recheckConversation});}
    catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
    if(saved.latestRun.binding.runId===request.sourceRunId&&!terminal(saved.latestRun.state))refuse('CONVERSATION_TURN_CONFLICT','NOT_DISPATCHED');
    try{if(recheckMembership)await recheckMembership();else await gate.recheck({principal,signal,deadlineMs});}
    catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
-   try{await current(recheckConversation,saved.conversation);await servable(principal,request.conversationId);}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
+   try{await current(recheckConversation,saved.conversation);await servable(principal,request.conversationId,{deadlineMs,signal});}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','NOT_DISPATCHED');}
    let admitted;try{admitted=await nextRunOwner.admitTurn({principal:{tenantId:principal.tenantId,actorId:principal.actorId},...request,signal,assertActive:()=>current(recheckConversation,saved.conversation)});}
    // A source not yet settled (or still live) refuses before any reservation write: a definite, retryable conflict, never UNKNOWN.
    catch(error){if(['NEXT_RUN_SOURCE_UNSETTLED','NEXT_RUN_SOURCE_NOT_TERMINAL'].includes(error?.code))throw new ProductError('CONVERSATION_TURN_CONFLICT','NOT_DISPATCHED');throw asProductError(error,'CONVERSATION_UNAVAILABLE','UNKNOWN');}
-   try{await servable(principal,request.conversationId);await current(recheckConversation,saved.conversation);await servable(principal,request.conversationId);}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','RESULT_NOT_RELEASED');}
+   try{await servable(principal,request.conversationId,{deadlineMs,signal});await current(recheckConversation,saved.conversation);await servable(principal,request.conversationId,{deadlineMs,signal});}catch(error){throw new ProductError(productFailure(error)?.code??'CONVERSATION_UNAVAILABLE','RESULT_NOT_RELEASED');}
    return {schema:TURN_SCHEMA,...admitted};
   }),
  });

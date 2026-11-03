@@ -22,8 +22,16 @@ export function createRetentionReadGate({journal,serving,log=line=>process.stder
   log(JSON.stringify({event:'MERI_RETENTION_GATE',stage:'retention',outcome:'refused',code,cause:causeCode(cause),fence:state.enabled?'open':'closed',reason:state.enabled?null:state.reason??'RETENTION_RECOVERY_BARRIER'}));}catch{/* Observability cannot affect the refusal. */}};
  const refuse=(code,cause)=>{report(code,cause);fail(code,cause);};
  const barrier=()=>{if(!serving.isEnabled())refuse('RETENTION_RECOVERY_BARRIER');};
- async function isSuppressed(rawSubject,read=journal.get,options){barrier();const s=subject(rawSubject);let current;try{current=await read(subjectKey(s),options);}catch(error){refuse(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER'?'RETENTION_RECOVERY_BARRIER':'RETENTION_READ_UNAVAILABLE',error);}barrier();return Boolean(current&&current.state!=='RELEASED');}
- async function assertServable(rawSubject,read=journal.get,options){if(await isSuppressed(rawSubject,read,options))fail('RETENTION_SUPPRESSED');}
+ /** `assertServable(subject)` keeps the default read and `assertServable(subject,read)` keeps an injected read.
+  *  `assertServable(subject,{deadlineMs,signal})` carries a real standalone owner's one absolute deadline and abort
+  *  into the store read. It is never a callback: the retry stays inside the store, never around caller work. */
+ const readSelection=(readOrOptions,options)=>{const injected=typeof readOrOptions==='function';
+  const read=injected?readOrOptions:journal.get,opts=injected?options:readOrOptions;
+  if(opts!==undefined&&(typeof opts!=='object'||opts===null||Array.isArray(opts)))fail('RETENTION_INVALID_REQUEST');
+  if(opts?.deadlineMs!==undefined&&(!Number.isSafeInteger(opts.deadlineMs)||opts.deadlineMs<0))fail('RETENTION_INVALID_REQUEST');
+  return {read,options:opts};};
+ async function isSuppressed(rawSubject,readOrOptions=journal.get,options){barrier();const s=subject(rawSubject),{read,options:readOptions}=readSelection(readOrOptions,options);let current;try{current=await read(subjectKey(s),readOptions);}catch(error){refuse(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER'?'RETENTION_RECOVERY_BARRIER':'RETENTION_READ_UNAVAILABLE',error);}barrier();return Boolean(current&&current.state!=='RELEASED');}
+ async function assertServable(rawSubject,readOrOptions=journal.get,options){const {read,options:readOptions}=readSelection(readOrOptions,options);if(await isSuppressed(rawSubject,read,readOptions))fail('RETENTION_SUPPRESSED');}
  /** Serving owners provide authenticated subject identities and serialize their response inside this transition exclusion. */
  async function withRelease(rawSubjects,release,options){
   if(!Array.isArray(rawSubjects)||rawSubjects.length>100||typeof release!=='function'||typeof journal.withServing!=='function')fail('RETENTION_CONFIGURATION');

@@ -47,7 +47,7 @@ async function nativeFile({config,current,life,versionId,intent,state}){
  const context=config.options.context,retention=config.options.retention;
  const servable=async metadata=>{if(!retention)return;const subjects=[{tenantId:context.binding.tenantId,kind:'conversation',subjectId:context.binding.conversationId}];
   if(metadata){if(metadata.binding.conversationId!==context.binding.conversationId)subjects.push({tenantId:metadata.binding.tenantId,kind:'conversation',subjectId:metadata.binding.conversationId});subjects.push({tenantId:metadata.binding.tenantId,kind:'artifact',subjectId:metadata.entry.object.objectId});}
-  for(const subject of subjects)await life.run(()=>retention.assertServable(subject));};
+  for(const subject of subjects)await life.run(()=>retention.assertServable(subject,{deadlineMs:life.deadline(),signal:life.signal}));};
  await servable();const selected=await life.run(signal=>config.nativeFiles.read(versionId,signal));if(selected===null)return null;
  own(selected,['kind','binding','scopes','manifestId','createdAt','entry']);
  if(selected.kind!=='native-file'||selected.binding.tenantId!==context.binding.tenantId||selected.binding.actorId!==context.binding.actorId||!same(selected.scopes,context.scopes)||selected.entry.object.objectId!==versionId)fail('DOCUMENT_RESULT_REFUSED',502);

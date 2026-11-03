@@ -9,6 +9,8 @@ import {createPostgresWatermarkStore} from '../postgres-watermark.mjs';
 import {watermarkedJournal} from '../recovery-watermark.mjs';
 import {createMemoryRetentionJournal} from '../memory-journal.mjs';
 import {createServingFence} from '../serving-fence.mjs';
+import {createRetentionReadGate} from '../suppression.mjs';
+import {createOperationLifetime} from '../../../../packages/runtime/operation-lifetime.mjs';
 import {hash} from '../boundary.mjs';
 import {createRetentionLedger,createMemoryLedgerSink} from '../ledger.mjs';
 /** One-row table emulation; `faults` maps a statement prefix to 'throw'. Every lease records its releases. */
@@ -177,4 +179,57 @@ test('synthetic SQL: an aborted caller is not retried',async()=>{
  const abort=new AbortController(),attempts={n:0},{pool,store}=compose({faults:{'SELECT pg_advisory_xact_lock_shared':()=>{attempts.n++;abort.abort();throw lockTimeout();}},maxRequestMs:5000}),key=`tenant-a:conversation:${randomUUID()}`;
  await assert.rejects(store.readProjection(key,{signal:abort.signal}),/RETENTION_STORE_UNAVAILABLE/);
  assert.equal(attempts.n,1,'an aborted caller is not retried');assert.equal(begins(pool.made[0]),1);
+});
+
+/** The real composed standalone read path: canonical gate -> watermarked journal -> watermark store -> journal. */
+function composedGate({now,onLock}){
+ const pool=syntheticPool({faults:{'SELECT pg_advisory_xact_lock_shared':onLock}});
+ const journal=createPostgresRetentionJournal({pool,maxRequestMs:10000,now});
+ const store=createPostgresWatermarkStore({journal}),fence=createServingFence();fence.enable({watermark:{sequence:0,entrySha256:null}});
+ const tracked=watermarkedJournal({journal,watermark:store,fence,ledger:{async head(){return {sequence:0,entrySha256:null};}}});
+ return {pool,journal,gate:createRetentionReadGate({journal:tracked,serving:fence,log(){}})};
+}
+const servedSubject=()=>({tenantId:'tenant-a',kind:'conversation',subjectId:randomUUID()});
+
+test('composed gate: the production default cannot accept a snapshot beyond the agreed five-second window',async()=>{
+ const clock={t:0},attempts={n:0};
+ const {pool,gate}=composedGate({now:()=>clock.t,onLock:()=>{attempts.n++;if(attempts.n===1){clock.t=2001;throw lockTimeout();}clock.t=6001;return {rows:[]};}});
+ await assert.rejects(gate.assertServable(servedSubject()),/RETENTION_READ_UNAVAILABLE/);
+ assert.equal(attempts.n,2,'at most two attempts');
+ const sql=pool.made[0].statements;
+ assert.equal(sql.filter(s=>s.startsWith('BEGIN')).length,2,'one fresh transaction per attempt, nothing more');
+ assert.equal(sql.some(s=>s.startsWith('SELECT s.projection,')),false,'no snapshot is accepted at 6001ms');
+ assert.equal(sql.includes('COMMIT'),false,'no COMMIT after the five-second window');
+ assert.ok(pool.made[0].releases.at(-1) instanceof Error,'the over-budget lease is retired');
+});
+
+test('composed gate: a far caller deadline is clipped to the same five-second window',async()=>{
+ const clock={t:0},attempts={n:0};
+ const {pool,gate}=composedGate({now:()=>clock.t,onLock:()=>{attempts.n++;if(attempts.n===1){clock.t=2001;throw lockTimeout();}clock.t=6001;return {rows:[]};}});
+ await assert.rejects(gate.assertServable(servedSubject(),{deadlineMs:clock.t+60000}),/RETENTION_READ_UNAVAILABLE/);
+ assert.equal(attempts.n,2,'the caller cannot buy extra attempts');assert.equal(pool.made[0].statements.some(s=>s.startsWith('SELECT s.projection,')),false);
+});
+
+test('composed gate: an owner-style abort stops the read before any second attempt',async()=>{
+ const abort=new AbortController(),clock={t:0},attempts={n:0};
+ const {pool,gate}=composedGate({now:()=>clock.t,onLock:()=>{attempts.n++;abort.abort();throw lockTimeout();}});
+ const life=createOperationLifetime({deadlineMs:clock.t+1000,now:()=>clock.t,signal:abort.signal,errorFactory:code=>Object.assign(Error(code),{code})});
+ const subject=servedSubject();let pending;
+ const outer=await life.run(()=>{pending=gate.assertServable(subject,{deadlineMs:life.deadline(),signal:life.signal});return pending;}).then(()=>'accepted',error=>error.code);
+ assert.equal(outer,'CANCELLED');await assert.rejects(pending,/RETENTION_READ_UNAVAILABLE/);life.close();
+ assert.equal(attempts.n,1,'no retry after the caller aborted');
+ const sql=pool.made[0].statements;
+ assert.equal(sql.filter(s=>s.startsWith('BEGIN')).length,1,'no second BEGIN after the abort');
+ assert.equal(sql.some(s=>s.startsWith('SELECT s.projection,')),false,'no joined read after the abort');
+ assert.equal(sql.includes('COMMIT'),false,'no COMMIT after the abort');
+ assert.equal(sql.includes('ROLLBACK'),false,'no post-abort ROLLBACK work');
+ assert.ok(pool.made[0].releases[0] instanceof Error,'the aborted lease is retired');
+});
+
+test('composed gate: an expired caller budget prevents a second attempt',async()=>{
+ const clock={t:0},attempts={n:0};
+ const {pool,gate}=composedGate({now:()=>clock.t,onLock:()=>{attempts.n++;clock.t=2001;throw lockTimeout();}});
+ await assert.rejects(gate.assertServable(servedSubject(),{deadlineMs:3000}),/RETENTION_READ_UNAVAILABLE/);
+ assert.equal(attempts.n,1,'a retry cannot fit the 3000ms caller deadline');
+ assert.equal(pool.made[0].statements.filter(s=>s.startsWith('BEGIN')).length,1,'no second BEGIN after expiry');
 });
