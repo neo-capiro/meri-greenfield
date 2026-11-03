@@ -5,11 +5,14 @@ import {createTurnTelemetry} from './telemetry/turn-context.mjs';
 import {countingFetch} from './telemetry/counting.mjs';
 import {verifyControlCaBundle,productControlTrustsCompositeCa} from './control-ca-bundle.mjs';
 import {readMaterialReceipt} from './material-receipt.mjs';
+import {operatorCallbackConfiguration} from './operator-callback-configuration.mjs';
 /** Private control trust is delivered before Node starts, separately from Temporal's native mTLS. */
 export function productWorkerTrustsPinnedServerCa(c,environment=process.env){const file=c.native?.serverCaFile;return typeof file==='string'&&/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)&&environment.NODE_EXTRA_CA_CERTS===file;}
-export async function main(argv=process.argv.slice(2)){
+export function main(argv=process.argv.slice(2)){return startRuntime(argv,null);}
+export function mainOperatorTemporalWorker(raw,argv){return startRuntime(argv,operatorCallbackConfiguration(raw));}
+async function startRuntime(argv,callback){
  if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('Usage: node apps/runtime/cli.mjs <control|temporal-worker|schedule-worker> --config /absolute/config.json\nExit: 0 graceful completion; 2 configuration/startup timeout; 3 runtime/startup failure/shutdown timeout.\n');return 0;}
- if(argv.length!==3||argv[1]!=='--config'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);
+ if(argv.length!==3||argv[1]!=='--config'||callback!==null&&argv[0]!=='temporal-worker'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);
   if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.agentcore===undefined))throw Error('PRODUCT_LISTENER_REFUSED');
   if((role==='control'||role==='schedule-worker')&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1')await verifyControlCaBundle(c);
@@ -67,7 +70,7 @@ export async function main(argv=process.argv.slice(2)){
    routinesOwners=createAttendedRoutinesOwnerComposition({configuration:c,workflow:c.routines.workflow,readConsents:readDelegationConsents});
    productPorts.routinesCandidateBinder=candidate=>{routinesOwners.bindCandidate(candidate);if(routinesOwners.state()==='owners-unavailable')process.stderr.write(JSON.stringify({event:'runtime.routines.attended.unavailable'})+'\n');};
   }
-  runtime=await module[start](c,{signal:controller.signal,...productPorts});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
+  runtime=callback===null?await module[start](c,{signal:controller.signal,...productPorts}):await module.startOperatorTemporalWorker(c,callback,{signal:controller.signal});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
  }catch(error){process.stderr.write('RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
   if(cleanupUnknown)process.stderr.write('RUNTIME_CLEANUP_UNKNOWN\n');return 3;
