@@ -42,7 +42,7 @@ export function compileHostListenerTemplate(input){
  const b=validateHostListenerInput(input);
  // Same 12-hex identity/prefix as the isolated operator case. The short suffix stays within both ELB name limits;
  // case names cannot select ordinary or callback targets. Placement/SG ownership still comes from reviewed input.
- const name=b.caseId===undefined?'meri-preview-host-control':`meri-case-${b.caseId}-host`;
+ const name=Object.hasOwn(b,'caseId')?`meri-case-${b.caseId}-host`:'meri-preview-host-control';
  const tags=[{Key:'Project',Value:'meri-greenfield'},{Key:'meri',Value:'first-chat-preview'},{Key:'MeriHostPurpose',Value:'host-to-control-listener'}];
  return freezeTree({
   AWSTemplateFormatVersion:'2010-09-09',

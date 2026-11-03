@@ -58,6 +58,22 @@ test('omitting case identity preserves the accepted ordinary template bytes',()=
  assert.deepEqual(validateHostListenerInput(input()),input());
 });
 
+test('omitted case identity ignores an ambient inherited caseId',()=>{
+ const prior=Object.getOwnPropertyDescriptor(Object.prototype,'caseId');
+ try{
+  Object.defineProperty(Object.prototype,'caseId',{value:'NOT-A-VALID-CASE',configurable:true});
+  assert.equal(Object.hasOwn(validateHostListenerInput(input()),'caseId'),false);
+  const t=compileHostListenerTemplate(input());
+  for(const id of ['HostListenerLoadBalancer','HostListenerTargetGroup'])
+   assert.equal(t.Resources[id].Properties.Name,'meri-preview-host-control');
+  assert.equal(createHash('sha256').update(JSON.stringify(t)).digest('hex'),'8b85fdae54769dec3857068892dcff5ea698a1aca9e5db0f17f7a6749016ddbc');
+ }finally{
+  if(prior)Object.defineProperty(Object.prototype,'caseId',prior);
+  else Reflect.deleteProperty(Object.prototype,'caseId');
+  assert.deepEqual(Object.getOwnPropertyDescriptor(Object.prototype,'caseId'),prior);
+ }
+});
+
 test('case identity changes only the two physical names and isolates them from ordinary and callback resources',()=>{
  const ordinary=compileHostListenerTemplate(input()),names=[];
  for(const caseId of ['a123456789ab','b123456789ab']){
