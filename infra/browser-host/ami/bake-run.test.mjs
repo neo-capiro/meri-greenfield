@@ -60,7 +60,7 @@ function run(scenario={}){
  const report=join(dir,'report.json');
  writeFileSync(report,JSON.stringify({marker:'MERI_BAKE_VERIFICATION',ok:true,kernel:'6.1.150-175.280.amzn2023.aarch64',node:ami.NODE_VERSION,imageDigest:input.imageDigest,helperSha256:input.helperSha256,
   nativeHostRelayHelperSha256:input.nativeHostRelayHelperSha256,programSha256:input.programSha256,profileSha256:ami.renderProfile(input).sha256,identityUnit:'enabled',hostPath:'enabled',
-  hostService:'disabled',sshd:'disabled',userns:true,identityFilePresent:false,dockerCredentials:false})+'\n');
+  hostService:'static',sshd:'disabled',userns:true,identityFilePresent:false,dockerCredentials:false})+'\n');
  const described=join(dir,'described.json');
  writeFileSync(described,JSON.stringify({Images:[{ImageId:IMAGE,Name:'n',Architecture:'arm64',State:'available',ImdsSupport:scenario.badImage?undefined:'v2.0',VirtualizationType:'hvm',EnaSupport:true,
   RootDeviceType:'ebs',RootDeviceName:'/dev/xvda',Public:false,BlockDeviceMappings:[{DeviceName:'/dev/xvda',Ebs:{Encrypted:true,VolumeSize:30,VolumeType:'gp3',DeleteOnTermination:true,SnapshotId:SNAPSHOT}}]}]}));

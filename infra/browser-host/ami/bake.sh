@@ -148,8 +148,8 @@ for ((attempt = 0; attempt < 240; attempt++)); do
   case $status in Pending | InProgress | Delayed | '') sleep 10 ;; *) break ;; esac
 done
 [[ $status == Success ]] || { echo "guest bake ended with status ${status:-unknown}" >&2; exit 1; }
-call '{"marker":"PLAN"}' ssm get-command-invocation --command-id "$command_id" --instance-id "$builder" --query StandardOutputContent --output text | tail -n 1 > "$work/report.json"
-if [[ $mode == run ]]; then node "$here/render.mjs" verify-guest --input "$work/render/input.json" --report "$work/report.json" > /dev/null; fi
+call '{"marker":"PLAN"}' ssm get-command-invocation --command-id "$command_id" --instance-id "$builder" --query StandardOutputContent --output text > "$work/report.txt"
+if [[ $mode == run ]]; then node "$here/render.mjs" verify-guest --input "$work/render/input.json" --report "$work/report.txt" --failure-out "$EVIDENCE_OUT" > /dev/null; fi
 
 step 7 stop the builder and create the image
 call '' ec2 stop-instances --instance-ids "$builder" > /dev/null
@@ -181,6 +181,6 @@ remaining=$(call 0 ec2 describe-volumes --filters "Name=tag:MeriBakeRun,Values=$
 
 step 10 write the evidence, only a fully verified bake leaves a success record
 if [[ $mode == run ]]; then
-  node "$here/render.mjs" evidence --input "$work/render/input.json" --report "$work/report.json" --described "$work/described.json" --base-ami "$base" --builder "$terminated" --out "$EVIDENCE_OUT"
+  node "$here/render.mjs" evidence --input "$work/render/input.json" --report "$work/report.txt" --described "$work/described.json" --base-ami "$base" --builder "$terminated" --out "$EVIDENCE_OUT"
 fi
 step done
