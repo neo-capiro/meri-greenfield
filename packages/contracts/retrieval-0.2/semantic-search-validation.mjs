@@ -24,12 +24,15 @@ export function createSemanticSearchValidators({validateShape}){
   if(!options||Object.keys(options).length)fail();validateShape(family.input??'SemanticSearchInput',input);
   const admitted=new Set(['query','limit',...family.filters]);
   if(Object.keys(input).some(key=>!admitted.has(key)))fail();
-  const query=input.query.replace(/\s+/g,' ').trim();if(query.length<3)fail();
-  // Core's measured bound is UTF-16 code units on the normalized query, not JSON Schema code points.
-  if(family.utf16Query&&query.length>2000)fail();
+  const query=input.query.replace(/\s+/g,' ').trim();
+  // JavaScript string length is UTF-16 code units and Core measures the normalized query that way; a JSON Schema
+  // minLength/maxLength counts code points, so the schema only prefilters and these checks decide.
+  if(family.utf16Query?(query.length<3||query.length>2000):query.length<3)fail();
   if(input.dateFrom&&input.dateTo&&input.dateTo<input.dateFrom)fail();
   if(id==='semantic_search_grants'&&input.status!==undefined&&!GRANT_STATUSES.includes(input.status.trim().toLowerCase()))fail();
   for(const key of ['status','agency'])if(typeof input[key]==='string'&&!input[key].trim())fail();
+  // Core trims the agency and then measures it, so the active reads bound the trimmed value in UTF-16 code units.
+  if(family.utf16Query&&typeof input.agency==='string'&&input.agency.trim().length>240)fail();
   return {input:{...input,query,limit:input.limit??10,...(id==='semantic_search_grants'&&input.status!==undefined?{status:input.status.trim().toLowerCase()}:{})}};
  }
  /** The active-corpus families publish one passage per canonical record and bind it to that record by canonical and
@@ -53,10 +56,18 @@ export function createSemanticSearchValidators({validateShape}){
    if(passage.documentHash===passage.attachmentContentSha256)fail();
    if(family.documents){
     if(!HASH.test(passage.attachmentContentSha256??'')||passage.archivedAt===null||passage.extractionMethod!=='local_parser'||typeof passage.truncated!=='boolean')fail();
+    // Core projects one current DIBBS document per hit: the coverage counts are exactly one and the truncation
+    // count is the cited passage's own flag, so a page cannot claim extra coverage or contradict completeness.
     const documents=row.documents;
-    if(documents.attachments<1||documents.withText<1||documents.indexed<1)fail();
-    if(['withText','truncated','indexed'].some(key=>documents[key]>documents.attachments))fail();
-   }else if(passage.attachmentContentSha256!==null||passage.archivedAt!==null||passage.extractionMethod!==null||passage.truncated!==null)fail();
+    if(documents.attachments!==1||documents.withText!==1||documents.indexed!==1)fail();
+    if(documents.truncated!==(passage.truncated?1:0))fail();
+   }else{
+    if(passage.attachmentContentSha256!==null||passage.archivedAt!==null||passage.extractionMethod!==null||passage.truncated!==null)fail();
+    // An SBIR hit must be an open topic without a closed parent status; provider casing is preserved and a null
+    // status stays unknown rather than being rewritten.
+    if(String(record.activity).toLowerCase()!=='open')fail();
+    if(record.solicitationStatus!==null&&['closed','expired','complete'].includes(String(record.solicitationStatus).toLowerCase()))fail();
+   }
    // An inclusive close-date bound cannot be satisfied by an unknown date; a null date stays unknown.
    if(input.dateFrom!==undefined&&(record.closeDate===null||record.closeDate<input.dateFrom))fail();
    if(input.dateTo!==undefined&&(record.closeDate===null||record.closeDate>input.dateTo))fail();

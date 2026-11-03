@@ -172,3 +172,52 @@ test('an empty active page keeps the family denominator and is a success, not a 
  const bad=structuredClone(response);bad.coverage.indexedRecords=bad.coverage.totalRecords+1;
  assert.throws(()=>contract(DIBBS).assertOutput(bad,{request}));
 });
+test('the active reads admit a surrogate-pair query that the code-point schema would refuse',()=>{
+ const c=contract(DIBBS);
+ // three UTF-16 units in two code points: Core accepts it and the receiver must too
+ assert.doesNotThrow(()=>c.normalizeInput({query:'😊a'}));
+ assert.equal(c.normalizeInput({query:'😊a'}).input.query,'😊a');
+ assert.throws(()=>c.normalizeInput({query:'ab'}),'two units stay below the floor');
+ assert.throws(()=>c.normalizeInput({query:'😊'.repeat(1000)+'ab'}),'2,002 units exceed the ceiling');
+ const padded=c.normalizeInput({query:'  radios   for   vehicles  '});
+ assert.equal(padded.input.query,'radios for vehicles','the bound applies to the normalized query');
+});
+test('the active agency bound is measured on the trimmed value in UTF-16 units only for the active reads',()=>{
+ const c=contract(SBIR);
+ assert.doesNotThrow(()=>c.normalizeInput({query:'radios',agency:'𠀀'.repeat(120)}));   // 240 units
+ assert.throws(()=>c.normalizeInput({query:'radios',agency:'𠀀'.repeat(121)}));         // 242 units in 121 code points
+ assert.doesNotThrow(()=>c.normalizeInput({query:'radios',agency:'  Defense Logistics Agency  '}));
+ assert.throws(()=>c.normalizeInput({query:'radios',agency:'   '}),'a blank optional filter is deliberately refused');
+ assert.doesNotThrow(()=>contract('semantic_search_contract_opportunities').normalizeInput({query:'radios',agency:'𠀀'.repeat(121)}),'the older reads keep their own agency behaviour');
+});
+test('a DIBBS page carries exactly one current document and agrees with the cited passage',()=>{
+ const {request,response}=activeCase(DIBBS);
+ assert.doesNotThrow(()=>contract(DIBBS).assertOutput(response,{request}));
+ assert.deepEqual(response.results[0].documents,{attachments:1,withText:1,truncated:0,indexed:1});
+ for(const patch of [{attachments:2,withText:2,indexed:2},{attachments:2},{withText:0},{indexed:0},{truncated:2}])
+  {const bad=structuredClone(response);Object.assign(bad.results[0].documents,patch);
+   assert.throws(()=>contract(DIBBS).assertOutput(bad,{request}),JSON.stringify(patch));}
+ const contradictory=structuredClone(response);contradictory.results[0].passage.truncated=true;
+ assert.throws(()=>contract(DIBBS).assertOutput(contradictory,{request}),'a truncated passage cannot report zero truncated documents');
+ const truncated=structuredClone(response);truncated.results[0].passage.truncated=true;truncated.results[0].documents.truncated=1;
+ assert.doesNotThrow(()=>contract(DIBBS).assertOutput(truncated,{request}));
+ // the shared funding coverage definition is not narrowed by the DIBBS rule
+ const grant=structuredClone(wire.grants.response);
+ assert.doesNotThrow(()=>contract('semantic_search_grants').assertOutput(grant,{request:wire.grants.request}));
+ assert.equal(grant.results[0].documents.attachments,4,'an older read still reports more than one attachment');
+});
+test('an SBIR hit stays open and never carries a closed parent status',()=>{
+ const {request,response}=activeCase(SBIR);
+ assert.doesNotThrow(()=>contract(SBIR).assertOutput(response,{request}));
+ assert.equal(response.results[0].record.activity,'Open','provider casing is preserved');
+ const open=structuredClone(response);open.results[0].record.activity='OPEN';
+ assert.doesNotThrow(()=>contract(SBIR).assertOutput(open,{request}),'the open check is case-insensitive');
+ const nullStatus=structuredClone(response);nullStatus.results[0].record.solicitationStatus=null;
+ assert.doesNotThrow(()=>contract(SBIR).assertOutput(nullStatus,{request}),'an unknown status stays unknown');
+ for(const activity of ['Closed','CLOSED','archived',''])
+  {const bad=structuredClone(response);bad.results[0].record.activity=activity;
+   assert.throws(()=>contract(SBIR).assertOutput(bad,{request}),activity);}
+ for(const status of ['Expired','EXPIRED','complete','Closed','COMPLETE'])
+  {const bad=structuredClone(response);bad.results[0].record.solicitationStatus=status;
+   assert.throws(()=>contract(SBIR).assertOutput(bad,{request}),status);}
+});

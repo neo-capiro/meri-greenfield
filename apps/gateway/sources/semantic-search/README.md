@@ -11,15 +11,22 @@ credential, grant or separate search authority is created, and no client wall
 applies: every ranked record is public (tenant-less) data.
 
 Core (capiro-backend `apps/api/src/meri/semantic-search*.ts`) embeds the query
-with the same model that wrote the stored vectors, ranks the two hundred nearest
-`context_embeddings` rows of the family (`bill`, `funding_grant_chunk`,
-`funding_notice_chunk`, and the DIBBS and SBIR active families) by cosine
-distance under a partial HNSW index, keeps the best chunk per record above a
-0.35 similarity floor, applies the family's filters and returns at most
-twenty-five canonical records with a score, a snippet and a stable reference
-(`congress_bill:<id>`, `federal_grant:<id>`, `sam_opportunity:<uuid>`,
-`tango_dibbs_solicitation:<uuid>`, `tango_sbir_topic:<uuid>`). A provider record
-id is a separate display fact and never replaces the canonical reference.
+with the same model that wrote the stored vectors, then selects per family. The
+three standing families rank the two hundred nearest `context_embeddings` rows
+(`bill`, `funding_grant_chunk`, `funding_notice_chunk`) by cosine distance under
+a partial HNSW index. The two active families do not preselect by index: Core
+filters the eligible active records of the family first (canonical activity,
+current identity, current-model and text-bound nonzero vectors, plus the
+requested filters) and then takes the exact unrounded candidates up to the same
+two-hundred window, so a filter-qualified page is not distorted by an
+index preselection. Both paths keep the best chunk per record above a 0.35
+similarity floor and return at most twenty-five canonical records with a score,
+a snippet and a stable reference (`congress_bill:<id>`, `federal_grant:<id>`,
+`sam_opportunity:<uuid>`, `tango_dibbs_solicitation:<uuid>`,
+`tango_sbir_topic:<uuid>`). A provider record id is a separate display fact and
+never replaces the canonical reference. Exact ranking may still require scanning
+eligible vectors; no native query plan, timing or eight-second budget is claimed
+here.
 
 Catalog 0.2.34 adds the closed input and result contract. The receiver refuses
 a filter the family does not apply, and checks the answering tool, the echoed
@@ -30,17 +37,32 @@ or extra data fails rather than being silently clipped.
 
 The two active families add their own rules. DIBBS and SBIR share the stricter
 `ActiveSemanticSearchInput` (`query`, `limit`, `agency`, `dateFrom`, `dateTo`
-only) and enforce Core's 3..2000 UTF-16 code-unit query bound, which a JSON
-Schema `maxLength` (code points) cannot express alone; an inclusive close-date
-bound excludes a null date and a null date stays unknown. Each active result
+only). The bounds are Core's own and are measured in UTF-16 code units on the
+values Core measures: a normalized query of 3..2000 units and a trimmed agency of
+1..240 units. A JSON Schema length counts code points, so the schema only
+prefilters (query `minLength` 2 and `maxLength` 2000 are implied by the unit
+bounds and can never refuse a valid input) and the receiver makes the decision
+with `String.prototype.length`, which is code units. That is why a two-code-point
+query with a surrogate pair is admitted and a 121-code-point agency of surrogate
+pairs is refused. The optional `agency`, `dateFrom` and `dateTo` values are
+deliberately refused when null or blank rather than normalized to absent: the
+final wire allows this stricter caller subset, and an absent filter is expressed
+by omitting the key. `agency` is passed through unchanged to Core's
+case-insensitive SQL ILIKE, so `%` and `_` keep their wildcard meaning and no
+exact-agency match is claimed. An inclusive close-date bound excludes a null
+date and a null date stays unknown. Each active result
 carries `passage` provenance bound to the record by canonical **and** provider
 id with `offsetBasis plain_text_normalized_utf16`: `documentHash` identifies the
 normalized full text, `attachmentContentSha256` the archived bytes, and they are
 distinct facts; `start`/`end` are offsets of the whole stored chunk, so they need
 not equal the 400-character snippet. DIBBS passages are `opportunity_attachment`
 rows with `local_parser` extraction, a boolean `truncated` and a `documents`
-count block; SBIR passages are `tango_sbir_topic` provider synopses with null
-archive facts, a null extraction method and no `documents` block. Coverage is
+count block that is exactly one attachment, one with text and one indexed, whose
+`truncated` count must agree with the cited passage; SBIR passages are
+`tango_sbir_topic` provider synopses with null archive facts, a null extraction
+method and no `documents` block, and an SBIR hit must carry the provider's open
+activity spelling with no closed, expired or complete parent status (a null
+status stays unknown and casing is never rewritten). Coverage is
 the active stored corpus of the family, independent of query filters, and a
 page is the nearest matches among indexed records, never eligibility or an
 exhaustive list. Snapshot times bound the evidence, no continuous change at the

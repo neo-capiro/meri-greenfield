@@ -19,7 +19,15 @@ for(const id of IDS)test(`${id}: fixed native route carries the literal request 
  assert.equal(f.wire[0].options.headers['x-internal-service-secret'],'SYNTHETIC_INTERNAL_SERVICE');assert.equal(f.wire[0].options.headers.authorization,'Bearer SYNTHETIC_NATIVE_USER');
  assert.equal(Object.hasOwn(f.wire[0].options.headers,'x-meri-read-observation'),false);
  const schema=advertisedArguments(f.contract.descriptor.inputSchema);assert.deepEqual(schema.arguments.parse(f.arguments),f.arguments);
- for(const patch of [{tenantId:'forged'},{limit:26},{query:'ab'},{clientId:'00000003-0000-4000-8000-000000000001'}])assert.equal(schema.arguments.safeParse({...f.arguments,...patch}).success,false);
+ // The advertised JSON Schema only prefilters: a length keyword counts code points, so for the active reads a
+ // two-code-point surrogate query must pass it and the receiver decides with the exact 3..2000 UTF-16 unit bound.
+ if(id==='semantic_search_dibbs_solicitations'||id==='semantic_search_sbir_topics')assert.equal(schema.arguments.safeParse({...f.arguments,query:'😊a'}).success,true,id);
+ for(const patch of [{tenantId:'forged'},{limit:26},{query:''},{clientId:'00000003-0000-4000-8000-000000000001'}])assert.equal(schema.arguments.safeParse({...f.arguments,...patch}).success,false);
+});
+test('the receiver refuses an active query below the UTF-16 unit floor before any Core call',async()=>{
+ const f=semanticCase('semantic_search_dibbs_solicitations');
+ await assert.rejects(f.handler()({...f.call(),request:{...f.arguments,query:'ab'}}),error=>/INVALID_ARGUMENTS/.test(String(error.code??error.message)));
+ assert.equal(f.wire.length,0);
 });
 test('a filter the family does not apply is refused before any Core call',async()=>{
  const f=semanticCase('semantic_search_grants');
