@@ -144,16 +144,17 @@ test('grant stored status and generated source anchor are exact', () => {
   assert.throws(() => check(grants, {...grantPage(), asOf: '2026-09-11T12:00:00.000Z'}, {}, off));
 });
 test('a grant status outside the stored status domain is refused instead of answering an empty page', () => {
-  // Core matches federal_grant.status by exact equality (meri-tools.service.ts searchFederalGrants:
-  // `where.status = status`) over the documented lowercase domain (schema.prisma: posted, closed,
-  // archived, forecasted). Forwarding a caller-invented value returned a successful, empty page, which
-  // reads as "no grant matched" rather than "that filter cannot exist".
-  for (const invented of ['open', 'active', 'current', 'any'])
-    assert.throws(() => normalize(grants, {status: invented}, off), /Unknown stored grant status/);
-  // The stored domain itself is matched without regard to the caller's capitalization or padding.
-  for (const [raw, stored] of [['Posted', 'posted'], [' forecasted ', 'forecasted'], ['CLOSED', 'closed']])
-    assert.equal(normalize(grants, {status: raw}, off).status, stored);
-  check(grants, grantPage(), {status: 'Posted'}, off);
+  // Core's ingestion writes the four lowercase values (Tango P/F/C/A -> posted/forecasted/closed/archived)
+  // and searchFederalGrants applies exact equality, while the gateway sends the caller's ORIGINAL request
+  // bytes. A noncanonical spelling therefore cannot match a stored row and is refused here instead of being
+  // answered as a successful empty page; nothing is rewritten, and padding stays the caller's own bytes.
+  for (const refused of ['open', 'active', 'current', 'any', 'Posted', 'CLOSED', 'Forecasted'])
+    assert.throws(() => normalize(grants, {status: refused}, off), /Unknown stored grant status/);
+  for (const status of ['posted', 'forecasted', 'closed', 'archived'])
+    assert.equal(normalize(grants, {status}, off).status, status);
+  assert.equal(normalize(grants, {status: '  posted  '}, off).status, 'posted');
+  check(grants, grantPage(), {status: 'posted'}, off);
+  assert.throws(() => check(grants, grantPage(), {status: 'Posted'}, off), /Unknown stored grant status/);
 });
 test('grant raw close day stays open through Eastern close date', () => {
   const row = {...grant(), closeDate: '2026-09-10T00:00:00.000Z', deadlineStatus: 'open'};
