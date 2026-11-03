@@ -15,14 +15,16 @@ async function inputs(){
   functionArn:`arn:aws:lambda:us-east-1:${account}:function:production-observer`,stateMachineArn:`arn:aws:states:us-east-1:${account}:stateMachine:production-native`,
   keyId:'production-key',secretArn:`arn:aws:secretsmanager:us-east-1:${account}:secret:production-observer-Abc123`,secretVersionId:'b'.repeat(32),secretSha256:'c'.repeat(64),caSha256:sha(pki.otherCa)};
  return {feature,material:i.nativeMaterial,deployment:i.deployment,pki:i.private,nowMs,validUntilMs:nowMs+7200000,cleanupCeilingMs:nowMs+3600000,
+  callback:{endpoint:{address:'10.0.0.8',port:443,serverName:'control.meri-preview.internal',serverFingerprintSha256:sha(new X509Certificate(pki.good.cert).raw)},caCertificate:pki.ca,serverCertificate:pki.good.cert},
   identity:{functionArn:`arn:aws:lambda:us-east-1:${account}:function:synthetic-observer`,stateMachineArn:`arn:aws:states:us-east-1:${account}:stateMachine:synthetic-native`,
    secretArn:`arn:aws:secretsmanager:us-east-1:${account}:secret:synthetic-observer-Abc123`,secretVersionId:'a'.repeat(32)},
   production:{configuration,serverCaCertificate:pki.otherCa,serverCertificate:pki.otherCa,issuerCaCertificate:pki.otherCa,controlClientCertificate:pki.otherCa,observerKeySha256:sha(Buffer.alloc(32,8))}};
 }
-test('case config derives equal bootstrap endpoint/leaf/CA/secret pins and is retained in the numeric-version template',async()=>{
+test('case observer uses separate callback endpoint/leaf/CA/secret pins and retains its numeric version',async()=>{
  const v=await inputs(),r=composeOperatorObserverMaterial(v),s=v.feature.browserDeployment.bootstrapSpec.control,c=r.configuration;
- assert.equal(c.schema,OPERATOR_OBSERVER_CONFIGURATION);assert.deepEqual(c.endpoint,{...s.endpoint,serverFingerprintSha256:sha(new X509Certificate(s.serverCertificate).raw)});
- assert.equal(c.secretSha256,sha(r.native.observerMaterial));assert.equal(c.caSha256,sha(s.caCertificate));assert.equal(r.retainUntilMs,v.cleanupCeilingMs);
+ assert.equal(c.schema,OPERATOR_OBSERVER_CONFIGURATION);assert.deepEqual(c.endpoint,v.callback.endpoint);assert.notEqual(c.endpoint.address,s.endpoint.address);
+ assert.equal(c.secretSha256,sha(r.native.observerMaterial));assert.equal(c.caSha256,sha(v.callback.caCertificate));assert.notEqual(c.caSha256,sha(s.caCertificate));assert.equal(r.retainUntilMs,v.cleanupCeilingMs);
+ assert.equal(JSON.parse(r.native.observerMaterial).caCertificate,v.callback.caCertificate);
  assert.equal(r.native.control.host.observer.keyId,c.keyId);assert.equal(JSON.parse(r.native.observerMaterial).keyId,c.keyId);
  const t=compileNativeObserverTemplate({enabled:true,configuration:c,code:{bucket:'synthetic-native-code',key:'observer.zip',versionId:'synthetic-version',sha256:'d'.repeat(64)},
   network:{privateSubnetIds:['subnet-0123456789abcdef0'],securityGroupIds:['sg-0123456789abcdef0']},
@@ -42,6 +44,11 @@ test('mixed production identities, material, endpoint/name and insufficient clea
   v=>v.feature.browserDeployment.bootstrapSpec.control.endpoint.address='8.8.8.8',
   v=>v.feature.browserDeployment.bootstrapSpec.control.endpoint.serverName='other.example',
   v=>v.feature.browserDeployment.bootstrapSpec.control.serverCertificate=pki.good.cert,
+  v=>delete v.callback,v=>v.callback.endpoint.address=v.feature.browserDeployment.bootstrapSpec.control.endpoint.address,
+  v=>v.callback.endpoint.address='8.8.8.8',v=>v.callback.endpoint.serverName='other.example',v=>v.callback.endpoint.port=8443,
+  v=>v.callback.endpoint.serverFingerprintSha256='0'.repeat(64),v=>v.callback.caCertificate=pki.otherCa,
+  v=>v.callback.serverCertificate=pki.wrongName.cert,v=>v.callback.serverCertificate=pki.expired.cert,
+  v=>v.production.serverCertificate=v.callback.serverCertificate,
   v=>v.validUntilMs=v.cleanupCeilingMs-1,v=>{v.cleanupCeilingMs=v.nowMs+40*86400000;v.validUntilMs=v.cleanupCeilingMs;},
   v=>v.identity.functionArn+='-foreign',v=>v.identity.extra=true
  ]){

@@ -15,8 +15,8 @@ export async function tlsServer(t,leaf,handle){
  server.listen(0,'127.0.0.1');await once(server,'listening');
  t.after(()=>{server.closeAllConnections();return new Promise(resolve=>server.close(resolve));});return server;
 }
-export function localRequest(server,seen=[]){return (options,callback)=>{
- seen.push(options);assert.equal(options.hostname,'10.0.0.7');assert.equal(options.port,443);assert.equal(options.servername,name);
+export function localRequest(server,seen=[],address='10.0.0.7'){return (options,callback)=>{
+ seen.push(options);assert.equal(options.hostname,address);assert.equal(options.port,443);assert.equal(options.servername,name);
  assert.equal(options.headers.host,name);assert.equal(options.agent,false);assert.equal(options.lookup,undefined);
  return request({...options,hostname:'127.0.0.1',port:server.address().port},callback);
 };}

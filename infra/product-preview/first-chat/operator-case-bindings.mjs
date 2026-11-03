@@ -48,10 +48,13 @@ export function composeOperatorCaseStartup({caseId,rendered,observerMaterial,sel
  const controlCapability=bytes(control,control.config.native.capabilityFile);
  if(!controlCapability.equals(bytes(worker,worker.config.native.capabilityFile)))fail();
  const callback=composeOperatorCallbackMaterial({material:observerMaterial,controlCapability,productionControlCapabilitySha256});
- if(!same(worker.config.nativeProvisioning,observerMaterial.native.worker))fail();
+ if(!same(worker.config.nativeProvisioning,observerMaterial.native.worker)||!Buffer.isBuffer(rendered.nativeObserverMaterial)||
+  sha(rendered.nativeObserverMaterial)!==observerMaterial.configuration.secretSha256||
+  rendered.summary.nativeProcessing.observerMaterialSha256!==observerMaterial.configuration.secretSha256||
+  rendered.summary.nativeProcessing.observerCaSha256!==observerMaterial.configuration.caSha256)fail();
  const {address,namespace,taskQueue}=control.config.temporal;
  const descriptor={schema:'meri-operator-control-startup/1',caseId,sourceCommit,selection,expiresAtMs,
-  material:{native:{control:observerMaterial.native.control,worker:observerMaterial.native.worker},configuration:observerMaterial.configuration,retainUntilMs:observerMaterial.retainUntilMs},
+  material:{native:{control:observerMaterial.native.control,worker:observerMaterial.native.worker},configuration:observerMaterial.configuration,callback:observerMaterial.callback,retainUntilMs:observerMaterial.retainUntilMs},
   configurationSha256:hash(control.config),controlCapabilitySha256:callback.controlCapabilitySha256,temporal:{address,namespace,taskQueue}};
  // Validate the real renderer-to-startup seam without retaining or using an admission.
  createOperatorControlAdmission(descriptor,control.config,controlCapability,sourceCommit).revoke();
@@ -71,7 +74,8 @@ export function compileOperatorCaseBindings({caseId,deployment,rendered,startup,
   control.config.browserActivation?.state!=='held'||worker.expected.sourceCommit!==d.images.nodeRuntimeSourceCommit||control.expected.sourceCommit!==d.images.nodeRuntimeSourceCommit||
   control.expected.imageDigest!==d.images.nodeRuntime.split('@')[1]||worker.expected.imageDigest!==control.expected.imageDigest)fail();
  const callback=JSON.parse(validateOperatorMaterial(startup.temporalWorker).bytes),admission=JSON.parse(validateOperatorMaterial(startup.control).bytes);
- if(!same(callback,JSON.parse(validateOperatorMaterial(startup.agentcore).bytes)))fail();
+ if(!same(callback,JSON.parse(validateOperatorMaterial(startup.agentcore).bytes))||
+  !same(callback,composeOperatorCallbackMaterial({material:admission.material,controlCapability:bytes(control,control.config.native.capabilityFile),productionControlCapabilitySha256:production.controlCapabilitySha256})))fail();
  if(admission.caseId!==caseId||admission.configurationSha256!==hash(control.config)||callback.controlCapabilitySha256!==admission.controlCapabilitySha256||
   callback.controlCapabilitySha256!==sha(bytes(control,control.config.native.capabilityFile).toString('utf8').trim())||
   callback.controlCapabilitySha256===production.controlCapabilitySha256||sha(callback.caCertificate)===production.controlCaSha256||
@@ -112,5 +116,7 @@ export function compileOperatorCaseBindings({caseId,deployment,rendered,startup,
  });
  return {stackName:`${n.prefix}-tasks`,app,operator,template,
   execution:{mode:'once-only-run-task',cluster:d.clusterArn,count:1,control:{family:n.control,securityGroups:app.network.controlSecurityGroupIds},worker:{family:n.worker,securityGroups:app.network.workerSecurityGroupIds},subnets:d.privateSubnetIds,
-   targetGroups:{private8082:e.ControlPrivateTargetGroupArn,host8443:e.HostListenerTargetGroupArn},automaticReplacement:false}};
+   targetGroups:{private8082:e.ControlPrivateTargetGroupArn,host8443:e.HostListenerTargetGroupArn},
+   receivers:{callback:{endpoint:callback.endpoint,targetGroupArn:e.ControlPrivateTargetGroupArn,targetPort:8082,protocol:'HTTP'},
+    hostCurrentness:{endpoint:worker.config.nativeProvisioning.browserDeployment.bootstrapSpec.control.endpoint,targetGroupArn:e.HostListenerTargetGroupArn,targetPort:8443,protocol:'mTLS'}},automaticReplacement:false}};
 }

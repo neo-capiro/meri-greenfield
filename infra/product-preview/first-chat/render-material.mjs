@@ -24,6 +24,8 @@ import {assertNativeReadConfiguration} from '../../../packages/contracts/runtime
 import {compileRoutinesCoreConfiguration} from '../../../apps/runtime/native-authority/routines-configuration.mjs';
 import {parseNativeProcessing,composeNativeProcessing,readNativeMaterial,NATIVE_PATHS} from './native-processing-material.mjs';
 import {CONTROL_HOST_LISTENER_PORT} from '../../../apps/runtime/browser-host-configuration.mjs';
+import {createNativeObserverSecret} from '../../../apps/runtime/native-observer-entrypoint.mjs';
+import {composeOperatorCallbackMaterial} from './operator-callback-material.mjs';
 
 export const SOURCE_ROOT=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
 const ACCOUNT='967807252336',REGION='us-east-1',ECS=`arn:aws:ecs:${REGION}:${ACCOUNT}:`;
@@ -393,7 +395,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
 /** Separate protected case composition. The ordinary renderer always mints its own key.
  * One supplied case credential breaks the AgentCore-create/control-render dependency:
  * derive its public callback descriptor first, then render against the actual runtime ARN. */
-export function renderOperatorCaseMaterial(inputs,{caseId,controlCapability,productionControlCapabilitySha256}){
+export function renderOperatorCaseMaterial(inputs,{caseId,controlCapability,productionControlCapabilitySha256,observerMaterial}){
  const d=inputs.deployment;
  if(!/^[a-f0-9]{12}$/u.test(caseId)||!Buffer.isBuffer(controlCapability)||!/^\S{32,8192}$/u.test(controlCapability.toString('utf8'))||
   !hex64.test(productionControlCapabilitySha256)||sha(controlCapability)===productionControlCapabilitySha256||
@@ -401,11 +403,22 @@ export function renderOperatorCaseMaterial(inputs,{caseId,controlCapability,prod
   d.features?.nativeProcessing?.enabled!==true||d.features.nativeProcessing.deployment!==undefined||d.features.nativeProcessing.browserDeployment===undefined||
   d.features?.routines?.workflow!==undefined||!d.agentcore?.runtimeArn?.startsWith(`arn:aws:bedrock-agentcore:${REGION}:${ACCOUNT}:runtime/meri_case_${caseId}-`))fail('RENDER_INPUT_REFUSED','operator case composition');
  const rendered=renderMaterialWith(inputs,controlCapability);
+ const callback=composeOperatorCallbackMaterial({material:observerMaterial,controlCapability,productionControlCapabilitySha256});
+ const observerBytes=createNativeObserverSecret({keyId:d.features.nativeProcessing.observerKeyId,key:inputs.nativeMaterial.observerKey,ca:Buffer.from(callback.caCertificate)});
+ if(canonicalSha256(rendered.roles['temporal-worker'].config.nativeProvisioning)!==canonicalSha256(observerMaterial.native.worker)||
+  canonicalSha256(rendered.roles.control.config.uploads.native.host)!==canonicalSha256(observerMaterial.native.control.host)||
+  sha(observerBytes)!==observerMaterial.configuration.secretSha256||sha(observerMaterial.native.observerMaterial)!==sha(observerBytes))fail('RENDER_INPUT_REFUSED','operator observer material join');
+ // This happens before writeRendered: the published observer secret trusts the
+ // private application edge, while the unchanged native bootstrap trusts mTLS8443.
+ rendered.nativeObserverMaterial=observerBytes;
+ rendered.summary.nativeProcessing.observerMaterialSha256=sha(observerBytes);
+ rendered.summary.nativeProcessing.observerCaSha256=sha(callback.caCertificate);
  for(const role of ['control','temporal-worker']){
   rendered.summary.wiring[role].entryPoint=['node','apps/runtime/operator-case-entrypoint.mjs'];
   rendered.summary.wiring[role].volumes['/run/meri-operator']='separately pinned operator material (read-only)';
  }
- rendered.summary.operatorCase={caseId,taskQueue:d.temporal.taskQueue,execution:'once-only-run-task',ordinaryStage3:false};
+ rendered.summary.operatorCase={caseId,taskQueue:d.temporal.taskQueue,execution:'once-only-run-task',ordinaryStage3:false,
+  callbackEndpoint:callback.endpoint,hostCurrentnessEndpoint:observerMaterial.native.worker.browserDeployment.bootstrapSpec.control.endpoint};
  return rendered;
 }
 function renderMaterialWith({deployment,core,runtime,stage3,private:pki,nowMs=Date.now(),validityDays=DEFAULTS.validityDays,
