@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {synthesizeFirstChatPrivateEdge,validatePrivateEdgeBinding,CONTROL_PRIVATE_ORIGIN} from './first-chat-private-edge.mjs';
+import {createHash} from 'node:crypto';
+import {synthesizeFirstChatPrivateEdge,synthesizeOperatorPrivateEdge,validatePrivateEdgeBinding,CONTROL_PRIVATE_ORIGIN} from './first-chat-private-edge.mjs';
 
 const binding=()=>({vpcId:'vpc-0ac26cfac7ed972be',privateSubnetIds:['subnet-0920665f91c905f01','subnet-0e38bd390f8961fef','subnet-06db79cd21239de19'],
  certificateArn:'arn:aws:acm:us-east-1:967807252336:certificate/6c790931-e953-41ac-acbe-51aff570f1ff',controlSecurityGroupId:'sg-05a350c100574b21f',
@@ -30,4 +31,31 @@ test('the private load balancer group carries no inline ingress, so rules other 
  const groups=Object.entries(t.Resources).filter(([,r])=>r.Type==='AWS::EC2::SecurityGroup');
  assert.ok(groups.length>=1);
  for(const [id,group] of groups)assert.equal(Object.hasOwn(group.Properties,'SecurityGroupIngress'),false,`${id} must not carry inline ingress`);
+});
+test('ordinary edge output equals the retained afca3ed5 production template',()=>{
+ // Captured from the exact base module and independently deep-compared with the new constructor.
+ assert.equal(createHash('sha256').update(JSON.stringify(synthesizeFirstChatPrivateEdge(binding()))).digest('hex'),
+  '2dafa0fb3b5beb13f971073d265317408c3a11e7fa5e01ccf73d5477fc68ec42');
+});
+const caseBinding=()=>({caseId:'a123456789ab',vpcId:binding().vpcId,privateSubnetIds:binding().privateSubnetIds,
+ certificateArn:binding().certificateArn.replace('6c790931','7c790931'),productionCertificateArn:binding().certificateArn});
+test('case edge owns distinct groups and empty target group, reuses 8082 front, and never creates shared DNS',()=>{
+ const b=caseBinding(),t=synthesizeOperatorPrivateEdge(b),next=synthesizeOperatorPrivateEdge({...b,caseId:'b123456789ab'});
+ assert.ok(!Object.values(t.Resources).some(r=>r.Type.startsWith('AWS::Route53::')));
+ assert.equal(of(t,'AWS::EC2::SecurityGroup').length,3);
+ assert.ok(!JSON.stringify(t).includes('"sg-'),'no external security-group IDs are accepted');
+ assert.ok(!JSON.stringify(t).includes('meri-preview-control'));
+ const names=x=>Object.values(x.Resources).flatMap(r=>[r.Properties.Name,r.Properties.GroupName].filter(Boolean));
+ assert.ok(names(t).every(n=>!names(next).includes(n)));assert.ok(names(t).every(n=>n.includes(b.caseId)));
+ const [tg]=of(t,'AWS::ElasticLoadBalancingV2::TargetGroup');assert.equal(tg.Targets,undefined);assert.equal(tg.Port,8082);
+ const [alb]=of(t,'AWS::ElasticLoadBalancingV2::LoadBalancer');assert.equal(alb.Scheme,'internal');
+ assert.ok(alb.LoadBalancerAttributes.some(a=>a.Key==='routing.http.xff_header_processing.mode'&&a.Value==='append'));
+ assert.deepEqual(of(t,'AWS::ElasticLoadBalancingV2::ListenerRule')[0].Conditions[0].HostHeaderConfig.Values,['control.meri-preview.internal']);
+ for(const key of ['CaseControlSecurityGroupId','CaseClientSecurityGroupId','CasePrivateAlbArn','CasePrivateAlbDnsName','CaseCertificateArn','ControlPrivateTargetGroupArn'])assert.ok(t.Outputs[key]);
+});
+test('case edge refuses production cert, external group/target/DNS inputs and ambiguous names',()=>{
+ for(const mutate of [b=>b.certificateArn=b.productionCertificateArn,b=>b.caseId='../shared',b=>b.controlSecurityGroupId=binding().controlSecurityGroupId,
+  b=>b.targets=['10.0.0.1'],b=>b.hostedZoneId='shared',b=>b.privateSubnetIds=[]]){
+  const b=caseBinding();mutate(b);assert.throws(()=>synthesizeOperatorPrivateEdge(b));
+ }
 });

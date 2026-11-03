@@ -4,6 +4,8 @@ import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs'
 import {assertNativeObserverInput} from '../../packages/contracts/native-observer.mjs';
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {createNativeObserverBridge} from './native-observer-bridge.mjs';
+import {operatorObserverEndpoint,createOperatorObserverPost} from './native-observer-transport.mjs';
+export const OPERATOR_OBSERVER_CONFIGURATION='meri-native-observer-operator-entrypoint/1';
 const fail=()=>{throw Error('NATIVE_OBSERVER_ENTRYPOINT_REFUSED');};
 const sha=b=>createHash('sha256').update(b).digest('hex');
 /** Shared preparation of the exact secret bytes; it neither creates a key nor publishes material. */
@@ -14,14 +16,15 @@ export function createNativeObserverSecret({keyId,key,ca}){
 }
 export function observerEntrypointConfiguration(raw){
  try{
-  const c=own(raw,['schema','functionArn','stateMachineArn','keyId','secretArn','secretVersionId','secretSha256','caSha256']);
+  const operator=raw?.schema===OPERATOR_OBSERVER_CONFIGURATION;
+  const c=own(raw,['schema','functionArn','stateMachineArn','keyId','secretArn','secretVersionId','secretSha256','caSha256',...(operator?['endpoint']:[])]);
   const f=/^arn:aws:lambda:us-east-1:([0-9]{12}):function:[A-Za-z0-9_-]{1,64}$/u.exec(c.functionArn??'');
-  if(c.schema!=='meri-native-observer-entrypoint/1'||!f||
+  if((!operator&&c.schema!=='meri-native-observer-entrypoint/1')||!f||
    !new RegExp(`^arn:aws:states:us-east-1:${f[1]}:stateMachine:[A-Za-z0-9_-]{1,80}$`,'u').test(c.stateMachineArn)||
    !new RegExp(`^arn:aws:secretsmanager:us-east-1:${f[1]}:secret:[A-Za-z0-9/_+=.@-]{1,512}-[A-Za-z0-9]{6}$`,'u').test(c.secretArn)||
    !/^[A-Za-z0-9-]{32,64}$/u.test(c.secretVersionId)||!/^[A-Za-z0-9_-]{1,64}$/u.test(c.keyId)||
    !['secretSha256','caSha256'].every(k=>/^[a-f0-9]{64}$/u.test(c[k])))fail();
-  return Object.freeze({...c});
+  return Object.freeze({...c,...(operator?{endpoint:operatorObserverEndpoint(c.endpoint)}:{})});
  }catch{fail();}
 }
 /** Require both an explicitly qualified invocation and the matching actual version. Event fields are never used. */
@@ -38,6 +41,7 @@ export async function fetchObserverSecret({secretArn,secretVersionId,signal}){
 }
 export function createNativeObserverHandler({configuration,fetchSecret=fetchObserverSecret,post,now=Date.now}={}){
  const c=observerEntrypointConfiguration(configuration);
+ const transport=post??(c.schema===OPERATOR_OBSERVER_CONFIGURATION?createOperatorObserverPost(c.endpoint):undefined);
  return async(event,context)=>{
   let life,bytes,key,ca,finished=false;
   try{
@@ -57,7 +61,7 @@ export function createNativeObserverHandler({configuration,fetchSecret=fetchObse
     key=Buffer.from(secret.keyBase64,'base64');ca=Buffer.from(secret.caCertificate);
     if(key.length<32||key.length>128||key.toString('base64')!==secret.keyBase64||sha(ca)!==c.caSha256||!new X509Certificate(ca).ca)fail();
    });
-   const bridge=createNativeObserverBridge({functionVersionArn,stateMachineArn:c.stateMachineArn,keyId:c.keyId,now,...(post?{post}:{}),
+   const bridge=createNativeObserverBridge({functionVersionArn,stateMachineArn:c.stateMachineArn,keyId:c.keyId,now,...(transport?{post:transport}:{}),
     readKey:async()=>{await load();return key;},readCa:async()=>{await load();return ca;}});
    return await life.run(()=>bridge(event,{invokedFunctionArn:functionVersionArn,getRemainingTimeInMillis:()=>context.getRemainingTimeInMillis()}));
   }catch{fail();}

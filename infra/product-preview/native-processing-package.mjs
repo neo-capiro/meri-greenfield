@@ -9,7 +9,7 @@ import {pathToFileURL} from 'node:url';
 const fail=()=>{throw Error('NATIVE_OBSERVER_PACKAGE_REFUSED');};
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const runtimeFiles=['apps/runtime/native-observer-entrypoint.mjs','apps/runtime/native-observer-bridge.mjs','apps/runtime/native-observer-http.mjs',
- 'packages/runtime/operation-lifetime.mjs'];
+ 'apps/runtime/native-observer-transport.mjs','apps/worker/conversation/host/control/tls.mjs','packages/runtime/operation-lifetime.mjs'];
 const entry='apps/runtime/native-observer-entrypoint.mjs';
 const git=(root,...args)=>execFileSync('git',['-C',root,...args],{maxBuffer:32*1024*1024,windowsHide:true});
 const safe=p=>typeof p==='string'&&p.length<1024&&!p.startsWith('/')&&!p.includes('\\')&&!p.split('/').some(x=>!x||x==='.'||x==='..');

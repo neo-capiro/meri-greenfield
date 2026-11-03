@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {createNativeObserverHandler,observerExecutedVersion,observerEntrypointConfiguration,handler} from '../native-observer-entrypoint.mjs';
+import {createNativeObserverHandler,observerExecutedVersion,observerEntrypointConfiguration,handler,OPERATOR_OBSERVER_CONFIGURATION} from '../native-observer-entrypoint.mjs';
 import {observerFixture} from './native-observer-fixture.mjs';
 const f=await observerFixture(),version=f.declaration.physicalObserver.bridgeFunctionVersionArn;
 const sha=b=>createHash('sha256').update(b).digest('hex');
@@ -53,4 +53,25 @@ test('default deployment entrypoint refuses absent configuration without a provi
  const prior=process.env.MERI_NATIVE_OBSERVER_CONFIG;delete process.env.MERI_NATIVE_OBSERVER_CONFIG;
  try{await assert.rejects(()=>handler(event,context),/NATIVE_OBSERVER_ENTRYPOINT_REFUSED/u);}
  finally{if(prior!==undefined)process.env.MERI_NATIVE_OBSERVER_CONFIG=prior;}
+});
+test('closed operator variant preserves version/secret checks and cannot be selected by event data',async()=>{
+ const endpoint={address:'10.0.0.7',port:443,serverName:'control.meri-preview.internal',serverFingerprintSha256:'a'.repeat(64)};
+ const c={...configuration,schema:OPERATOR_OBSERVER_CONFIGURATION,endpoint};
+ assert.deepEqual(observerEntrypointConfiguration(c),c);
+ assert.throws(()=>observerEntrypointConfiguration({...configuration,endpoint}),'production /1 stays closed');
+ assert.throws(()=>observerEntrypointConfiguration({...c,endpoint:undefined}));
+ assert.throws(()=>observerEntrypointConfiguration({...c,extra:true}));
+ let posts=0,reads=0;
+ const run=createNativeObserverHandler({configuration:c,now:()=>62000,fetchSecret:async()=>{reads++;return response;},post:async()=>{posts++;return {disposition:'pending'};}});
+ for(const e of [{...event,endpoint},{...event,configuration:c},{...event,operator:true}])await assert.rejects(()=>run(e,context));
+ await assert.rejects(()=>run(event,{...context,invokedFunctionArn:configuration.functionArn+':alias'}));
+ assert.equal(reads,0);assert.equal(posts,0);
+ const changed=createNativeObserverHandler({configuration:c,now:()=>62000,fetchSecret:async()=>({...response,VersionId:'b'.repeat(32)}),post:async()=>{posts++;}});
+ await assert.rejects(()=>changed(event,context));assert.equal(posts,0);
+ // Workload lease has already expired (61000). Original cleanup remains authenticated
+ // until its existing ceiling (86000); this is not permission for new browser work.
+ assert.ok(f.declaration.watchdog.input.leaseDeadlineMs<62000);
+ assert.deepEqual(await run(event,context),{disposition:'pending'});assert.equal(posts,1);
+ const expired=createNativeObserverHandler({configuration:c,now:()=>86000,fetchSecret:async()=>{reads++;return response;},post:async()=>{posts++;}});
+ await assert.rejects(()=>expired(event,context));assert.equal(posts,1);
 });
