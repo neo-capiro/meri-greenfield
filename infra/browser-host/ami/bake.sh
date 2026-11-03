@@ -128,7 +128,19 @@ done
 step 6 run the guest bake
 base64 -w0 "$work/render/guest-bake.sh" > "$work/guest.b64"
 printf '{"commands":["echo %s | base64 -d > /root/meri-bake.sh","bash /root/meri-bake.sh"]}\n' "$(cat "$work/guest.b64")" > "$work/params.json"
-command_id=$(call cmd-plan ssm send-command --instance-ids "$builder" --document-name AWS-RunShellScript --parameters "file://$work/params.json" \
+# Native Windows AWS opens file:// itself; an MSYS /tmp path is not its native filename.
+# Keep the POSIX work path for shell I/O and cleanup, converting only this CLI argument.
+params_file="$work/params.json"
+case $(uname -s) in
+  MSYS*|MINGW*)
+    aws_executable=$(type -P aws || true)
+    if [[ -n $aws_executable && ( ${aws_executable,,} == *.exe || -f "$aws_executable.exe" ) ]]; then
+      params_file=$(cygpath -am "$params_file") || { echo 'native AWS parameter-file path conversion failed' >&2; exit 1; }
+      [[ -n $params_file ]] || exit 1
+    fi
+    ;;
+esac
+command_id=$(call cmd-plan ssm send-command --instance-ids "$builder" --document-name AWS-RunShellScript --parameters "file://$params_file" \
   --timeout-seconds 1800 --comment "meri browser host bake $name" --query Command.CommandId --output text)
 status=''
 for ((attempt = 0; attempt < 240; attempt++)); do
