@@ -186,8 +186,8 @@
     },
     {
       "path": "document-access-application/preview.mjs",
-      "sha256": "0af80503589c9e16dbf8afe59ad4cbcac088d50965d9ba174fc0a3ed7d0c6157",
-      "bytes": 6908
+      "sha256": "2fa8629b9462add693b2d274788dd30cbac2b711c8ca9c4b6ee3f758bfa6474c",
+      "bytes": 7608
     },
     {
       "path": "document-access-application/protocol.mjs",
@@ -196,13 +196,13 @@
     },
     {
       "path": "document-access-application/README.md",
-      "sha256": "b04e9797361803c93df7f75f80ad1f8e97cbb7ebeab0e97812aa3b7b5ef0d8d8",
-      "bytes": 11200
+      "sha256": "e4046e6ea3ebcae888090cd4195b898db6d945bd0d959e38f98ff591f15af209",
+      "bytes": 12006
     },
     {
       "path": "document-access-application/receive.mjs",
-      "sha256": "66e3b703c73d0f4caae28fd28e41a4706c918bf2009f00dd060b0c66f11d5c0e",
-      "bytes": 7036
+      "sha256": "3449ce736948f6a220a3c543c6176625f00b0c59826b9e8f3b2dfce36a8dc51a",
+      "bytes": 7070
     },
     {
       "path": "document-access-application/schema.mjs",
@@ -221,8 +221,8 @@
     },
     {
       "path": "generate-document-access.mjs",
-      "sha256": "6d54aec1609e04fe32449a7346429f4541cbcab631e78c8b16b68ff389e2f62a",
-      "bytes": 16995
+      "sha256": "1ba759e69f43e2434530504c104b99c7c857cb99cd275b9e88a5a426c3dc8933",
+      "bytes": 17163
     },
     {
       "path": "meri.schema.json",

@@ -6,7 +6,7 @@ import {ARTIFACT_MIME_TYPES,assertNativeArtifactEvidenceBinding} from '../artifa
 import {fail,parseBytes,admittedRequests,admittedVersions,admitNativeInspection} from '../document-application/boundary.mjs';
 export {DocumentResponseError} from '../document-application/boundary.mjs';
 export {receiveDocumentDownload} from '../document-application/download.mjs';
-export {documentPreviewVersion,documentPreviewMetadata,receiveDocumentPreviewRequest,receiveDocumentPreviewPublication,receiveDocumentPreview} from './preview.mjs';
+export {documentPreviewVersion,documentPreviewMetadata,receiveDocumentPreviewRequest,receiveDocumentPreviewPublication,receiveDocumentPreviewReadRefusal,receiveDocumentPreview} from './preview.mjs';
 export {documentAccessVersion} from './protocol.mjs';
 // Additive v1 native-result discovery receiving boundary (separately named, contractVersion 1.0.0). It is NOT part of
 // DocumentAccessRoute0.2 and admits nothing for inspect or download; the existing inspect/download path remains the
