@@ -211,10 +211,10 @@ test('adverse 6: a premise about relative frequency carries no exact size',()=>{
 test('the canonical append carries the explanatory-evidence guidance (composition only, not model behaviour)',()=>{
  const runtime={binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:20,maxCostMicroUSD:2000000,maxOutputBytes:1024};
  const append=buildConversationOptions(runtime,new AbortController()).systemPrompt.append;
- const rule='In an explanation, a mechanism, causal effect, direction or magnitude needs evidence: state what is observed, what the evidence supports and what remains unresolved, and give a supported direction or a clearly labelled hypothesis.';
+ const rule='Calibrate certainty, never invent facts, claim unverified actions or act outside authorization. Say what is observed, what the evidence supports and what is unresolved; give a supported direction, size or mechanism or a labelled hypothesis. A matched comparison is not a causal design: it removes only what it matches, so a causal claim needs a design or assumptions.';
  assert.ok(RESPONSE_VOICE.includes(rule));assert.ok(append.includes(rule));
- // The rule refines the existing calibration sentence and costs RESPONSE_STYLE nothing; its guard is untouched.
- assert.ok(append.includes('Calibrate certainty, distinguish evidence from inference'));
+ // The consolidated rule costs RESPONSE_STYLE nothing; its guard is untouched.
+ assert.ok(append.includes('Calibrate certainty, never invent facts, claim unverified actions or act outside authorization'));
  assert.ok(RESPONSE_STYLE.length<2000,`${RESPONSE_STYLE.length} characters`);
  assert.ok(!RESPONSE_STYLE.includes(rule),'the guarded string is not inflated to make room');
 });

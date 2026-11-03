@@ -41,6 +41,8 @@ const UNCERTAINTY_ADDED=`${ANSWER} Treat the figure as provisional.`;
 const UNCERTAINTY_JOINED=ANSWER.replace('later ones - the direction is unknown from these facts alone. Comparing','later ones. Even so, comparing').replace('would isolate the policy effect from day-of-week variation.','would isolate the policy effect from day-of-week variation; the estimate is provisional.');
 const DESIGN_NOT_SUPPLIED=ANSWER.replace('would isolate the policy effect from day-of-week variation.','would isolate the policy effect from day-of-week variation, since assignment was by lottery.');
 const CONDITION_PREFIXED=DESIGN_NOT_SUPPLIED.replace('Comparing last week','If these notes are accurate, comparing last week');
+// The same condition in front of the original frozen answer, which names no design anywhere: 78 words.
+const NO_DESIGN_CONDITIONED=ANSWER.replace('Comparing last week','If these notes are accurate, comparing last week');
 const DESIGN_DROPPED=DESIGN_ANSWER.replace('Assignment by lottery lets us attribute','The two groups differ only by chance, so we can attribute');
 const GROUNDED_CALLING_IT=GROUNDED.replace('treating the change as a policy effect needs','matching the same two weekdays would isolate the policy effect, and treating the change as such needs');
 
@@ -80,9 +82,10 @@ const identificationClaims=text=>{const out=[];
 /** @param {string} text @param {{supplies:string[]}} evidence @returns {Reading} */
 const read=(text,evidence)=>{const claims=identificationClaims(text);
  // A claim is licensed when the notes supply the design it names, or when its own conditional premise names that same
- // design. A design that appears only in the conclusion, or a condition about something else, licenses nothing.
- const unsupported=claims.flatMap(claim=>evidence.supplies.includes(claim.design)||
-  (claim.premise!==null&&claim.premiseDesign===claim.design)?[]
+ // design. A design that appears only in the conclusion, or a condition about something else, licenses nothing, and a
+ // claim that names no design at all is never licensed: two absent designs are not a matching premise and conclusion.
+ const unsupported=claims.flatMap(claim=>claim.design!==null&&(evidence.supplies.includes(claim.design)||
+  (claim.premise!==null&&claim.premiseDesign===claim.design))?[]
   :[{...claim,reason:claim.design===null?'no-design':'design-not-supplied'}]);
  return {claims,unsupported,words:text.trim().split(/\s+/u).length,
   observedDrop:/\b8[- ]minutes?\b/iu.test(text)&&/\b(?:drop|drop(?:p)?ed|lower|fell|below)\b/iu.test(text),
@@ -159,6 +162,17 @@ test('adverse 4: a condition about something else does not carry the invented de
  assert.equal(r.claims[0].premise,'If these notes are accurate');
  assert.equal(r.claims[0].premiseDesign,null);assert.equal(r.claims[0].design,'randomisation');
  assert.equal(r.unsupported.length,1);assert.equal(r.unsupported[0].reason,'design-not-supplied');
+});
+test('a condition about the notes does not license a claim that names no design',()=>{
+ // The reviewed counterexample: the original frozen answer, condition prefixed, with no design anywhere in it. Two
+ // absent designs are not a matching premise and conclusion, so the equality must not fire.
+ const r=read(NO_DESIGN_CONDITIONED,NO_DESIGN);
+ assert.equal(r.words,78,`${r.words} words`);
+ assert.equal(r.claims.length,1);
+ assert.equal(r.claims[0].design,null);assert.equal(r.claims[0].premiseDesign,null);
+ assert.equal(r.claims[0].premise,'If these notes are accurate');
+ assert.equal(r.unsupported.length,1,r.unsupported.map(u=>u.clause).join(' | '));
+ assert.equal(r.unsupported[0].reason,'no-design');
 });
 test('adverse 5: the supported design answer loses its licence when the design is removed',()=>{
  const r=read(DESIGN_DROPPED,RANDOMISED);
