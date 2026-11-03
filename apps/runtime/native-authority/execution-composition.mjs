@@ -133,6 +133,9 @@ export function createAgentCoreIntentResolver({context,execution,transitionAutho
    ...(nativeResearchAction&&portfolioConversation?createResearchActionPreparers({binding,scopes:first.scopes,selectedClientId:first.selectedClientId,client:nativeResearchAction,now,currentRights,policyRevision:first.policyRevision,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}):[]),
    ...await officeIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,currentRights,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs)}),
    ...(configuration.memory?.enabled?memoryIntentPreparersFor(context,{binding,scopes:first.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,signal,deadlineMs:Math.min(deadlineMs,first.execution.expiresAtMs),
+    // `deadlineMs` bounds THIS preparation (the control request and its mount); the retained human review is bounded by the
+    // canonical execution authority expiry instead, never by that transport deadline. Both bounds stay enforced below.
+    authorityExpiresAtMs:first.execution.expiresAtMs,
     async readCurrent({signal}){const rights=await currentRights({signal,policyRevision:first.policyRevision});return {binding,scopes:rights.scopes,selectedClientId:first.selectedClientId,policyRevision:first.policyRevision,checkedAtMs:rights.checkedAtMs,expiresAtMs:Math.min(rights.expiresAtMs,first.execution.expiresAtMs)};}}):[])];
   if(!preparers.length)throw intentFault('UNAVAILABLE');
   // The conversation store (when composed) receives each new document draft as the run's own `artifact.available` event.
