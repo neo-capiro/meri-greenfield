@@ -39,12 +39,17 @@ The two active families add their own rules. DIBBS and SBIR share the stricter
 `ActiveSemanticSearchInput` (`query`, `limit`, `agency`, `dateFrom`, `dateTo`
 only). The bounds are Core's own and are measured in UTF-16 code units on the
 values Core measures: a normalized query of 3..2000 units and a trimmed agency of
-1..240 units. A JSON Schema length counts code points, so the schema only
-prefilters (query `minLength` 2 and `maxLength` 2000 are implied by the unit
-bounds and can never refuse a valid input) and the receiver makes the decision
-with `String.prototype.length`, which is code units. That is why a two-code-point
-query with a surrogate pair is admitted and a 121-code-point agency of surrogate
-pairs is refused. The optional `agency`, `dateFrom` and `dateTo` values are
+1..240 units. A JSON Schema length keyword counts code points of the raw string,
+which is not what Core measures: whitespace padding makes the raw string longer
+than the value Core normalizes, so any raw query length keyword would refuse
+producer-valid input. The advertised active input therefore carries no length
+keyword for `query` or `agency`; the receiver normalizes the query and decides
+3..2000 code units with `String.prototype.length`, and measures the agency after
+trimming. That is why a two-code-point surrogate query and a whitespace-padded
+query are admitted, while a 121-code-point surrogate agency (242 units) is
+refused. Raw size is still bounded by the existing inert-JSON operation contract
+applied to every request (100000 nodes, depth 64, 16 MiB) and by the tool-call
+argument byte guard; this change adds no new raw cap. The optional `agency`, `dateFrom` and `dateTo` values are
 deliberately refused when null or blank rather than normalized to absent: the
 final wire allows this stricter caller subset, and an absent filter is expressed
 by omitting the key. `agency` is passed through unchanged to Core's

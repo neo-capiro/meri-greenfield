@@ -584,7 +584,7 @@
     "ActiveSemanticSearchInput": {
       "type": "object",
       "properties": {
-        "query": {"type": "string", "minLength": 2, "maxLength": 2000},
+        "query": {"type": "string"},
         "limit": {"type": "integer", "minimum": 1, "maximum": 25},
         "agency": {"type": "string"},
         "dateFrom": {"type": "string", "format": "date"},

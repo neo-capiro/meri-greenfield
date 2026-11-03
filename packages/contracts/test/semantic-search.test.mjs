@@ -172,15 +172,28 @@ test('an empty active page keeps the family denominator and is a success, not a 
  const bad=structuredClone(response);bad.coverage.indexedRecords=bad.coverage.totalRecords+1;
  assert.throws(()=>contract(DIBBS).assertOutput(bad,{request}));
 });
-test('the active reads admit a surrogate-pair query that the code-point schema would refuse',()=>{
- const c=contract(DIBBS);
- // three UTF-16 units in two code points: Core accepts it and the receiver must too
- assert.doesNotThrow(()=>c.normalizeInput({query:'😊a'}));
- assert.equal(c.normalizeInput({query:'😊a'}).input.query,'😊a');
- assert.throws(()=>c.normalizeInput({query:'ab'}),'two units stay below the floor');
- assert.throws(()=>c.normalizeInput({query:'😊'.repeat(1000)+'ab'}),'2,002 units exceed the ceiling');
- const padded=c.normalizeInput({query:'  radios   for   vehicles  '});
+test('the active reads decide the query bound on the normalized value, never on the raw string',()=>{
+ for(const [id,c] of [[DIBBS,contract(DIBBS)],[SBIR,contract(SBIR)]]){
+  // three UTF-16 units in two code points: Core accepts it and the receiver must too
+  assert.doesNotThrow(()=>c.normalizeInput({query:'😊a'}),id);
+  assert.equal(c.normalizeInput({query:'😊a'}).input.query,'😊a');
+  // the exact producer counterexample: 2,005 raw characters that normalize to six units
+  const padded=' '.repeat(1999)+'radios';
+  assert.equal(padded.length,2005);
+  assert.equal(c.normalizeInput({query:padded}).input.query,'radios',`${id}: the raw request is accepted and only the normalized echo changes`);
+  assert.throws(()=>c.normalizeInput({query:'ab'}),'two units stay below the floor');
+  assert.throws(()=>c.normalizeInput({query:'a'.repeat(2001)}),'2,001 normalized units exceed the ceiling');
+  assert.throws(()=>c.normalizeInput({query:' '.repeat(1999)+'a'.repeat(2001)}),'padding cannot hide an overflow');
+  assert.throws(()=>c.normalizeInput({query:'   '}),'whitespace alone normalizes to nothing');
+  assert.throws(()=>c.normalizeInput({query:'😊'.repeat(1000)+'ab'}),'2,002 units exceed the ceiling');
+ }
+ const padded=contract(DIBBS).normalizeInput({query:'  radios   for   vehicles  '});
  assert.equal(padded.input.query,'radios for vehicles','the bound applies to the normalized query');
+});
+test('raw request size stays bounded by the existing inert-JSON operation contract, not by a query cap',()=>{
+ const c=contract(DIBBS);
+ assert.equal(c.normalizeInput({query:' '.repeat(1999)+'radios'}).input.query,'radios');
+ assert.throws(()=>c.normalizeInput({query:'a'.repeat(17*1024*1024)}),/Operation contract JSON byte limit/,'the existing 16 MiB inert-JSON limit still refuses an oversized raw request');
 });
 test('the active agency bound is measured on the trimmed value in UTF-16 units only for the active reads',()=>{
  const c=contract(SBIR);

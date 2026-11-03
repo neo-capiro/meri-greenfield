@@ -22,11 +22,30 @@ for(const id of IDS)test(`${id}: fixed native route carries the literal request 
  // The advertised JSON Schema only prefilters: a length keyword counts code points, so for the active reads a
  // two-code-point surrogate query must pass it and the receiver decides with the exact 3..2000 UTF-16 unit bound.
  if(id==='semantic_search_dibbs_solicitations'||id==='semantic_search_sbir_topics')assert.equal(schema.arguments.safeParse({...f.arguments,query:'😊a'}).success,true,id);
- for(const patch of [{tenantId:'forged'},{limit:26},{query:''},{clientId:'00000003-0000-4000-8000-000000000001'}])assert.equal(schema.arguments.safeParse({...f.arguments,...patch}).success,false);
+ for(const patch of [{tenantId:'forged'},{limit:26},{query:null},{clientId:'00000003-0000-4000-8000-000000000001'}])assert.equal(schema.arguments.safeParse({...f.arguments,...patch}).success,false);
 });
 test('the receiver refuses an active query below the UTF-16 unit floor before any Core call',async()=>{
  const f=semanticCase('semantic_search_dibbs_solicitations');
  await assert.rejects(f.handler()({...f.call(),request:{...f.arguments,query:'ab'}}),error=>/INVALID_ARGUMENTS/.test(String(error.code??error.message)));
+ assert.equal(f.wire.length,0);
+});
+test('the advertised converter and the receiver accept the exact padded producer query on both active reads',async()=>{
+ for(const id of ['semantic_search_dibbs_solicitations','semantic_search_sbir_topics']){
+  const f=semanticCase(id),padded=' '.repeat(1999)+'radios';
+  assert.equal(padded.length,2005,`${id}: the raw string is longer than any code-point cap would allow`);
+  f.state.page={...structuredClone(f.state.page),query:'radios'};
+  const schema=advertisedArguments(f.contract.descriptor.inputSchema);
+  assert.equal(schema.arguments.safeParse({...f.arguments,query:padded}).success,true,`${id}: the advertised converter admits the raw string`);
+  const request={...f.arguments,query:padded},out=JSON.parse(await f.handler()(f.call(request)));
+  assert.equal(f.wire.length,1,`${id}: exactly one Core call`);
+  assert.equal(f.wire[0].body.query,padded,`${id}: the raw request bytes are sent unchanged, not the normalized echo`);
+  assert.equal(out.result.query,'radios',`${id}: the normalized query is what the page echoes`);
+  assert.deepEqual(out.result,f.state.page,`${id}: the Core page is preserved`);
+ }
+});
+test('the receiver refuses a normalized query beyond the unit ceiling before any Core call',async()=>{
+ const f=semanticCase('semantic_search_dibbs_solicitations');
+ await assert.rejects(f.handler()({...f.call(),request:{...f.arguments,query:'a'.repeat(2001)}}),error=>/INVALID_ARGUMENTS/.test(String(error.code??error.message)));
  assert.equal(f.wire.length,0);
 });
 test('a filter the family does not apply is refused before any Core call',async()=>{
