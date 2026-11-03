@@ -5,13 +5,18 @@ import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/va
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {assertExecutionIdentity,executionIdentity,createExecutionBinding,isExecutionOutcome} from '../control/conversations/execution-boundary.mjs';
 import {markAuthorityUnavailable} from '../../packages/runtime/authority-availability.mjs';
+import {assertOperatorBrowserAdmission,operatorBrowserDeadline} from './browser-operator-admission.mjs';
 
 const same=(a,b)=>hash(a)===hash(b);
 const refuse=code=>{throw Object.assign(Error(code),{code});};
 const checkSignal=signal=>()=>signal?.throwIfAborted();
 
-export function createAgentCoreExecutionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,beforeInvocation,nativeNeed,nativeReady,browserNeed,
- now=Date.now,newId=randomUUID,reconcileEnded}){
+export function createAgentCoreExecutionOwner(options){return executionOwner(options,null);}
+export function createOperatorAgentCoreExecutionOwner(options,caseAdmission){
+ assertOperatorBrowserAdmission(caseAdmission);return executionOwner(options,caseAdmission);
+}
+function executionOwner({store,provider,versions,plan,credentialSecret,admit,contextFor,beforeInvocation,nativeNeed,nativeReady,browserNeed,
+ now=Date.now,newId=randomUUID,reconcileEnded},caseAdmission){
  validateShape('RuntimeVersions',versions);
  if(typeof credentialSecret!=='string'||credentialSecret.length<32||typeof admit!=='function'||typeof contextFor!=='function'||reconcileEnded!==undefined&&typeof reconcileEnded!=='function'||beforeInvocation!==undefined&&typeof beforeInvocation!=='function'||browserNeed!==undefined&&typeof browserNeed!=='function'||nativeNeed!==undefined&&typeof nativeNeed!=='function'||nativeReady!==undefined&&typeof nativeReady!=='function')refuse('EXECUTION_CONFIGURATION');
  const journal=store.executions,pending=new Map(),observation=new AbortController();let closed=false;
@@ -65,6 +70,7 @@ export function createAgentCoreExecutionOwner({store,provider,versions,plan,cred
     native.status==='ready'&&(!Number.isSafeInteger(native.currentUntilMs)||native.currentUntilMs<=now()||
      !Number.isSafeInteger(native.leaseDeadlineMs)||native.leaseDeadlineMs<=now())))refuse('EXECUTION_ADMISSION_REFUSED');
    observation.signal.throwIfAborted();
+   if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,hostInput);
    const result=await provider.invoke({execution,versions,credential:credentialFor(execution),...settings,
     ...(settings.browser===undefined?{}:{browser:{...settings.browser,enabled:browserEnabled}}),signal:observation.signal});
    own(result,['execution','state','settled']);
