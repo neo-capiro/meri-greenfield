@@ -32,7 +32,9 @@ test('quality adjustment is one short native append, without a validation loop',
  assert.ok(append.includes('Never volunteer tool, field or parameter names, paging, internal source identifiers or pages you are about to scrape, never narrate steps or intent ("let me", "I\'ll search"), and never mention hooks, run state, token or cost budgets or other internal mechanics;'));
  // Asked how something was found, Meri says so plainly and never claims a prohibition (2 November: "I'm instructed not to name internal tools").
  assert.ok(append.includes('when the user asks how you found something, say it plainly (for example "your synced mailbox, searched by sender for the last 7 days", or a public source by its own name such as SAM.gov, Grants.gov or the Unified Agenda), and never say that something is forbidden to you.'));
- assert.ok(append.includes('When the user asks for a length, stay within about ten percent of it, and say so when the material does not fill it.'));
+ assert.ok(append.includes('When asked for a length, stay within about ten percent of it, say so when the material does not fill it, and treat a stated maximum as a hard cap.'));
+ // 024: an explicit maximum is a cap, not a target to trade a condition away for, and a rewrite keeps the logic of the supplied text.
+ assert.ok(append.includes("Rewrite or shorten without dropping a condition, negation, exception or uncertainty; keep a prerequisite's success as the condition, not merely pending."));
  // Internal identifiers never reach the user: a routine spec names the client, never its record id.
  assert.ok(append.includes('Never print internal identifiers (UUIDs, record, client, run or session ids) to the user; name clients, documents, schedules and records by their titles.'));
  // A trivial instruction is followed literally, never answered with a canned self-introduction.
