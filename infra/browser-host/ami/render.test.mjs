@@ -133,9 +133,9 @@ test('the identity script writes the live boot and instance ids, atomically and 
 test('the guest report and the described image are checked field by field',()=>{
  const report=()=>({marker:'MERI_BAKE_VERIFICATION',ok:true,kernel:'6.1.150-175.280.amzn2023.aarch64',node:ami.NODE_VERSION,imageDigest:input().imageDigest,helperSha256:input().helperSha256,
   nativeHostRelayHelperSha256:input().nativeHostRelayHelperSha256,programSha256:input().programSha256,profileSha256:ami.renderProfile(input()).sha256,identityUnit:'enabled',
-  hostPath:'enabled',hostService:'disabled',sshd:'disabled',userns:true,identityFilePresent:false,dockerCredentials:false});
+  hostPath:'enabled',hostService:'static',sshd:'disabled',userns:true,identityFilePresent:false,dockerCredentials:false});
  assert.equal(ami.verifyGuestReport(report(),input()).profileSha256,ami.renderProfile(input()).sha256);
- for(const over of [{ok:false},{node:'v20.0.0'},{imageDigest:'sha256:'+'f'.repeat(64)},{profileSha256:'0'.repeat(64)},{hostService:'enabled'},{identityFilePresent:true},
+ for(const over of [{ok:false},{node:'v20.0.0'},{imageDigest:'sha256:'+'f'.repeat(64)},{profileSha256:'0'.repeat(64)},...['enabled','disabled','masked','inactive','unknown'].map(hostService=>({hostService})),{identityFilePresent:true},
   {dockerCredentials:true},{userns:false},{sshd:'enabled'},{kernel:'bad kernel'}])
   assert.throws(()=>ami.verifyGuestReport({...report(),...over},input()),/BROWSER_HOST_AMI_GUEST_REPORT_REFUSED/u);
  const image=()=>({ImageId:'ami-0123456789abcdef0',Name:'n',Architecture:'arm64',State:'available',ImdsSupport:'v2.0',VirtualizationType:'hvm',EnaSupport:true,RootDeviceType:'ebs',

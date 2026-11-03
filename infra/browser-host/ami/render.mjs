@@ -227,10 +227,11 @@ chmod 0700 /opt/meri/meri-host-launcher /opt/meri/meri-host-relay-launcher
 [[ $(sha256sum /opt/meri/meri-host-launcher | cut -d' ' -f1) == "$EXPECT_HELPER" ]]
 [[ $(sha256sum /opt/meri/meri-host-relay-launcher | cut -d' ' -f1) == "$EXPECT_RELAY" ]]
 [[ $(sha256sum /opt/meri/native-bootstrap.mjs | cut -d' ' -f1) == "$EXPECT_PROGRAM" ]]
-set +e
-bootstrap_err=$(env -i /usr/local/bin/node /opt/meri/native-bootstrap.mjs 2>&1 >/dev/null)
-bootstrap_rc=$?
-set -e
+if bootstrap_err=$(env -i /usr/local/bin/node /opt/meri/native-bootstrap.mjs 2>&1 >/dev/null); then
+  bootstrap_rc=0
+else
+  bootstrap_rc=$?
+fi
 [[ $bootstrap_rc == 1 && $bootstrap_err == NATIVE_PROTECTED_BOOTSTRAP_REFUSED ]]
 
 # Protected root, reviewed profile, identity script and units. The AMI ships no identity and no bundle.
@@ -274,10 +275,40 @@ export function verifyGuestReport(observed,input){
  const profile=renderProfile(i);
  const expected={marker:'MERI_BAKE_VERIFICATION',ok:true,node:NODE_VERSION,imageDigest:i.imageDigest,helperSha256:i.helperSha256,
   nativeHostRelayHelperSha256:i.nativeHostRelayHelperSha256,programSha256:i.programSha256,profileSha256:profile.sha256,identityUnit:'enabled',
-  hostPath:'enabled',hostService:'disabled',userns:true,identityFilePresent:false,dockerCredentials:false};
+  hostPath:'enabled',hostService:'static',userns:true,identityFilePresent:false,dockerCredentials:false};
+ if(observed===null||typeof observed!=='object'||Array.isArray(observed)||
+  Object.keys(observed).sort().join(',')!==[...Object.keys(expected),'kernel','sshd'].sort().join(','))fail('BROWSER_HOST_AMI_GUEST_REPORT_REFUSED:shape');
  for(const [key,value] of Object.entries(expected))if(observed?.[key]!==value)fail(`BROWSER_HOST_AMI_GUEST_REPORT_REFUSED:${key}`);
  if(typeof observed.kernel!=='string'||!/^[0-9][0-9A-Za-z._-]{1,80}$/u.test(observed.kernel)||observed.sshd==='enabled')fail('BROWSER_HOST_AMI_GUEST_REPORT_REFUSED:sshd');
  return Object.freeze({kernel:observed.kernel,profileSha256:profile.sha256});
+}
+
+/** The guest emits one final JSON record. CLI formatting may add blank lines;
+ * never fall back to an earlier marker when the final nonblank line is invalid. */
+export function parseGuestReport(text){
+ if(typeof text!=='string'||Buffer.byteLength(text)>65536)fail('BROWSER_HOST_AMI_GUEST_REPORT_REFUSED:size');
+ const line=text.trimEnd().split('\n').at(-1);
+ if(!line)fail('BROWSER_HOST_AMI_GUEST_REPORT_REFUSED:empty');
+ try{return JSON.parse(line);}catch{fail('BROWSER_HOST_AMI_GUEST_REPORT_REFUSED:json');}
+}
+
+/** Failure evidence contains only the known public record fields and byte/hash
+ * identities. Never persist arbitrary stdout, malformed JSON or error messages. */
+function guestRefusal({reason,inputBytes,reportBytes,input,observed}){
+ const publicReport={};
+ for(const key of ['helperSha256','nativeHostRelayHelperSha256','programSha256','profileSha256'])
+  if(typeof observed?.[key]==='string'&&HEX64.test(observed[key]))publicReport[key]=observed[key];
+ for(const key of ['identityUnit','hostPath','hostService','sshd'])
+  if(['enabled','disabled','static','masked','indirect','linked','not-found'].includes(observed?.[key]))publicReport[key]=observed[key];
+ for(const key of ['ok','userns','identityFilePresent','dockerCredentials'])if(typeof observed?.[key]==='boolean')publicReport[key]=observed[key];
+ if(observed?.marker==='MERI_BAKE_VERIFICATION')publicReport.marker=observed.marker;
+ if(typeof observed?.imageDigest==='string'&&/^sha256:[0-9a-f]{64}$/u.test(observed.imageDigest))publicReport.imageDigest=observed.imageDigest;
+ if(typeof observed?.node==='string'&&/^v[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/u.test(observed.node))publicReport.node=observed.node;
+ if(typeof observed?.kernel==='string'&&/^[0-9][0-9A-Za-z._-]{1,80}$/u.test(observed.kernel))publicReport.kernel=observed.kernel;
+ const identity=bytes=>bytes===undefined?null:{bytes:bytes.length,sha256:sha256(bytes)};
+ const last=reportBytes===undefined?undefined:Buffer.from(reportBytes.toString('utf8').trimEnd().split('\n').at(-1)??'');
+ return {status:'FAILED_GUEST_VERIFICATION',reason,inputFile:identity(inputBytes),reportFile:identity(reportBytes),finalLine:identity(last),
+  ...(input?{expectedInput:input}:{}),observed:publicReport};
 }
 
 /** The AMI as EC2 describes it after imaging and the IMDS attribute change. @param {any} image */
@@ -310,14 +341,24 @@ export function main(argv){
   writeFileSync(join(out,'input.json'),JSON.stringify(input,null,1)+'\n',{flag:'wx',mode:0o600});
   process.stdout.write(JSON.stringify({amiName:amiName(input),profileSha256:profile.sha256,guestBakeSha256:sha256(guest),bootstrapSha256:input.programSha256})+'\n');
  }else if(command==='verify-guest'){
-  const input=validateAmiInput(JSON.parse(readFileSync(String(arg('--input')),'utf8')));
-  process.stdout.write(JSON.stringify(verifyGuestReport(JSON.parse(readFileSync(String(arg('--report')),'utf8')),input))+'\n');
+  let inputBytes,reportBytes,input,observed;
+  try{
+   inputBytes=readFileSync(String(arg('--input')));reportBytes=readFileSync(String(arg('--report')));
+   let raw;try{raw=JSON.parse(inputBytes.toString('utf8'));}catch{fail('BROWSER_HOST_AMI_GUEST_INPUT_REFUSED:json');}
+   input=validateAmiInput(raw);observed=parseGuestReport(reportBytes.toString('utf8'));
+   process.stdout.write(JSON.stringify(verifyGuestReport(observed,input))+'\n');
+  }catch(error){
+   const out=arg('--failure-out'),reason=/^BROWSER_HOST_AMI_[A-Z_]+(?::[A-Za-z0-9]+)?$/u.test(error?.code??'')?error.code:'BROWSER_HOST_AMI_GUEST_INPUT_READ_REFUSED';
+   if(out)try{writeFileSync(out,JSON.stringify(guestRefusal({reason,inputBytes,reportBytes,input,observed}),null,1)+'\n',{flag:'wx',mode:0o600});}
+   catch{process.stderr.write('BROWSER_HOST_AMI_GUEST_DIAGNOSTIC_WRITE_REFUSED\n');}
+   throw error;
+  }
  }else if(command==='verify-image'){
   const described=JSON.parse(readFileSync(String(arg('--described')),'utf8'));
   process.stdout.write(JSON.stringify(verifyImage(described.Images?.[0]))+'\n');
  }else if(command==='evidence'){
   const input=validateAmiInput(JSON.parse(readFileSync(String(arg('--input')),'utf8')));
-  const report=verifyGuestReport(JSON.parse(readFileSync(String(arg('--report')),'utf8')),input);
+  const report=verifyGuestReport(parseGuestReport(readFileSync(String(arg('--report')),'utf8')),input);
   const image=verifyImage(JSON.parse(readFileSync(String(arg('--described')),'utf8')).Images?.[0]);
   const out=String(arg('--out'));
   const body={schema:'meri-browser-host-ami-evidence/1',amiId:image.imageId,amiName:image.name,baseAmiId:arg('--base-ami'),builderInstanceId:arg('--builder'),
