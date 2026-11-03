@@ -1,5 +1,5 @@
 import {receiveDocumentRequest,receiveDocumentResponse,receiveDocumentDownload,documentAccessMetadata,DocumentResponseError,type AdmittedDocumentVersion,type DocumentInspectionResponse,type DocumentErrorResponse} from '@capiro/meri-contracts/document-access-application';
-import {receiveDocumentPreviewRequest,receiveDocumentPreviewPublication,receiveDocumentPreview,documentPreviewMetadata} from '@capiro/meri-contracts/document-access-application';
+import {receiveDocumentPreviewRequest,receiveDocumentPreviewPublication,receiveDocumentPreviewReadRefusal,receiveDocumentPreview,documentPreviewMetadata,type DocumentPreviewPublication} from '@capiro/meri-contracts/document-access-application';
 const request=receiveDocumentRequest('inspect',new Uint8Array());
 const response=await receiveDocumentResponse('inspect',200,new Uint8Array(),request);
 const exact:DocumentErrorResponse|DocumentInspectionResponse=response;void exact;
@@ -14,6 +14,12 @@ if(!('error'in response)){
   const rendered=await receiveDocumentPreview(new Response(),response.version);const nativeQualified:false=rendered.preview.nativeQualified;void nativeQualified;
   // @ts-expect-error reading cannot be passed as a publication request
   receiveDocumentPreviewPublication(200,new Uint8Array(),receiveDocumentPreviewRequest('read',new Uint8Array()),response.version);
+  const readRefusal=receiveDocumentPreviewReadRefusal(409,new Uint8Array(),receiveDocumentPreviewRequest('read',new Uint8Array()));
+  const closedReadRefusal:DocumentErrorResponse=readRefusal;void closedReadRefusal;
+  // @ts-expect-error a publication request is not a read request, so a read answer cannot become a receipt
+  receiveDocumentPreviewReadRefusal(409,new Uint8Array(),publication);
+  // @ts-expect-error a read refusal is a closed envelope, not a publication receipt
+  const refusedPublication:DocumentPreviewPublication=readRefusal;void refusedPublication;
   const format:'txt'|'docx'|'xlsx'|'pptx'|'pdf'|'zip'=response.inspection.format;void format;
   if(response.inspection.format==='pptx'){const visual:'pending'=response.inspection.details.visualInspection;void visual;}
   if(response.inspection.format==='pdf'){const render:'pending'=response.inspection.details.renderInspection;void render;}

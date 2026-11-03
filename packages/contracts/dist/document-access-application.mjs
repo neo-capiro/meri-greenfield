@@ -9037,6 +9037,14 @@ function receiveDocumentPreviewPublication(httpStatus, utf8Bytes, request, versi
   if (r.versionId !== version.versionId || r.artifactId !== version.artifactId || r.tenantId !== version.binding.tenantId || r.conversationId !== version.binding.conversationId || !same(r.source, { sha256: version.object.sha256, bytes: version.object.bytes, mimeType: version.mimeType }) || !same(o.scopes, version.scopes) || o.bytes > 8388608 || c.inputSha256 !== r.source.sha256 || c.outputSha256 !== o.sha256 || (version.mimeType === "application/pdf" ? c.method !== "source-pdf" || c.qualificationId !== null || c.imageDigest !== null || o.sha256 !== r.source.sha256 || o.bytes !== r.source.bytes : c.method !== "office-pdf" || c.qualificationId === null || c.imageDigest === null)) fail("PREVIEW_MISMATCH");
   return result;
 }
+function receiveDocumentPreviewReadRefusal(httpStatus, utf8Bytes, request) {
+  if (requests.get(request) !== "read") fail("UNADMITTED_REQUEST");
+  if (!Number.isInteger(httpStatus) || httpStatus < 100 || httpStatus > 599) fail("INVALID_STATUS");
+  if (httpStatus === 200) fail("INVALID_STATUS");
+  const result = parseBytes(utf8Bytes, 4096);
+  if (!validateError(result) || errorStatuses[result.error.code] !== httpStatus) fail("INVALID_ERROR_RESPONSE");
+  return result;
+}
 async function receiveDocumentPreview(response, version, { maxBytes = 8388608, timeoutMs = 3e4, signal } = {}) {
   source(version);
   if (!Number.isSafeInteger(maxBytes) || maxBytes < 0 || maxBytes > 8388608 || !Number.isSafeInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 6e4) fail("INVALID_PREVIEW_OPTIONS");
@@ -9309,6 +9317,7 @@ export {
   receiveDocumentDownload,
   receiveDocumentPreview,
   receiveDocumentPreviewPublication,
+  receiveDocumentPreviewReadRefusal,
   receiveDocumentPreviewRequest,
   receiveDocumentRequest,
   receiveDocumentResponse,

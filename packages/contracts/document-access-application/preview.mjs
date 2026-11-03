@@ -33,6 +33,15 @@ export function receiveDocumentPreviewPublication(httpStatus,utf8Bytes,request,v
    c.method!=='office-pdf'||c.qualificationId===null||c.imageDigest===null))fail('PREVIEW_MISMATCH');
  return result;
 }
+/** A read answer that is not bytes is a closed refusal: the read operation's own status/code/outcome, admitted only for the read
+ * request that asked. It carries no version, brands no bytes and is never a publication receipt; a 200 answer stays bytes. */
+export function receiveDocumentPreviewReadRefusal(httpStatus,utf8Bytes,request){
+ if(requests.get(request)!=='read')fail('UNADMITTED_REQUEST');
+ if(!Number.isInteger(httpStatus)||httpStatus<100||httpStatus>599)fail('INVALID_STATUS');
+ if(httpStatus===200)fail('INVALID_STATUS');const result=parseBytes(utf8Bytes,4096);
+ if(!validateError(result)||errorStatuses[result.error.code]!==httpStatus)fail('INVALID_ERROR_RESPONSE');
+ return result;
+}
 /** Reload can read an existing preview after a fresh inspect; a publication request/receipt is never required to read. */
 export async function receiveDocumentPreview(response,version,{maxBytes=8388608,timeoutMs=30000,signal}={}){
  source(version);

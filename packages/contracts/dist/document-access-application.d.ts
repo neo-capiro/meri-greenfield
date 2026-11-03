@@ -567,4 +567,5 @@ export type AdmittedGeneratedDocumentVersion=Readonly<DocumentVersion>&{readonly
 export interface DocumentPreview<V extends AdmittedGeneratedDocumentVersion=AdmittedGeneratedDocumentVersion>{readonly version:V;readonly bytes:Uint8Array<ArrayBuffer>;readonly preview:Readonly<{previewId:string;sourceVersionId:string;sourceSha256:string;sha256:string;pages:number;recordSha256:string;nativeQualified:false}>;}
 export declare function receiveDocumentPreviewRequest<A extends DocumentPreviewAction>(action:A,utf8Bytes:Uint8Array):AdmittedDocumentPreviewRequest<A>;
 export declare function receiveDocumentPreviewPublication(httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentPreviewRequest<'publish'>,version:AdmittedGeneratedDocumentVersion):DocumentPreviewPublication|DocumentErrorResponse;
+export declare function receiveDocumentPreviewReadRefusal(httpStatus:number,utf8Bytes:Uint8Array,request:AdmittedDocumentPreviewRequest<'read'>):DocumentErrorResponse;
 export declare function receiveDocumentPreview<V extends AdmittedGeneratedDocumentVersion>(response:Response,version:V,options?:DocumentDownloadOptions):Promise<DocumentPreview<V>>;

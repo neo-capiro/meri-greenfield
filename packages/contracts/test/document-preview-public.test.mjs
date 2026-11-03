@@ -63,3 +63,39 @@ test('a stalled stream is cancelled on deadline without retaining its reader loc
  const response=new Response(body,{headers:f.response().headers});await assert.rejects(access.receiveDocumentPreview(response,f.version,{timeoutMs:20}),code('PREVIEW_DEADLINE'));
  await new Promise(resolve=>setTimeout(resolve,1));assert.equal(cancelled,1);assert.equal(body.locked,false);
 });
+const refusal=(code,outcome)=>({error:{code,outcome}}),raw=value=>typeof value==='string'||value instanceof Uint8Array?new TextEncoder().encode(value):utf8(value);
+test("a non-bytes read answer is that read's own closed refusal",async()=>{
+ const f=await fixture(),read=access.receiveDocumentPreviewRequest('read',utf8({versionId:f.version.versionId}));
+ for(const [status,envelope]of [[409,refusal('ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE')],[503,refusal('PREVIEW_UNAVAILABLE','NOT_DISPATCHED')],
+  [503,refusal('ARTIFACT_RENDERER_UNAVAILABLE','READ_UNAVAILABLE')],[403,refusal('ACCESS_DENIED','NOT_DISPATCHED')],
+  [422,refusal('ARTIFACT_PREVIEW_UNSUPPORTED','NOT_DISPATCHED')],[502,refusal('ARTIFACT_EFFECT_UNKNOWN','UNKNOWN')]])
+  assert.deepEqual(access.receiveDocumentPreviewReadRefusal(status,utf8(envelope),read),envelope);
+ // Only the read request that asked is admitted; a publish or inspect request is not one, so no read answer becomes a receipt.
+ for(const other of [f.request,access.receiveDocumentRequest('inspect',utf8({versionId:f.version.versionId}))])
+  assert.throws(()=>access.receiveDocumentPreviewReadRefusal(409,utf8(refusal('ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE')),other),code('UNADMITTED_REQUEST'));
+ // A refusal admits and brands nothing: the same version still needs verified bytes from the bytes receiver.
+ assert.equal(hash((await access.receiveDocumentPreview(f.response(),f.version)).bytes),f.version.object.sha256);
+});
+for(const [name,[status,payload,expected]]of Object.entries({
+ unknownCode:[409,refusal('NOT_A_CLOSED_CODE','READ_UNAVAILABLE'),'INVALID_ERROR_RESPONSE'],
+ unknownOutcome:[409,refusal('ARTIFACT_PREVIEW_PENDING','DONE'),'INVALID_ERROR_RESPONSE'],
+ statusMismatch:[503,refusal('ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE'),'INVALID_ERROR_RESPONSE'],
+ extraProperty:[409,{error:{code:'ARTIFACT_PREVIEW_PENDING',outcome:'READ_UNAVAILABLE',retry:true}},'INVALID_ERROR_RESPONSE'],
+ missingOutcome:[409,{error:{code:'ARTIFACT_PREVIEW_PENDING'}},'INVALID_ERROR_RESPONSE'],
+ bareCode:[409,{code:'ARTIFACT_PREVIEW_PENDING'},'INVALID_ERROR_RESPONSE'],
+ notAnObject:[409,'[]','INVALID_ERROR_RESPONSE'],
+ okStatusWithEnvelope:[200,refusal('ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE'),'INVALID_STATUS'],
+ statusBelowRange:[99,refusal('ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE'),'INVALID_STATUS'],
+ statusNotJson:[409,'{"error":','INVALID_JSON_UTF8'],
+ oversizeBody:[409,new TextEncoder().encode(JSON.stringify(refusal('ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE')).padEnd(4097,' ')),'BYTE_LIMIT'],
+ dangerousKey:[409,'{"error":{"code":"ARTIFACT_PREVIEW_PENDING","outcome":"READ_UNAVAILABLE"},"__proto__":{}}','DANGEROUS_KEY'],
+}))test(`read refusal refuses ${name}`,async()=>{
+ const f=await fixture(),read=access.receiveDocumentPreviewRequest('read',utf8({versionId:f.version.versionId}));
+ assert.throws(()=>access.receiveDocumentPreviewReadRefusal(status,raw(payload),read),code(expected));
+});
+test('the bytes receiver keeps owning 200 answers, so no refusal bypasses byte or header verification',async()=>{
+ const f=await fixture(),read=access.receiveDocumentPreviewRequest('read',utf8({versionId:f.version.versionId}));
+ assert.throws(()=>access.receiveDocumentPreviewReadRefusal(200,f.bytes,read),code('INVALID_STATUS'));
+ await assert.rejects(access.receiveDocumentPreview(new Response(utf8(refusal('ARTIFACT_PREVIEW_PENDING','READ_UNAVAILABLE')),{headers:{'content-type':'application/json'}}),f.version),code('PREVIEW_HEADERS'));
+ assert.equal(hash((await access.receiveDocumentPreview(f.response(),f.version)).bytes),f.version.object.sha256);
+});

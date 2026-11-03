@@ -24,7 +24,7 @@ test('physical0.1.23 and union match six inspect/download pairs, eighteen refusa
 });
 test('prior package has no preview/run named receiver; old closed request routes refuse new families',{skip:priorRoot?false:'Exact immutable prior package is required'},async()=>{
  const old=await imported('document-access-application'),history=await imported('conversation-history');
- for(const name of ['receiveDocumentPreviewRequest','receiveDocumentPreviewPublication','receiveDocumentPreview']){assert.equal(old[name],undefined);assert.equal(typeof current[name],'function');}
+ for(const name of ['receiveDocumentPreviewRequest','receiveDocumentPreviewPublication','receiveDocumentPreviewReadRefusal','receiveDocumentPreview']){assert.equal(old[name],undefined);assert.equal(typeof current[name],'function');}
  for(const name of ['receiveRunIndexRequest','receiveRunIndexResponse']){assert.equal(history[name],undefined);assert.equal(typeof runs[name],'function');}
  const id='00000000-0000-4000-8000-000000000001';for(const route of ['preview','preview-publish'])assert.throws(()=>old.receiveDocumentRequest(route,bytes({versionId:id})));
  assert.throws(()=>history.receiveConversationHistoryRequest('list',bytes({schemaVersion:'meri.run-index/1',scope:{kind:'general'},status:'all',limit:20,cursor:null})));
