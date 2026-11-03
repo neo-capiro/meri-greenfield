@@ -26,7 +26,7 @@ function syntheticPool({faults={}}={}){
  const project=(key,value)=>{const parts=key.split(':'),kind=parts.at(-2),id=parts.at(-1),tenant=parts.slice(0,-2).join(':');projections.set(kind+JSON.stringify([tenant,id]),{state:value.state,ledger_sequence:String(value.ledgerSequence),projection:value,projection_sha256:hash(value)});};
  return {made,project,projections,set row(v){row=v;},get row(){return row;},async connect(){return idle.pop()??client();}};
 }
-const compose=options=>{const pool=syntheticPool(options),journal=createPostgresRetentionJournal({pool,maxRequestMs:200});return {pool,journal,store:createPostgresWatermarkStore({journal})};};
+const compose=options=>{const pool=syntheticPool(options),journal=createPostgresRetentionJournal({pool,maxRequestMs:options?.maxRequestMs??200});return {pool,journal,store:createPostgresWatermarkStore({journal})};};
 const rowAt=sequence=>({state:'SUPPRESSED',ledgerSequence:sequence,entrySha256:'1'.repeat(64)});
 const proofFor=(pool,sequence,minimumSequence=0)=>{const key=`tenant-a:conversation:${randomUUID()}`,row=rowAt(sequence);pool.project(key,row);return {key,sequence,minimumSequence,projectionSha256:hash(row)};};
 
@@ -83,7 +83,7 @@ test('synthetic SQL snapshot: one joined data statement follows the shared recov
  assert.deepEqual(await store.readProjection(key),{projection:row,watermark:{sequence:1,entrySha256:'a'.repeat(64)}});
  const statements=pool.made[0].statements,joined=statements.map((s,i)=>s.startsWith('SELECT s.projection,')?i:-1).filter(i=>i>=0);
  assert.equal(joined.length,2);
- assert.equal(statements.filter(s=>s.startsWith('BEGIN')).every(s=>s==='BEGIN ISOLATION LEVEL READ COMMITTED'),true,'pool session isolation cannot establish an older snapshot before the recovery lock grants');
+ assert.equal(statements.filter(s=>s.startsWith('BEGIN')).every(s=>s==='BEGIN ISOLATION LEVEL READ COMMITTED READ ONLY'),true,'pool session isolation cannot establish an older snapshot before the recovery lock grants, and the snapshot is strictly read-only');
  for(const i of joined){assert.ok(statements[i].includes('LEFT JOIN meri_conversations.retention_subjects'));
   assert.ok(statements[i].includes('LEFT JOIN meri_conversations.retention_recovery_watermark'));
   assert.ok(statements[i-1].startsWith('SELECT pg_advisory_xact_lock_shared'));assert.equal(statements[i+1],'COMMIT');}
@@ -112,4 +112,69 @@ test('synthetic SQL snapshot: malformed data or lost commit returns no snapshot 
  }
  const {store,pool}=compose({faults:{COMMIT:'throw'}});await assert.rejects(store.readProjection(key),/RETENTION_COMMIT_UNKNOWN/);
  assert.equal(pool.made[0].queries.includes('ROLLBACK'),false);assert.ok(pool.made[0].releases[0] instanceof Error);
+});
+
+/** A lock timeout on the shared recovery lock: the only failure a strictly read-only snapshot may retry. */
+const lockTimeout=()=>Object.assign(new Error('canceling statement due to lock timeout'),{code:'55P03'});
+const lockFault=attempts=>()=>{attempts.n++;if(attempts.n===1)throw lockTimeout();return {rows:[]};};
+const begins=c=>c.statements.filter(s=>s.startsWith('BEGIN')).length;
+
+test('synthetic SQL: a read-only snapshot that loses the shared recovery lock is retried exactly once in a fresh transaction',async()=>{
+ const attempts={n:0},{pool,store}=compose({faults:{'SELECT pg_advisory_xact_lock_shared':lockFault(attempts)},maxRequestMs:5000}),key=`tenant-a:conversation:${randomUUID()}`;
+ pool.project(key,rowAt(1));pool.row={sequence:'1',entry_sha256:'a'.repeat(64)};
+ assert.deepEqual(await store.readProjection(key),{projection:rowAt(1),watermark:{sequence:1,entrySha256:'a'.repeat(64)}});
+ assert.equal(attempts.n,2,'exactly one retry');
+ const c=pool.made[0],sql=c.statements;
+ assert.equal(begins(c),2,'a fresh transaction for the retry');
+ const first=sql.findIndex(s=>s.startsWith('BEGIN')),rollback=sql.indexOf('ROLLBACK'),second=sql.findIndex((s,i)=>i>rollback&&s.startsWith('BEGIN')),commit=sql.indexOf('COMMIT');
+ assert.ok(first>=0&&first<rollback&&rollback<second&&second<commit,'a confirmed ROLLBACK precedes the fresh BEGIN and only the retry commits');
+ assert.ok(c.releases.every(e=>e===undefined),'both transactions returned a clean lease');
+});
+
+test('synthetic SQL: the retried snapshot sees a recovery that completed while the first attempt waited',async()=>{
+ const key=`tenant-a:conversation:${randomUUID()}`,attempts={n:0};let pool;
+ const faults={'SELECT pg_advisory_xact_lock_shared':()=>{attempts.n++;if(attempts.n===1){pool.project(key,rowAt(3));pool.row={sequence:'3',entry_sha256:'c'.repeat(64)};throw lockTimeout();}return {rows:[]};}};
+ const made=compose({faults,maxRequestMs:5000});pool=made.pool;
+ pool.project(key,rowAt(1));pool.row={sequence:'1',entry_sha256:'a'.repeat(64)};
+ assert.deepEqual(await made.store.readProjection(key),{projection:rowAt(3),watermark:{sequence:3,entrySha256:'c'.repeat(64)}},'the retry re-reads one fresh joined snapshot');
+ assert.equal(attempts.n,2);
+});
+
+test('synthetic SQL: an unconfirmed ROLLBACK retires the lease and is never retried',async()=>{
+ const attempts={n:0},{pool,store}=compose({faults:{'SELECT pg_advisory_xact_lock_shared':()=>{attempts.n++;throw lockTimeout();},ROLLBACK:'throw'},maxRequestMs:5000}),key=`tenant-a:conversation:${randomUUID()}`;
+ await assert.rejects(store.readProjection(key),/RETENTION_STORE_UNAVAILABLE/);
+ assert.equal(attempts.n,1,'cleanup uncertainty is not retried');assert.equal(pool.made.length,1);assert.ok(pool.made[0].releases[0] instanceof Error,'the uncertain lease is retired');});
+
+test('synthetic SQL: a read-only transaction on a held transition lease is never retried',async()=>{
+ const attempts={n:0},pool=syntheticPool({faults:{'SELECT pg_advisory_xact_lock_shared':()=>{attempts.n++;throw lockTimeout();}},maxRequestMs:5000}),journal=createPostgresRetentionJournal({pool,maxRequestMs:5000});
+ await assert.rejects(journal.withTransition(`tenant-a:conversation:${randomUUID()}`,()=>journal.tx(async()=>null,{readOnly:true})),/RETENTION_STORE_UNAVAILABLE/);
+ assert.equal(attempts.n,1,'a held lease is never retried');
+});
+
+test('synthetic SQL: a lock timeout that persists is retried only once and then refused',async()=>{
+ const attempts={n:0},{pool,store}=compose({faults:{'SELECT pg_advisory_xact_lock_shared':()=>{attempts.n++;throw lockTimeout();}},maxRequestMs:5000}),key=`tenant-a:conversation:${randomUUID()}`;
+ await assert.rejects(store.readProjection(key),/RETENTION_STORE_UNAVAILABLE/);
+ assert.equal(attempts.n,2,'at most one retry');assert.equal(begins(pool.made[0]),2);
+});
+
+test('synthetic SQL: a lock timeout is not retried when the remaining budget cannot fit another lock wait',async()=>{
+ const attempts={n:0},{pool,store}=compose({faults:{'SELECT pg_advisory_xact_lock_shared':lockFault(attempts)},maxRequestMs:5000}),key=`tenant-a:conversation:${randomUUID()}`;
+ await assert.rejects(store.readProjection(key,{deadlineMs:Date.now()+1000}),/RETENTION_STORE_UNAVAILABLE/);
+ assert.equal(attempts.n,1,'a 1s budget cannot fit a 2s lock wait');assert.equal(begins(pool.made[0]),1);
+});
+
+test('synthetic SQL: a non-lock failure, an unknown COMMIT and a write are never retried',async()=>{
+ const transport={n:0},{pool,store}=compose({faults:{'SELECT pg_advisory_xact_lock_shared':()=>{transport.n++;throw Object.assign(new Error('synthetic transport'),{code:'08006'});}},maxRequestMs:5000}),key=`tenant-a:conversation:${randomUUID()}`;
+ await assert.rejects(store.readProjection(key),/RETENTION_STORE_UNAVAILABLE/);assert.equal(transport.n,1,'a transport failure is not a lock timeout');
+ const unknown=compose({faults:{COMMIT:'throw'},maxRequestMs:5000});await assert.rejects(unknown.store.readProjection(key),/RETENTION_COMMIT_UNKNOWN/);
+ assert.equal(begins(unknown.pool.made[0]),1,'an unknown COMMIT is never retried');assert.equal(unknown.pool.made[0].queries.includes('ROLLBACK'),false);
+ const write={n:0},w=compose({faults:{'SELECT pg_advisory_xact_lock_shared':()=>{write.n++;throw lockTimeout();}},maxRequestMs:5000});
+ await assert.rejects(w.journal.set(key,{state:'SUPPRESSED',ledgerSequence:1,entrySha256:'1'.repeat(64),ownerActorId:'actor',suppressedAtMs:1}),/RETENTION_STORE_UNAVAILABLE/);
+ assert.equal(write.n,1,'a write is never retried');assert.equal(begins(w.pool.made[0]),1);
+});
+
+test('synthetic SQL: an aborted caller is not retried',async()=>{
+ const abort=new AbortController(),attempts={n:0},{pool,store}=compose({faults:{'SELECT pg_advisory_xact_lock_shared':()=>{attempts.n++;abort.abort();throw lockTimeout();}},maxRequestMs:5000}),key=`tenant-a:conversation:${randomUUID()}`;
+ await assert.rejects(store.readProjection(key,{signal:abort.signal}),/RETENTION_STORE_UNAVAILABLE/);
+ assert.equal(attempts.n,1,'an aborted caller is not retried');assert.equal(begins(pool.made[0]),1);
 });

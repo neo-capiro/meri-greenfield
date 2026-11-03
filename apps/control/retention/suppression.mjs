@@ -22,8 +22,8 @@ export function createRetentionReadGate({journal,serving,log=line=>process.stder
   log(JSON.stringify({event:'MERI_RETENTION_GATE',stage:'retention',outcome:'refused',code,cause:causeCode(cause),fence:state.enabled?'open':'closed',reason:state.enabled?null:state.reason??'RETENTION_RECOVERY_BARRIER'}));}catch{/* Observability cannot affect the refusal. */}};
  const refuse=(code,cause)=>{report(code,cause);fail(code,cause);};
  const barrier=()=>{if(!serving.isEnabled())refuse('RETENTION_RECOVERY_BARRIER');};
- async function isSuppressed(rawSubject,read=journal.get){barrier();const s=subject(rawSubject);let current;try{current=await read(subjectKey(s));}catch(error){refuse(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER'?'RETENTION_RECOVERY_BARRIER':'RETENTION_READ_UNAVAILABLE',error);}barrier();return Boolean(current&&current.state!=='RELEASED');}
- async function assertServable(rawSubject,read=journal.get){if(await isSuppressed(rawSubject,read))fail('RETENTION_SUPPRESSED');}
+ async function isSuppressed(rawSubject,read=journal.get,options){barrier();const s=subject(rawSubject);let current;try{current=await read(subjectKey(s),options);}catch(error){refuse(!serving.isEnabled()||error?.code==='RETENTION_RECOVERY_BARRIER'?'RETENTION_RECOVERY_BARRIER':'RETENTION_READ_UNAVAILABLE',error);}barrier();return Boolean(current&&current.state!=='RELEASED');}
+ async function assertServable(rawSubject,read=journal.get,options){if(await isSuppressed(rawSubject,read,options))fail('RETENTION_SUPPRESSED');}
  /** Serving owners provide authenticated subject identities and serialize their response inside this transition exclusion. */
  async function withRelease(rawSubjects,release,options){
   if(!Array.isArray(rawSubjects)||rawSubjects.length>100||typeof release!=='function'||typeof journal.withServing!=='function')fail('RETENTION_CONFIGURATION');

@@ -13,8 +13,10 @@ export function createPostgresWatermarkStore({journal}){
  const mode=options=>({exclusive:options?.exclusive===true});
  const decodeSnapshot=snapshot=>({projection:snapshot.projection,watermark:decode(snapshot.watermarkRow)});
  async function read(options){return journal.tx(async c=>decode((await c.query(`SELECT sequence,entry_sha256 FROM ${TABLE} WHERE singleton`)).rows[0]),mode(options));}
- /** The canonical journal supplies both values in ONE statement after its shared recovery lock is acquired. */
- async function readProjection(key){return journal.tx(async c=>decodeSnapshot(await journal.readProjection(c,key)),{readCommitted:true});}
+ /** The canonical journal supplies both values in ONE statement after its shared recovery lock is acquired. The transaction is
+  * strictly READ ONLY, so a lock timeout (55P03) on that shared recovery lock is the one failure the journal may retry once,
+  * within the caller's remaining budget, in a fresh transaction. */
+ async function readProjection(key,{deadlineMs,signal}={}){return journal.tx(async c=>decodeSnapshot(await journal.readProjection(c,key)),{readCommitted:true,readOnly:true,deadlineMs,signal});}
  /** The serving journal already holds its bounded lease and recovery exclusion; decode that same joined snapshot. */
  async function readProjectionFromServingLease(key,read){if(typeof read!=='function')fail('RETENTION_CONFIGURATION');return decodeSnapshot(await read(key));}
  /** Monotonic: a lower or equal position leaves the row unchanged; a higher one clears the recorded entry hash (only recovery records it). */
