@@ -5,8 +5,9 @@ import {assertNativeReadConfiguration} from '../../packages/contracts/runtime-0.
 const refused=()=>{throw Object.assign(Error('AGENTCORE_CONFIGURATION'),{code:'AGENTCORE_CONFIGURATION'});};
 export function compileAgentCoreConfiguration(value){
  const c=data(own(value,['runtimeArn','runtimeVersion','qualifier','identity','policyRevision','runWindowMs','maxOutputBytes'],['approvedReads']));
- if(!/^arn:aws:bedrock-agentcore:us-east-1:967807252336:runtime\/meri_preview-[A-Za-z0-9]+$/u.test(c.runtimeArn)||
-  !/^[1-9][0-9]*$/u.test(c.runtimeVersion)||c.qualifier!=='preview'||
+ const runtime=/^arn:aws:bedrock-agentcore:us-east-1:967807252336:runtime\/(meri_preview|meri_case_[a-f0-9]{12})-[A-Za-z0-9]+$/u.exec(c.runtimeArn);
+ if(!runtime||
+  !/^[1-9][0-9]*$/u.test(c.runtimeVersion)||c.qualifier!==(runtime[1]==='meri_preview'?'preview':'case')||
   typeof c.policyRevision!=='string'||!c.policyRevision||c.policyRevision.length>256||
   !Number.isSafeInteger(c.runWindowMs)||c.runWindowMs<60000||c.runWindowMs>28800000||
   !Number.isSafeInteger(c.maxOutputBytes)||c.maxOutputBytes<1||c.maxOutputBytes>1048576)refused();

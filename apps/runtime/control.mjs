@@ -365,7 +365,10 @@ function assembleControlCase(options,caseAdmission){
  return Object.freeze({service,store,sessions,retention,office,browserDownloadReservations,nativeNeed,nativeReady,browserNeed,...(nativeHostAuthority?{nativeHostAuthority}:{}),objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,uploadTables,browserCustody,browserReceipts,...(browserHosts?{browserHosts}:{}),productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state(),...(rendererReadiness?{renderer:rendererReadiness}:{})}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{if(new URL(request.url).pathname==='/api/outreach-generation/start')return outreachStart?.handle(request)??new Response(null,{status:404});const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path.startsWith('/api/meri/browser/')?browserViewer.handle(request):path==='/api/action-followthrough/browser-session'?browserIssuance.handle(request):Object.values(RUNNER_INTENT_PATHS).includes(path)?nativeIntents.handle(request):path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await office?.close();await browserHosts?.close();await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
  }catch(error){throw Object.assign(error,{controlCleanup:ownedCleanup()});}
 }
-export function startControl(configuration,options={}){return startControlCase(configuration,options,null);}
+export function startControl(configuration,options={}){
+ if(configuration.agentcore?.runtimeArn?.includes(':runtime/meri_case_'))throw fault('CONTROL_CONFIGURATION');
+ return startControlCase(configuration,options,null);
+}
 /** Trusted programmatic entrypoint only. Ordinary config/env/request paths cannot select it. */
 export function startOperatorBrowserControl(configuration,options,caseAdmission){
  if(options?.testOwners!==undefined)throw fault('OPERATOR_BROWSER_CASE_REFUSED');

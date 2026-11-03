@@ -15,7 +15,9 @@ const production='synthetic-production-control-'.repeat(3);
 const compose=c=>composeOperatorCallbackMaterial({material:c.material,controlCapability:Buffer.from(credential),productionControlCapabilitySha256:digest(production)});
 test('descriptor derives from real case material and binds the actual worker declaration and distinct Control secret',async()=>{
  const c=await operatorCaseFixture({binding}),callback=compose(c);
- assert.deepEqual(callback.endpoint,c.material.configuration.endpoint);assert.equal(callback.caCertificate,c.material.native.worker.browserDeployment.bootstrapSpec.control.caCertificate);
+ assert.deepEqual(callback.endpoint,c.material.configuration.endpoint);assert.equal(callback.caCertificate,c.material.callback.caCertificate);
+ assert.notEqual(callback.endpoint.address,c.material.native.worker.browserDeployment.bootstrapSpec.control.endpoint.address);
+ assert.notEqual(callback.caCertificate,c.material.native.worker.browserDeployment.bootstrapSpec.control.caCertificate);
  assert.equal(callback.retainUntilMs,c.material.retainUntilMs);
  const config={native:{origin,loopback:false,preparedKickoff:true},nativeProvisioning:c.material.native.worker};
  assert.doesNotThrow(()=>assertOperatorCallbackWorker(callback,config));assert.doesNotThrow(()=>assertOperatorCallbackCredential(callback,credential));
@@ -23,7 +25,8 @@ test('descriptor derives from real case material and binds the actual worker dec
  assert.throws(()=>assertOperatorCallbackWorker(callback,{...config,nativeProvisioning:{enabled:false}}));
  assert.throws(()=>assertOperatorCallbackWorker(callback,{...config,native:{...config.native,origin:'https://production.invalid'}}));
  assert.throws(()=>composeOperatorCallbackMaterial({material:c.material,controlCapability:Buffer.from(production),productionControlCapabilitySha256:digest(production)}));
- for(const change of [m=>m.configuration.endpoint.address='10.0.0.8',m=>m.configuration.caSha256='0'.repeat(64),m=>m.native.control.host.observer.keyId='foreign',m=>m.retainUntilMs=Date.now()]){
+ for(const change of [m=>m.configuration.endpoint.address='10.0.0.9',m=>m.configuration.caSha256='0'.repeat(64),m=>m.native.control.host.observer.keyId='foreign',m=>m.retainUntilMs=Date.now(),
+  m=>delete m.callback,m=>m.callback.endpoint.address=m.native.worker.browserDeployment.bootstrapSpec.control.endpoint.address]){
   const material=structuredClone(c.material);change(material);assert.throws(()=>composeOperatorCallbackMaterial({material,controlCapability:Buffer.from(credential),productionControlCapabilitySha256:digest(production)}));
  }
 });
@@ -49,10 +52,10 @@ test('real Control capability auth rejects production while original callback cl
  const owner={readiness:async()=>({service:'meri-native-capability-provider/1',ready:true}),kickoff:async()=>assert.fail('No kickoff'),status:async()=>assert.fail('No status'),
   stop:async input=>{stops++;return {binding:input.binding,executionId:input.executionId,stopped:true};},admitted:async()=>assert.fail('No execution'),settle:async()=>assert.fail('No settlement')};
  const app=createAgentCoreControlApplication({owner,controlCredential:credential});
- const server=await tlsServer(t,c.serverTls,async(req,res)=>{const parts=[];for await(const part of req)parts.push(part);
+ const server=await tlsServer(t,c.callbackTls,async(req,res)=>{const parts=[];for await(const part of req)parts.push(part);
   const response=await app.handle(new Request(origin+req.url,{method:req.method,headers:req.headers,body:Buffer.concat(parts)}));
   res.writeHead(response.status,Object.fromEntries(response.headers)).end(Buffer.from(await response.arrayBuffer()));});
- const transport=createOperatorCallbackTransport(callback,{request:localRequest(server)});t.after(()=>transport.close());
+ const transport=createOperatorCallbackTransport(callback,{request:localRequest(server,[],callback.endpoint.address)});t.after(()=>transport.close());
  const native=key=>createNativeCapabilityClient({configuration:{origin,maxResponseBytes:1048576},credential:key,fetch:transport.fetch});
  await native(credential).readiness();await assert.rejects(native(production).readiness());
  c.capability.revoke();const result=await native(credential).call('execution/kickoff/stop',{binding,executionId:hash(binding)});

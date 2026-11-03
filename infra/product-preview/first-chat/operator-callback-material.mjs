@@ -1,12 +1,11 @@
 /** Derive protected callback transport from the already validated case observer/bootstrap.
  * No publication, credential generation or browser admission. */
-import {createHash,X509Certificate} from 'node:crypto';
+import {createHash} from 'node:crypto';
 import {own} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {compileNativeDeployment} from '../../../apps/runtime/native-deployment-configuration.mjs';
 import {observerEntrypointConfiguration,OPERATOR_OBSERVER_CONFIGURATION} from '../../../apps/runtime/native-observer-entrypoint.mjs';
-import {OPERATOR_CALLBACK_CONFIGURATION,operatorCallbackConfiguration} from '../../../apps/runtime/operator-callback-configuration.mjs';
-import {checkedCertificate,sha256Der} from '../../../apps/worker/conversation/host/control/tls.mjs';
+import {OPERATOR_CALLBACK_CONFIGURATION,operatorCallbackConfiguration,operatorCallbackTarget} from '../../../apps/runtime/operator-callback-configuration.mjs';
 import {NATIVE_OBSERVER_ORIGIN} from '../../../apps/runtime/native-observer-http.mjs';
 const digest=x=>createHash('sha256').update(x).digest('hex'),fail=()=>{throw Error('OPERATOR_CALLBACK_MATERIAL_REFUSED');};
 export function composeOperatorCallbackMaterial(raw){
@@ -17,13 +16,11 @@ export function composeOperatorCallbackMaterial(raw){
   const controlCapabilitySha256=digest(controlCapability.toString('utf8').trim());
   if(controlCapabilitySha256===productionControlCapabilitySha256)fail();
   const d=compileNativeDeployment(material.native.worker.browserDeployment),s=d.bootstrapSpec.control;
-  const observer=observerEntrypointConfiguration(material.configuration),leaf=new X509Certificate(s.serverCertificate),ca=new X509Certificate(s.caCertificate);
-  const endpoint={...s.endpoint,serverFingerprintSha256:sha256Der(leaf.raw)};
-  if(observer.schema!==OPERATOR_OBSERVER_CONFIGURATION||hash(endpoint)!==hash(observer.endpoint)||observer.caSha256!==digest(s.caCertificate)||
-   observer.keyId!==material.native.control?.host?.observer?.keyId||!leaf.checkIssued(ca)||!leaf.verify(ca.publicKey))fail();
-  const checked=checkedCertificate(leaf.raw,{name:endpoint.serverName,nowMs:Date.now(),pinnedControl:'server',fingerprintSha256:endpoint.serverFingerprintSha256});
-  if(checked.notAfterMs<=material.retainUntilMs)fail();
+  const observer=observerEntrypointConfiguration(material.configuration);
+  const {endpoint,caCertificate}=operatorCallbackTarget(material.callback,{hostEndpoint:s.endpoint,retainUntilMs:material.retainUntilMs});
+  if(observer.schema!==OPERATOR_OBSERVER_CONFIGURATION||hash(endpoint)!==hash(observer.endpoint)||observer.caSha256!==digest(caCertificate)||
+   observer.keyId!==material.native.control?.host?.observer?.keyId)fail();
   return operatorCallbackConfiguration({schema:OPERATOR_CALLBACK_CONFIGURATION,origin:NATIVE_OBSERVER_ORIGIN,endpoint,
-   caCertificate:s.caCertificate,retainUntilMs:material.retainUntilMs,controlCapabilitySha256,nativeProvisioningSha256:hash(material.native.worker)});
+   caCertificate,retainUntilMs:material.retainUntilMs,controlCapabilitySha256,nativeProvisioningSha256:hash(material.native.worker)});
  }catch{fail();}
 }

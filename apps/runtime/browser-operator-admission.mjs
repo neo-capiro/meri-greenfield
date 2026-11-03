@@ -1,6 +1,6 @@
 /** One in-process operator capability, constructed only by trusted source composition.
  * No wire representation, environment selector, new ledger or execution/host allocation. */
-import {X509Certificate} from 'node:crypto';
+import {createHash,X509Certificate} from 'node:crypto';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {sha256Der} from '../../packages/contracts/native-tls-kernel.mjs';
@@ -8,6 +8,7 @@ import {NATIVE_DECLARATION_V2,nativeObserverDeadline} from '../../packages/contr
 import {compileNativeDeployment} from './native-deployment-configuration.mjs';
 import {nativeHostId} from './native-host-provisioning.mjs';
 import {observerEntrypointConfiguration,OPERATOR_OBSERVER_CONFIGURATION} from './native-observer-entrypoint.mjs';
+import {operatorCallbackTarget} from './operator-callback-configuration.mjs';
 import {compileBrowserActivation,activationOpen} from '../worker/conversation/browser/activation.mjs';
 import {assertNativeDeclaration,assertNativeObserverAllocationJoin} from '../control/browser-hosts/native-reservations.mjs';
 const cases=new WeakMap(),fail=()=>{throw Object.assign(Error('OPERATOR_BROWSER_CASE_REFUSED'),{code:'OPERATOR_BROWSER_CASE_REFUSED'});};
@@ -24,17 +25,22 @@ export function createOperatorBrowserAdmission({selection,material,expiresAtMs,s
   !/^[a-f0-9]{64}$/u.test(target.promptSha256)||!finite(material?.retainUntilMs)||material.retainUntilMs<=expiresAtMs||material.native?.worker?.enabled!==true||material.native.worker.deployment!==undefined)fail();
  const deployment=compileNativeDeployment(data(material.native.worker.browserDeployment));
  const observer=observerEntrypointConfiguration(material.configuration),control=deployment.bootstrapSpec.control;
+ let callback;try{callback=operatorCallbackTarget(material.callback,{hostEndpoint:control.endpoint,retainUntilMs:material.retainUntilMs,nowMs:now()});}catch{fail();}
  if(deployment.sourceCommit!==sourceCommit||observer.schema!==OPERATOR_OBSERVER_CONFIGURATION||
   material.native.control?.host?.observer?.keyId!==observer.keyId||
   !deployment.physicalObserver?.bridgeFunctionVersionArn.startsWith(observer.functionArn+':')||
-  !equal(observer.endpoint,{...control.endpoint,serverFingerprintSha256:certPin(control.serverCertificate)}))fail();
+  !equal(observer.endpoint,callback.endpoint)||observer.caSha256!==createHash('sha256').update(callback.caCertificate).digest('hex'))fail();
  const s={target,deployment,observer,control:data(material.native.control),expiresAtMs,cleanupCeilingMs:material.retainUntilMs,now,revoked:false,binding:null,executionDeadlineMs:null};
  const capability=Object.freeze({revoke(){s.revoked=true;}});cases.set(capability,s);return capability;
 }
 export function assertOperatorBrowserControl(capability,{configuration,sourceCommit}){
  const s=state(capability);
+ // The native material composer returns renderer inputs (including inspectsUploads),
+ // not the closed runtime uploads.native configuration. Browser-only cases keep
+ // upload inspection on the same image's AgentCore runtime, as renderMaterial does.
+ const control={enabled:true,agentcore:{imageDigest:configuration.versions?.imageDigest},host:s.control.host,policySha256:s.control.policySha256};
  if(activationOpen(compileBrowserActivation(configuration.browserActivation))||sourceCommit!==s.deployment.sourceCommit||
-  !equal(configuration.uploads?.native??null,s.control))fail();
+  s.control.inspectsUploads!==false||!/^sha256:[a-f0-9]{64}$/u.test(configuration.versions?.imageDigest??'')||!equal(configuration.uploads?.native??null,control))fail();
 }
 /** Runs after the existing canonical run/context/Core admission, before its durable claim/provider dispatch. */
 export function bindOperatorBrowserInvocation(capability,{binding,run,request,expiresAtMs}){

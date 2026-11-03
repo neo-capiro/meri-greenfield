@@ -10,9 +10,12 @@ import {operatorCallbackConfiguration} from './operator-callback-configuration.m
 export function productWorkerTrustsPinnedServerCa(c,environment=process.env){const file=c.native?.serverCaFile;return typeof file==='string'&&/^\/run\/meri\/[A-Za-z0-9][A-Za-z0-9._-]{0,119}\.pem$/u.test(file)&&environment.NODE_EXTRA_CA_CERTS===file;}
 export function main(argv=process.argv.slice(2)){return startRuntime(argv,null);}
 export function mainOperatorTemporalWorker(raw,argv){return startRuntime(argv,operatorCallbackConfiguration(raw));}
-async function startRuntime(argv,callback){
+/** Selected only by the separate protected operator executable. Reuses all ordinary CLI owners. */
+export function mainOperatorBrowserControl(raw,argv){return startRuntime(argv,null,raw);}
+async function startRuntime(argv,callback,operatorControl=null){
  if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('Usage: node apps/runtime/cli.mjs <control|temporal-worker|schedule-worker> --config /absolute/config.json\nExit: 0 graceful completion; 2 configuration/startup timeout; 3 runtime/startup failure/shutdown timeout.\n');return 0;}
- if(argv.length!==3||argv[1]!=='--config'||callback!==null&&argv[0]!=='temporal-worker'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c;try{c=await loadConfiguration(path,role);
+ if(argv.length!==3||argv[1]!=='--config'||callback!==null&&argv[0]!=='temporal-worker'||operatorControl!==null&&argv[0]!=='control'){process.stderr.write('RUNTIME_ARGUMENTS\n');return 2;}const [role,,path]=argv;let c,caseAdmission;try{c=await loadConfiguration(path,role);
+  if(role==='control'&&operatorControl===null&&c.agentcore?.runtimeArn?.includes(':runtime/meri_case_'))throw Error('PRODUCT_LISTENER_REFUSED');
   if(role==='control'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.privateHttp===undefined||c.agentcore===undefined))throw Error('PRODUCT_LISTENER_REFUSED');
   if((role==='control'||role==='schedule-worker')&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED==='1')await verifyControlCaBundle(c);
@@ -24,6 +27,11 @@ async function startRuntime(argv,callback){
   if(role==='schedule-worker'&&process.env.MERI_PRODUCT_PREVIEW_REQUIRED!==undefined&&
      (process.env.MERI_PRODUCT_PREVIEW_REQUIRED!=='1'||c.routines?.enabled!==true||c.routines.core?.unattendedGrant===undefined||c.native===undefined||c.native.loopback!==false||
       !c.native.origin.startsWith('https://')||c.database===undefined||c.http.port!==8083||!productControlTrustsCompositeCa()))throw Error('PRODUCT_SCHEDULE_WORKER_REFUSED');
+  if(operatorControl!==null){
+   const [{createOperatorControlAdmission},{readSecret}]=await Promise.all([import('./operator-control-configuration.mjs'),import('./config.mjs')]);
+   const receipt=await readMaterialReceipt();
+   caseAdmission=createOperatorControlAdmission(operatorControl,c,await readSecret(c.native.capabilityFile),receipt?.sourceCommit);
+  }
  }catch{process.stderr.write('RUNTIME_CONFIGURATION\n');return 2;}
  const controller=new AbortController();let runtime,shutdownTimer,controlTurnTelemetry,cleanupUnknown=false;const retire=()=>{shutdownTimer??=setTimeout(()=>{process.stderr.write('RUNTIME_SHUTDOWN_TIMEOUT\n');process.exit(3);},c.limits.shutdownMs+1000);};const stop=()=>{controller.abort();retire();};process.once('SIGTERM',stop);process.once('SIGINT',stop);
  const startupTimer=setTimeout(()=>{process.stderr.write('RUNTIME_STARTUP_TIMEOUT\n');process.exit(2);},c.limits.startupMs);startupTimer.unref();
@@ -70,11 +78,11 @@ async function startRuntime(argv,callback){
    routinesOwners=createAttendedRoutinesOwnerComposition({configuration:c,workflow:c.routines.workflow,readConsents:readDelegationConsents});
    productPorts.routinesCandidateBinder=candidate=>{routinesOwners.bindCandidate(candidate);if(routinesOwners.state()==='owners-unavailable')process.stderr.write(JSON.stringify({event:'runtime.routines.attended.unavailable'})+'\n');};
   }
-  runtime=callback===null?await module[start](c,{signal:controller.signal,...productPorts}):await module.startOperatorTemporalWorker(c,callback,{signal:controller.signal});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
+  runtime=caseAdmission?await module.startOperatorBrowserControl(c,{signal:controller.signal,...productPorts},caseAdmission):callback===null?await module[start](c,{signal:controller.signal,...productPorts}):await module.startOperatorTemporalWorker(c,callback,{signal:controller.signal});clearTimeout(startupTimer);if(controller.signal.aborted){retire();await runtime.close();}else{process.stdout.write(JSON.stringify({event:'runtime.listening',role,address:runtime.address,profile:c.profile,...(runtime.downloads?{downloads:runtime.downloads.reason}:{})})+'\n');await Promise.race([new Promise(resolve=>controller.signal.addEventListener('abort',resolve,{once:true})),...(runtime.completion?[runtime.completion]:[])]);retire();await runtime.close();}return 0;
  }catch(error){process.stderr.write('RUNTIME_UNAVAILABLE\n');retire();controller.abort();cleanupUnknown=error?.code==='TEMPORAL_PRODUCT_CLEANUP_UNKNOWN';
   try{await runtime?.close();}catch{cleanupUnknown=true;}
   if(cleanupUnknown)process.stderr.write('RUNTIME_CLEANUP_UNKNOWN\n');return 3;
- }finally{controlTurnTelemetry?.close();clearTimeout(startupTimer);if(!cleanupUnknown)clearTimeout(shutdownTimer);process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}
+ }finally{caseAdmission?.revoke();controlTurnTelemetry?.close();clearTimeout(startupTimer);if(!cleanupUnknown)clearTimeout(shutdownTimer);process.removeListener('SIGTERM',stop);process.removeListener('SIGINT',stop);}
 
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href)process.exitCode=await main();

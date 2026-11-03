@@ -874,9 +874,9 @@ ENV HOME=/home/node
 # material writer and application both run as the pinned non-root node UID/GID.
 # /tmp and /workspace are task-local bind mounts too: without an image path to copy, Fargate mounts them root-owned
 # and the node UID cannot create the per-run capability material directory (/tmp/meri-material) or a run workspace.
-RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-temporal /run/meri/upload-scratch /run/meri/upload-definitions /workspace && chown node:node /run/meri /run/meri-temporal /run/meri/upload-scratch /run/meri/upload-definitions /workspace && chmod 0700 /run/meri /run/meri-temporal /run/meri/upload-scratch /run/meri/upload-definitions /workspace && chmod 1777 /tmp
+RUN test "$(id -u node)" = 1000 && test "$(id -g node)" = 1000 && mkdir -p /run/meri /run/meri-operator /run/meri-temporal /run/meri/upload-scratch /run/meri/upload-definitions /workspace && chown node:node /run/meri /run/meri-operator /run/meri-temporal /run/meri/upload-scratch /run/meri/upload-definitions /workspace && chmod 0700 /run/meri /run/meri-operator /run/meri-temporal /run/meri/upload-scratch /run/meri/upload-definitions /workspace && chmod 1777 /tmp
 USER 1000:1000
-VOLUME ["/run/meri", "/run/meri-temporal", "/tmp", "/workspace"]
+VOLUME ["/run/meri", "/run/meri-operator", "/run/meri-temporal", "/tmp", "/workspace"]
 EXPOSE 8080
 ENTRYPOINT ["node"]
 CMD ["apps/runtime/agentcore-entrypoint.mjs"]

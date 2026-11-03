@@ -1,5 +1,5 @@
 /** Real material assembly with throwaway PKI; synthetic canonical owner rows only in tests. No provider/DB/cloud effects. */
-import {createHash} from 'node:crypto';
+import {createHash,X509Certificate} from 'node:crypto';
 import {createRenderFixture} from '../../../infra/product-preview/first-chat/render-material.fixture.mjs';
 import {nativeProcessingInputs} from '../../../infra/product-preview/first-chat/native-processing-material.fixture.mjs';
 import {composeOperatorObserverMaterial} from '../../../infra/product-preview/first-chat/operator-observer-material.mjs';
@@ -23,13 +23,14 @@ export async function operatorCaseFixture({binding,prompt='Synthetic ordinary re
   functionArn:`arn:aws:lambda:us-east-1:${account}:function:production-observer`,stateMachineArn:`arn:aws:states:us-east-1:${account}:stateMachine:production-native`,keyId:'production-key',
   secretArn:`arn:aws:secretsmanager:us-east-1:${account}:secret:production-observer-Abc123`,secretVersionId:'b'.repeat(32),secretSha256:'c'.repeat(64),caSha256:sha(foreign.otherCa)};
  const material=composeOperatorObserverMaterial({feature,material:i.nativeMaterial,deployment:i.deployment,pki:i.private,nowMs:now(),validUntilMs:now()+7200000,cleanupCeilingMs,
+  callback:{endpoint:{address:'10.0.0.8',port:443,serverName:'control.meri-preview.internal',serverFingerprintSha256:sha(new X509Certificate(foreign.good.cert).raw)},caCertificate:foreign.ca,serverCertificate:foreign.good.cert},
   identity:{functionArn:`arn:aws:lambda:us-east-1:${account}:function:synthetic-observer`,stateMachineArn:`arn:aws:states:us-east-1:${account}:stateMachine:synthetic-native`,
    secretArn:`arn:aws:secretsmanager:us-east-1:${account}:secret:synthetic-observer-Abc123`,secretVersionId:'a'.repeat(32)},
   production:{configuration,serverCaCertificate:foreign.otherCa,serverCertificate:foreign.otherCa,issuerCaCertificate:foreign.otherCa,controlClientCertificate:foreign.otherCa,observerKeySha256:sha(Buffer.alloc(32,8))}});
  const selection={...Object.fromEntries(['tenantId','actorId','conversationId'].map(k=>[k,binding[k]])),promptSha256:hash(prompt)};
  const sourceCommit=feature.browserDeployment.sourceCommit;
  const capability=createOperatorBrowserAdmission({selection,material,sourceCommit,expiresAtMs,now});
- return {capability,material,sourceCommit,selection,expiresAtMs,serverTls:{cert:i.private.certs['control-private'],key:i.private.keys['control-private']},
+ return {capability,material,sourceCommit,selection,expiresAtMs,inputs:i,callbackTls:foreign.good,serverTls:{cert:i.private.certs['control-private'],key:i.private.keys['control-private']},
   bind:(run={binding,state:'queued'})=>bindOperatorBrowserInvocation(capability,{binding,run,request:{prompt},expiresAtMs:now()+900000})};
 }
 export async function operatorAllocationFixture({binding,material,nowMs}){
