@@ -18,7 +18,7 @@ export async function probeRuntimeImage() {
   verifyNpmResolution('/usr/local/lib/node_modules/npm');
   const rootMount=fs.readFileSync('/proc/self/mountinfo','utf8').split('\n').map(line=>line.split(' ')).find(fields=>fields[4]==='/');
   assert(rootMount?.[5].split(',').includes('ro'),'Qualification requires a read-only root mount');
-  for(const parent of ['/tmp','/workspace','/run/meri','/run/meri-temporal']){
+  for(const parent of ['/tmp','/workspace','/run/meri','/run/meri-operator','/run/meri-temporal']){
     const directory=fs.mkdtempSync(path.join(parent,'image-smoke-'));
     try{fs.writeFileSync(path.join(directory,'fixture'),'ok');}finally{fs.rmSync(directory,{recursive:true});}
   }

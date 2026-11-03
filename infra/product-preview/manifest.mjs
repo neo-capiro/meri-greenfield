@@ -4,6 +4,8 @@ import {Template} from 'aws-cdk-lib/assertions';
 import {parseStaticProductMaterialExpected} from '../../apps/runtime/material-init.mjs';
 import {CONTROL_NODE_CA_FILE} from '../../apps/runtime/control-ca-bundle.mjs';
 import {CONTROL_HOST_LISTENER_PORT} from '../../apps/runtime/browser-host-configuration.mjs';
+import {operatorCaseNames} from '../../apps/runtime/operator-control-configuration.mjs';
+import {operatorMaterialExpected,operatorMaterialEnvironment} from '../../apps/runtime/operator-material.mjs';
 // Native preparation uses the same preview template entry point. None of these compilers deploys or enables a producer.
 export {compileNativeObserverTemplate,compileNativeWatchdogTemplate,compileNativeRuntimePolicyTemplate} from '../browser-enforcement/native-template.mjs';
 
@@ -103,14 +105,14 @@ function validate(value){
 
 const command=Object.freeze({control:['control','--config','/run/meri/control.json'],temporalWorker:['temporal-worker','--config','/run/meri/worker.json'],scheduleWorker:['schedule-worker','--config','/run/meri/schedule-worker.json']});
 function health(port){return {command:['CMD','node','-e',`fetch('http://127.0.0.1:${port}/health/live').then(r=>process.exit(r.status===200?0:1)).catch(()=>process.exit(1))`],interval:30,timeout:5,retries:3,startPeriod:60};}
-function task(stack,b,role,port){
+function task(stack,b,role,port,operator=null){
  const name=roleNames[role],databaseTrust=role==='control'||role==='scheduleWorker';
  const delivery=material(b.materialDelivery,b)[role];
  const portMappings=role==='control'?[{containerPort:8080,protocol:'tcp'},{containerPort:8082,protocol:'tcp'},
   // The host-currentness listener, mapped only with the host listener load balancer that forwards to it.
   ...(b.controlHostListenerTargetGroupArn?[{containerPort:CONTROL_HOST_LISTENER_PORT,protocol:'tcp'}]:[])]:[{containerPort:port,protocol:'tcp'}];
  const c={name,image:b.imageUri,essential:true,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,stopTimeout:60,
-  entryPoint:['node','apps/runtime/cli.mjs'],command:command[role],
+  entryPoint:['node',operator?'apps/runtime/operator-case-entrypoint.mjs':'apps/runtime/cli.mjs'],command:command[role],
   environment:[{name:'MERI_PRODUCT_PREVIEW_REQUIRED',value:'1'},
    {name:'NODE_EXTRA_CA_CERTS',value:databaseTrust?CONTROL_NODE_CA_FILE:PRIVATE_CONTROL_CA_FILE},
    // Public search settings reach control only, and only when the deployment supplies the binding.
@@ -119,8 +121,8 @@ function task(stack,b,role,port){
     {name:'MERI_WEB_SEARCH_REGION',value:b.controlWebSearch.region}]:[])],
   portMappings,linuxParameters:{capabilities:{drop:['ALL']}},
   mountPoints:[{sourceVolume:'workspace',containerPath:'/workspace',readOnly:false},{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false},
-   {sourceVolume:'material',containerPath:'/run/meri',readOnly:true}],
-  dependsOn:[{containerName:'material-init',condition:'SUCCESS'}],
+   {sourceVolume:'material',containerPath:'/run/meri',readOnly:true},...(operator?[{sourceVolume:'operator-material',containerPath:'/run/meri-operator',readOnly:true}]:[])],
+  dependsOn:[{containerName:'material-init',condition:'SUCCESS'},...(operator?[{containerName:'operator-material-init',condition:'SUCCESS'}]:[])],
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}`,'mode':'blocking'}},
   healthCheck:health(port)};
  const init={name:'material-init',image:b.imageUri,essential:false,user:b.runtimeUser,privileged:false,readonlyRootFilesystem:true,
@@ -130,11 +132,15 @@ function task(stack,b,role,port){
   mountPoints:[{sourceVolume:'material',containerPath:'/run/meri',readOnly:false},...(databaseTrust?[{sourceVolume:'tmp',containerPath:'/tmp',readOnly:false}]:[])],
   logConfiguration:{logDriver:'awslogs',options:{'awslogs-group':roleValue(b,'logGroupName','logGroupNames',role),'awslogs-region':REGION,'awslogs-stream-prefix':`product-preview-${name}-init`,'mode':'blocking'}}};
  const size=b.sizing[role];
- const definition=new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
+ const operatorInit=operator?{...init,name:'operator-material-init',entryPoint:['node','apps/runtime/operator-case-entrypoint.mjs'],command:['material-init'],
+  environment:[{name:operatorMaterialEnvironment.expected,value:JSON.stringify(operator.delivery[role].expected)}],
+  secrets:[{name:operatorMaterialEnvironment.bundle,valueFrom:operator.delivery[role].valueFrom}],
+  mountPoints:[{sourceVolume:'operator-material',containerPath:'/run/meri-operator',readOnly:false}]}:null;
+ const definition=new ecs.CfnTaskDefinition(stack,`${role}Task`,{family:operator?(role==='control'?operator.names.control:operator.names.worker):`meri-product-preview-${name}`,networkMode:'awsvpc',requiresCompatibilities:['FARGATE'],
   cpu:String(size.cpu),memory:String(size.memoryMiB),ephemeralStorage:{sizeInGiB:size.ephemeralStorageGiB},
   runtimePlatform:{cpuArchitecture:'ARM64',operatingSystemFamily:'LINUX'},executionRoleArn:roleValue(b,'executionRoleArn','executionRoleArns',role),
   ...(role==='control'?{taskRoleArn:b.controlTaskRoleArn}:role==='temporalWorker'&&b.workerTaskRoleArn!==undefined?{taskRoleArn:b.workerTaskRoleArn}:{}),
-  volumes:[{name:'workspace'},{name:'tmp'},{name:'material'}],containerDefinitions:[init,c]});
+  volumes:[{name:'workspace'},{name:'tmp'},{name:'material'},...(operator?[{name:'operator-material'}]:[])],containerDefinitions:[init,...(operatorInit?[operatorInit]:[]),c]});
  definition.cfnOptions.updateReplacePolicy=CfnDeletionPolicy.RETAIN;
  return definition;
 }
@@ -171,5 +177,30 @@ export function synthesizeProductPreview(binding){
  template.Metadata={AWSToolsMetrics:{AWSAgentToolkit:'aws-cloudformation@3'}};
  for(const id of taskRoles(b).map(role=>`${role}Task`))template.Resources[id].Metadata={
   'com.aws.cloudformation.Context':{why:'Deliver immutable native TLS and private control trust to the service.',must:'Keep nonroot, read-only app material, exact secret versions and no mutable token-writer volume.'}};
+ return template;
+}
+
+/** Separate one-shot case tasks: no ordinary service, scheduler or automatic restart.
+ * Release starts each exact definition once and registers the actual case Control IP.
+ * A stopped/unknown Control must not be replaced to recreate its process-local admission. */
+export function synthesizeOperatorCaseTasks(binding,operator){
+ const b=validate(binding),o=record(operator,['caseId','delivery']),names=operatorCaseNames(o.caseId);
+ if(taskRoles(b).length!==2||b.controlTargetGroupArn!==undefined||!b.controlPrivateTargetGroupArn||!b.controlHostListenerTargetGroupArn)fail();
+ record(o.delivery,['control','temporalWorker']);
+ for(const role of ['control','temporalWorker']){
+  const spec=record(o.delivery[role],['valueFrom','expected']),e=operatorMaterialExpected(spec.expected);
+  if(e.role!==roleNames[role]||e.sourceCommit!==b.sourceCommit||e.imageDigest!==b.imageUri.split('@')[1]||
+   !/^arn:aws:secretsmanager:us-east-1:967807252336:secret:[A-Za-z0-9/_+=.@-]{1,512}:::[A-Za-z0-9-]{32,64}$/u.test(spec.valueFrom))fail();
+ }
+ const secrets=[...Object.values(b.materialDelivery),...Object.values(o.delivery)].map(x=>x.valueFrom.split(':::')[0]);
+ if(new Set(secrets).size!==secrets.length)fail();
+ if(b.controlTaskRoleArn!==`arn:aws:iam::${ACCOUNT}:role/MeriCase-${o.caseId}-control`||
+    b.workerTaskRoleArn!==`arn:aws:iam::${ACCOUNT}:role/MeriCase-${o.caseId}-worker`)fail();
+ const app=new App({context:{'aws:cdk:version-reporting':false}}),stack=new Stack(app,`MeriOperatorCase${o.caseId}`,{env:{account:ACCOUNT,region:REGION},synthesizer:new BootstraplessSynthesizer()});
+ const profile={names,delivery:o.delivery};
+ const control=task(stack,b,'control',8080,profile),worker=task(stack,b,'temporalWorker',8081,profile);
+ new CfnOutput(stack,'ControlTaskDefinitionArn',{value:control.ref});new CfnOutput(stack,'TemporalWorkerTaskDefinitionArn',{value:worker.ref});
+ const template=Template.fromStack(stack).toJSON();
+ template.Description='Disabled operator case task definitions; explicit once-only execution and target registration remain with Release.';
  return template;
 }

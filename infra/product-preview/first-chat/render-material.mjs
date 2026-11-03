@@ -387,6 +387,29 @@ export function assertProductCliGates(role,c,environment){
 /** Pure render (reads only the private material passed in). Returns every role's exact bytes plus the non-secret summary. */
 export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs=Date.now(),validityDays=DEFAULTS.validityDays,
  deploymentRevision=DEFAULTS.deploymentRevision,featureSecrets={},nativeMaterial={},browserEvidence}){
+ if(deployment.agentcore?.runtimeArn?.includes(':runtime/meri_case_'))fail('RENDER_INPUT_REFUSED','case runtime requires protected operator renderer');
+ return renderMaterialWith({deployment,core,runtime,stage3,private:pki,nowMs,validityDays,deploymentRevision,featureSecrets,nativeMaterial,browserEvidence});
+}
+/** Separate protected case composition. The ordinary renderer always mints its own key.
+ * One supplied case credential breaks the AgentCore-create/control-render dependency:
+ * derive its public callback descriptor first, then render against the actual runtime ARN. */
+export function renderOperatorCaseMaterial(inputs,{caseId,controlCapability,productionControlCapabilitySha256}){
+ const d=inputs.deployment;
+ if(!/^[a-f0-9]{12}$/u.test(caseId)||!Buffer.isBuffer(controlCapability)||!/^\S{32,8192}$/u.test(controlCapability.toString('utf8'))||
+  !hex64.test(productionControlCapabilitySha256)||sha(controlCapability)===productionControlCapabilitySha256||
+  d.temporal?.taskQueue!==`meri-case-${caseId}-conversations`||d.features?.browserActivation?.state!=='held'||
+  d.features?.nativeProcessing?.enabled!==true||d.features.nativeProcessing.deployment!==undefined||d.features.nativeProcessing.browserDeployment===undefined||
+  d.features?.routines?.workflow!==undefined||!d.agentcore?.runtimeArn?.startsWith(`arn:aws:bedrock-agentcore:${REGION}:${ACCOUNT}:runtime/meri_case_${caseId}-`))fail('RENDER_INPUT_REFUSED','operator case composition');
+ const rendered=renderMaterialWith(inputs,controlCapability);
+ for(const role of ['control','temporal-worker']){
+  rendered.summary.wiring[role].entryPoint=['node','apps/runtime/operator-case-entrypoint.mjs'];
+  rendered.summary.wiring[role].volumes['/run/meri-operator']='separately pinned operator material (read-only)';
+ }
+ rendered.summary.operatorCase={caseId,taskQueue:d.temporal.taskQueue,execution:'once-only-run-task',ordinaryStage3:false};
+ return rendered;
+}
+function renderMaterialWith({deployment,core,runtime,stage3,private:pki,nowMs=Date.now(),validityDays=DEFAULTS.validityDays,
+ deploymentRevision=DEFAULTS.deploymentRevision,featureSecrets={},nativeMaterial={},browserEvidence},operatorCapability){
  const d=parseDeploymentInputs(deployment),activeRoles=deploymentRoles(d),schedule=activeRoles.includes('schedule-worker'),k=parseCoreValues(core),r=parseRuntimeValues(runtime),s=parseStage3(stage3,{clusterName:d.clusterName,roles:activeRoles});
  if(!Number.isSafeInteger(nowMs)||nowMs<1)fail('RENDER_INPUT_REFUSED','nowMs');
  if(!Number.isFinite(validityDays)||validityDays<=0)fail('RENDER_INPUT_REFUSED','validityDays must be positive');
@@ -410,7 +433,7 @@ export function renderMaterial({deployment,core,runtime,stage3,private:pki,nowMs
  for(const role of activeRoles)if(s.network[role].subnets.some(id=>!d.privateSubnetIds.includes(id)))fail('RENDER_INPUT_REFUSED',`stage3.network.${role}.subnets must be within deployment privateSubnetIds`);
 
  // One control-to-worker credential; user authority never comes from this material.
- const capabilityBytes={control:Buffer.from(capabilityToken(),'utf8')};
+ const capabilityBytes={control:operatorCapability===undefined?Buffer.from(capabilityToken(),'utf8'):Buffer.from(operatorCapability)};
  const versions={imageDigest:'sha256:'+nodeDigest,...r.versions},policyRevision=r.policyRevision,runWindowMs=r.runtime.runWindowMs;
  const agentcore=compileAgentCoreConfiguration({...record(d.agentcore,'deployment.agentcore',['runtimeArn','runtimeVersion','qualifier']),identity:{origin:k.coreOrigin},policyRevision,runWindowMs,maxOutputBytes:r.runtime.maxOutputBytes,
   ...(features.reads?.approvedReads===undefined?{}:{approvedReads:features.reads.approvedReads})});

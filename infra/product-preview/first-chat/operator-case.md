@@ -1,0 +1,40 @@
+# Isolated browser case composition
+
+These named exports prepare source data only. They do not select an execution window, publish material, build an image, create cloud resources, start a task or submit a model turn. Ordinary Stage3, services, keys and default image command are unchanged. Do not pass case edge outputs to ordinary `compileStage3Bindings`.
+
+Use the existing common-source product/guest pipeline and actual AMI/native-policy/observer receipts. Create fresh case IAM roles through the existing reviewed IAM method: `MeriCase-<12hex>-control`, `-worker`, `-control-execution`, and `-worker-execution`. The existing DB client marker may be shared; ordinary Control/worker traffic groups may not. Case execution roles must read only the separately versioned case material they need. The case Control role gets the case AgentCore invocation policy. This source does not silently extend an ordinary role's permissions.
+
+1. Qualify the common product image once. AgentCore's [container configuration](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-properties-bedrockagentcore-runtime-containerconfiguration.html) has no command override. Package its operator variant from that exact immutable digest using the existing Docker/ECR method:
+
+   ```sh
+   docker build --network=none --pull=false \
+     --build-arg COMMON_IMAGE=<qualified-repository@sha256:digest> \
+     -f infra/product-preview/operator-agentcore.Dockerfile -t <fresh-case-tag> .
+   ```
+
+   This Dockerfile only changes CMD; it performs no product compilation, install, COPY or RUN. Read back equal RootFS layer lists and source label, unchanged Entrypoint `node`, exact operator CMD, ARM64/nonroot identity, then qualify/scan/pin the actual resulting digest. Both case ECS roles and case AgentCore use that digest. The ordinary image keeps `apps/runtime/agentcore-entrypoint.mjs`. No build or qualification is claimed by these source tests.
+
+2. Assemble the actual case observer/native material through `composeOperatorObserverMaterial` with trusted production comparison references. Allocate one distinct static case Control credential under the existing material owner's custody. Before creating AgentCore, derive its public callback descriptor with `composeOperatorCallbackMaterial({material, controlCapability, productionControlCapabilitySha256})`, then `composeOperatorMaterial({role:'agentcore', sourceCommit, imageDigest, descriptor})`. This contains public certificates/hashes, never the Control credential or native private keys.
+
+3. Call `synthesizeOperatorAgentCoreRuntime(binding, {caseId, clientSecurityGroupId, delivery, commonImageUri})`. Its runtime name is `meri_case_<12hex>`, qualifier `case`, and invocation policy targets only the case Control role. Public callback bytes travel as bounded environment pieces with independent expected pins, are consumed before SDK startup and are materialized at the fixed protected path. The ordinary runtime has no operator environment selector. Read back the actual new runtime ARN/version before rendering Control.
+
+4. Feed actual case edge/listener outputs to `operatorCaseStage3Input({caseId, deployment, edge, revisions})`. Use its task families and network lists in the existing renderer input shape. Set the same existing Temporal namespace/address and distinct `meri-case-<12hex>-conversations` queue for Control dispatch and worker polling. Preserve the saved model/effort/turn/spend policy. Browser activation stays `held`. This browser-only case has no schedule worker or native upload-host deployment.
+
+5. Call `renderOperatorCaseMaterial(renderInputs, {caseId, controlCapability, productionControlCapabilitySha256})`. It reuses ordinary rendering and static material envelopes, but consumes the already selected case credential so the AgentCore-create/Control-render sequence cannot rotate it. Case Office/download keys, when requested, belong only to this separate render; no ordinary bundle is touched. Use existing `writeRendered` and exact-version publication custody for the two ordinary-format role bundles.
+
+6. Call `composeOperatorCaseStartup({caseId, rendered, observerMaterial, selection, expiresAtMs, productionControlCapabilitySha256})`. `selection` fixes the newly allocated tenant/actor/conversation/prompt hash. This produces separately pinned Control-startup and worker-callback bundles outside `/run/meri`; publish each to its own case secret/version only in a later allocated material operation. The Control descriptor is not a serialized capability: the protected executable constructs the in-process capability, then the existing canonical admission captures the actual full RunBinding once.
+
+7. Call `compileOperatorCaseBindings({caseId, deployment, rendered, startup, edge, versions, operatorSecrets, production, network})` and review its existing CloudFormation task definitions and network rules. `edge` contains exactly `CaseControlSecurityGroupId`, `CaseClientSecurityGroupId`, `ControlPrivateTargetGroupArn`, `HostListenerTargetGroupArn`; `versions` contains the two ordinary-format material versions plus `operator-control` and `operator-worker`. `production` is the current public temporal tuple, ordinary secret/traffic-group/target identities, runtime ARN and Control-credential/CA hashes. `network` supplies the actual Temporal frontend SG; host groups come from the validated native declaration. The compiler refuses ordinary queue, credential, trust, target, traffic-group and material reuse.
+
+   The two actual commands are:
+
+   ```sh
+   node apps/runtime/operator-case-entrypoint.mjs control --config /run/meri/control.json
+   node apps/runtime/operator-case-entrypoint.mjs temporal-worker --config /run/meri/worker.json
+   ```
+
+   Each task uses the unchanged static-material init for `/run/meri`, and a separate one-shot operator init with a writable `/run/meri-operator` volume. Applications receive both volumes read-only; only init receives the secret bundle. The image supplies the same-UID0700 volume directory. Fixed files are0600, no-follow and independently hash-pinned; preexisting/foreign content refuses.
+
+8. Execution remains explicit, once-only ECS `RunTask` with the exact returned families/revisions, network and `count:1`, under sole Release custody. No ECS service or automatic replacement is emitted. Record actual task/ENI/private IP, then register only that Control IP to the fresh case private8082 and host8443 targets. Establish the separately allocated normal authenticated Control8080/approval UI access through the existing qualification method; no ordinary public target or DNS is retargeted here. A stopped or uncertain case Control must not be replaced to recreate admission. Preserve the original observer/version/endpoint/secret/cleanup owners through the cleanup ceiling; stopping new admission does not certify teardown. Actual SDK/browser/approval and instance/root-volume/ENI absence still require independent acceptance.
+
+Never submit the stale439b request, relabel historical45f3 guest evidence, reuse an uncertain case, or modify an ordinary service to work around a refused case input. Exact current image/AMI/IAM, trusted production references, receiver/target/descriptor readbacks, the allocated normal turn and physical cleanup remain executor obligations.

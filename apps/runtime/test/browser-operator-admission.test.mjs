@@ -22,7 +22,8 @@ test('capability cannot be deserialized; canonical bind is exact and revocation 
  assert.throws(()=>c.bind());
 });
 test('operator control rejects foreign source, open activation and different observer receiver before startup',async()=>{
- const c=await operatorCaseFixture({binding}),configuration={browserActivation:held,uploads:{native:c.material.native.control}};
+ const c=await operatorCaseFixture({binding}),imageDigest=c.inputs.deployment.images.nodeRuntime.split('@')[1],configuration={browserActivation:held,versions:{imageDigest},
+  uploads:{native:{enabled:true,agentcore:{imageDigest},host:c.material.native.control.host,policySha256:c.material.native.control.policySha256}}};
  assert.doesNotThrow(()=>assertOperatorBrowserControl(c.capability,{configuration,sourceCommit:c.sourceCommit}));
  assert.throws(()=>assertOperatorBrowserControl(c.capability,{configuration,sourceCommit:'0'.repeat(40)}));
  const wrong=structuredClone(configuration);wrong.uploads.native.host.observer.keyId='production';

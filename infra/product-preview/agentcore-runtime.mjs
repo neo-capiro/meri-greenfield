@@ -5,14 +5,14 @@ import {App, Stack, CfnOutput, CfnParameter, BootstraplessSynthesizer, RemovalPo
  aws_bedrockagentcore as agentcore, aws_iam as iam, aws_ec2 as ec2,
  aws_kms as kms, aws_logs as logs} from 'aws-cdk-lib';
 import {Template} from 'aws-cdk-lib/assertions';
+import {operatorCaseNames} from '../../apps/runtime/operator-control-configuration.mjs';
+import {validateOperatorMaterial,operatorAgentCoreEnvironment} from '../../apps/runtime/operator-material.mjs';
 
 const ACCOUNT='967807252336', REGION='us-east-1', NAME='meri_preview', ENDPOINT='preview';
-const prefix=`arn:aws:bedrock-agentcore:${REGION}:${ACCOUNT}:runtime/${NAME}-`;
-const logPrefix=`arn:aws:logs:${REGION}:${ACCOUNT}:log-group:/aws/bedrock-agentcore/runtimes/${NAME}-`;
 const keys=['imageUri','sourceCommit','vpcId','privateSubnetIds','controlTaskRoleName','controlOrigin','controlCaBase64','controlCaSha256','bedrock','claudeApiSecretArn'];
 const policy=(actions,resources,conditions)=>new iam.PolicyStatement({actions,resources,...(conditions?{conditions}:{})});
 
-function validate(value){
+function validate(value,controlTaskRoleName='MeriPreview-control-task'){
  assert(value&&Object.getPrototypeOf(value)===Object.prototype,'AgentCore binding required');
  assert.deepEqual(Object.keys(value).sort(),[...keys].sort(),'unknown or missing AgentCore binding field');
  assert.match(value.imageUri,new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`));
@@ -21,7 +21,7 @@ function validate(value){
  assert(Array.isArray(value.privateSubnetIds)&&value.privateSubnetIds.length>=2&&value.privateSubnetIds.length<=3);
  assert.equal(new Set(value.privateSubnetIds).size,value.privateSubnetIds.length);
  for(const subnet of value.privateSubnetIds)assert.match(subnet,/^subnet-[a-f0-9]{8,17}$/u);
- assert.equal(value.controlTaskRoleName,'MeriPreview-control-task');
+ assert.equal(value.controlTaskRoleName,controlTaskRoleName);
  const origin=new URL(value.controlOrigin);
  assert.equal(origin.origin,value.controlOrigin);assert.equal(origin.protocol,'https:');
  assert(!origin.username&&!origin.password);
@@ -44,12 +44,30 @@ function validate(value){
 
 /** Offline template synthesis only. The shipping owner validates fresh subnets/AZs and image evidence. */
 export function synthesizeAgentCoreRuntime(binding){
- const b=validate(binding),app=new App({context:{'aws:cdk:version-reporting':false}});
- const stack=new Stack(app,'MeriAgentCoreRuntime',{env:{account:ACCOUNT,region:REGION},synthesizer:new BootstraplessSynthesizer()});
+ return synthesizeRuntime(validate(binding),null);
+}
+/** Fixed operator image only; public pinned callback material, no Control credential.
+ * The config-only image keeps the qualified common layers and changes only CMD. */
+export function synthesizeOperatorAgentCoreRuntime(binding,operator){
+ assert.deepEqual(Object.keys(operator).sort(),['caseId','clientSecurityGroupId','delivery','commonImageUri'].sort());
+ const names=operatorCaseNames(operator.caseId),b=validate(binding,`MeriCase-${operator.caseId}-control`);
+ assert.match(operator.clientSecurityGroupId,/^sg-[a-f0-9]{8,17}$/u);
+ assert.match(operator.commonImageUri,new RegExp(`^${ACCOUNT}\\.dkr\\.ecr\\.${REGION}\\.amazonaws\\.com/[a-z0-9._/-]+@sha256:[a-f0-9]{64}$`));
+ assert.notEqual(b.imageUri,operator.commonImageUri);
+ const material=validateOperatorMaterial(operator.delivery);
+ assert.equal(material.expected.role,'agentcore');assert.equal(material.expected.sourceCommit,b.sourceCommit);
+ assert.equal(material.expected.imageDigest,b.imageUri.split('@')[1]);
+ return synthesizeRuntime(b,{...operator,names});
+}
+function synthesizeRuntime(b,operator){
+ const name=operator?.names.runtime??NAME,endpointName=operator?'case':ENDPOINT;
+ const prefix=`arn:aws:bedrock-agentcore:${REGION}:${ACCOUNT}:runtime/${name}-`,logPrefix=`arn:aws:logs:${REGION}:${ACCOUNT}:log-group:/aws/bedrock-agentcore/runtimes/${name}-`;
+ const app=new App({context:{'aws:cdk:version-reporting':false}});
+ const stack=new Stack(app,operator?`MeriCaseAgentCore${operator.caseId}`:'MeriAgentCoreRuntime',{env:{account:ACCOUNT,region:REGION},synthesizer:new BootstraplessSynthesizer()});
  const qualifiedVersion=new CfnParameter(stack,'QualifiedRuntimeVersion',{type:'String',default:'1',allowedPattern:'[1-9][0-9]*',
   description:'Release-selected version after MMDSv2 enablement and readback. First deployment must not be invoked before qualification.'});
  const repository=b.imageUri.split('.amazonaws.com/')[1].split('@')[0];
- const role=new iam.Role(stack,'RuntimeRole',{roleName:'MeriPreview-agentcore-runtime',
+ const role=new iam.Role(stack,'RuntimeRole',{roleName:operator?`MeriCase-${operator.caseId}-agentcore`:'MeriPreview-agentcore-runtime',
   assumedBy:new iam.PrincipalWithConditions(new iam.ServicePrincipal('bedrock-agentcore.amazonaws.com'),{
    StringEquals:{'aws:SourceAccount':ACCOUNT},ArnLike:{'aws:SourceArn':`${prefix}*`}})});
  role.addToPolicy(policy(['ecr:GetAuthorizationToken'],['*']));
@@ -68,23 +86,24 @@ export function synthesizeAgentCoreRuntime(binding){
  const network=new ec2.CfnSecurityGroup(stack,'RuntimeSecurityGroup',{vpcId:b.vpcId,
   groupDescription:'Meri AgentCore outbound HTTPS',securityGroupEgress:[{ipProtocol:'tcp',fromPort:443,toPort:443,cidrIp:'0.0.0.0/0'}]});
  const runtime=new agentcore.CfnRuntime(stack,'Runtime',{
-  agentRuntimeName:NAME,description:'Meri Claude Agent SDK conversation runtime',
+  agentRuntimeName:name,description:'Meri Claude Agent SDK conversation runtime',
   agentRuntimeArtifact:{containerConfiguration:{containerUri:b.imageUri}},roleArn:role.roleArn,
   platformVersion:'V1',protocolConfiguration:'HTTP',
   // Omission selects the standard IAM SigV4 authorizer, not anonymous invocation.
-  networkConfiguration:{networkMode:'VPC',networkModeConfig:{subnets:b.privateSubnetIds,securityGroups:[network.attrGroupId]}},
+  networkConfiguration:{networkMode:'VPC',networkModeConfig:{subnets:b.privateSubnetIds,securityGroups:[network.attrGroupId,...(operator?[operator.clientSecurityGroupId]:[])]}},
   lifecycleConfiguration:{idleRuntimeSessionTimeout:900,maxLifetime:28800},
   environmentVariables:{MERI_PRODUCT_PREVIEW_REQUIRED:'1',MERI_SOURCE_COMMIT:b.sourceCommit,MERI_RENDERER_IMAGE_DIGEST:b.imageUri.split('@')[1],
-   MERI_CONTROL_ORIGIN:b.controlOrigin,MERI_CONTROL_CA_BASE64:b.controlCaBase64,MERI_CONTROL_CA_SHA256:b.controlCaSha256,
+   ...(operator?operatorAgentCoreEnvironment(operator.delivery):
+    {MERI_CONTROL_ORIGIN:b.controlOrigin,MERI_CONTROL_CA_BASE64:b.controlCaBase64,MERI_CONTROL_CA_SHA256:b.controlCaSha256}),
    ...(b.claudeApiSecretArn===null?{}:{MERI_CLAUDE_API_SECRET_ARN:b.claudeApiSecretArn})},
   tags:{Application:'meri',Environment:'preview',SourceCommit:b.sourceCommit}});
  // Explicit dependencies wait for readiness; GetAtt can resolve during optimistic creation.
  runtime.node.addDependency(role);
  const endpoint=new agentcore.CfnRuntimeEndpoint(stack,'PreviewEndpoint',{agentRuntimeId:runtime.attrAgentRuntimeId,
-  agentRuntimeVersion:qualifiedVersion.valueAsString,name:ENDPOINT,description:'Qualified Meri preview runtime version'});
+  agentRuntimeVersion:qualifiedVersion.valueAsString,name:endpointName,description:'Qualified Meri preview runtime version'});
  endpoint.node.addDependency(runtime);
  // The control service alone invokes/stops sessions. Browser-supplied session IDs never select compute.
- new iam.CfnPolicy(stack,'ControlInvocationPolicy',{policyName:'MeriAgentCoreInvocation',roles:[b.controlTaskRoleName],
+ new iam.CfnPolicy(stack,'ControlInvocationPolicy',{policyName:operator?`MeriCase-${operator.caseId}-Invocation`:'MeriAgentCoreInvocation',roles:[b.controlTaskRoleName],
   policyDocument:{Version:'2012-10-17',Statement:[{Effect:'Allow',Action:['bedrock-agentcore:InvokeAgentRuntime','bedrock-agentcore:StopRuntimeSession'],
    Resource:[runtime.attrAgentRuntimeArn,endpoint.attrAgentRuntimeEndpointArn]}]}});
  const logKey=new kms.Key(stack,'LogKey',{description:'Meri AgentCore application log encryption',enableKeyRotation:true,removalPolicy:RemovalPolicy.RETAIN});
@@ -92,13 +111,13 @@ export function synthesizeAgentCoreRuntime(binding){
   actions:['kms:Encrypt','kms:Decrypt','kms:ReEncrypt*','kms:GenerateDataKey*','kms:DescribeKey'],resources:['*'],
   conditions:{ArnLike:{'kms:EncryptionContext:aws:logs:arn':`${logPrefix}*`}}}));
  // Precreate both endpoint groups before invocation, so the service cannot create unencrypted groups.
- for(const name of ['DEFAULT',ENDPOINT])new logs.LogGroup(stack,`${name}Logs`,{
+ for(const name of ['DEFAULT',endpointName])new logs.LogGroup(stack,`${name}Logs`,{
   logGroupName:`/aws/bedrock-agentcore/runtimes/${runtime.attrAgentRuntimeId}-${name}`,
   encryptionKey:logKey,retention:logs.RetentionDays.ONE_MONTH,removalPolicy:RemovalPolicy.RETAIN});
  new CfnOutput(stack,'RuntimeArn',{value:runtime.attrAgentRuntimeArn});
  new CfnOutput(stack,'RuntimeId',{value:runtime.attrAgentRuntimeId});
  new CfnOutput(stack,'RuntimeVersion',{value:qualifiedVersion.valueAsString});
- new CfnOutput(stack,'EndpointName',{value:ENDPOINT});
+ new CfnOutput(stack,'EndpointName',{value:endpointName});
  new CfnOutput(stack,'RuntimeSecurityGroupId',{value:network.attrGroupId});
  return Template.fromStack(stack).toJSON();
 }

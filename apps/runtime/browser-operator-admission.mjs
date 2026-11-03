@@ -33,8 +33,12 @@ export function createOperatorBrowserAdmission({selection,material,expiresAtMs,s
 }
 export function assertOperatorBrowserControl(capability,{configuration,sourceCommit}){
  const s=state(capability);
+ // The native material composer returns renderer inputs (including inspectsUploads),
+ // not the closed runtime uploads.native configuration. Browser-only cases keep
+ // upload inspection on the same image's AgentCore runtime, as renderMaterial does.
+ const control={enabled:true,agentcore:{imageDigest:configuration.versions?.imageDigest},host:s.control.host,policySha256:s.control.policySha256};
  if(activationOpen(compileBrowserActivation(configuration.browserActivation))||sourceCommit!==s.deployment.sourceCommit||
-  !equal(configuration.uploads?.native??null,s.control))fail();
+  s.control.inspectsUploads!==false||!/^sha256:[a-f0-9]{64}$/u.test(configuration.versions?.imageDigest??'')||!equal(configuration.uploads?.native??null,control))fail();
 }
 /** Runs after the existing canonical run/context/Core admission, before its durable claim/provider dispatch. */
 export function bindOperatorBrowserInvocation(capability,{binding,run,request,expiresAtMs}){
