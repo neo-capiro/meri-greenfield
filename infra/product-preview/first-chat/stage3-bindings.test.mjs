@@ -14,6 +14,8 @@ import {PATHS,ROLES,renderMaterial,writeRendered} from './render-material.mjs';
 import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup} from './stage3-bindings.mjs';
 import {parseLatestTsv,coreValues,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,secretLabelReadback,verifyOutputs,main} from './stage3-deploy.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
+import {createActionSessionOwner} from '../../../apps/control/action-host/session/owner.mjs';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
 const load=async name=>JSON.parse(await readFile(join(here,name),'utf8'));
@@ -211,33 +213,49 @@ const serviceCapacity=(configuration,desired=1)=>{
  return {slots,requiredHealthy,stopsBeforeStart,servingWhileStarting:stopsBeforeStart?desired-1:desired,peak:Math.min(slots,desired+1)};
 };
 
-test('live stacks: every update keeps control and worker serving, control adds at most one replacement task',async()=>{
+/** The actual Control session owner, composed as apps/runtime/control.mjs composes it, with one synthetic identity and
+ * context. Two of these stand in for two Control tasks during a rollout. */
+const SESSION_BINDING={tenantId:'00000000-0000-4000-8000-000000000001',actorId:'00000000-0000-4000-8000-000000000002',
+ conversationId:'00000000-0000-4000-8000-000000000003',runId:'00000000-0000-4000-8000-000000000004',
+ attemptId:'00000000-0000-4000-8000-000000000005',workerId:'00000000-0000-4000-8000-000000000006',writerFence:1};
+const SESSION_CLIENT='00000000-0000-4000-8000-000000000007';
+function sessionOwner(){
+ const at=Date.now(),scopes=[{tenantId:SESSION_BINDING.tenantId,kind:'client',resourceId:SESSION_CLIENT,policyRevision:'policy'}];
+ return createActionSessionOwner({mode:'process-local',now:()=>at,limits:{maxSessions:4,maxRequestMs:1000,maxTtlMs:10000,maxFactBytes:65536},
+  verifyIdentity:async()=>({principal:{tenantId:SESSION_BINDING.tenantId,actorId:SESSION_BINDING.actorId},identityRevision:'identity',checkedAtMs:at,expiresAtMs:at+20000}),
+  resolveContext:async({identity})=>({identitySha256:canonicalSha256(identity),binding:SESSION_BINDING,scopes,selectedClientId:SESSION_CLIENT,
+   contextRevision:'context',checkedAtMs:at,expiresAtMs:at+20000})});
+}
+
+test('a token issued by one Control task is refused by another: overlap needs shared or routed sessions',async()=>{
+ const a=sessionOwner(),b=sessionOwner();
+ try{
+  const issued=await a.issue({identityCredential:'synthetic-native'});
+  const authentication=await a.authenticateSession({credential:issued.credential});
+  assert.equal((await a.readCurrentState({authentication})).binding.conversationId,SESSION_BINDING.conversationId,'the owning task serves its own session');
+  await assert.rejects(b.authenticateSession({credential:issued.credential}),error=>error.code==='SESSION_REFUSED');
+ }finally{a.close();b.close();}
+});
+
+test('live stacks: control keeps one serving task while its action sessions stay process-local',async()=>{
  const {synth:{templates:t},bindings,args}=await setup();
  const svc=(template,id)=>template.Resources[id];
  for(const [template,id] of [[t.app,'controlService'],[t.app,'temporalWorkerService']])
   assert.equal(svc(template,id).Properties.DesiredCount,1,id);
  const control=svc(t.app,'controlService');
- // The previous stop-before-start shape is the counterexample this profile must not regress to: at desiredCount 1
- // max 100 leaves no free slot, and min 0 permits stopping the only task, so nothing serves until the replacement is
- // ready (the observed rollout gap).
- const stopped=serviceCapacity({MaximumPercent:100,MinimumHealthyPercent:0});
- assert.equal(stopped.stopsBeforeStart,true);
- assert.equal(stopped.servingWhileStarting,0,'the only task is stopped before its replacement starts');
+ // Each task owns its sessions in-process and both target groups are non-sticky, so a second serving task refuses a
+ // token issued by the first (proved above). The single-serving profile is deliberate; its cost is the stop-before-start
+ // gap, and closing that gap requires a qualified ownership/routing change, not a higher percentage.
+ const owner=sessionOwner(),mode=owner.status().mode;owner.close();
  const live=serviceCapacity(control.Properties.DeploymentConfiguration,control.Properties.DesiredCount);
- assert.equal(live.stopsBeforeStart,false,'a free slot exists for the replacement while the running task serves');
- assert.equal(live.requiredHealthy,1,'a healthy task must remain for the whole deployment');
- assert.equal(live.servingWhileStarting,1,'the running task keeps serving until the replacement is load-balancer healthy');
- assert.equal(live.peak,2,'the overlap is bounded to exactly one extra task at desiredCount 1');
- assert.ok(live.peak<=control.Properties.DesiredCount+1,live.peak);
- assert.deepEqual(control.Properties.DeploymentConfiguration,{MaximumPercent:200,MinimumHealthyPercent:100});
+ assert.equal(mode,'process-local');
+ assert.equal(live.peak,1,`a ${mode} session owner cannot be shared by two serving tasks`);
+ assert.equal(live.stopsBeforeStart,true,'the running task is stopped before its replacement starts; that gap is known, not hidden');
+ // Raising either percentage alone would add a second serving owner: the counterexample this guard rejects.
+ const overlap=serviceCapacity({MaximumPercent:200,MinimumHealthyPercent:100},control.Properties.DesiredCount);
+ assert.equal(overlap.peak,2);
+ assert.deepEqual(control.Properties.DeploymentConfiguration,{MaximumPercent:100,MinimumHealthyPercent:0});
  assert.equal(control.Properties.AvailabilityZoneRebalancing,'DISABLED','ECS refuses max 100 while AZ rebalancing is ENABLED');
- // Overlapping tasks must not share writable state: control volumes are task-local and the pinned material is read-only.
- const [controlTask]=Object.values(t.app.Resources).filter(r=>r.Type==='AWS::ECS::TaskDefinition'&&r.Properties.Family==='meri-product-preview-control');
- assert.ok(controlTask.Properties.Volumes.every(v=>v.EFSVolumeConfiguration===undefined&&v.DockerVolumeConfiguration===undefined),'no shared or persistent volume');
- const controlContainer=controlTask.Properties.ContainerDefinitions.find(c=>c.Name==='control');
- assert.equal(controlContainer.Image,bindings.app.imageUri,'each task still runs the exactly pinned image');
- assert.equal(controlContainer.MountPoints.find(m=>m.SourceVolume==='material').ReadOnly,true,'pinned material stays read-only');
- assert.ok(controlTask.Properties.ContainerDefinitions.some(c=>c.Name==='material-init'&&c.Secrets?.length===1),'each task writes its own pinned material revision');
  assert.equal(control.DependsOn?.includes('runnerTask')??false,false);
  assert.equal(svc(t.app,'temporalWorkerService').Properties.AvailabilityZoneRebalancing,undefined,'only control changes deployment shape');
  assert.equal(svc(t.app,'temporalWorkerService').Properties.DeploymentConfiguration,undefined,'worker keeps the ECS default deployment shape');

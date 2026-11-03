@@ -185,18 +185,18 @@ export function liveControlTargetGroup(liveAppTemplate){
 /** Qualify the native TLS Temporal cluster and selected AgentCore version before this app update. */
 export const STAGE3_DEPLOY_ORDER=Object.freeze(['app']);
 
-/** Preserve the two live services. Control is one task, and a replacement must be ready before that task is removed:
- * `minimumHealthyPercent:100` forbids stopping the running task until the replacement is counted healthy (RUNNING and
- * reported healthy by the load balancer), and `maximumPercent:200` at desiredCount 1 permits exactly that one extra task.
- * The overlap is bounded: two tasks, each on its own image/revision and per-task volumes, drained when the replacement is
- * healthy. Control's action sessions stay process-local, so a request routed to the other task during that window is
- * refused and must be re-issued — the loss a task replacement already causes, without the stop-before-start outage.
- * Rebalancing stays DISABLED; no separate deployment controller or rollback path is introduced. */
+/** Preserve the two live services. Control keeps exactly one serving task per deployment: each task owns its action
+ * sessions in-process (apps/control/action-host/session accepts only the 'process-local' mode), both target groups are
+ * non-sticky, and a second serving task refuses a token issued by the first with SESSION_REFUSED, which the client
+ * treats as lost access. So `maximumPercent` 100 with `minimumHealthyPercent` 0 stays: the old task is stopped before
+ * the replacement starts, which leaves a startup gap. Close that gap only with a qualified session ownership/routing
+ * change plus reserved capacity for a second full-size task and its database connections; never by raising either
+ * percentage on its own. Rebalancing stays DISABLED; no deployment controller or rollback path is introduced. */
 export function applyLiveServiceProfile(templates){
  const service=(template,id)=>{const r=template.Resources?.[id];if(r?.Type!=='AWS::ECS::Service')fail(`template lacks service ${id}`);return r;};
  for(const id of ['controlService','temporalWorkerService',...(templates.app.Resources.scheduleWorkerTask?['scheduleWorkerService']:[])])service(templates.app,id).Properties.DesiredCount=1;
  const control=service(templates.app,'controlService');
- Object.assign(control.Properties,{DeploymentConfiguration:{MaximumPercent:200,MinimumHealthyPercent:100},AvailabilityZoneRebalancing:'DISABLED'});
+ Object.assign(control.Properties,{DeploymentConfiguration:{MaximumPercent:100,MinimumHealthyPercent:0},AvailabilityZoneRebalancing:'DISABLED'});
  return templates;
 }
 
