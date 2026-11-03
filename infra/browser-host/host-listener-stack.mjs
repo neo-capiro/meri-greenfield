@@ -10,6 +10,7 @@
  * --host-listener-outputs` attaches the control container port to this stack's target group. No AWS client, secret
  * or deploy action lives here. */
 import {CONTROL_HOST_LISTENER_PORT} from '../../apps/runtime/browser-host-configuration.mjs';
+import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 const fail=code=>{throw Object.assign(new Error(code),{code});};
 const REFUSED='HOST_LISTENER_TEMPLATE_REFUSED';
 const ID=prefix=>new RegExp(`^${prefix}-[0-9a-f]{8,17}$`,'u');
@@ -20,8 +21,11 @@ export const HOST_LISTENER_PORT=443;
 /** @param {unknown} raw */
 export function validateHostListenerInput(raw){
  if(raw===null||typeof raw!=='object'||Array.isArray(raw))fail(REFUSED);
- const v=/** @type {Record<string,unknown>} */(raw);
- if(Object.keys(v).sort().join(',')!=='controlPort,controlSecurityGroupId,hostSecurityGroupId,privateIpv4Address,subnetId,vpcId')fail(REFUSED);
+ let v;
+ try{v=own(raw,['controlPort','controlSecurityGroupId','hostSecurityGroupId','privateIpv4Address','subnetId','vpcId'],['caseId']);}
+ catch{fail(REFUSED);}
+ const isCase=Object.hasOwn(v,'caseId');
+ if(isCase&&(typeof v.caseId!=='string'||!/^[a-f0-9]{12}$/u.test(v.caseId)))fail(REFUSED);
  const octets=typeof v.privateIpv4Address==='string'?v.privateIpv4Address.split('.').map(Number):[];
  const port=v.controlPort;
  if(typeof v.vpcId!=='string'||!ID('vpc').test(v.vpcId)||typeof v.subnetId!=='string'||!ID('subnet').test(v.subnetId)||
@@ -30,12 +34,15 @@ export function validateHostListenerInput(raw){
   typeof v.privateIpv4Address!=='string'||!IPV4.test(v.privateIpv4Address)||octets.length!==4||octets.some(o=>!Number.isInteger(o)||o>255)||
   port!==CONTROL_HOST_LISTENER_PORT)fail(REFUSED);   // the one port the rendered `browserHosts.bind` listens on
  return Object.freeze({vpcId:v.vpcId,subnetId:v.subnetId,privateIpv4Address:v.privateIpv4Address,controlSecurityGroupId:v.controlSecurityGroupId,
-  hostSecurityGroupId:v.hostSecurityGroupId,controlPort:port});
+  hostSecurityGroupId:v.hostSecurityGroupId,controlPort:port,...(isCase?{caseId:v.caseId}:{})});
 }
 
 /** @param {unknown} input */
 export function compileHostListenerTemplate(input){
  const b=validateHostListenerInput(input);
+ // Same 12-hex identity/prefix as the isolated operator case. The short suffix stays within both ELB name limits;
+ // case names cannot select ordinary or callback targets. Placement/SG ownership still comes from reviewed input.
+ const name=b.caseId===undefined?'meri-preview-host-control':`meri-case-${b.caseId}-host`;
  const tags=[{Key:'Project',Value:'meri-greenfield'},{Key:'meri',Value:'first-chat-preview'},{Key:'MeriHostPurpose',Value:'host-to-control-listener'}];
  return freezeTree({
   AWSTemplateFormatVersion:'2010-09-09',
@@ -51,11 +58,11 @@ export function compileHostListenerTemplate(input){
     GroupId:b.controlSecurityGroupId,IpProtocol:'tcp',FromPort:b.controlPort,ToPort:b.controlPort,
     SourceSecurityGroupId:{Ref:'HostListenerSecurityGroup'},Description:'Host listener load balancer to the Control host-listener port'}},
    HostListenerLoadBalancer:{Type:'AWS::ElasticLoadBalancingV2::LoadBalancer',Properties:{
-    Name:'meri-preview-host-control',Type:'network',Scheme:'internal',IpAddressType:'ipv4',
+    Name:name,Type:'network',Scheme:'internal',IpAddressType:'ipv4',
     SubnetMappings:[{SubnetId:b.subnetId,PrivateIPv4Address:b.privateIpv4Address}],SecurityGroups:[{Ref:'HostListenerSecurityGroup'}],
     LoadBalancerAttributes:[{Key:'load_balancing.cross_zone.enabled',Value:'true'},{Key:'deletion_protection.enabled',Value:'true'}],Tags:tags}},
    HostListenerTargetGroup:{Type:'AWS::ElasticLoadBalancingV2::TargetGroup',Properties:{
-    Name:'meri-preview-host-control',TargetType:'ip',Protocol:'TCP',Port:b.controlPort,VpcId:b.vpcId,
+    Name:name,TargetType:'ip',Protocol:'TCP',Port:b.controlPort,VpcId:b.vpcId,
     HealthCheckProtocol:'TCP',HealthCheckPort:'traffic-port',HealthCheckIntervalSeconds:10,HealthyThresholdCount:2,UnhealthyThresholdCount:2,
     TargetGroupAttributes:[{Key:'preserve_client_ip.enabled',Value:'false'},{Key:'proxy_protocol_v2.enabled',Value:'false'},
      {Key:'deregistration_delay.timeout_seconds',Value:'30'},{Key:'deregistration_delay.connection_termination.enabled',Value:'true'}],Tags:tags}},
