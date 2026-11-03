@@ -6,13 +6,18 @@ const errors=new WeakMap();
 /** `code` names the refusal class; it is diagnostic only and never supplies the status. */
 export function refuse(status,code){const error=Error('WOPI_REFUSED');errors.set(error,code===undefined?{status}:{status,code});throw error;}
 export const refusalStatus=error=>errors.get(error)?.status;
-/** The bounded refusal class reported on the private response. A 404 alone cannot say which check
- * refused, so every refusal names itself and the editor's existing CheckFileInfo log attributes it.
- * Only an owned constant class passes; nothing from the request is echoed. */
-const REASON=/^[A-Z][A-Z0-9_]{2,40}$/u;
+/** The finite set of refusal labels this boundary may publish. It is an ownership list, not a shape
+ * test: a value some dependency attaches later — even one that looks like our own constant — is not
+ * ours to disclose and falls back to the status. A shared label names a class, not a unique stage. */
+const LABELS=new Set(['WOPI_ROUTE','WOPI_SESSION_DRIFT','WOPI_SOURCE_DRIFT','WOPI_DRAFT_DRIFT','WOPI_RETENTION_DRIFT',
+ 'WOPI_TOKEN_INVALID','WOPI_TOKEN_EXPIRED','WOPI_TOKEN_FILE_MISMATCH',
+ 'SESSION_UNAVAILABLE','SESSION_REFUSED','ACCESS_DENIED',
+ 'OFFICE_DRAFT_ACCESS_DENIED','OFFICE_DRAFT_UNAVAILABLE','OFFICE_DRAFT_EXPIRED','OFFICE_DRAFT_CONFLICT',
+ 'ARTIFACT_AUTHORITY','ARTIFACT_VERSION_CONTEXT','RETENTION_SUPPRESSED']);
 export const refusalCode=error=>error&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;
+/** The refusal class reported on the private response, for the caller's existing log. */
 export function refusalHeaders(error,status){
- const named=[errors.get(error)?.code,refusalCode(error)].find(value=>typeof value==='string'&&REASON.test(value));
+ const named=[errors.get(error)?.code,refusalCode(error)].find(value=>typeof value==='string'&&LABELS.has(value));
  return Object.freeze({'x-wopi-refusal':named??`WOPI_REFUSED_${status}`});
 }
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));

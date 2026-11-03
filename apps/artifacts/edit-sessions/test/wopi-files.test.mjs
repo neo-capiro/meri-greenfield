@@ -100,6 +100,32 @@ test('every refusal names its own class and a served response names none',async 
  assert.deepEqual(await named(new Request(f.request().url,{method:'DELETE'})),[405,'WOPI_REFUSED_405']);
  assert.deepEqual(await named(new Request(f.request().url+'&authority=allow')),[401,'WOPI_REFUSED_401']);
 });
+test('a code this boundary does not own never reaches the refusal header',async t=>{
+ // The real Core draft client preserves an unknown OFFICE_DRAFT_* code; it must not become a header.
+ const core=await wopiFixture(t);core.state.hook=()=>{throw Object.assign(Error('synthetic'),{code:'OFFICE_DRAFT_PRIVATE_SYNTHETIC'});};
+ const fromCore=await core.host.handle(core.request('getFile'));
+ assert.equal(fromCore.status,500);assert.equal(fromCore.headers.get('x-wopi-refusal'),'WOPI_REFUSED_500');
+ // An unknown codec code keeps its request-class status and is not published.
+ const token=await wopiFixture(t);
+ const unknownCodec={...token.codec,verify(){throw Object.assign(Error('synthetic'),{code:'WOPI_TOKEN_PRIVATE_SYNTHETIC'});}};
+ const fromCodec=await createWopiFileApplication({...token.options,codec:unknownCodec}).handle(token.request());
+ assert.equal(fromCodec.status,401);assert.equal(fromCodec.headers.get('x-wopi-refusal'),'WOPI_REFUSED_401');
+ // Prefix-shaped, upper-cased and over-long unknowns are not owned labels either; a verify
+ // failure stays a request-class 401 whatever code it carries.
+ for(const code of ['OFFICE_DRAFT_PRIVATE_SYNTHETIC','ARTIFACT_PRIVATE_SYNTHETIC','wopi_route','WOPI_ROUTE_PRIVATE_SYNTHETIC']){
+  const f=await wopiFixture(t);
+  const host=createWopiFileApplication({...f.options,codec:{...f.codec,verify(){throw Object.assign(Error('synthetic'),{code});}}});
+  const response=await host.handle(f.request());
+  assert.equal(response.status,401);assert.equal(response.headers.get('x-wopi-refusal'),'WOPI_REFUSED_401',code);
+ }
+ // A getter, proxy or inherited code field stays inert and never becomes the header.
+ const hostile=await wopiFixture(t),poisoned=Object.defineProperty({},'code',{get(){throw Error('poisoned');}}),proxied=new Proxy({}, {get(){throw Error('trapped');}});
+ for(const thrown of [poisoned,proxied,Object.create({code:'OFFICE_DRAFT_CONFLICT'})]){
+  const host=createWopiFileApplication({...hostile.options,codec:{...hostile.codec,verify(){throw thrown;}}});
+  const response=await host.handle(hostile.request());
+  assert.equal(response.status,401);assert.equal(response.headers.get('x-wopi-refusal'),'WOPI_REFUSED_401');
+ }
+});
 for(const stage of ['context','body','after-save','final-retention'])test(`access loss at ${stage} withholds late bytes and never repeats an effect`,async t=>{
  const f=await wopiFixture(t);await f.send('lock',{lock:'one'});
  if(stage==='context')f.state.contextHook=()=>{f.sessions.revoke(f.session.credential);};
