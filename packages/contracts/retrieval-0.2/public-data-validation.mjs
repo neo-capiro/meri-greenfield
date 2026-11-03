@@ -5,6 +5,14 @@ import {assertPublicDataInstant, assertPublicGrantDates, assertPublicAwardDates}
 const fail = message => { throw new Error(message); };
 const families = Object.freeze({query_economic_data: 'PublicEconomic', search_federal_grants: 'PublicGrant', search_federal_awards: 'PublicAward'});
 export const PUBLIC_DATA_OPERATION_IDS = Object.freeze(Object.keys(families));
+/** Core's `federal_grant.status` is free text whose ingestion writes these four lowercase values (Tango
+ * P/F/C/A -> posted/forecasted/closed/archived) and whose typed read matches it by exact equality
+ * (`where.status = status` after a trim). The gateway deliberately sends the caller's ORIGINAL request bytes,
+ * bound to the request hash and the evidence-mode observation, so nothing here may rewrite them: a spelling
+ * outside the stored domain is refused before dispatch instead of being answered as an empty page, and a
+ * value inside it is carried unchanged. Case-insensitive acceptance would need the receiving owner to
+ * normalize the selector; it is not simulated locally. */
+const GRANT_STATUSES = Object.freeze(['posted', 'forecasted', 'closed', 'archived']);
 const text = (value, max) => typeof value === 'string' && value.trim() ? value.trim().slice(0, max) : null;
 const limit = value => {
   const numeric = typeof value === 'number' ? value : typeof value === 'string' ? Number(value) : NaN;
@@ -37,6 +45,8 @@ export function createPublicDataValidators({validateShape, schema}) {
     for (const [key, max] of Object.entries(lengths)) {
       const value = text(raw[key], max); if (value !== null) input[key] = ['state', 'peCode'].includes(key) ? value.toUpperCase() : value;
     }
+    if (id === 'search_federal_grants' && input.status !== undefined && !GRANT_STATUSES.includes(input.status))
+      fail('Unknown stored grant status');
     if (id === 'query_economic_data') {
       const source = text(raw.source, 20) ?? 'census';
       input.source = ['census', 'bls', 'bea'].includes(source.toLowerCase()) ? source.toLowerCase() : source;

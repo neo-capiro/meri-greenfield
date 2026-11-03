@@ -143,6 +143,19 @@ test('grant stored status and generated source anchor are exact', () => {
   assert.throws(() => check(grants, grantPage(), {status: 'closed'}, off));
   assert.throws(() => check(grants, {...grantPage(), asOf: '2026-09-11T12:00:00.000Z'}, {}, off));
 });
+test('a grant status outside the stored status domain is refused instead of answering an empty page', () => {
+  // Core's ingestion writes the four lowercase values (Tango P/F/C/A -> posted/forecasted/closed/archived)
+  // and searchFederalGrants applies exact equality, while the gateway sends the caller's ORIGINAL request
+  // bytes. A noncanonical spelling therefore cannot match a stored row and is refused here instead of being
+  // answered as a successful empty page; nothing is rewritten, and padding stays the caller's own bytes.
+  for (const refused of ['open', 'active', 'current', 'any', 'Posted', 'CLOSED', 'Forecasted'])
+    assert.throws(() => normalize(grants, {status: refused}, off), /Unknown stored grant status/);
+  for (const status of ['posted', 'forecasted', 'closed', 'archived'])
+    assert.equal(normalize(grants, {status}, off).status, status);
+  assert.equal(normalize(grants, {status: '  posted  '}, off).status, 'posted');
+  check(grants, grantPage(), {status: 'posted'}, off);
+  assert.throws(() => check(grants, grantPage(), {status: 'Posted'}, off), /Unknown stored grant status/);
+});
 test('grant raw close day stays open through Eastern close date', () => {
   const row = {...grant(), closeDate: '2026-09-10T00:00:00.000Z', deadlineStatus: 'open'};
   const page = {...grantPage([row]), generatedAt: '2026-09-11T03:59:59.999Z', asOf: '2026-09-11T03:59:59.999Z'};
