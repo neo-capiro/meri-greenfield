@@ -15,6 +15,8 @@ import {stopOriginal,createOriginalReconciler as createReconcileActivity} from '
 import {reportRuntimeStartupFailure} from './runner-runtime-diagnostics.mjs';
 import {createNativeWorkerOwners} from './native-worker-owners.mjs';
 import {nativeHostId} from './native-host-provisioning.mjs';
+import {assertOperatorCallbackWorker,assertOperatorCallbackCredential} from './operator-callback-configuration.mjs';
+import {createOperatorCallbackTransport} from './operator-callback-transport.mjs';
 export {createReconcileActivity};
 /** Bounded control calls fit inside the activity heartbeat; model execution outlives any one exchange. */
 export const BROKER_NATIVE_MS=10000;
@@ -116,18 +118,23 @@ export function createWorkerReadiness({worker}){
  return async()=>{if(worker.getState()!=='RUNNING')throw fault('WORKER_NOT_RUNNING');};
 }
 /** Trusted test constructors are explicit function arguments, never configuration selectors. */
-export async function startTemporalWorker(configuration,{signal,testOwners={}}={}){
+export function startTemporalWorker(configuration,options={}){return startWorker(configuration,options,null);}
+export function startOperatorTemporalWorker(configuration,raw,options={}){
+ own(options,[],['signal']);
+ return startWorker(configuration,options,assertOperatorCallbackWorker(raw,configuration));
+}
+async function startWorker(configuration,{signal,testOwners={}},callback){
  const owners=own(testOwners,[],['tls','readMaterial','nativeClient','connect','createWorker','listen','createPool','createEc2Client','createSsmTransport','createIssuer','createMaterial','createSfnClient','readSecret']);
  for(const value of Object.values(owners))if(typeof value!=='function')throw fault('WORKER_CONFIGURATION');
  const fence=createTemporalRuntimeFence(),startupSignal=signal?AbortSignal.any([signal,fence.signal]):fence.signal;
  const onExternalAbort=()=>{fence.lose(signal.reason);try{if(worker?.getState()==='RUNNING')worker.shutdown();}catch{}};
- let connection,worker,listener,run,closing,nativeOwners,stage='worker-material';
+ let connection,worker,listener,run,closing,nativeOwners,callbackTransport,stage='worker-material';
  signal?.addEventListener('abort',onExternalAbort,{once:true});if(signal?.aborted)onExternalAbort();
  const checkAuthorization=()=>{fence.check();startupSignal.throwIfAborted();};
  const close=()=>closing??=(async()=>{
   fence.lose('RUNTIME_STOPPING');signal?.removeEventListener('abort',onExternalAbort);const results=[];
   try{if(worker?.getState()==='RUNNING')worker.shutdown();}catch(reason){results.push({status:'rejected',reason});}
-  for(const step of [()=>listener?.close(),()=>run,()=>nativeOwners?.close?.(),()=>connection?.close()]){
+  for(const step of [()=>listener?.close(),()=>run,()=>nativeOwners?.close?.(),()=>connection?.close(),()=>callbackTransport?.close()]){
    try{results.push({status:'fulfilled',value:await step()});}catch(reason){results.push({status:'rejected',reason});}
   }
   // SDK 1.24 cannot publicly dispose an INITIALIZED worker. Do not run a stale
@@ -137,7 +144,9 @@ export async function startTemporalWorker(configuration,{signal,testOwners={}}={
  try{
   checkAuthorization();
   const [tls,bytes]=await Promise.all([(owners.tls??temporalTls)(configuration.temporal.tls),(owners.readMaterial??readSecret)(configuration.native.capabilityFile)]);checkAuthorization();
-  stage='worker-readiness';const native=(owners.nativeClient??createNativeCapabilityClient)({configuration:configuration.native,credential:bytes.toString('utf8').trim(),maxRequestMs:BROKER_NATIVE_MS});
+  const credential=bytes.toString('utf8').trim();
+  if(callback!==null){assertOperatorCallbackCredential(callback,credential);callbackTransport=createOperatorCallbackTransport(callback);}
+  stage='worker-readiness';const native=(owners.nativeClient??createNativeCapabilityClient)({configuration:configuration.native,credential,maxRequestMs:BROKER_NATIVE_MS,...(callbackTransport?{fetch:callbackTransport.fetch}:{})});
   await native.readiness({signal:startupSignal});checkAuthorization();
   stage='worker-connect';connection=await (owners.connect??(options=>NativeConnection.connect(options)))({address:configuration.temporal.address,tls});checkAuthorization();
   stage='worker-native-owners';

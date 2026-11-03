@@ -29,7 +29,7 @@ export async function operatorCaseFixture({binding,prompt='Synthetic ordinary re
  const selection={...Object.fromEntries(['tenantId','actorId','conversationId'].map(k=>[k,binding[k]])),promptSha256:hash(prompt)};
  const sourceCommit=feature.browserDeployment.sourceCommit;
  const capability=createOperatorBrowserAdmission({selection,material,sourceCommit,expiresAtMs,now});
- return {capability,material,sourceCommit,selection,expiresAtMs,
+ return {capability,material,sourceCommit,selection,expiresAtMs,serverTls:{cert:i.private.certs['control-private'],key:i.private.keys['control-private']},
   bind:(run={binding,state:'queued'})=>bindOperatorBrowserInvocation(capability,{binding,run,request:{prompt},expiresAtMs:now()+900000})};
 }
 export async function operatorAllocationFixture({binding,material,nowMs}){

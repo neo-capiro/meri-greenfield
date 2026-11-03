@@ -10,10 +10,17 @@ import {reportRuntimeStartupFailure} from './runner-runtime-diagnostics.mjs';
 import {createRuntimeRendererApplication} from './artifacts/renderer-http.mjs';
 import {createUploadInspectionApplication,composeUploadInspectionHost} from './uploads/agentcore-http.mjs';
 import {UPLOAD_NATIVE_UNAVAILABLE_EVENT,UPLOAD_NATIVE_AVAILABLE_EVENT} from './uploads/control-lifecycle.mjs';
-export async function main(argv=process.argv.slice(2)){
+import {operatorCallbackConfiguration} from './operator-callback-configuration.mjs';
+import {createOperatorCallbackTransport} from './operator-callback-transport.mjs';
+export function main(argv=process.argv.slice(2)){return startAgentCore(argv,null);}
+/** Explicit protected startup; ordinary environment and invocation inputs never select this path. */
+export function mainOperatorAgentCore(raw,argv=[]){return startAgentCore(argv,operatorCallbackConfiguration(raw));}
+async function startAgentCore(argv,callback){
  if(argv.length===1&&['--help','-h'].includes(argv[0])){process.stdout.write('AgentCore HTTP runtime: /invocations and /ping on8080. Configure MERI_CONTROL_ORIGIN, MERI_CONTROL_CA_BASE64, MERI_CONTROL_CA_SHA256, AWS_REGION. Exit0 graceful;2 configuration;3 unknown shutdown.\n');return 0;}
  if(argv.length)return 2;let transport,listener,application,providerCredentials,stage='agentcore-config';const stop=new AbortController(),shutdown=()=>stop.abort();
- try{const configuration=agentcoreEnvironment();stage='agentcore-transport';transport=createAgentCoreControlTransport(configuration);
+ try{const configuration=callback===null?agentcoreEnvironment():{origin:callback.origin,region:'us-east-1'};
+  if(callback!==null&&process.env.AWS_REGION!=='us-east-1')throw Error('OPERATOR_CALLBACK_CONFIGURATION_REFUSED');
+  stage='agentcore-transport';transport=callback===null?createAgentCoreControlTransport(configuration):createOperatorCallbackTransport(callback);
   stage='agentcore-clients';providerCredentials=createSdkProviderCredentials({secretArn:process.env.MERI_CLAUDE_API_SECRET_ARN,region:configuration.region});
   const execute=createAgentCoreQuery({origin:configuration.origin,fetchImpl:transport.fetch,workspace:createAgentCoreWorkspace(),providerCredentials});
   process.once('SIGTERM',shutdown);process.once('SIGINT',shutdown);
