@@ -69,8 +69,12 @@ function prerequisite({allocations,activation,policy,demands,now=Date.now,reques
   if(caseAdmission!==null)deadlineMs=operatorBrowserDeadline(caseAdmission,{binding,executionId,deadlineMs});
   signal?.throwIfAborted();
   if(!await enabled({binding,signal,deadlineMs}))return Object.freeze({kind:'none'});
+  if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,executionId,deadlineMs});
   const key=canonicalSha256(binding),known=demanded.get(key);
-  if(known!==undefined&&known.untilMs>now())return BROWSER_NEED;
+  if(known!==undefined&&known.untilMs>now()){
+   if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,executionId,deadlineMs});
+   return BROWSER_NEED;
+  }
   const life=lifeFor(deadlineMs,signal,requestTimeoutMs);
   try{
    const hasDemand=await life.run(s=>demands.read({binding,signal:s}));
@@ -116,8 +120,16 @@ function prerequisite({allocations,activation,policy,demands,now=Date.now,reques
    deadlineMs=operatorBrowserDeadline(caseAdmission,{binding,deadlineMs});
   }
   if(!await enabled({binding,signal,deadlineMs:executionDeadlineMs}))fail();
+  if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:executionDeadlineMs});
   const life=lifeFor(deadlineMs,signal,requestTimeoutMs);
-  try{await life.run(s=>demands.record({binding,scopes,expiresAtMs:executionDeadlineMs,signal:s}));}catch{fail();}finally{life.close();}
+  try{await life.run(s=>{
+   // life.run defers this callback: check at the actual durable effect boundary.
+   if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:executionDeadlineMs});
+   return demands.record({binding,scopes,expiresAtMs:executionDeadlineMs,signal:s});
+  });}catch{fail();}finally{life.close();}
+  // A committed/uncertain demand stays with its original owner. Revocation never
+  // fabricates rollback, caches a new positive result, or starts readiness work.
+  if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:executionDeadlineMs});
   remember(demanded,canonicalSha256(binding),{untilMs:executionDeadlineMs});
   return ready({binding,signal,deadlineMs});
  }

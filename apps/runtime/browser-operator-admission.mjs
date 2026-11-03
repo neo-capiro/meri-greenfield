@@ -4,7 +4,7 @@ import {X509Certificate} from 'node:crypto';
 import {own,data} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {canonicalSha256 as hash,validateShape} from '../../packages/contracts/validate.mjs';
 import {sha256Der} from '../../packages/contracts/native-tls-kernel.mjs';
-import {NATIVE_DECLARATION_V2} from '../../packages/contracts/native-observer.mjs';
+import {NATIVE_DECLARATION_V2,nativeObserverDeadline} from '../../packages/contracts/native-observer.mjs';
 import {compileNativeDeployment} from './native-deployment-configuration.mjs';
 import {nativeHostId} from './native-host-provisioning.mjs';
 import {observerEntrypointConfiguration,OPERATOR_OBSERVER_CONFIGURATION} from './native-observer-entrypoint.mjs';
@@ -43,7 +43,11 @@ export function bindOperatorBrowserInvocation(capability,{binding,run,request,ex
   binding.writerFence!==1||['tenantId','actorId','conversationId'].some(k=>binding[k]!==s.target[k])||
   typeof request?.prompt!=='string'||hash(request.prompt)!==s.target.promptSha256)fail();
  if(s.binding!==null&&!equal(s.binding,binding))fail();
- if(s.binding===null){s.binding=data(binding);s.executionDeadlineMs=Math.min(expiresAtMs,s.expiresAtMs);}
+ const until=Math.min(expiresAtMs,s.expiresAtMs,s.executionDeadlineMs??Infinity);
+ // The existing provisioner may lease through this execution deadline. Reserve its
+ // original cleanup window before claiming or making this capability launch-eligible.
+ if(nativeObserverDeadline(until)>s.cleanupCeilingMs)fail();
+ if(s.binding===null){s.binding=data(binding);s.executionDeadlineMs=until;}
  return operatorBrowserDeadline(capability,{binding,deadlineMs:expiresAtMs});
 }
 /** Called at every admission join, also before cached demand/policy returns. Never an optional callback. */

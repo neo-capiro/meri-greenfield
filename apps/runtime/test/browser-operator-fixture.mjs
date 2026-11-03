@@ -16,13 +16,13 @@ const fixture=createRenderFixture(),sha=x=>createHash('sha256').update(x).digest
 // must not appear to come from the future while the first PKI fixture is being made.
 const sample=await nativeProcessingInputs(fixture),foreign=observerTransportPki();
 export const cleanupOperatorFixture=()=>fixture.cleanup();
-export async function operatorCaseFixture({binding,prompt='Synthetic ordinary request',now=Date.now,expiresAtMs=now()+60000}={}){
+export async function operatorCaseFixture({binding,prompt='Synthetic ordinary request',now=Date.now,expiresAtMs=now()+60000,cleanupCeilingMs=now()+3600000}={}){
  const i={...sample,deployment:structuredClone(sample.deployment)};
  const feature=i.deployment.features.nativeProcessing;delete feature.deployment;
  const account='967807252336',configuration={schema:'meri-native-observer-entrypoint/1',
   functionArn:`arn:aws:lambda:us-east-1:${account}:function:production-observer`,stateMachineArn:`arn:aws:states:us-east-1:${account}:stateMachine:production-native`,keyId:'production-key',
   secretArn:`arn:aws:secretsmanager:us-east-1:${account}:secret:production-observer-Abc123`,secretVersionId:'b'.repeat(32),secretSha256:'c'.repeat(64),caSha256:sha(foreign.otherCa)};
- const material=composeOperatorObserverMaterial({feature,material:i.nativeMaterial,deployment:i.deployment,pki:i.private,nowMs:now(),validUntilMs:now()+7200000,cleanupCeilingMs:now()+3600000,
+ const material=composeOperatorObserverMaterial({feature,material:i.nativeMaterial,deployment:i.deployment,pki:i.private,nowMs:now(),validUntilMs:now()+7200000,cleanupCeilingMs,
   identity:{functionArn:`arn:aws:lambda:us-east-1:${account}:function:synthetic-observer`,stateMachineArn:`arn:aws:states:us-east-1:${account}:stateMachine:synthetic-native`,
    secretArn:`arn:aws:secretsmanager:us-east-1:${account}:secret:synthetic-observer-Abc123`,secretVersionId:'a'.repeat(32)},
   production:{configuration,serverCaCertificate:foreign.otherCa,serverCertificate:foreign.otherCa,issuerCaCertificate:foreign.otherCa,controlClientCertificate:foreign.otherCa,observerKeySha256:sha(Buffer.alloc(32,8))}});

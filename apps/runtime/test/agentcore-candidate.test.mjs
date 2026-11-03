@@ -3,6 +3,7 @@ import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
 import {operatorCaseFixture,cleanupOperatorFixture} from './browser-operator-fixture.mjs';
 import {createOperatorBrowserExecutionPrerequisite} from '../browser-execution-prerequisite.mjs';
+import {nativeObserverDeadline} from '../../../packages/contracts/native-observer.mjs';
 import {assembleAgentCoreCandidate,assembleOperatorAgentCoreCandidate} from '../agentcore-candidate.mjs';
 import {compileAgentCoreConfiguration} from '../agentcore-configuration.mjs';
 import {createNativeCapabilityClient} from '../native-client.mjs';
@@ -78,6 +79,16 @@ function fixture(options={}){
 }
 
 after(cleanupOperatorFixture);
+
+test('operator retention refusal precedes canonical claim, provider dispatch and browser demand eligibility',async()=>{
+ const nowMs=Date.now(),expiresAtMs=nowMs+60000;
+ for(const cleanupCeilingMs of [nativeObserverDeadline(expiresAtMs)-1,expiresAtMs+1]){
+  const c=await operatorCaseFixture({binding,now:()=>nowMs,expiresAtMs,cleanupCeilingMs});let needs=0;
+  const f=fixture({operatorCase:c.capability,nowMs,browserNeed:async()=>{needs++;return {kind:'browser-only',hostMode:'browser-only'};}});
+  try{await assert.rejects(f.kickoff());assert.equal(f.counts().claimCalls,0);assert.equal(f.counts().invocations,0);assert.equal(needs,0);}
+  finally{f.pending.resolve();await f.candidate.close();}
+ }
+});
 
 test('operator uses canonical kickoff/provider once and normal durable browser demand with held production settings',async t=>{
  const c=await operatorCaseFixture({binding}),nowMs=Date.now();let recorded=0,durable=false,policyReads=0;

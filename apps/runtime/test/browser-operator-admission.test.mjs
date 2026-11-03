@@ -87,7 +87,7 @@ test('actual native declaration must match the case source/image/AMI/profile and
   });
  }
  const short=structuredClone(c.material);short.retainUntilMs=time+70000;
- const small=createOperatorBrowserAdmission({selection:c.selection,material:short,sourceCommit:c.sourceCommit,expiresAtMs:time+60000,now:()=>time});
+ const small=createOperatorBrowserAdmission({selection:c.selection,material:short,sourceCommit:c.sourceCommit,expiresAtMs:time+40000,now:()=>time});
  bindOperatorBrowserInvocation(small,{binding,run:{binding,state:'queued'},request:{prompt:'Synthetic ordinary request'},expiresAtMs:time+900000});
  assert.throws(()=>operatorBrowserHostDeadline(small,{binding,...host}),'actual cleanup ceiling exceeds planned material retention');
  const restarted=createOperatorBrowserAdmission({selection:c.selection,material:c.material,sourceCommit:c.sourceCommit,expiresAtMs:time+60000,now:()=>time});
