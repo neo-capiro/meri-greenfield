@@ -100,10 +100,10 @@ const assertDispatchable=(label,inCase=false)=>{
   if(workRemainingMs()<=0)throw codeError(label,'BUDGET');
   if(inCase&&casePhaseDeadlineS!==null&&caseRemainingMs()<=0)throw codeError(label,'CASE_BUDGET');
 };
-const runBounded=(thunk,ms,label)=>{
+const runBounded=(thunk,ms,label,inCase=false)=>{
   if(!Number.isSafeInteger(ms)||ms<=0)return Promise.reject(codeError(label,'BUDGET'));
-  let timer,work;
-  try{work=Promise.resolve().then(thunk);}catch(error){return Promise.reject(error);}
+  let timer;
+  const work=Promise.resolve().then(()=>{assertDispatchable(label,inCase);return thunk();});
   const guard=new Promise((_,reject)=>{timer=setTimeout(()=>{abortOwned(`${label}_TIMEOUT`);reject(codeError(label,'TIMEOUT'));},ms);});
   return Promise.race([work,guard]).finally(()=>clearTimeout(timer));
 };
@@ -151,12 +151,14 @@ const guarded=async(t,caseId,body)=>{
 const observed=(client)=>{let endRequested=false;return {
   async query(sql,values){
     const phase=classify(sql);
-    assertDispatchable('QUERY',caseAbort!==null);
-    if(rec.statements.length>=CAPS.statements)throw capError('SQL');
-    if(phase==='BEGIN'&&rec.begin>=CAPS.transactionAttempts)throw capError('BEGIN');
-    rec.note(sql);
     const ms=(caseAbort!==null?caseBudget:workBudget)(5000);
-    return runBounded(()=>client.query(sql,values),ms,'SQL');
+    return runBounded(async()=>{
+      assertDispatchable('QUERY',caseAbort!==null);
+      if(rec.statements.length>=CAPS.statements)throw capError('SQL');
+      if(phase==='BEGIN'&&rec.begin>=CAPS.transactionAttempts)throw capError('BEGIN');
+      rec.note(sql);
+      try{const result=await client.query(sql,values);rec.ok(sql);return result;}catch(error){rec.error(sql,error);throw error;}
+    },ms,'SQL',caseAbort!==null);
   },
   release(error){rec.release(error??null);if(error&&!endRequested){endRequested=true;void client.end().then(()=>{rec.endSettled=true;},()=>{});}},
   get ended(){return endRequested;},
@@ -183,13 +185,13 @@ before(async()=>{
   if(firstConnectMs<=0)throw codeError('CONNECT','BUDGET');
   readClient=new pg.Client({host:TARGET.socketDir,database:TARGET.database,user:TARGET.user,application_name:'vqa025-native-read',connectionTimeoutMillis:firstConnectMs,options:'-c statement_timeout=5000'});
   rec.nativeClients++;
-  await runBounded(()=>readClient.connect(),firstConnectMs,'CONNECT');
+  await runBounded(()=>readClient.connect(),firstConnectMs,'CONNECT',false);
   if(rec.nativeClients>=CAPS.nativeClients)throw capError('CLIENT');
   const secondConnectMs=workBudget(CAPS.connectMs);
   if(secondConnectMs<=0)throw codeError('CONNECT','BUDGET');
   blocker=new pg.Client({host:TARGET.socketDir,database:TARGET.database,user:TARGET.user,application_name:'vqa025-native-blocker',connectionTimeoutMillis:secondConnectMs,options:'-c statement_timeout=5000'});
   rec.nativeClients++;
-  await runBounded(()=>blocker.connect(),secondConnectMs,'CONNECT');
+  await runBounded(()=>blocker.connect(),secondConnectMs,'CONNECT',false);
   readLease=observed(readClient);blockerLease=observed(blocker);
   const server=(await q(readLease,"SELECT current_setting('listen_addresses') AS listen,current_database() AS db,current_setting('server_version') AS version,current_user AS usr")).rows[0];
   if(server.listen!=='')throw new Error('VQA025_NATIVE_NOT_SOCKET_ONLY');
@@ -214,7 +216,7 @@ before(async()=>{
     rec.gateCalls.push({deadlineMs:options?.deadlineMs??null,signal:options?.signal??null,at:Date.now()});
     const signals=[options?.signal,caseAbort?.signal].filter(Boolean);
     const signal=signals.length>1?AbortSignal.any(signals):signals[0];
-    return runBounded(()=>gate.assertServable(subject,{...options,...(signal?{signal}:{})}),caseBudget(CAPS.casePhaseMs),'GATE');
+    return runBounded(()=>gate.assertServable(subject,{...options,...(signal?{signal}:{})}),caseBudget(CAPS.casePhaseMs),'GATE',true);
   }};
   service=createArtifactService({validators:artifactValidators,
     authorize:async request=>({receiptId:'vqa025-native-receipt',decision:'allow',action:request.action,binding:structuredClone(request.binding),scopesSha256:artifactValidators.hash(request.scopes),resourceSha256:artifactValidators.hash(request.resource),requestSha256:request.requestSha256,expiresAtMs:request.deadlineMs}),
@@ -231,7 +233,7 @@ after(async()=>{
     assertDispatchable('SHUTDOWN');
     const ms=workBudget(CAPS.endMs);
     if(ms<=0)throw codeError('SHUTDOWN','BUDGET');
-    const settled=await runBounded(()=>Promise.allSettled([readClient?.end(),blocker?.end()]),ms,'END');
+    const settled=await runBounded(()=>Promise.allSettled([readClient?.end(),blocker?.end()]),ms,'END',false);
     if(settled.some(entry=>entry.status==='rejected'))throw codeError('END','REJECTED');
     rec.endSettled=true;shutdownOk=true;
   }catch(error){rec.shutdownFailed=true;rec.shutdownError=error?.code??String(error?.message??error);}
@@ -242,8 +244,8 @@ after(async()=>{
 });
 
 const q=(lease,sql,values)=>{assertDispatchable('QUERY',caseAbort!==null);return lease.query(sql,values);};
-const lockBlocker=async()=>{assertDispatchable('BLOCKER_LOCK',true);const result=await runBounded(()=>blockerLease.query("SELECT pg_advisory_lock(hashtextextended('meri_retention_recovery',0)) AS locked"),caseBudget(5000),'BLOCKER_LOCK');rec.blockerLocks++;return result;};
-const unlockBlocker=async()=>{assertDispatchable('BLOCKER_UNLOCK',true);const result=await runBounded(()=>blockerLease.query("SELECT pg_advisory_unlock(hashtextextended('meri_retention_recovery',0)) AS unlocked"),caseBudget(5000),'BLOCKER_UNLOCK');rec.blockerUnlocks++;assert.equal(result.rows[0].unlocked,true,'the owned blocker was released');};
+const lockBlocker=async()=>{assertDispatchable('BLOCKER_LOCK',true);const result=await runBounded(()=>blockerLease.query("SELECT pg_advisory_lock(hashtextextended('meri_retention_recovery',0)) AS locked"),caseBudget(5000),'BLOCKER_LOCK',true);rec.blockerLocks++;return result;};
+const unlockBlocker=async()=>{assertDispatchable('BLOCKER_UNLOCK',true);const result=await runBounded(()=>blockerLease.query("SELECT pg_advisory_unlock(hashtextextended('meri_retention_recovery',0)) AS unlocked"),caseBudget(5000),'BLOCKER_UNLOCK',true);rec.blockerUnlocks++;assert.equal(result.rows[0].unlocked,true,'the owned blocker was released');};
 const artifactContext=deadlineMs=>({binding:{tenantId:TENANT,actorId:ACTOR,conversationId:CONVERSATION,runId:RUN,attemptId:ATTEMPT,workerId:WORKER,writerFence:1},scopes:[{tenantId:TENANT,kind:'client',resourceId:CLIENT,policyRevision:'vqa025-native'}],evidence:[],assets:[],deadlineMs,maxBytes:1048576});
 
 const caseWindow=()=>Math.max(0,caseRemainingMs());
@@ -259,10 +261,10 @@ test('native cases (aggregate <=60s)',{timeout:CAPS.casePhaseMs},async t=>{
       const entryMono=monoNowS(),entryWall=Date.now();
       const firstTimeout=deferred();rec.onLockTimeout=firstTimeout.resolve;
       const attempt=gatePort.assertServable(SUBJECT,{signal});
-      const observedTimeout=await runBounded(()=>firstTimeout.promise,caseBudget(10000),'FIRST_55P03');
+      const observedTimeout=await runBounded(()=>firstTimeout.promise,caseBudget(10000),'FIRST_55P03',true);
       assert.equal(rec.firstSharedSqlstate,'55P03','the first shared recovery-lock wait is the original SQLSTATE');
       await unlockBlocker();
-      const acceptedMono=await runBounded(()=>attempt.then(()=>monoNowS()),caseBudget(CAPS.casePhaseMs),'ACCEPTED');
+      const acceptedMono=await runBounded(()=>attempt.then(()=>monoNowS()),caseBudget(CAPS.casePhaseMs),'ACCEPTED',true);
       const delta=rec.delta(before);
       assert.equal(delta.lock,2,'exactly two shared-lock attempts');
       assert.equal(delta.begin,2,'exactly two read-only transactions');
@@ -285,7 +287,7 @@ test('native cases (aggregate <=60s)',{timeout:CAPS.casePhaseMs},async t=>{
       if(caseWindow()<3500)throw codeError('CASE_2','CASE_BUDGET');
       const before=rec.mark();await lockBlocker();
       const entryWall=Date.now(),deadlineMs=entryWall+3000;
-      const refused=await runBounded(()=>service.inspect(VERSION,artifactContext(deadlineMs),{signal}).then(()=>null,error=>error),caseBudget(CAPS.casePhaseMs),'INSPECT');
+      const refused=await runBounded(()=>service.inspect(VERSION,artifactContext(deadlineMs),{signal}).then(()=>null,error=>error),caseBudget(CAPS.casePhaseMs),'INSPECT',true);
       await unlockBlocker();
       const delta=rec.delta(before);
       assert.ok(refused,'the inspection is refused');
@@ -309,11 +311,11 @@ test('native cases (aggregate <=60s)',{timeout:CAPS.casePhaseMs},async t=>{
       const entryWall=Date.now(),callerDeadline=entryWall+5000;
       const lockStarted=deferred();let abortedAt=null;
       rec.onPhase=phase=>{if(phase==='LOCK_SHARED'&&rec.onPhase){rec.onPhase=null;lockStarted.resolve();}};
-      const running=runBounded(()=>service.inspect(VERSION,artifactContext(callerDeadline),{signal}).then(()=>null,error=>error),caseBudget(CAPS.casePhaseMs),'INSPECT');
-      await runBounded(()=>lockStarted.promise,caseBudget(5000),'LOCK_STARTED');
+      const running=runBounded(()=>service.inspect(VERSION,artifactContext(callerDeadline),{signal}).then(()=>null,error=>error),caseBudget(CAPS.casePhaseMs),'INSPECT',true);
+      await runBounded(()=>lockStarted.promise,caseBudget(5000),'LOCK_STARTED',true);
       const abortTimer=setTimeout(()=>{abortedAt=Date.now();caseAbort?.abort();},250);
       let refused;try{refused=await running;}finally{clearTimeout(abortTimer);}
-      await runBounded(()=>released.promise,caseBudget(5000),'LEASE_RETIRED');
+      await runBounded(()=>released.promise,caseBudget(5000),'LEASE_RETIRED',true);
       await unlockBlocker();
       const delta=rec.delta(before);
       assert.equal(signal.aborted,true,'the case signal aborted during the read');
