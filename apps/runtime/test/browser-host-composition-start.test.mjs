@@ -66,7 +66,8 @@ function owners(){
 
 // The single external HTTPS boundary is replaced once, before the real composition is imported.
 let current=null;
-mock.module('node:https',{defaultExport:{createServer:()=>current.server}});
+const actualHttps=await import('node:https');
+mock.module('node:https',{defaultExport:{...actualHttps.default,createServer:()=>current.server},namedExports:{request:actualHttps.request,Agent:actualHttps.Agent}});
 const {createBrowserHostComposition}=await import('../browser-host-composition.mjs');
 function composition(httpState){
  current=httpState;

@@ -22,6 +22,7 @@
  */
 import {createOperationLifetime} from '../../packages/runtime/operation-lifetime.mjs';
 import {canonicalSha256} from '../../packages/contracts/validate.mjs';
+import {assertOperatorBrowserAdmission,operatorBrowserDeadline} from './browser-operator-admission.mjs';
 import {activationOpen} from '../worker/conversation/browser/activation.mjs';
 import {validateBrowserPolicy} from '../worker/conversation/browser/policy.mjs';
 
@@ -32,7 +33,12 @@ export const BROWSER_NEED=Object.freeze({kind:'browser-only',hostMode:'browser-o
 export const BROWSER_DEFERRED=Object.freeze({kind:'deferred'});
 const MAX_TRACKED=4096;
 
-export function createBrowserExecutionPrerequisite({allocations,activation,policy,demands,now=Date.now,requestTimeoutMs,effectTimeoutMs}){
+export function createBrowserExecutionPrerequisite(options){return prerequisite(options,null);}
+export function createOperatorBrowserExecutionPrerequisite(options,caseAdmission){
+ assertOperatorBrowserAdmission(caseAdmission);if(activationOpen(options.activation))fail();
+ return prerequisite(options,caseAdmission);
+}
+function prerequisite({allocations,activation,policy,demands,now=Date.now,requestTimeoutMs,effectTimeoutMs},caseAdmission){
  if(typeof allocations?.ready!=='function'||typeof policy?.read!=='function'||typeof demands?.record!=='function'||typeof demands?.read!=='function'||
   typeof now!=='function'||!finite(requestTimeoutMs)||!finite(effectTimeoutMs))fail();
  const open=activationOpen(activation);
@@ -47,36 +53,46 @@ export function createBrowserExecutionPrerequisite({allocations,activation,polic
  };
  /** The run's resolved browser policy, read within one request budget; a failed or malformed read refuses (never "none"). */
  async function enabled({binding,signal,deadlineMs}){
-  if(!open)return false;
+  if(caseAdmission===null){if(!open)return false;}else deadlineMs=operatorBrowserDeadline(caseAdmission,{binding,deadlineMs});
   const key=canonicalSha256(binding),known=verdicts.get(key);
-  if(known!==undefined&&known.untilMs>now())return known.enabled;
+  if(caseAdmission===null&&known!==undefined&&known.untilMs>now())return known.enabled;
   const life=lifeFor(deadlineMs,signal,requestTimeoutMs);
   try{
    let resolved;
    try{resolved=validateBrowserPolicy(await life.run(s=>policy.read({binding,signal:s,deadlineMs:life.deadline()})));}catch{fail();}
+   if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,deadlineMs});
    if(finite(deadlineMs))remember(verdicts,key,{enabled:resolved.enabled===true,untilMs:deadlineMs});
    return resolved.enabled===true;
   }finally{life.close();}
  }
- async function need({binding,signal,deadlineMs}={}){
+ async function need({binding,executionId,signal,deadlineMs}={}){
+  if(caseAdmission!==null)deadlineMs=operatorBrowserDeadline(caseAdmission,{binding,executionId,deadlineMs});
   signal?.throwIfAborted();
   if(!await enabled({binding,signal,deadlineMs}))return Object.freeze({kind:'none'});
+  if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,executionId,deadlineMs});
   const key=canonicalSha256(binding),known=demanded.get(key);
-  if(known!==undefined&&known.untilMs>now())return BROWSER_NEED;
+  if(known!==undefined&&known.untilMs>now()){
+   if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,executionId,deadlineMs});
+   return BROWSER_NEED;
+  }
   const life=lifeFor(deadlineMs,signal,requestTimeoutMs);
   try{
-   if(!await life.run(s=>demands.read({binding,signal:s})))return BROWSER_DEFERRED;
+   const hasDemand=await life.run(s=>demands.read({binding,signal:s}));
+   if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,executionId,deadlineMs});
+   if(!hasDemand)return BROWSER_DEFERRED;
    if(finite(deadlineMs))remember(demanded,key,{untilMs:deadlineMs});
    return BROWSER_NEED;
-  }catch{signal?.throwIfAborted();return BROWSER_DEFERRED;}finally{life.close();}
+  }catch{signal?.throwIfAborted();if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,executionId,deadlineMs});return BROWSER_DEFERRED;}finally{life.close();}
  }
  async function ready({binding,signal,deadlineMs}){
   const life=lifeFor(deadlineMs,signal,effectTimeoutMs);
   try{
    for(;;){
     life.check();
+    if(caseAdmission!==null)life.limitDeadline(operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:life.deadline()}));
     const allocation=lifeFor(Math.min(life.deadline(),now()+requestTimeoutMs),life.signal,requestTimeoutMs);
     let result;try{result=await allocation.run(s=>allocations.ready({binding,signal:s}));}finally{allocation.close();}
+    if(caseAdmission!==null)life.limitDeadline(operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:life.deadline()}));
     if(result?.status==='ready'){
      const currentUntilMs=result.currentUntilMs,leaseDeadlineMs=result.leaseDeadlineMs;
      if(!Number.isSafeInteger(currentUntilMs)||currentUntilMs<=now()||!Number.isSafeInteger(leaseDeadlineMs)||
@@ -98,9 +114,22 @@ export function createBrowserExecutionPrerequisite({allocations,activation,polic
  }
  /** The run's first browser use: record the demand durably (the broker provisions on its next poll) and wait for the host. */
  async function demand({binding,scopes,signal,deadlineMs,executionDeadlineMs}){
-  if(!finite(executionDeadlineMs)||!await enabled({binding,signal,deadlineMs:executionDeadlineMs}))fail();
+  if(!finite(executionDeadlineMs))fail();
+  if(caseAdmission!==null){
+   executionDeadlineMs=operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:executionDeadlineMs});
+   deadlineMs=operatorBrowserDeadline(caseAdmission,{binding,deadlineMs});
+  }
+  if(!await enabled({binding,signal,deadlineMs:executionDeadlineMs}))fail();
+  if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:executionDeadlineMs});
   const life=lifeFor(deadlineMs,signal,requestTimeoutMs);
-  try{await life.run(s=>demands.record({binding,scopes,expiresAtMs:executionDeadlineMs,signal:s}));}catch{fail();}finally{life.close();}
+  try{await life.run(s=>{
+   // life.run defers this callback: check at the actual durable effect boundary.
+   if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:executionDeadlineMs});
+   return demands.record({binding,scopes,expiresAtMs:executionDeadlineMs,signal:s});
+  });}catch{fail();}finally{life.close();}
+  // A committed/uncertain demand stays with its original owner. Revocation never
+  // fabricates rollback, caches a new positive result, or starts readiness work.
+  if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:executionDeadlineMs});
   remember(demanded,canonicalSha256(binding),{untilMs:executionDeadlineMs});
   return ready({binding,signal,deadlineMs});
  }

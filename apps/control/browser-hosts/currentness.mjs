@@ -11,6 +11,7 @@ import {assertBrowserHostAllocation,assertHostRunBinding} from '../../worker/con
 import {assertCapabilityPolicy} from '../../worker/conversation/capabilities/policy.mjs';
 import {validateBrowserPolicy} from '../../worker/conversation/browser/policy.mjs';
 import {activationOpen,HELD_BROWSER_ACTIVATION} from '../../worker/conversation/browser/activation.mjs';
+import {assertOperatorBrowserAdmission,operatorBrowserDeadline,operatorBrowserHostDeadline} from '../../runtime/browser-operator-admission.mjs';
 import {allocationRow,fail,same} from './allocation.mjs';
 import {HOST_ALLOCATION_SQL} from './postgres-allocations.mjs';
 import {createCurrentBrowserCoreAccess} from './current-core.mjs';
@@ -19,7 +20,12 @@ import {createBrowserCustodyCurrentness} from './custody-currentness.mjs';
 /** `rowRun` keeps the immutable request on the ROW, beside `projection`; never inside it. Exported so the
  * mapping is testable without a database. */
 export function savedRequestOf(row){return row?.request??null;}
-export function createBrowserHostCurrentness({store,core,nativeCredentials,capabilityPolicy,readBrowserPolicy,activation=HELD_BROWSER_ACTIVATION,now=Date.now,maxRequestMs=3000}){
+export function createBrowserHostCurrentness(options){return currentness(options,null);}
+export function createOperatorBrowserHostCurrentness(options,caseAdmission){
+ assertOperatorBrowserAdmission(caseAdmission);if(activationOpen(options.activation??HELD_BROWSER_ACTIVATION))fail();
+ return currentness(options,caseAdmission);
+}
+function currentness({store,core,nativeCredentials,capabilityPolicy,readBrowserPolicy,activation=HELD_BROWSER_ACTIVATION,now=Date.now,maxRequestMs=3000},caseAdmission){
  const browserOpen=activationOpen(activation);
  const readExecution=storageMethod(store.executions,'readCurrentOnClient'),currentHost=storageMethod(store.lifecycle.browserCustody,'currentHost');
  const forRun=storageMethod(capabilityPolicy,'forRun'),readCore=createCurrentBrowserCoreAccess({core,nativeCredentials,now});
@@ -32,18 +38,21 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
  async function read(client,input,route,facts=false){
   const v=own(input,['allocation','binding'],['signal','originalBinding','custody']);nativeSignal(v.signal);
   const allocation=assertBrowserHostAllocation(v.allocation),binding=assertHostRunBinding(allocation,v.binding);
+  if(caseAdmission!==null)operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:allocation.leaseDeadlineMs});
   const life=createOperationLifetime({now,signal:v.signal,deadlineMs:Math.min(now()+maxRequestMs,allocation.leaseDeadlineMs),errorFactory:()=>Error('BROWSER_HOST_CURRENTNESS_REFUSED')});
   try{
    const rows=await life.run(()=>client.query(HOST_ALLOCATION_SQL.lock,[allocation.hostId,allocation.generation]));
    if(rows.rows.length!==1)fail();const saved=allocationRow(rows.rows[0]),record=saved.record,original=record.originalBinding;
    if(saved.state!=='active'||!same(record.allocation,allocation)||v.originalBinding&&!same(v.originalBinding,original))fail();
    let authorityCutoff=Math.min(allocation.leaseDeadlineMs,record.hostCertificate.notAfterMs,record.serverCertificateNotAfterMs);
+   if(caseAdmission!==null)authorityCutoff=Math.min(authorityCutoff,operatorBrowserHostDeadline(caseAdmission,{binding,row:rows.rows[0],record,deadlineMs:authorityCutoff}));
    life.limitDeadline(authorityCutoff);
    await life.run(()=>client.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${binding.tenantId}:${binding.conversationId}`]));
    const sourceRows=await life.run(()=>client.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 AND run_id=$3 FOR UPDATE',[original.tenantId,original.conversationId,original.runId]));
    if(sourceRows.rows.length!==1)fail();const source=rowRun(sourceRows.rows[0]);
    if(!same(source.projection.binding,original))fail();
    const held=source.projection.state==='paused'&&source.hold_control_id!=null;
+   if(caseAdmission!==null&&(held||!same(binding,original)))fail();
    if(held&&(route||same(binding,original))){
     const state=await life.run(signal=>route?retained.readRoute(client,{allocation,originalBinding:original,binding,custody:v.custody,signal}):retained.readHost(client,{allocation,binding:original,signal}));
     life.check();const held={...state,browserAdmitted:state.browserAdmitted&&browserOpen,currentUntilMs:Math.min(state.currentUntilMs,authorityCutoff)};
@@ -79,7 +88,9 @@ export function createBrowserHostCurrentness({store,core,nativeCredentials,capab
    const {receipt:authority,recheck}=await readCore({binding,selectedClientId,life});
    const policy=assertCapabilityPolicy(await life.run(signal=>forRun({tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,actorRole:authority.role,signal}))??{});
    const browser=validateBrowserPolicy(await life.run(signal=>readBrowserPolicy({binding,scopes:current.scopes,actorRole:authority.role,signal,deadlineMs:life.deadline()})));
-   const credentialCutoff=await recheck();life.check();const state={binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&browserOpen,
+   const credentialCutoff=await recheck();life.check();
+   const admitted=caseAdmission===null?browserOpen:(authorityCutoff=Math.min(authorityCutoff,operatorBrowserDeadline(caseAdmission,{binding,deadlineMs:current.deadlineMs})),true);
+   const state={binding,phase:'active',sdkAdmitted:true,bashAdmitted:policy.bash,browserAdmitted:browser.enabled&&admitted,
     capabilityPolicySha256:hash(policy),browserPolicySha256:hash(browser),currentUntilMs:Math.min(current.deadlineMs,authority.expiresAtMs,authorityCutoff,credentialCutoff)};
    // The facts projection adds what the SAME read already loaded from the canonical row: the execution
    // window, scopes, the saved request (authoritative selection source) and the policy VALUES. readHost

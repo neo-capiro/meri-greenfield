@@ -5,9 +5,10 @@
  * allocation row; only the execution reader, Core client and policy readers are synthetic boundaries.
  * Activation is control configuration; without an open record browserAdmitted is false and the facts producer refuses — that
  * gate is asserted, never bypassed. No database, network, native or activation change happens here. */
-import test from 'node:test';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {savedRequestOf,createBrowserHostCurrentness} from '../../control/browser-hosts/currentness.mjs';
+import {savedRequestOf,createBrowserHostCurrentness,createOperatorBrowserHostCurrentness} from '../../control/browser-hosts/currentness.mjs';
+import {operatorCaseFixture,operatorAllocationFixture,cleanupOperatorFixture} from './browser-operator-fixture.mjs';
 import {allocationRow} from '../../control/browser-hosts/allocation.mjs';
 import {createBrowserHostRunFacts,createBrowserHostSiteWorkflowPort} from '../browser-host-run-facts.mjs';
 import {assertBrowserHostFacts,browserHostFactsDigest,BROWSER_HOST_FACTS_SCHEMA,BROWSER_HOST_FACT_PHASES}
@@ -26,6 +27,33 @@ const custody={ownerInstanceId:U(8),hostId:U(9),generation:1,policySha256:'c'.re
 const handoff={to:U(9),custody};
 const client={query:async()=>({rows:[]})};
 const selection={siteId:'synthetic-site',workflowId:'synthetic-flow',version:2,manifestSha256:'b'.repeat(64)};
+after(cleanupOperatorFixture);
+
+test('operator facts/route/host share canonical checks and the exact case while production remains held',async()=>{
+ const lifecycle=await lifecycleFixture({browserSessions:true});
+ try{
+  await lifecycle.running();const saved=await lifecycle.store.read(fixtureBinding,{},()=>{}),b=saved.run.binding;
+  const c=await operatorCaseFixture({binding:b});c.bind();const now=Date.now(),host=await operatorAllocationFixture({binding:b,material:c.material,nowMs:now});
+  const runRow={tenant_id:b.tenantId,conversation_id:b.conversationId,run_id:b.runId,request_id:saved.request.requestId,
+   projection:saved.run,projection_sha256:hash(saved.run),request:saved.request,request_sha256:hash(saved.request),last_sequence:Number(saved.lastSequence),hold_control_id:null};
+  const options={runRow,allocationRowValue:host.row,now,scopesFor:saved.run.scopes,bindingFor:b};
+  const ordinary=currentnessFor(options),active=currentnessFor({...options,caseAdmission:c.capability});
+  const input={binding:b,allocation:host.allocation};
+  assert.equal((await ordinary.currentness.readFacts(ordinary.client,input)).browserAdmitted,false);
+  for(const read of ['readHost','readRoute','readFacts']){
+   const answer=await active.currentness[read](active.client,input);assert.equal(answer.browserAdmitted,true);
+   assert.ok(answer.currentUntilMs<=c.expiresAtMs);assert.deepEqual(answer.binding,b);
+  }
+  assert.deepEqual(active.seen,['allocation','advisory','runs','allocation','advisory','runs','allocation','advisory','runs']);
+  const failedCore=currentnessFor({...options,caseAdmission:c.capability,onCore:()=>{throw Error('CURRENT_CORE_REFUSED');}});
+  await assert.rejects(failedCore.currentness.readFacts(failedCore.client,input));
+  await assert.rejects(active.currentness.readFacts(active.client,{...input,binding:{...b,writerFence:b.writerFence+1}}));
+  const revokeDuringCore=currentnessFor({...options,caseAdmission:c.capability,onCore:()=>c.capability.revoke()});
+  await assert.rejects(revokeDuringCore.currentness.readFacts(revokeDuringCore.client,input));
+  for(const read of ['readHost','readRoute','readFacts'])await assert.rejects(active.currentness[read](active.client,input));
+  assert.equal((await ordinary.currentness.readFacts(ordinary.client,input)).browserAdmitted,false);
+ }finally{await lifecycle.close();}
+});
 
 test('the saved request comes from the row, never from its projection',()=>{
  assert.equal(savedRequestOf({request:{siteWorkflow:{siteId:'s'}},projection:{binding}}).siteWorkflow.siteId,'s');
@@ -59,15 +87,16 @@ function sqlClient({runRow,allocationRowValue,seen}){
   throw Error('unexpected SQL: '+sql);
  }};
 }
-function currentnessFor({runRow,allocationRowValue,now,state='running',scopesFor=scopes,bindingFor=binding,activation}){
+function currentnessFor({runRow,allocationRowValue,now,state='running',scopesFor=scopes,bindingFor=binding,activation,caseAdmission,onCore}){
  const seen=[];
- const core={async readCurrent(){return {principal:{tenantId:bindingFor.tenantId,actorId:bindingFor.actorId},role:'standard_user',permissions:[],
+ const core={async readCurrent(){await onCore?.();return {principal:{tenantId:bindingFor.tenantId,actorId:bindingFor.actorId},role:'standard_user',permissions:[],
   clientIds:[scopesFor[0].resourceId],identityRevision:'1'.repeat(64),membershipRevision:'2'.repeat(64),contextRevision:'3'.repeat(64),
   conversationId:bindingFor.conversationId,selectedClientId:scopesFor[0].resourceId,checkedAtMs:now,expiresAtMs:now+30000};}};
  const store={executions:{async readCurrentOnClient(){return {binding:bindingFor,scopes:scopesFor,policyRevision:'synthetic-policy',deadlineMs:now+60000,
    executionSha256:'4'.repeat(64),executionPhase:'started',run:{state}};}},
   lifecycle:{browserCustody:{async currentHost(){throw Error('no custody in this fixture');}}}};
- const currentness=createBrowserHostCurrentness({store,core,
+ const compose=caseAdmission===undefined?createBrowserHostCurrentness:options=>createOperatorBrowserHostCurrentness(options,caseAdmission);
+ const currentness=compose({store,core,
   nativeCredentials:{async nativeCredentialFor(){return {credential:'synthetic-native',expiresAtMs:now+30000};}},
   capabilityPolicy:{async forRun(){return {};}},readBrowserPolicy:async()=>validateBrowserPolicy(),...(activation?{activation}:{}),now:()=>now,maxRequestMs:3000});
  return {currentness,seen,client:sqlClient({runRow,allocationRowValue,seen})};

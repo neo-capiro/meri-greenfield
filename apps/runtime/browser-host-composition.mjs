@@ -2,7 +2,8 @@
  * router and, when declared, the host-currentness listener; the pool, conversation store, action
  * sessions and Core authority client are borrowed and never closed here. A missing owner refuses
  * the whole composition instead of mounting a partially wired browser family. */
-import {createBrowserHostCurrentness} from '../control/browser-hosts/currentness.mjs';
+import {assertOperatorBrowserAdmission,assertOperatorBrowserHostMaterial} from './browser-operator-admission.mjs';
+import {createBrowserHostCurrentness,createOperatorBrowserHostCurrentness} from '../control/browser-hosts/currentness.mjs';
 import {createPostgresHostAllocationReader} from '../control/browser-hosts/postgres-allocations.mjs';
 import {createBrowserHostRouter} from '../control/browser-hosts/router.mjs';
 import {createBrowserHostRunFacts,createBrowserHostSiteWorkflowPort} from './browser-host-run-facts.mjs';
@@ -52,13 +53,19 @@ export function createBrowserHostHoldCustody({store}={}){
 }
 /** `material` is already-loaded protected key material for exactly the declared references:
  * {privateClient:{clientName,cert,key,ca}, hostServer?:{serverName,cert,key,clientCa}}. */
-export function createBrowserHostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,activation,siteWorkflowAdmission=null,browserApproval=null,browserReceipts=null,ingestBrowserArtifact=null,downloadReservations=null,nativeCurrentness=null,material,now=Date.now,limits={}}={}){
+export function createBrowserHostComposition(options={}){return hostComposition(options,null);}
+export function createOperatorBrowserHostComposition(options,caseAdmission){
+ assertOperatorBrowserAdmission(caseAdmission);assertOperatorBrowserHostMaterial(caseAdmission,options);
+ return hostComposition(options,caseAdmission);
+}
+function hostComposition({declaration,pool,store,sessions,core,capabilityPolicy,readBrowserPolicy,activation,siteWorkflowAdmission=null,browserApproval=null,browserReceipts=null,ingestBrowserArtifact=null,downloadReservations=null,nativeCurrentness=null,material,now=Date.now,limits={}},caseAdmission){
  if(declaration===null||declaration===undefined)return null;
  if(!pool||typeof pool.connect!=='function'||!store?.executions||!store?.lifecycle?.browserCustody||
   typeof sessions?.nativeCredentialFor!=='function'||typeof core?.readCurrent!=='function'||
   typeof capabilityPolicy?.forRun!=='function'||typeof readBrowserPolicy!=='function'||typeof now!=='function')fail('BROWSER_HOST_COMPOSITION');
  const maxRequestMs=Math.min(declaration.maxCurrentnessMs,Number.isSafeInteger(limits.requestMs)?limits.requestMs:declaration.maxCurrentnessMs);
- const currentness=createBrowserHostCurrentness({store,core,nativeCredentials:sessions,capabilityPolicy,readBrowserPolicy,activation,now,maxRequestMs});
+ const currentnessOptions={store,core,nativeCredentials:sessions,capabilityPolicy,readBrowserPolicy,activation,now,maxRequestMs};
+ const currentness=caseAdmission===null?createBrowserHostCurrentness(currentnessOptions):createOperatorBrowserHostCurrentness(currentnessOptions,caseAdmission);
  const allocations=createPostgresHostAllocationReader({pool,readCanonicalRun:currentness.readRoute,now});
  const client=material?.privateClient;
  if(!client)fail('BROWSER_HOST_COMPOSITION');

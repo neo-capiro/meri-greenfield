@@ -1,7 +1,10 @@
 import {automaticContextFixture} from '../../worker/conversation/test/automatic-context-fixture.mjs';
-import test from 'node:test';
+import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {assembleAgentCoreCandidate} from '../agentcore-candidate.mjs';
+import {operatorCaseFixture,cleanupOperatorFixture} from './browser-operator-fixture.mjs';
+import {createOperatorBrowserExecutionPrerequisite} from '../browser-execution-prerequisite.mjs';
+import {nativeObserverDeadline} from '../../../packages/contracts/native-observer.mjs';
+import {assembleAgentCoreCandidate,assembleOperatorAgentCoreCandidate} from '../agentcore-candidate.mjs';
 import {compileAgentCoreConfiguration} from '../agentcore-configuration.mjs';
 import {createNativeCapabilityClient} from '../native-client.mjs';
 import {createControlRouteApplications} from '../control-route-boundary.mjs';
@@ -26,6 +29,7 @@ function readPlatform(operations=[readOperation]){
  return platform;
 }
 function fixture(options={}){
+ const fixtureAt=options.nowMs??at;
  const b=options.binding??binding,configuration={agentcore:agentcoreConfig(),versions,sourceEnabled:false,limits:{requestMs:3000,requestBytes:131072,shutdownMs:30000}};
  if(options.reads)configuration.capabilityPlatform=options.platform??readPlatform();
  if(options.browserActivation)configuration.browserActivation=options.browserActivation;
@@ -35,12 +39,12 @@ function fixture(options={}){
  let record=null,invocations=0,coreCalls=0,stops=0,claimCalls=0,relayCalls=0,coreInput,invocation,schemaQueries=0,schemaRelations=[];
  const pending=Promise.withResolvers(),invoked=Promise.withResolvers();
  const check=f=>f?.();
- const store={async read(request,_cursor,c){check(c);assert.deepEqual(request,b);return {run,request:{requestId:id(999),prompt:'Synthetic ordinary request'},events:[{type:'run.status',data:{state:run.state},createdAt:new Date(at-1).toISOString()}],lastSequence:1};},async readOptional(){return {run};},
+ const store={async read(request,_cursor,c){check(c);assert.deepEqual(request,b);return {run,request:{requestId:id(999),prompt:'Synthetic ordinary request'},events:[{type:'run.status',data:{state:run.state},createdAt:new Date(fixtureAt-1).toISOString()}],lastSequence:1};},async readOptional(){return {run};},
   async append(_binding,event){run.state=event.data.state;},async appendSource(request,event,c,expectedScopes){check(c);assert.deepEqual(request,b);assert.deepEqual(expectedScopes,run.scopes);assert.equal(event.type,'source.native-bill-text');options.sourcePublications??=[];options.sourcePublications.push(structuredClone(event));},async readModelPolicy(){assert.fail('Ordinary absent Objective selection never reads model policy');},
   async readModelSelection(){assert.fail('Ordinary absent Objective selection never reads model selection');},
   lifecycle:{async execution(){return null;},async get(){throw Error('No lifecycle use in this control');},async readSessionCapture(){throw Error('No lifecycle use in this control');}},
   nextRuns:{...Object.fromEntries(['reserve','readTarget','listRuns','latestCheckpoint','settlement','current'].map(k=>[k,async()=>k==='readTarget'?null:{runs:[run],reservations:[]} ])),async execution(){return null;},async sessionSnapshot(){throw Error('No snapshot without lineage');}},
-  executions:{async read(request,c){check(c);assert.deepEqual(request,b);return {run,record};},async claim(value,c){check(c);claimCalls++;record={...value,phase:'launching',native:null};return {run,record,dispatch:true};},
+  executions:{async read(request,c){check(c);assert.deepEqual(request,b);if(options.onExecutionRead)await options.onExecutionRead();return {run,record};},async claim(value,c){check(c);claimCalls++;record={...value,phase:'launching',native:null};return {run,record,dispatch:true};},
    async record(value,c){check(c);record={...record,phase:value.phase,native:value.native};return {run,record};},
    async withCurrentRun(){throw Error('No synthetic SQL effect in this composition control');},
    async requestStop(){return {run,record,dispatch:Boolean(record&&record.phase!=='settled')};},async settleStopped(value){record={...record,phase:'settled',native:{state:value.state,stopped:true}};}}};
@@ -57,21 +61,77 @@ function fixture(options={}){
    assert.ok(['BEGIN ISOLATION LEVEL READ COMMITTED',"SELECT set_config('statement_timeout',$1,true),set_config('lock_timeout',$2,true)",'SELECT pg_advisory_xact_lock(hashtextextended($1,0))','COMMIT'].includes(text),text);
    return {rows:[],command:text==='COMMIT'?'COMMIT':undefined};
   },release(){}};}};
- const nativeCredentials={nativeCredentialFor(){relayCalls++;if(options.revokeAfterCore&&coreCalls)throw Error('SESSION_UNAVAILABLE');return {credential:'actual-user-bearer',expiresAtMs:at+120000};}};
+ const nativeCredentials={nativeCredentialFor(){relayCalls++;if(options.revokeAfterCore&&coreCalls)throw Error('SESSION_UNAVAILABLE');return {credential:'actual-user-bearer',expiresAtMs:fixtureAt+120000};}};
  const fetchImpl=async(_url,request)=>{coreCalls++;coreInput={headers:request.headers,body:JSON.parse(request.body)};
   await options.onCoreFetch?.();
-  if(new URL(_url).pathname==='/api/clio/client-context/automatic'){assert.equal(request.headers['x-internal-service-secret'],'synthetic-service');assert.deepEqual(JSON.parse(request.body),{schemaVersion:1,clientId});return Response.json(automaticContextFixture(b,clientId,at));}
+  if(new URL(_url).pathname==='/api/clio/client-context/automatic'){assert.equal(request.headers['x-internal-service-secret'],'synthetic-service');assert.deepEqual(JSON.parse(request.body),{schemaVersion:1,clientId});return Response.json(automaticContextFixture(b,clientId,fixtureAt));}
   if(options.status)return Response.json({error:'refused'},{status:options.status});
-  return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:at,expiresAtMs:at+120000,...options.receipt});};
+  return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:fixtureAt,expiresAtMs:fixtureAt+120000,...options.receipt});};
  const provider={async invoke(input){invocations++;invocation=input;invoked.resolve(input);return pending.promise;},async stop(input){stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,signal:undefined,stopped:true};}};
  // Keep the exact transport receipt closed (AbortSignal is request-only).
  provider.stop=async({signal,...input})=>{signal?.throwIfAborted();stops++;if(options.stopUnknown)throw Error('transport lost');return {...input,stopped:true};};
- const candidate=assembleAgentCoreCandidate({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,turnTelemetry:options.turnTelemetry,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>at,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{}),...(options.browserNeed?{browserNeed:options.browserNeed}:{})});
+ const assemble=options.operatorCase?args=>assembleOperatorAgentCoreCandidate(args,options.operatorCase):assembleAgentCoreCandidate;
+ const candidate=assemble({configuration,pool,store,initialBindings,provider,controlCredential,nativeCredentials,fetchImpl,turnTelemetry:options.turnTelemetry,...(options.automaticContext?{getCoreServiceSecret:async()=> 'synthetic-service'}:{}),now:()=>fixtureAt,...(options.createReadsRuntime?{createReadsRuntime:options.createReadsRuntime}:{}),...(options.browserNeed?{browserNeed:options.browserNeed}:{})});
  return {candidate,configuration,run,store,pending,counts:()=>({invocations,coreCalls,stops,claimCalls,relayCalls}),schema:()=>({queries:schemaQueries,relations:schemaRelations}),coreInput:()=>coreInput,invocation:()=>invocation,record:()=>record,
   async kickoff(){return candidate.native.call('execution/kickoff',{binding:b,executionKey:hash(b)});},
   async waitForInvocation(){let timer;try{return await Promise.race([invoked.promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('Provider invocation did not arrive')),1000);})]);}finally{clearTimeout(timer);}},
   async finish(state='completed'){run.state=state;const v=invocation;pending.resolve(await candidate.execution.settle({credential:v.credential,execution:v.execution,state}));await candidate.close();}};
 }
+
+after(cleanupOperatorFixture);
+
+test('operator retention refusal precedes canonical claim, provider dispatch and browser demand eligibility',async()=>{
+ const nowMs=Date.now(),expiresAtMs=nowMs+60000;
+ for(const cleanupCeilingMs of [nativeObserverDeadline(expiresAtMs)-1,expiresAtMs+1]){
+  const c=await operatorCaseFixture({binding,now:()=>nowMs,expiresAtMs,cleanupCeilingMs});let needs=0;
+  const f=fixture({operatorCase:c.capability,nowMs,browserNeed:async()=>{needs++;return {kind:'browser-only',hostMode:'browser-only'};}});
+  try{await assert.rejects(f.kickoff());assert.equal(f.counts().claimCalls,0);assert.equal(f.counts().invocations,0);assert.equal(needs,0);}
+  finally{f.pending.resolve();await f.candidate.close();}
+ }
+});
+
+test('operator uses canonical kickoff/provider once and normal durable browser demand with held production settings',async t=>{
+ const c=await operatorCaseFixture({binding}),nowMs=Date.now();let recorded=0,durable=false,policyReads=0;
+ const prerequisite=createOperatorBrowserExecutionPrerequisite({activation:{state:'held'},now:Date.now,requestTimeoutMs:1000,effectTimeoutMs:2000,
+  policy:{read:async()=>{policyReads++;return {enabled:true};}},demands:{read:async()=>durable,record:async()=>{recorded++;durable=true;}},
+  allocations:{ready:async()=>({status:'ready',generation:binding.writerFence,currentUntilMs:Date.now()+60000,leaseDeadlineMs:Date.now()+60000})}},c.capability);
+ const f=fixture({operatorCase:c.capability,nowMs,browserActivation:{state:'held'},browserNeed:prerequisite.need});
+ const original=structuredClone(f.configuration);await f.kickoff();await f.waitForInvocation();t.after(()=>f.finish());
+ const first=f.invocation();assert.deepEqual(first.browser,{enabled:true});assert.equal(recorded,0,'provider starts before the first browser use');
+ assert.deepEqual(f.configuration,original,'saved configuration/limits and model owners are untouched');
+ assert.equal(first.execution.expiresAtMs,c.expiresAtMs,'normal canonical claim is bounded by the earlier case cutoff');
+ await f.kickoff();assert.equal(f.counts().claimCalls,1);assert.equal(f.counts().invocations,1);
+ const read=()=>f.candidate.native.call('execution/browser/prerequisite',{binding,executionId:hash(binding)});
+ assert.deepEqual(await read(),{kind:'deferred'});
+ await prerequisite.demand({binding,scopes:f.run.scopes,deadlineMs:Date.now()+5000,executionDeadlineMs:first.execution.expiresAtMs});
+ assert.deepEqual(await read(),{kind:'browser-only',hostMode:'browser-only'});assert.equal(recorded,1);assert.ok(policyReads>=3);
+ c.capability.revoke();await assert.rejects(read());assert.equal(f.counts().invocations,1);
+});
+test('operator refusal before canonical claim and revocation during final journal await never invoke provider',async()=>{
+ const c=await operatorCaseFixture({binding});c.capability.revoke();
+ const early=fixture({operatorCase:c.capability,nowMs:Date.now(),browserNeed:async()=>({kind:'deferred'})});
+ await assert.rejects(early.kickoff());assert.equal(early.counts().claimCalls,0);assert.equal(early.counts().invocations,0);await early.candidate.close();
+ const late=await operatorCaseFixture({binding});let checked=false;
+ const f=fixture({operatorCase:late.capability,nowMs:Date.now(),browserNeed:async()=>{checked=true;return {kind:'deferred'};},
+  onExecutionRead:()=>{if(checked)late.capability.revoke();}});
+ await f.kickoff();await new Promise(resolve=>setImmediate(resolve));
+ assert.equal(f.counts().claimCalls,1);assert.equal(f.counts().invocations,0);
+ assert.equal(f.record().phase,'unknown','existing owner retains the original uncertainty; no fabricated settlement');
+ await f.kickoff();assert.equal(f.counts().claimCalls,1);assert.equal(f.counts().invocations,0);await f.candidate.close();
+});
+test('operator candidate rejects absent, serialized or foreign case joins; plain candidate stays held',async t=>{
+ const c=await operatorCaseFixture({binding});
+ assert.throws(()=>fixture({operatorCase:c.capability,nowMs:Date.now()}),'missing prerequisite cannot partly enable a case');
+ assert.throws(()=>fixture({operatorCase:{qualification:true},nowMs:Date.now(),browserNeed:async()=>({kind:'deferred'})}));
+ const other=await operatorCaseFixture({binding:{...binding,conversationId:id(777)}});
+ const f=fixture({operatorCase:other.capability,nowMs:Date.now(),browserNeed:async()=>({kind:'deferred'})});
+ await assert.rejects(f.kickoff());assert.equal(f.counts().claimCalls,0);assert.equal(f.counts().invocations,0);await f.candidate.close();
+ const wrongPrompt=await operatorCaseFixture({binding,prompt:'Unallocated alternate prompt'});
+ const prompt=fixture({operatorCase:wrongPrompt.capability,nowMs:Date.now(),browserNeed:async()=>({kind:'deferred'})});
+ await assert.rejects(prompt.kickoff());assert.equal(prompt.counts().claimCalls,0);assert.equal(prompt.counts().invocations,0);await prompt.candidate.close();
+ const ordinary=fixture({nowMs:Date.now(),browserActivation:{state:'held'},browserNeed:async()=>({kind:'deferred'}),caseAdmission:c.capability,qualification:true});
+ await ordinary.kickoff();await ordinary.waitForInvocation();t.after(()=>ordinary.finish());assert.deepEqual(ordinary.invocation().browser,{enabled:false});
+});
 
 test('the runner mounts the browser only with an open activation and a run browser need; absent or held is false',async t=>{
  const held=fixture();await held.kickoff();await held.waitForInvocation();t.after(()=>held.finish());

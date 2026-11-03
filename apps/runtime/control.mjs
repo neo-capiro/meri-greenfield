@@ -27,7 +27,8 @@ import {createWorkerRunApplication} from './worker-http.mjs';
 import {createExecutionSessions} from './execution-sessions.mjs';
 import {createNativeSelectedComposition} from './selected/composition.mjs';
 import {compileAgentCoreConfiguration} from './agentcore-configuration.mjs';
-import {startAgentCoreCandidate} from './agentcore-candidate.mjs';
+import {assertOperatorBrowserAdmission,assertOperatorBrowserControl} from './browser-operator-admission.mjs';
+import {startAgentCoreCandidate,startOperatorAgentCoreCandidate} from './agentcore-candidate.mjs';
 import {createReadCredentialRelay} from './read-credential-relay.mjs';
 import {createConversationLifecycleService} from '../control/conversations/lifecycle/service.mjs';
 import {createOriginalReconciler} from './original-stop.mjs';
@@ -43,7 +44,7 @@ import {createNativeAllocationRelay} from './native-allocation-relay.mjs';
 import {createControlNativeHostTeardown} from './native-control-teardown.mjs';
 import {createPostgresNativeAllocationReader,createPostgresHostAllocationWriter} from '../control/browser-hosts/postgres-allocations.mjs';
 import {createNativeExecutionPrerequisite} from './native-execution-prerequisite.mjs';
-import {createBrowserExecutionPrerequisite} from './browser-execution-prerequisite.mjs';
+import {createBrowserExecutionPrerequisite,createOperatorBrowserExecutionPrerequisite} from './browser-execution-prerequisite.mjs';
 import {BROWSER_NATIVE_LIMITS} from '../../packages/contracts/runtime-0.2/browser-tools.mjs';
 import {NATIVE_PROVISIONING_EFFECT_TIMEOUT_MS} from './native-host-provisioning.mjs';
 import {createCanonicalNativeCurrentness,createCanonicalHostAuthority} from '../control/browser-hosts/native-currentness.mjs';
@@ -84,7 +85,7 @@ import {composeSourceEventMount} from './source-event-application.mjs';
 import {createObjectiveGenerationStartApplication} from './objective-generation/start-application.mjs';
 import {compileObjectiveGenerationConfiguration} from './objective-generation/configuration.mjs';
 import {createObjectiveGenerationDispatcher} from '../control/conversations/objective-generation-dispatch.mjs';
-import {createBrowserHostComposition,readBrowserHostMaterial} from './browser-host-composition.mjs';
+import {createBrowserHostComposition,createOperatorBrowserHostComposition,readBrowserHostMaterial} from './browser-host-composition.mjs';
 import {compileBrowserActivation} from '../worker/conversation/browser/activation.mjs';
 import {createBrowserArtifactPublication} from './browser-artifact-publication.mjs';
 import {createBrowserDownloadReceiptRecorder} from './browser-download-receipt.mjs';
@@ -128,7 +129,13 @@ export function retentionGate(configuration,pool,ports={},binding=null,now=Date.
  return Object.freeze({serving:startup.serving,journal:startup.journal,gate:startup.gate,startup,
   ...(purge.enabled?{sweep:createConversationRetentionSweep({startup,now})}:{}),artifactRecovery:recovery.state,tables:['meri_conversations.retention_subjects','meri_conversations.retention_purges','meri_conversations.retention_purge_targets','meri_artifacts.retention_subjects','meri_artifacts.retention_purges','meri_conversations.retention_recovery_watermark']});
 }
-export function assembleControl(options){
+export function assembleControl(options){return assembleControlCase(options,null);}
+export function assembleOperatorBrowserControl(options,caseAdmission){
+ assertOperatorBrowserAdmission(caseAdmission);return assembleControlCase(options,caseAdmission);
+}
+function assembleControlCase(options,caseAdmission){
+ const composeHosts=caseAdmission===null?createBrowserHostComposition:options=>createOperatorBrowserHostComposition(options,caseAdmission);
+ const composePrerequisite=caseAdmission===null?createBrowserExecutionPrerequisite:options=>createOperatorBrowserExecutionPrerequisite(options,caseAdmission);
  const {configuration,pool:injectedPool,client,native,execution,now=Date.now,telemetry,turnTelemetry:injectedTurnTelemetry,canonicalProductPorts,uploadsNative,createReadsRuntime,readAvailability,workerModelPolicy,readCapabilityRole,readSessionCapabilityRole,officeKey,rendererReadiness,...binding}=own(options,['configuration','pool','client','native','execution'],['now','telemetry','turnTelemetry','canonicalProductPorts','uploadsNative','productPorts','productPortsFactory','createReadsRuntime','readAvailability','workerModelPolicy','readCapabilityRole','readSessionCapabilityRole','browserHostMaterial','browserHostDeclaration','nativeAllocations','officeKey','rendererReadiness','signal']);
  if(workerModelPolicy!==undefined&&typeof workerModelPolicy!=='function')throw fault('CONTROL_CONFIGURATION');
  const turnTelemetry=injectedTurnTelemetry??createTurnTelemetry({service:'control',environment:configuration.telemetry?.environment,now}),pool=countingPool(injectedPool,turnTelemetry);
@@ -251,7 +258,7 @@ export function assembleControl(options){
       ?createBrowserArtifactPublication({resolve:input=>ports.artifactOptionsOwner.resolve(input),sessions,now,
         requestMs:configuration.limits.requestMs})
       :null;
-    browserHosts=createBrowserHostComposition({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
+    browserHosts=composeHosts({declaration,pool,store,sessions,core:ports.browserHostCore,capabilityPolicy,readBrowserPolicy,
      activation:compileBrowserActivation(configuration.browserActivation),
      siteWorkflowAdmission:ports.siteWorkflowAdmission??null,browserApproval,nativeCurrentness,
      browserReceipts:(()=>{const recorder=createBrowserActionRecorder({metadata:createPostgresApprovalMetadataReader({pool}),
@@ -294,7 +301,7 @@ export function assembleControl(options){
  // browser custody journal and waits for the browser allocation reader's readiness over the same canonical currentness the
  // router uses.
  // Without a role reader the policy cannot be resolved, so the prerequisite is not mounted and the broker's call refuses.
- const browserPrerequisite=browserHosts===null||readCapabilityRole===undefined?undefined:createBrowserExecutionPrerequisite({allocations:browserHosts.allocations,
+ const browserPrerequisite=browserHosts===null||readCapabilityRole===undefined?undefined:composePrerequisite({allocations:browserHosts.allocations,
   activation:compileBrowserActivation(configuration.browserActivation),now,requestTimeoutMs:configuration.limits.requestMs,effectTimeoutMs:BROWSER_NATIVE_LIMITS.provisionMs,
   demands:{record:browserCustody.demandHost,read:browserCustody.hostDemanded},
   policy:{async read({binding,signal,deadlineMs}){
@@ -303,6 +310,7 @@ export function assembleControl(options){
    return readBrowserPolicy({binding,scopes:saved.run.scopes,actorRole:role.actorRole,signal,deadlineMs});
   }}});
  const browserNeed=browserPrerequisite?.need;
+ if(caseAdmission!==null&&browserPrerequisite===undefined)throw fault('OPERATOR_BROWSER_CASE_REFUSED');
  const browserOperations=ports.browserHosts?.executeBrowserOperation&&readCapabilityRole&&browserPrerequisite?createBrowserOperations({hosts:ports.browserHosts,readCapabilityRole,readBrowserPolicy,custody:browserCustody,ensureHost:browserPrerequisite.demand,hostReached:browserPrerequisite.reached,now}):undefined;
  // Selection admission asks the same reads composer for availability under the session (no run yet) and the same policy producer
  // for the worker's capability policy, with the session's Core role; without either producer no selection is admitted.
@@ -357,7 +365,14 @@ export function assembleControl(options){
  return Object.freeze({service,store,sessions,retention,office,browserDownloadReservations,nativeNeed,nativeReady,browserNeed,...(nativeHostAuthority?{nativeHostAuthority}:{}),objectiveReadback,approvalMetadataReadback,userPreferences,intentTables,memoryTables,uploadTables,browserCustody,browserReceipts,...(browserHosts?{browserHosts}:{}),productReadiness:()=>productReadiness({ports,retention,memoryRetentionBound,sourceEnabled:configuration.sourceEnabled,userPreferences:userPreferences.state(),...(rendererReadiness?{renderer:rendererReadiness}:{})}),downloads:products.downloads,application:{handle:request=>turnTelemetry.provisional(()=>{if(new URL(request.url).pathname==='/api/outreach-generation/start')return outreachStart?.handle(request)??new Response(null,{status:404});const product=products.handle(request);if(product!==null)return product;const path=new URL(request.url).pathname;return path.startsWith('/api/meri/browser/')?browserViewer.handle(request):path==='/api/action-followthrough/browser-session'?browserIssuance.handle(request):Object.values(RUNNER_INTENT_PATHS).includes(path)?nativeIntents.handle(request):path==='/api/action-followthrough/session'?issuance.handle(request):path==='/api/conversations/input/admit'?input.handle(request):path===conversationInitialInputMetadata.routes.allocate.path?initialInput.handle(request):path.startsWith('/internal/')?worker.handle(request):conversation.handle(request);})},async close(){try{await office?.close();await browserHosts?.close();await selected?.close();}finally{userPreferences.close();if(!injectedTurnTelemetry)turnTelemetry.close();await sessions.close();}}});
  }catch(error){throw Object.assign(error,{controlCleanup:ownedCleanup()});}
 }
-export async function startControl(configuration,options={}){
+export function startControl(configuration,options={}){return startControlCase(configuration,options,null);}
+/** Trusted programmatic entrypoint only. Ordinary config/env/request paths cannot select it. */
+export function startOperatorBrowserControl(configuration,options,caseAdmission){
+ if(options?.testOwners!==undefined)throw fault('OPERATOR_BROWSER_CASE_REFUSED');
+ assertOperatorBrowserControl(caseAdmission,{configuration,sourceCommit:options?.sourceCommit});
+ return startControlCase(configuration,options,caseAdmission);
+}
+async function startControlCase(configuration,options,caseAdmission){
  // Validate compiled bindings before secret reads, connections or owned allocation.
  const {signal:externalSignal,createReadsRuntime,readAvailability,readCredentialRelay:injectedReadCredentialRelay,memoryContextRelay,occurrenceRelay,routinesCandidateBinder,turnTelemetry:injectedTurnTelemetry,sourceCommit,rendererReadiness,testOwners={},...binding}=own(options,[],['signal','productPorts','productPortsFactory','createReadsRuntime','readAvailability','readCredentialRelay','memoryContextRelay','occurrenceRelay','routinesCandidateBinder','turnTelemetry','sourceCommit','rendererReadiness','testOwners']);const readCredentialRelay=injectedReadCredentialRelay??createReadCredentialRelay();if(readCredentialRelay!==undefined&&(typeof readCredentialRelay?.bind!=='function'||typeof readCredentialRelay?.close!=='function')||memoryContextRelay!==undefined&&(typeof memoryContextRelay?.bind!=='function'||typeof memoryContextRelay?.close!=='function')||routinesCandidateBinder!==undefined&&(typeof routinesCandidateBinder!=='function'||types.isProxy(routinesCandidateBinder)||types.isAsyncFunction(routinesCandidateBinder)||types.isGeneratorFunction(routinesCandidateBinder)))throw fault('CONTROL_CONFIGURATION');nativeSignal(externalSignal);const fence=createTemporalRuntimeFence(),signal=externalSignal?AbortSignal.any([externalSignal,fence.signal]):fence.signal;const owners=own(testOwners,[],['readMaterial','tls','createPool','connect','createClient','startCandidate','assemble','listen','createEc2Client','createLifecycleClient']);for(const value of Object.values(owners))if(typeof value!=='function')throw fault('CONTROL_CONFIGURATION');const compiled=productBinding(binding);
  compileAgentCoreConfiguration(configuration.agentcore);
@@ -407,7 +422,7 @@ export async function startControl(configuration,options={}){
   // over the existing control:true transport. Private TLS stays here; no worker credential or second owner is created.
   nativeHostTeardown=createControlNativeHostTeardown({configuration,pool,owners:{createEc2Client:owners.createEc2Client,
    createLifecycleClient:owners.createLifecycleClient,readMaterial:owners.readMaterial},now:Date.now});checkAuthorization();
-  candidate=await (owners.startCandidate??startAgentCoreCandidate)({configuration,pool,signal,turnTelemetry,controlCredential:capabilityBytes.toString('utf8').trim(),nativeCredentials:readCredentialRelay.port,...(getCoreServiceSecret?{getCoreServiceSecret}:{}),...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(lateNativeNeed?{nativeNeed:lateNativeNeed}:{}),...(lateNativeReady?{nativeReady:lateNativeReady}:{}),...(lateBrowserNeed?{browserNeed:lateBrowserNeed}:{}),...(lateNativeHostAuthority?{nativeHostAuthority:lateNativeHostAuthority}:{}),...(nativeHostTeardown?{nativeHostTeardown}:{})});
+  candidate=await (owners.startCandidate??(caseAdmission===null?startAgentCoreCandidate:options=>startOperatorAgentCoreCandidate(options,caseAdmission)))({configuration,pool,signal,turnTelemetry,controlCredential:capabilityBytes.toString('utf8').trim(),nativeCredentials:readCredentialRelay.port,...(getCoreServiceSecret?{getCoreServiceSecret}:{}),...(createReadsRuntime===undefined?{}:{createReadsRuntime}),...(lateNativeNeed?{nativeNeed:lateNativeNeed}:{}),...(lateNativeReady?{nativeReady:lateNativeReady}:{}),...(lateBrowserNeed?{browserNeed:lateBrowserNeed}:{}),...(lateNativeHostAuthority?{nativeHostAuthority:lateNativeHostAuthority}:{}),...(nativeHostTeardown?{nativeHostTeardown}:{})});
   let native=candidate.native;routinesCandidateBinder?.(candidate);const unfencedNative=native;native=Object.freeze({...native,async call(operation,input,{signal:requestSignal}={}){if(operation==='execution/kickoff/stop')return unfencedNative.call(operation,input,{signal:requestSignal});fence.check();const joined=requestSignal?AbortSignal.any([requestSignal,fence.signal]):fence.signal;return unfencedNative.call(operation,input,{signal:joined});}});
   // Native upload inspection is an opt-in, server-owned declaration mounted under the bounded startup budget. An
   // unattested or failed host leaves the uploads family honestly unavailable and disables no other product. The
@@ -418,7 +433,7 @@ export async function startControl(configuration,options={}){
   checkAuthorization();if(configuration.uploads?.native?.enabled===true&&uploadsNative.missing.length)process.stderr.write(JSON.stringify({event:UPLOAD_NATIVE_UNAVAILABLE_EVENT,missing:uploadsNative.missing})+'\n');
   const officeDeclared=compileOfficeConfiguration(configuration);
   officeKey=await readOfficeKey({office:officeDeclared,readMaterial:owners.readMaterial??readSecret});checkAuthorization();
-  assembly=(owners.assemble??assembleControl)({configuration,pool,client,native,execution:candidate.execution,nativeAllocations,signal,createReadsRuntime,...(readAvailability?{readAvailability}:{}),readCapabilityRole:candidate.readCapabilityRole,...(candidate.readSessionCapabilityRole?{readSessionCapabilityRole:candidate.readSessionCapabilityRole}:{}),turnTelemetry,...(candidate.workerModelPolicy?{workerModelPolicy:candidate.workerModelPolicy}:{}),...(telemetry?{telemetry}:{}),...mounted,...(uploadsNative?{uploadsNative}:{}),...(browserHostMaterial?{browserHostMaterial}:{}),...(browserHostDeclaration?{browserHostDeclaration}:{}),...(candidate?{canonicalProductPorts:candidate.productPorts}:{}),...(officeKey?{officeKey}:{}),...(rendererReadiness?{rendererReadiness}:{})});boundNativeNeed=assembly.nativeNeed;boundNativeReady=assembly.nativeReady;boundBrowserNeed=assembly.browserNeed;boundNativeHostAuthority=assembly.nativeHostAuthority;candidate?.bindApplication({...fence.wrap(assembly.application),sweepRetention:input=>{checkAuthorization();if(typeof assembly.retention?.sweep!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');return assembly.retention.sweep({...input,signal:input.signal?AbortSignal.any([input.signal,fence.signal]):fence.signal});}});
+  assembly=(owners.assemble??(caseAdmission===null?assembleControl:options=>assembleOperatorBrowserControl(options,caseAdmission)))({configuration,pool,client,native,execution:candidate.execution,nativeAllocations,signal,createReadsRuntime,...(readAvailability?{readAvailability}:{}),readCapabilityRole:candidate.readCapabilityRole,...(candidate.readSessionCapabilityRole?{readSessionCapabilityRole:candidate.readSessionCapabilityRole}:{}),turnTelemetry,...(candidate.workerModelPolicy?{workerModelPolicy:candidate.workerModelPolicy}:{}),...(telemetry?{telemetry}:{}),...mounted,...(uploadsNative?{uploadsNative}:{}),...(browserHostMaterial?{browserHostMaterial}:{}),...(browserHostDeclaration?{browserHostDeclaration}:{}),...(candidate?{canonicalProductPorts:candidate.productPorts}:{}),...(officeKey?{officeKey}:{}),...(rendererReadiness?{rendererReadiness}:{})});boundNativeNeed=assembly.nativeNeed;boundNativeReady=assembly.nativeReady;boundBrowserNeed=assembly.browserNeed;boundNativeHostAuthority=assembly.nativeHostAuthority;candidate?.bindApplication({...fence.wrap(assembly.application),sweepRetention:input=>{checkAuthorization();if(typeof assembly.retention?.sweep!=='function')throw fault('EXECUTION_STORE_UNAVAILABLE');return assembly.retention.sweep({...input,signal:input.signal?AbortSignal.any([input.signal,fence.signal]):fence.signal});}});
   // Office editor discovery: the first attempt is awaited here, before any listener, so a healthy editor is mounted at
   // startup; an unreachable or malformed editor degrades (routes answer UNAVAILABLE, one logged event, backoff retry).
   if(assembly.office){officeDiscovery=startOfficeDiscovery({office:officeDeclared,mount:assembly.office,signal});await officeDiscovery.first;checkAuthorization();}

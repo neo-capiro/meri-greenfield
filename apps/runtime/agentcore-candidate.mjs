@@ -15,8 +15,9 @@ import {createNextRunOwner} from '../control/conversations/next-run.mjs';
 import {createRunReconciler} from '../control/conversations/run-reconciler.mjs';
 import {createUnprogressedRunSettlement,listUnprogressedRuns} from '../control/conversations/unprogressed-runs.mjs';
 import {compileAgentCoreConfiguration} from './agentcore-configuration.mjs';
+import {assertOperatorBrowserAdmission,bindOperatorBrowserInvocation} from './browser-operator-admission.mjs';
 import {compileBrowserActivation,activationOpen} from '../worker/conversation/browser/activation.mjs';
-import {createAgentCoreExecutionOwner} from './agentcore-execution.mjs';
+import {createAgentCoreExecutionOwner,createOperatorAgentCoreExecutionOwner} from './agentcore-execution.mjs';
 import {createAgentCoreControlApplication} from './agentcore-control-http.mjs';
 import {createConversationIdentity} from './conversation-identity.mjs';
 import {createCoreConversationCurrentness} from './native-authority/conversation-currentness.mjs';
@@ -54,9 +55,15 @@ const check=signal=>()=>signal?.throwIfAborted();
 const absent=code=>Response.json({error:{code}},{status:503,headers:{'cache-control':'no-store'}});
 
 /** Dependencies are borrowed. Only startAgentCoreCandidate creates and closes the provider client. */
-export function assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,nativeNeed,nativeReady,browserNeed,nativeHostAuthority,nativeHostTeardown,
+export function assembleAgentCoreCandidate(options){return assembleCandidate(options,null);}
+export function assembleOperatorAgentCoreCandidate(options,caseAdmission){
+ assertOperatorBrowserAdmission(caseAdmission);
+ if(typeof options.browserNeed!=='function'||activationOpen(compileBrowserActivation(options.configuration.browserActivation)))throw fault('OPERATOR_BROWSER_CASE_REFUSED');
+ return assembleCandidate(options,caseAdmission);
+}
+function assembleCandidate({configuration,pool,provider,controlCredential,nativeCredentials,nativeNeed,nativeReady,browserNeed,nativeHostAuthority,nativeHostTeardown,
  store,initialBindings=createInitialRunBindingJournal({pool}),
- fetchImpl=globalThis.fetch,now=Date.now,createReadsRuntime,turnTelemetry,getCoreServiceSecret,readSecret=readRuntimeSecret}){
+ fetchImpl=globalThis.fetch,now=Date.now,createReadsRuntime,turnTelemetry,getCoreServiceSecret,readSecret=readRuntimeSecret},caseAdmission){
  const config=compileAgentCoreConfiguration(configuration.agentcore),versions=configuration.versions;
  if(typeof controlCredential!=='string'||!/^\S{32,8192}$/u.test(controlCredential)||typeof nativeCredentials?.nativeCredentialFor!=='function'||
   createReadsRuntime!==undefined&&typeof createReadsRuntime!=='function')throw fault('AGENTCORE_CONFIGURATION');
@@ -179,18 +186,24 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
  }
 
  async function admit({binding,signal}){
-  const run=(await store.read(binding,{after:0,limit:1},check(signal))).run,context=await contextFor({binding,run,signal});
+  const saved=await store.read(binding,{after:0,limit:1},check(signal)),run=saved.run,context=await contextFor({binding,run,signal});
   // Attribute current access only after the durable run and scope agree.
   try{turnTelemetry?.bind(run.binding);}catch{}
   const current=await readCurrent({binding,run,context,signal,beforeExecution:true});
   // This is the execution lifetime (the platform wall-clock ceiling for an interactive run), not a cached permission receipt:
   // business-data access rechecks Core through its own gateway on every read. Routine runs keep their occurrence window.
-  return {run,expiresAtMs:current.routine?current.expiresAtMs:now()+MAX_RUN_WALL_CLOCK_MS,settings:{sourceEnabled:configuration.sourceEnabled,
+  let expiresAtMs=current.routine?current.expiresAtMs:now()+MAX_RUN_WALL_CLOCK_MS;
+  let browserEnabled=activationOpen(compileBrowserActivation(configuration.browserActivation));
+  if(caseAdmission!==null){
+   expiresAtMs=bindOperatorBrowserInvocation(caseAdmission,{binding,run,request:saved.request,expiresAtMs});
+   browserEnabled=true;
+  }
+  return {run,expiresAtMs,settings:{sourceEnabled:configuration.sourceEnabled,
    ...(config.approvedReads===undefined?{}:{approvedReads:config.approvedReads}),
    ...(configuration.intents===undefined?{}:{intents:{enabled:configuration.intents.enabled}}),
-   // Control's configured activation record (config.mjs `browserActivation`) is the only thing that mounts the
-   // runtime's browser port; the host independently refuses every browser read while the same record is held.
-   browser:{enabled:activationOpen(compileBrowserActivation(configuration.browserActivation))}}};
+   // Ordinary composition uses only activation; the separate operator constructor binds its
+   // one actual canonical run here. No settings, model, journal or provider override is supplied.
+   browser:{enabled:browserEnabled}}};
  }
  async function admitFork(value){
   const {signal,...raw}=own(value,['controlId','sourceBinding','scopes','selectedClientId','versions'],['signal']),v=data(raw);
@@ -239,7 +252,8 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
    return {binding:v.binding,scopes:v.scopes,selectedClientId:v.selectedClientId,policyRevision:v.policyRevision,checkedAtMs:now(),expiresAtMs:current.expiresAtMs};
   }finally{life.close();}
  }});
- const execution=createAgentCoreExecutionOwner({store,provider,versions,
+ const executionOwner=caseAdmission===null?createAgentCoreExecutionOwner:options=>createOperatorAgentCoreExecutionOwner(options,caseAdmission);
+ const execution=executionOwner({store,provider,versions,
   plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),
   ...(browserNeed?{browserNeed}:{}),...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{}),
   reconcileEnded:value=>reconciler.reconcile(value)});
@@ -341,12 +355,18 @@ export function assembleAgentCoreCandidate({configuration,pool,provider,controlC
   async close(){closed=true;await unprogressed.close();await execution.close();}});
 }
 
-export async function startAgentCoreCandidate({configuration,pool,signal,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,nativeNeed,nativeReady,browserNeed,nativeHostAuthority,nativeHostTeardown}){
+export function startAgentCoreCandidate(options){return startCandidate(options,null);}
+export function startOperatorAgentCoreCandidate(options,caseAdmission){
+ assertOperatorBrowserAdmission(caseAdmission);
+ if(typeof options.browserNeed!=='function'||activationOpen(compileBrowserActivation(options.configuration.browserActivation)))throw fault('OPERATOR_BROWSER_CASE_REFUSED');
+ return startCandidate(options,caseAdmission);
+}
+async function startCandidate({configuration,pool,signal,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,nativeNeed,nativeReady,browserNeed,nativeHostAuthority,nativeHostTeardown},caseAdmission){
  const config=compileAgentCoreConfiguration(configuration.agentcore);signal?.throwIfAborted();
  const {createAgentCoreClient}=await import('./agentcore-client.mjs');
  const provider=createAgentCoreClient({region:'us-east-1',agentRuntimeArn:config.runtimeArn,qualifier:config.qualifier});
  try{
-  const candidate=assembleAgentCoreCandidate({configuration,pool,provider,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),...(browserNeed?{browserNeed}:{}),...(nativeHostAuthority?{nativeHostAuthority}:{}),...(nativeHostTeardown?{nativeHostTeardown}:{})});
+  const candidate=assembleCandidate({configuration,pool,provider,controlCredential,nativeCredentials,createReadsRuntime,turnTelemetry,getCoreServiceSecret,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),...(browserNeed?{browserNeed}:{}),...(nativeHostAuthority?{nativeHostAuthority}:{}),...(nativeHostTeardown?{nativeHostTeardown}:{})},caseAdmission);
   return Object.freeze({...candidate,async close(){try{await candidate.close();}finally{provider.close();}}});
  }catch(error){provider.close();throw error;}
 }
