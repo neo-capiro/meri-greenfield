@@ -199,16 +199,48 @@ test('CLI writes stage3.json, bindings, templates and the deploy plan outside th
  }finally{await rm(work,{recursive:true,force:true});}
 });
 
-test('live stacks: every update keeps control and worker serving, control one task at a time',async()=>{
+/** Scheduler arithmetic from the documented `update-service` contract: `maximumPercent` is an upper bound on
+ * RUNNING/PENDING tasks rounded down, `minimumHealthyPercent` a floor on healthy tasks rounded up, and a service
+ * behind a load balancer counts a task healthy only once the load balancer reports it. A replacement therefore starts
+ * only in a free slot; without one the service must stop a task first, and it may do that only while the remainder
+ * still meets the healthy minimum. Returns what serves while that replacement is still starting. */
+const serviceCapacity=(configuration,desired=1)=>{
+ const slots=Math.floor(desired*configuration.MaximumPercent/100);
+ const requiredHealthy=Math.ceil(desired*configuration.MinimumHealthyPercent/100);
+ const stopsBeforeStart=slots-desired<1&&requiredHealthy<desired;
+ return {slots,requiredHealthy,stopsBeforeStart,servingWhileStarting:stopsBeforeStart?desired-1:desired,peak:Math.min(slots,desired+1)};
+};
+
+test('live stacks: every update keeps control and worker serving, control adds at most one replacement task',async()=>{
  const {synth:{templates:t},bindings,args}=await setup();
  const svc=(template,id)=>template.Resources[id];
  for(const [template,id] of [[t.app,'controlService'],[t.app,'temporalWorkerService']])
   assert.equal(svc(template,id).Properties.DesiredCount,1,id);
  const control=svc(t.app,'controlService');
- assert.deepEqual(control.Properties.DeploymentConfiguration,{MaximumPercent:100,MinimumHealthyPercent:0});
+ // The previous stop-before-start shape is the counterexample this profile must not regress to: at desiredCount 1
+ // max 100 leaves no free slot, and min 0 permits stopping the only task, so nothing serves until the replacement is
+ // ready (the observed rollout gap).
+ const stopped=serviceCapacity({MaximumPercent:100,MinimumHealthyPercent:0});
+ assert.equal(stopped.stopsBeforeStart,true);
+ assert.equal(stopped.servingWhileStarting,0,'the only task is stopped before its replacement starts');
+ const live=serviceCapacity(control.Properties.DeploymentConfiguration,control.Properties.DesiredCount);
+ assert.equal(live.stopsBeforeStart,false,'a free slot exists for the replacement while the running task serves');
+ assert.equal(live.requiredHealthy,1,'a healthy task must remain for the whole deployment');
+ assert.equal(live.servingWhileStarting,1,'the running task keeps serving until the replacement is load-balancer healthy');
+ assert.equal(live.peak,2,'the overlap is bounded to exactly one extra task at desiredCount 1');
+ assert.ok(live.peak<=control.Properties.DesiredCount+1,live.peak);
+ assert.deepEqual(control.Properties.DeploymentConfiguration,{MaximumPercent:200,MinimumHealthyPercent:100});
  assert.equal(control.Properties.AvailabilityZoneRebalancing,'DISABLED','ECS refuses max 100 while AZ rebalancing is ENABLED');
+ // Overlapping tasks must not share writable state: control volumes are task-local and the pinned material is read-only.
+ const [controlTask]=Object.values(t.app.Resources).filter(r=>r.Type==='AWS::ECS::TaskDefinition'&&r.Properties.Family==='meri-product-preview-control');
+ assert.ok(controlTask.Properties.Volumes.every(v=>v.EFSVolumeConfiguration===undefined&&v.DockerVolumeConfiguration===undefined),'no shared or persistent volume');
+ const controlContainer=controlTask.Properties.ContainerDefinitions.find(c=>c.Name==='control');
+ assert.equal(controlContainer.Image,bindings.app.imageUri,'each task still runs the exactly pinned image');
+ assert.equal(controlContainer.MountPoints.find(m=>m.SourceVolume==='material').ReadOnly,true,'pinned material stays read-only');
+ assert.ok(controlTask.Properties.ContainerDefinitions.some(c=>c.Name==='material-init'&&c.Secrets?.length===1),'each task writes its own pinned material revision');
  assert.equal(control.DependsOn?.includes('runnerTask')??false,false);
  assert.equal(svc(t.app,'temporalWorkerService').Properties.AvailabilityZoneRebalancing,undefined,'only control changes deployment shape');
+ assert.equal(svc(t.app,'temporalWorkerService').Properties.DeploymentConfiguration,undefined,'worker keeps the ECS default deployment shape');
  // Control keeps the live public 8080 group and the private 8082 group.
  assert.equal(bindings.app.controlTargetGroupArn,PUBLIC_TG);
  assert.deepEqual(control.Properties.LoadBalancers.map(l=>l.ContainerPort).sort(),[8080,8082]);
