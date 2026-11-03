@@ -30,6 +30,8 @@ import {createNativeSessionContinuation} from './sdk-continuation-owner.mjs';
 import {createObjectiveSelectionOwner} from './objective-generation/selection-owner.mjs';
 import {createPostgresObjectiveRunStartStore} from './objective-source/postgres-run-starts.mjs';
 import {createOutreachCore} from './outreach-generation/core.mjs';
+import {createOutreachTerminalSettlement} from './outreach-generation/terminal.mjs';
+import {attemptCleanup,CLEANUP_ATTEMPT_MS} from '../worker/conversation/cleanup.mjs';
 import {assertOutreachRequest,outreachIdentity} from '../../packages/runtime/outreach-generation.mjs';
 import {createAutomaticClientContextReader} from './automatic-client-context.mjs';
 import {createObjectiveCorePorts} from './objective-generation/core-ports.mjs';
@@ -256,7 +258,7 @@ function assembleCandidate({configuration,pool,provider,controlCredential,native
  const execution=executionOwner({store,provider,versions,
   plan:{runtimeArn:config.runtimeArn,runtimeVersion:config.runtimeVersion,qualifier:config.qualifier},credentialSecret:controlCredential,admit,contextFor,now,...(nativeNeed?{nativeNeed}:{}),...(nativeReady?{nativeReady}:{}),
   ...(browserNeed?{browserNeed}:{}),...(routineCore?{beforeInvocation:routineCore.beforeInvocation}:{}),
-  reconcileEnded:value=>reconciler.reconcile(value)});
+  reconcileEnded:value=>settleEndedOutreach(value)});
  const reconciler=createRunReconciler({store,stopExecution:execution.stopExecution,now,maxReconcileMs:Math.min(120000,configuration.limits.shutdownMs)});
  const unprogressed=createUnprogressedRunSettlement({list:input=>listUnprogressedRuns(pool,input),reconciler,now});
  async function stop({binding,executionId,signal}){
@@ -307,6 +309,27 @@ function assembleCandidate({configuration,pool,provider,controlCredential,native
   const result=await outreachCore[errorCode===undefined?'complete':'fail']({...outreachIdentity(selection),...(errorCode===undefined?{output,model}:{errorCode})},{credential:access.credential,signal,deadlineMs});
   await access.verify();return result;
  }};
+ // The run's own ended-unsettled signal is the one terminal point a live runner always reaches, including a run that died
+ // before `prepare` could resolve its Core unit (agentcore-query only settles once its reread is terminal). The reconciler
+ // fences the run exactly as before; a resulting failed run with this conversation's own outreach request then settles that
+ // unit once, under this run's identity. A refusal leaves the unit untouched, never changes the reconciler result, and is
+ // reported as a closed failure.
+ const settleTerminalOutreach=createOutreachTerminalSettlement({
+  load:({binding,signal})=>store.read(binding,{after:0,limit:1},check(signal)),
+  read:async({binding,run,request,signal})=>{const context=await contextFor({binding,run,signal});
+   return outreach.read({binding,run,request,selectedClientId:context.selectedClientId,signal,deadlineMs:now()+requestMs});},
+  settle:({binding,run,selection,errorCode,signal})=>outreach.settle({binding,run,selection,errorCode,signal,deadlineMs:now()+requestMs})});
+ async function settleEndedOutreach(value){
+  const result=await reconciler.reconcile(value);
+  if(result?.state==='failed'&&result?.outcome!=='unknown')
+   await attemptCleanup(()=>settleTerminalOutreach({binding:value.binding,state:'failed',signal:value.signal}),
+    {now,timeoutMs:CLEANUP_ATTEMPT_MS,onFailure:()=>reportOutreachSettlementFailure(value.binding)});
+  return result;
+ }
+ function reportOutreachSettlementFailure(binding){
+  try{turnTelemetry?.emit('meri.turn.failure',{runId:binding.runId,attemptId:binding.attemptId,origin:'native-start',
+   stage:'agentcore-settle',code:'OUTREACH_GENERATION_REFUSED',class:'ERROR',exit:'none',signal:'none',cause:'none',msgHash:'none',timeoutClass:'none'});}catch{}
+ }
  const sdkSessionSnapshot=createNativeSessionContinuation({store,execution,versions,maxOutputBytes:config.maxOutputBytes,objectiveSelection,outreach,automaticContext,...(routineCore?{routineCore}:{}),now,maxRequestMs:requestMs});
  const runtime=createNativeSessionContinuationApplication({owner:sdkSessionSnapshot,now,maxRequestMs:requestMs});
  let outerApplication,closed=false;
