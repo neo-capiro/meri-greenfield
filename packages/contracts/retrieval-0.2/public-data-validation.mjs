@@ -5,6 +5,11 @@ import {assertPublicDataInstant, assertPublicGrantDates, assertPublicAwardDates}
 const fail = message => { throw new Error(message); };
 const families = Object.freeze({query_economic_data: 'PublicEconomic', search_federal_grants: 'PublicGrant', search_federal_awards: 'PublicAward'});
 export const PUBLIC_DATA_OPERATION_IDS = Object.freeze(Object.keys(families));
+/** Core's `federal_grant.status` is free text whose recorded values are these four (schema.prisma:
+ * posted, closed, archived, forecasted) and Core's typed grant read matches it by exact equality
+ * (`where.status = status`). A caller value outside the domain can therefore only answer an empty page, so it
+ * is refused here, and the stored value itself is lowercase like the semantic grant read already sends. */
+const GRANT_STATUSES = Object.freeze(['posted', 'forecasted', 'closed', 'archived']);
 const text = (value, max) => typeof value === 'string' && value.trim() ? value.trim().slice(0, max) : null;
 const limit = value => {
   const numeric = typeof value === 'number' ? value : typeof value === 'string' ? Number(value) : NaN;
@@ -36,6 +41,11 @@ export function createPublicDataValidators({validateShape, schema}) {
       : id === 'search_federal_grants' ? {query: 240, agency: 240, status: 30} : {query: 240, agency: 240, peCode: 16};
     for (const [key, max] of Object.entries(lengths)) {
       const value = text(raw[key], max); if (value !== null) input[key] = ['state', 'peCode'].includes(key) ? value.toUpperCase() : value;
+    }
+    if (id === 'search_federal_grants' && input.status !== undefined) {
+      const status = input.status.toLowerCase();
+      if (!GRANT_STATUSES.includes(status)) fail('Unknown stored grant status');
+      input.status = status;
     }
     if (id === 'query_economic_data') {
       const source = text(raw.source, 20) ?? 'census';
