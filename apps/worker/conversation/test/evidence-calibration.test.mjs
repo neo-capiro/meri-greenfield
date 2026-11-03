@@ -5,14 +5,19 @@
  *
  * The rubric reads one claim at a time. An effect is a verb from a closed set that names which way it runs, and it is
  * supported only when the notes' own numbers give that same direction — and, when the claim also gives a size, that
- * size. A condition counts only in the same clause as the effect it governs, and only when it names what would make the
- * claim true; a hedge like "probably" is not evidence and licenses nothing. Reading the notes' arithmetic here means a
- * reversed direction or an invented size fails even in an example whose evidence does support some effect.
+ * size. Reading the notes' arithmetic here means a reversed direction or an invented size fails even in an example whose
+ * evidence does support some effect.
  *
- * What this is: a frozen, hand-written claim/evidence check over six fixed texts and their four adverse variants. It is
- * not production natural-language grading, it bans no phrase and requires no wording, and passing it is not evidence
- * that generated reasoning improved — that needs a separately allocated visible-QA run. The last test only shows that
- * the canonical instruction reaches the SDK. */
+ * A conditional is checked, not exempted. Its premise must be one this matrix can read ("delayed more often than simple
+ * ones" entails that the selected rate overstates the whole-month rate; "less often" entails the reverse), the
+ * conclusion must be the direction that premise entails, and a size may only appear where a premise carries one — a
+ * relative frequency carries none. A hedge like "probably" is not a condition at all and licenses nothing.
+ *
+ * What this is: a frozen, hand-written claim/premise/conclusion check over six fixed texts and six adverse variants. It
+ * is not production natural-language grading, it bans no phrase and requires no wording, and passing it is not evidence
+ * that generated reasoning improved — that needs a separately allocated visible-QA run. The 107- and 111-word
+ * conditional controls are calibration inputs, not compliant answers to the 100-word request, so they are no evidence of
+ * length compliance either. The last test only shows that the canonical instruction reaches the SDK. */
 import test from 'node:test';import assert from 'node:assert/strict';
 import {buildConversationOptions,RESPONSE_STYLE,RESPONSE_VOICE} from '../options.mjs';
 import {binding,versions} from '../../../control/conversations/test/application-fixture.mjs';
@@ -40,6 +45,10 @@ const HEDGED=OBSERVED.replace('biasing its rate','probably biasing its rate');
 const DISCLAIMER_JOINED=OBSERVED.replace('improved performance. The teams','improved performance; the teams');
 const REVERSED=SUPPORTED.replace('selection inflated','selection depressed').replace('rate is lower than 30%','rate is higher than 30%');
 const OVERSTATED=SUPPORTED.replace('lower than 30%.','lower than 30% by 25 percentage points.');
+// And two direct mutations of the conditional control: its two conclusions swapped against their own premises, and an
+// exact size pinned onto a premise that only says "more often".
+const CONCLUSIONS_SWAPPED=HYPOTHESIS.replace(/\b(over|under)state\b/gu,(word,which)=>which==='over'?'understate':'overstate');
+const SIZED_PREMISE=HYPOTHESIS.replace('would overstate the full May rate','would overstate the full May rate by 25 percentage points');
 
 // What the notes establish, taken from their own numbers. One selected cohort with nothing to compare it against fixes
 // no direction and no size; the supported notes carry the other 45 requests and so do.
@@ -57,13 +66,16 @@ const EFFECTS=[[/\b(?:inflate(?:s|d)?|overstate(?:s|d)?|elevat(?:es|ed)?|lift(?:
  [/\b(?:deflate(?:s|d)?|understate(?:s|d)?|depress(?:es|ed)?|reduc(?:e|es|ed))\b/iu,'down']],
  BIAS=/\bbias(?:es|ed|ing)?\b/iu,UPWARD=/\b(?:upward|up)\b/iu,DOWNWARD=/\b(?:downward|down)\b/iu;
 // A clause is split where the notes' own prose separates propositions, so a condition or a disclaimer governs only the
-// effect next to it. A condition licenses nothing unless it also names what would make the claim true.
+// effect next to it.
 const CLAUSE=/[^;:—]+/gu,
  CONDITIONAL=/\b(?:if|unless|whether|assuming|on the assumption|depends on|depending on|only if|provided that|contingent on)\b/iu,
- ASSUMPTION=/\b(?:more often|less often|higher|lower|related|associated|positively|negatively|greater|smaller|increases?|decreases?)\b/iu,
- MAGNITUDE=/\b(?:by\s+)?(\d+)\s*(?:percentage\s*)?points?\b/iu;
-/** Every effect the answer states, with the clause it sits in, its direction, any size it gives and whether that same
- * clause carries a condition and names the assumption behind it. */
+ MAGNITUDE=/\b(?:by\s+)?(\d+)\s*(?:percentage\s*)?points?\b/iu,
+ // The two relative-frequency premises this matrix writes, and the conclusion each one entails. A cohort picked out as
+ // delaying MORE often is over-represented in delays, so its rate overstates the whole-month rate; LESS often, the
+ // reverse. A condition over any other premise is not one this matrix can read, and is not treated as an exemption.
+ PREMISES=[['more',/\bmore often\b/iu],['less',/\bless often\b/iu]],ENTAILS={more:'up',less:'down'};
+/** Every effect the answer states, with the clause it sits in, its direction, the size it gives and the premise it
+ * rests on when it is conditional. */
 const effectsOf=text=>{const out=[];
  for(const sentence of text.trim().split(/(?<=[.!?])\s+/u)){
   const found=[];
@@ -72,20 +84,28 @@ const effectsOf=text=>{const out=[];
    if(BIAS.test(clause))found.push({clause,direction:DOWNWARD.test(clause)?'down':UPWARD.test(clause)?'up':null});
   }
   if(!found.length)continue;
-  const size=MAGNITUDE.exec(sentence);
-  for(const claim of found)out.push({...claim,magnitudePoints:size===null?null:Number(size[1]),
+  const sentenceSize=MAGNITUDE.exec(sentence);
+  for(const claim of found){
    // "If A, B would C" carries its own condition; "C, probably" is an assertion with a hedge in front of it.
-   conditional:CONDITIONAL.test(claim.clause)&&ASSUMPTION.test(claim.clause)});}
+   const premise=(PREMISES.find(([,pattern])=>pattern.test(claim.clause))??[null])[0],
+    conditional=CONDITIONAL.test(claim.clause)&&premise!==null;
+   // A size belongs to the claim that states it: an asserted effect takes the size in its sentence, a conditional takes
+   // only the size inside its own clause, so one branch's number is never read onto the other branch.
+   const size=conditional?MAGNITUDE.exec(claim.clause):sentenceSize;
+   out.push({...claim,conditional,premise,magnitudePoints:size===null?null:Number(size[1])});}}
  return out;};
 const NOCAUSAL=/\b(?:do|does|did)(?:n't| not) (?:establish|show|prove|support|tell)|not establish|\bno evidence\b/iu;
 /** @typedef {{claims:object[],unsupported:object[],direction:number,conditional:number,words:number,rateA:boolean,rateB:boolean,countVsRate:boolean,notCausal:boolean,comparable:boolean}} Claims */
 /** @param {string} text @param {{direction:'up'|'down'|null,magnitudePoints:number|null}} evidence @returns {Claims} */
 const claims=(text,evidence)=>{const found=effectsOf(text);
  // A claim is supported when the notes establish that very direction and, if the claim gives a size, that very size.
- // A conditional claim states the assumption it rests on instead, so it asserts nothing the notes must carry, and a
- // bare hedge is not a condition: it leaves the claim an assertion with nothing behind it.
- const unsupported=found.flatMap(claim=>{if(claim.conditional)return [];
-  const reason=evidence.direction===null?'no-evidence-for-direction'
+ // A condition does not exempt its conclusion: the premise must be one this matrix can read, it must entail the
+ // direction the answer draws from it, and a relative-frequency premise carries no exact size. A bare hedge is not a
+ // condition at all, so it leaves the claim an assertion with nothing behind it.
+ const unsupported=found.flatMap(claim=>{const reason=claim.conditional
+   ?claim.direction!==ENTAILS[claim.premise]?'conclusion-not-entailed'
+    :claim.magnitudePoints!==null?'size-not-supported':null
+   :evidence.direction===null?'no-evidence-for-direction'
    :claim.direction===null?null
    :claim.direction!==evidence.direction?'wrong-direction'
    :claim.magnitudePoints!==null&&claim.magnitudePoints!==evidence.magnitudePoints?'wrong-magnitude':null;
@@ -168,6 +188,25 @@ test('adverse 4: the supported notes do not license an invented effect size',()=
  assert.equal(c.unsupported.length,1,c.unsupported.map(u=>u.clause).join(' | '));
  assert.equal(c.unsupported[0].direction,'up');assert.equal(c.unsupported[0].magnitudePoints,25);
  assert.equal(c.unsupported[0].reason,'wrong-magnitude');
+});
+test('adverse 5: a conditional that contradicts its own premise is rejected',()=>{
+ const c=claims(CONCLUSIONS_SWAPPED,UNRESOLVED);
+ assert.equal(c.words,107,`${c.words} words`);
+ assert.ok(c.rateA);assert.ok(c.rateB);assert.ok(c.countVsRate);assert.ok(c.notCausal);assert.ok(c.comparable);
+ // Both branches keep their condition and their named premise, and both conclusions now contradict it.
+ assert.equal(c.conditional,2);
+ assert.equal(c.unsupported.length,2,c.unsupported.map(u=>u.clause).join(' | '));
+ assert.deepEqual(c.unsupported.map(u=>u.reason),['conclusion-not-entailed','conclusion-not-entailed']);
+ assert.deepEqual(c.unsupported.map(u=>`${u.premise}:${u.direction}`),['more:down','less:up']);
+});
+test('adverse 6: a premise about relative frequency carries no exact size',()=>{
+ const c=claims(SIZED_PREMISE,UNRESOLVED);
+ assert.equal(c.words,111,`${c.words} words`);
+ assert.ok(c.rateA);assert.ok(c.rateB);assert.ok(c.countVsRate);assert.ok(c.notCausal);assert.ok(c.comparable);
+ // "more often than simple ones" says nothing about 25 points; the size stays on the branch that states it.
+ assert.equal(c.unsupported.length,1,c.unsupported.map(u=>u.clause).join(' | '));
+ assert.equal(c.unsupported[0].reason,'size-not-supported');assert.equal(c.unsupported[0].magnitudePoints,25);
+ assert.deepEqual(c.claims.map(x=>x.magnitudePoints),[25,null]);
 });
 test('the canonical append carries the explanatory-evidence guidance (composition only, not model behaviour)',()=>{
  const runtime={binding,versions,cwd:`/workspace/conversations/${binding.conversationId}`,model:BEDROCK_MODEL,region:'us-east-1',maxOutputTokens:4096,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:Date.now()+1000,maxTurns:20,maxCostMicroUSD:2000000,maxOutputBytes:1024};
