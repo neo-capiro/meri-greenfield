@@ -42,3 +42,17 @@ test('wrong mode/version, MAC/body tampering, bearer substitution and expired ca
  }
  assert.equal(observed,0);
 });
+test('case, other-case and production HMAC trust remain disjoint on the unchanged observer protocol',async()=>{
+ const identities=[['production',Buffer.alloc(32,1)],['case-a',Buffer.alloc(32,2)],['case-b',Buffer.alloc(32,3)]];
+ for(const [sender,key] of identities){
+  let packet;await createNativeObserverBridge(options({keyId:sender,readKey:async()=>key,post:async p=>{packet=p;return {disposition:'pending'};}}))(input,context);
+  for(const [receiver,receiverKey] of identities){
+   let calls=0;
+   const app=createNativeObserverHttpApplication({now:()=>62001,readKey:async id=>{if(id!==receiver)throw Error('UNTRUSTED_KEY');return receiverKey;},
+    observeIntent:async body=>{calls++;assert.equal(body.provisionToken,original.provisionToken);assert.equal(body.originalInputSha256,f.declaration.watchdog.inputSha256);return {disposition:'unknown'};}});
+   const reply=await app.handle(new Request(NATIVE_OBSERVER_ORIGIN+'/v1/execution/native/physical-observer',{method:'POST',body:packet.body,headers:packet.headers}));
+   assert.equal(reply.status,sender===receiver?200:403);assert.equal(calls,sender===receiver?1:0);
+   if(sender===receiver)assert.deepEqual(await reply.json(),{disposition:'unknown'},'valid HMAC does not turn canonical UNKNOWN into absence');
+  }
+ }
+});

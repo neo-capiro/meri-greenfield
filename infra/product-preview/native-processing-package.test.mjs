@@ -18,6 +18,8 @@ test('sealed package imports the exact committed handler with bundled dependenci
   assert.equal(result.importPassed,true);assert.equal(result.qualifiedServingImage,false);assert.equal(result.cloudPublished,false);
   assert.equal(result.zipSha256,createHash('sha256').update(readFileSync(join(out,'observer.zip'))).digest('hex'));
   assert.ok(manifest.members.some(m=>m.path==='apps/runtime/native-observer-entrypoint.mjs'));
+  assert.ok(manifest.members.some(m=>m.path==='apps/runtime/native-observer-transport.mjs'));
+  assert.ok(manifest.members.some(m=>m.path==='apps/worker/conversation/host/control/tls.mjs'));
   assert.ok(manifest.members.some(m=>m.path==='packages/contracts/meri.schema.json'));
   assert.ok(manifest.dependencies.some(d=>d.name==='@aws-sdk/client-secrets-manager'&&d.version==='3.1151.0'));
   assert.ok(!manifest.members.some(m=>/(^|\/)test\//u.test(m.path)&&m.origin==='git'));
