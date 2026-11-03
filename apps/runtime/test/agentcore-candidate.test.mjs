@@ -30,7 +30,7 @@ function readPlatform(operations=[readOperation]){
 }
 function fixture(options={}){
  const fixtureAt=options.nowMs??at;
- const b=options.binding??binding,configuration={agentcore:agentcoreConfig(),versions,sourceEnabled:false,limits:{requestMs:3000,requestBytes:131072,shutdownMs:30000}};
+ const b=options.binding??binding,configuration={agentcore:agentcoreConfig(),versions,sourceEnabled:false,limits:{requestMs:options.requestMs??3000,requestBytes:131072,shutdownMs:30000}};
  if(options.reads)configuration.capabilityPlatform=options.platform??readPlatform();
  if(options.browserActivation)configuration.browserActivation=options.browserActivation;
  if(options.readBudget||options.reads){if(options.readBudget)configuration.limits.requestMs=10;configuration.agentcore.approvedReads={schemaVersion:'meri-native-general-reads/1',enabled:true,
@@ -39,7 +39,7 @@ function fixture(options={}){
  let record=null,invocations=0,coreCalls=0,stops=0,claimCalls=0,relayCalls=0,coreInput,invocation,schemaQueries=0,schemaRelations=[];
  const pending=Promise.withResolvers(),invoked=Promise.withResolvers();
  const check=f=>f?.();
- const store={async read(request,_cursor,c){check(c);assert.deepEqual(request,b);return {run,request:{requestId:id(999),prompt:'Synthetic ordinary request'},events:[{type:'run.status',data:{state:run.state},createdAt:new Date(fixtureAt-1).toISOString()}],lastSequence:1};},async readOptional(){return {run};},
+ const store={async read(request,_cursor,c){check(c);await options.onStoreRead?.({run,record});assert.deepEqual(request,b);return {run,request:{requestId:id(999),prompt:options.prompt??'Synthetic ordinary request'},events:[{type:'run.status',data:{state:run.state},createdAt:new Date(fixtureAt-1).toISOString()}],lastSequence:1};},async readOptional(){return {run};},
   async append(_binding,event){run.state=event.data.state;},async appendSource(request,event,c,expectedScopes){check(c);assert.deepEqual(request,b);assert.deepEqual(expectedScopes,run.scopes);assert.equal(event.type,'source.native-bill-text');options.sourcePublications??=[];options.sourcePublications.push(structuredClone(event));},async readModelPolicy(){assert.fail('Ordinary absent Objective selection never reads model policy');},
   async readModelSelection(){assert.fail('Ordinary absent Objective selection never reads model selection');},
   lifecycle:{async execution(){return null;},async get(){throw Error('No lifecycle use in this control');},async readSessionCapture(){throw Error('No lifecycle use in this control');}},
@@ -63,7 +63,7 @@ function fixture(options={}){
   },release(){}};}};
  const nativeCredentials={nativeCredentialFor(){relayCalls++;if(options.revokeAfterCore&&coreCalls)throw Error('SESSION_UNAVAILABLE');return {credential:'actual-user-bearer',expiresAtMs:fixtureAt+120000};}};
  const fetchImpl=async(_url,request)=>{coreCalls++;coreInput={headers:request.headers,body:JSON.parse(request.body)};
-  await options.onCoreFetch?.();
+  const override=await options.onCoreFetch?.(_url,request);if(override!==undefined)return override;
   if(new URL(_url).pathname==='/api/clio/client-context/automatic'){assert.equal(request.headers['x-internal-service-secret'],'synthetic-service');assert.deepEqual(JSON.parse(request.body),{schemaVersion:1,clientId});return Response.json(automaticContextFixture(b,clientId,fixtureAt));}
   if(options.status)return Response.json({error:'refused'},{status:options.status});
   return Response.json({principal:{tenantId:b.tenantId,actorId:b.actorId},role:'standard_user',permissions:[],clientIds:[clientId],identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:b.conversationId,selectedClientId:clientId,checkedAtMs:fixtureAt,expiresAtMs:fixtureAt+120000,...options.receipt});};
@@ -421,4 +421,37 @@ test('native telemetry refuses a foreign credential or binding without assigning
  const counts=telemetry.counters(f.run.binding);assert.equal(counts.core.current['403'],1);assert.equal(counts.core.current['2xx'],1);
  telemetry.rollup();assert.equal(lines.find(x=>x.event==='meri.process.rollup').CoreCalls,0);
  assert.equal(lines.some(x=>x.runId===id(799)),false);assert.equal(lines.some(x=>x.event==='meri.turn.summary'),false,'refusal never invents completion');
+});
+
+test('PR599-R1: a Core unit settlement cannot start after its bounded attempt has ended',async t=>{
+ // The reviewer's counterexample, kept as an acceptance test: the bounded attempt's own signal must reach the canonical
+ // store read, the Core read and the settlement, and an answer that arrives after the attempt ended must dispatch nothing.
+ const prompt='[Capiro Outreach recipient unit v1]\nSynthetic recipient, before any draft';
+ const selection={generationJobId:id(80),itemId:id(81),conversationId:binding.conversationId,clientId:id(5),requestId:id(999),prompt,
+  outputSchema:{type:'object'},generationKey:'recipient:synthetic',revision:1};
+ const readResponse=Promise.withResolvers(),calls=[];
+ let delayed=false,reads=0,fails=0,readSignal;
+ const f=fixture({prompt,requestMs:3000,onCoreFetch:async(url,init)=>{
+   const path=new URL(url).pathname;if(!path.includes('/outreach/sdk/'))return undefined;
+   calls.push(path);if(path.endsWith('/sdk/read')){reads++;readSignal=init.signal;return readResponse.promise;}
+   if(path.endsWith('/sdk/fail')){fails++;return Response.json({status:'unknown',result:null});}
+   assert.fail('no completion or draft effect: '+path);
+  },onStoreRead:async({record})=>{if(record?.phase==='settled'&&!delayed){delayed=true;await new Promise(resolve=>setTimeout(resolve,1000));}}});
+ try{
+  const ended=Object.assign(Error('AGENTCORE_EXECUTION_ENDED'),{code:'AGENTCORE_EXECUTION_ENDED'});
+  await f.kickoff();await f.waitForInvocation();f.pending.reject(ended);
+  for(let waited=0;!reads&&waited<5000;waited+=20)await new Promise(resolve=>setTimeout(resolve,20));
+  assert.equal(reads,1,'the hook resolves the bound unit once');
+  // The bounded attempt ends at its own deadline even though the Core read is still unanswered.
+  await new Promise(resolve=>setTimeout(resolve,3200));
+  assert.ok(readSignal,'the Core read carries a signal');
+  assert.equal(readSignal.aborted,true,'the bounded attempt signal reaches the actual Core read');
+  // The run is reconciled and stopped exactly as before, whatever the settlement attempt did.
+  assert.equal(f.run.state,'failed');assert.equal(f.record().phase,'settled');assert.equal(f.counts().stops,1);
+  readResponse.resolve(Response.json(selection));
+  await new Promise(resolve=>setTimeout(resolve,300));
+  assert.equal(fails,0,'a read answered after the attempt ended dispatches no Core mutation');
+  assert.deepEqual(calls,['/api/engagement/outreach/sdk/read']);
+  t.diagnostic(JSON.stringify({requestMs:3000,storeReadDelayMs:1000,reads,fails,readSignalAbortedAtTimeout:readSignal.aborted,runState:f.run.state,recordPhase:f.record()?.phase}));
+ }finally{readResponse.resolve(Response.json(selection));await f.candidate.close();}
 });

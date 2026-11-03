@@ -19,11 +19,15 @@ export function createOutreachTerminalSettlement({load,read,settle,errorCode='ge
  if([load,read,settle].some(fn=>typeof fn!=='function')||typeof errorCode!=='string')throw Object.assign(Error('OUTREACH_TERMINAL_CONFIGURATION'),{code:'OUTREACH_TERMINAL_CONFIGURATION'});
  return async function settleTerminalOutreach({binding,state,signal}){
   if(state!=='failed')return null;
+  signal?.throwIfAborted();
   const saved=await load({binding,signal}),run=saved?.run,request=saved?.request;
   // A successor turn owns a different request; this run's own terminal failure is the only proof this settlement relies on.
   if(!run||!request||run.state!=='failed'||!outreachPromptHint(request.prompt))return null;
+  // A bounded attempt may have ended while the store read was still in flight: an answer that arrives late decides nothing.
+  signal?.throwIfAborted();
   const selection=await read({binding,run,request,signal});
   if(selection===null)return null;
+  signal?.throwIfAborted();
   return settle({binding,run,selection,errorCode,signal});
  };
 }

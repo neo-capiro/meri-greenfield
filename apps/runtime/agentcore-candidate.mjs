@@ -322,7 +322,8 @@ function assembleCandidate({configuration,pool,provider,controlCredential,native
  async function settleEndedOutreach(value){
   const result=await reconciler.reconcile(value);
   if(result?.state==='failed'&&result?.outcome!=='unknown')
-   await attemptCleanup(()=>settleTerminalOutreach({binding:value.binding,state:'failed',signal:value.signal}),
+   // The bounded attempt's own signal bounds the store read, the Core read and the settlement: nothing starts after it ends.
+   await attemptCleanup(signal=>settleTerminalOutreach({binding:value.binding,state:'failed',signal}),
     {now,timeoutMs:CLEANUP_ATTEMPT_MS,onFailure:()=>reportOutreachSettlementFailure(value.binding)});
   return result;
  }
