@@ -16,13 +16,13 @@ const childOperations=Object.freeze({[CHILD_DISPATCH_OPERATION]:'dispatchChild',
 export function createWorkerRunApplication({execution,createService,configuration,retention,browserOperations,now=Date.now,turnTelemetry}){
  let withRelease;try{withRelease=retention===undefined?null:storageMethod(retention,'withRelease');if(configuration.retention!==undefined&&!withRelease)throw Error();}catch{throw fault('WORKER_RETENTION_CONFIGURATION');}
  if(typeof execution?.authenticate!=='function'||typeof createService!=='function')throw fault('WORKER_EXECUTION_CONFIGURATION');
- return Object.freeze({async handle(request){const operation=async()=>{let life,route;try{
+ return Object.freeze({async handle(request){const operation=async()=>{let life,route,stage='request',binding;try{
   const url=new URL(request.url);route=/^\/internal\/conversations\/([a-z-]+)$/u.exec(url.pathname);if(!route||url.search||!Object.hasOwn(runOwnerOperations,route[1])&&!Object.hasOwn(childOperations,route[1])&&!browserOperationName(route[1]))return Response.json({error:{code:'NOT_FOUND'}},{status:404});if(request.method!=='POST')return Response.json({error:{code:'METHOD_NOT_ALLOWED'}},{status:405});
   const browserOperation=browserOperationName(route[1]);
   const capability=request.headers.get('authorization');if(!/^Bearer [A-Za-z0-9._~+\/-]{1,8192}={0,2}$/u.test(capability??''))throw fault('WORKER_AUTHORITY_REFUSED');if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(request.headers.get('content-type')??'')||request.headers.get('content-encoding'))throw fault('WORKER_REQUEST_REFUSED');
   let deadlineMs=now()+configuration.limits.requestMs;life=createOperationLifetime({deadlineMs,now,signal:request.signal,errorFactory:fault});const length=request.headers.get('content-length');if(length!==null&&!/^(0|[1-9][0-9]*)$/u.test(length))throw fault('WORKER_REQUEST_REFUSED');
   const body=await jsonBody({body:request.body,length:length===null?null:Number(length)},browserOperation?Math.min(configuration.limits.requestBytes,BROWSER_NATIVE_LIMITS.requestBytes):configuration.limits.requestBytes,life,life.check),
-   input=browserOperation?assertBrowserOperationRequest(browserOperation,body):Object.hasOwn(childOperations,route[1])?assertChildOperationRequest(route[1],body):assertRunOwnerRequest(route[1],body),credential=capability.slice(7);try{turnTelemetry?.bind(input.binding);}catch{}let pinned;
+   input=browserOperation?assertBrowserOperationRequest(browserOperation,body):Object.hasOwn(childOperations,route[1])?assertChildOperationRequest(route[1],body):assertRunOwnerRequest(route[1],body),credential=capability.slice(7);binding=input.binding;try{turnTelemetry?.bind(input.binding);}catch{}let pinned;
   async function fresh(){let value;try{value=await life.run(signal=>execution.authenticate({credential,binding:input.binding,signal}));}
    catch(error){const code=productFailure(error)?.code??error?.code;if(['STORE_UNAVAILABLE','STORE_COMMIT_UNKNOWN','STORE_RELEASE_UNKNOWN','EXECUTION_STORE_UNAVAILABLE','EXECUTION_STORE_COMMIT_UNKNOWN'].includes(code))markAuthorityUnavailable(error);throw error;}
    const identity=assertExecutionIdentity(value.execution);if(!same(identity.binding,input.binding)||!Array.isArray(value.scopes)||!value.scopes.length||value.scopes.length>100)throw fault('WORKER_AUTHORITY_REFUSED');
@@ -30,9 +30,9 @@ export function createWorkerRunApplication({execution,createService,configuratio
    const current={execution:identity,scopes:value.scopes,selectedClientId:value.selectedClientId,policyRevision:value.policyRevision};
    if(pinned&&!same(pinned,current))throw fault('WORKER_AUTHORITY_CHANGED');pinned??=current;deadlineMs=Math.min(deadlineMs,identity.expiresAtMs);life.limitDeadline(deadlineMs);return current;
   }
-  await fresh();let result;
+  stage='authority';await fresh();let result;
   if(browserOperation){
-   if(typeof browserOperations?.prepare!=='function')throw fault('WORKER_REQUEST_REFUSED');
+   stage='service';if(typeof browserOperations?.prepare!=='function')throw fault('WORKER_REQUEST_REFUSED');
    const prepared=await life.run(signal=>browserOperations.prepare({operation:browserOperation,request:input,execution:pinned.execution,scopes:pinned.scopes,signal,deadlineMs:life.deadline()}));
    // Only the trusted policy owner can select a longer browser operation. The
    // request body cannot increase any deadline; ordinary routes retain theirs.
@@ -40,7 +40,7 @@ export function createWorkerRunApplication({execution,createService,configuratio
    life=createOperationLifetime({deadlineMs,now,signal:request.signal,errorFactory:fault});
    result=await life.run(signal=>prepared.execute({signal}));
   }else{
-  const service=await life.run(()=>createService({credential,binding:input.binding}));
+  stage='service';const service=await life.run(()=>createService({credential,binding:input.binding}));
   const method=Object.hasOwn(childOperations,route[1])?childOperations[route[1]]:route[1]==='next-controls'?taskControlPage:runOwnerOperations[route[1]];
   if(typeof service?.[method]!=='function')throw fault('WORKER_REQUEST_REFUSED');
   // Control polling uses the canonical journal's task reader under these two current execution checks.
@@ -51,13 +51,14 @@ export function createWorkerRunApplication({execution,createService,configuratio
   }
   // Terminal publication consumes current-run authority. Acknowledge only the
   // canonical event the service committed and rechecked; no further work is admitted.
-  if(route[1]==='publish'&&input.event.type==='run.status'&&['completed','failed','cancelled'].includes(input.event.data?.state)){
+  stage='receipt';if(route[1]==='publish'&&input.event.type==='run.status'&&['completed','failed','cancelled'].includes(input.event.data?.state)){
    validateShape('UIEvent',result);
    if(!same(result.binding,pinned.execution.binding)||!same(result.scopes,pinned.scopes)||
       !same({eventId:result.eventId,createdAt:result.createdAt,type:result.type,data:result.data},input.event))throw fault('WORKER_TERMINAL_RECEIPT_REFUSED');
-  }else await fresh();
+  }else{stage='recheck';await fresh();}
   life.check();
   if((browserOperation||route[1]==='load'||route[1]==='next-controls'||route[1]==='upload-source'||route[1]==='procedure-resolve'||route[1]==='site-workflow-resolve')&&withRelease){
+   stage='release';
    const subject={tenantId:pinned.execution.binding.tenantId,kind:'conversation',subjectId:pinned.execution.binding.conversationId};
    // The final execution check is awaited: suppression must be rechecked under the
    // canonical serving lock and that lock must cover response serialization.
@@ -73,5 +74,10 @@ export function createWorkerRunApplication({execution,createService,configuratio
   // idempotent call (native-client.mjs). Every refusal, mismatch and changed authority stays 403.
   if(route?.[1]==='record-usage'){const failure=productFailure(error);if(failure&&['SDK_USAGE_STORE_UNAVAILABLE','SDK_USAGE_COMMIT_UNKNOWN'].includes(failure.code))return Response.json({error:{code:failure.code,outcome:failure.outcome}},{status:503});}
   if(isAuthorityUnavailable(error))return Response.json({error:{code:'WORKER_AUTHORITY_UNAVAILABLE'}},{status:503});
-  const code=life&&now()>=life.deadline()?'DEADLINE':life?.signal.aborted?'CANCELLED':['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'WORKER_REQUEST_REFUSED';return Response.json({error:{code}},{status:code==='WORKER_REQUEST_REFUSED'?403:408});}finally{life?.close();}};return turnTelemetry?turnTelemetry.provisional(operation):operation();}});
+  const code=life&&now()>=life.deadline()?'DEADLINE':life?.signal.aborted?'CANCELLED':['DEADLINE','CANCELLED'].includes(error?.code)?error.code:'WORKER_REQUEST_REFUSED';
+  // One uniform refusal answer is not one cause: name the operation, the phase that refused and the refusing owner's closed
+  // code, under the run binding bound above. This line is the only addition: the answer, its status and every
+  // authority/retention/settlement decision it expresses are unchanged, and an unnameable cause stays `other`.
+  if(code==='WORKER_REQUEST_REFUSED')try{turnTelemetry?.emit('meri.worker.refusal',{...(binding??{}),operation:route?.[1],stage,code:productFailure(error)?.code??error?.code});}catch{}
+  return Response.json({error:{code}},{status:code==='WORKER_REQUEST_REFUSED'?403:408});}finally{life?.close();}};return turnTelemetry?turnTelemetry.provisional(operation):operation();}});
 }
