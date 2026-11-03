@@ -2,7 +2,8 @@ import wire from '../../../../../packages/contracts/test/fixtures/semantic-searc
 import {resolveOperationContract} from '../../../../../packages/contracts/retrieval-0.2/validate.mjs';
 import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createSemanticSearchHandlers} from '../handler.mjs';
-export const VECTORS=Object.freeze({semantic_search_bills:wire.bills,semantic_search_grants:wire.grants,semantic_search_contract_opportunities:wire.contractOpportunities});
+export const VECTORS=Object.freeze({semantic_search_bills:wire.bills,semantic_search_grants:wire.grants,semantic_search_contract_opportunities:wire.contractOpportunities,
+ semantic_search_dibbs_solicitations:wire.dibbs,semantic_search_sbir_topics:wire.sbirTopics});
 export function semanticCase(id='semantic_search_bills',{client=false}={}){
  const scene=billTextCase(),vector=structuredClone(VECTORS[id]),operation=Object.freeze({id,version:'0.2.0'}),contract=resolveOperationContract(operation);
  scene.state.now=Date.parse(vector.response.generatedAt)+60000;

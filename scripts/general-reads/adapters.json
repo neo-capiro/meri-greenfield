@@ -160,9 +160,9 @@
       "path": "apps/gateway/sources/semantic-search",
       "family": "semantic-search",
       "declaredIn": ["apps/gateway/sources/semantic-search/handler.mjs"],
-      "operations": ["semantic_search_bills", "semantic_search_grants", "semantic_search_contract_opportunities"],
+      "operations": ["semantic_search_bills", "semantic_search_grants", "semantic_search_contract_opportunities", "semantic_search_dibbs_solicitations", "semantic_search_sbir_topics"],
       "adapterChecks": ["fixed native route per operation", "family-specific filters refused before the call", "result page bound to the request: tool, query, limit, ordering, references and filters"],
-      "subject": "current native tenant/user; public bill, grant and SAM notice records only; empty context"
+      "subject": "current native tenant/user; public bill, grant, SAM notice, active DIBBS solicitation and open SBIR topic records only; empty context"
     },
     {
       "path": "apps/gateway/sources/data-search",

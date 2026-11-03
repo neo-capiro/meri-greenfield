@@ -218,5 +218,176 @@
       ],
       "results": []
     }
+  },
+  "dibbs": {
+    "projected": "PROJECTED synthetic fixture for the submitted DIBBS wire contract (SCRUM250 d00691); not a database capture.",
+    "request": {
+      "query": "ruggedized radio components",
+      "limit": 5,
+      "agency": "Defense Logistics Agency",
+      "dateFrom": "2026-11-01",
+      "dateTo": "2027-06-30"
+    },
+    "response": {
+      "tool": "semantic_search_dibbs_solicitations",
+      "generatedAt": "2026-11-03T12:00:00.000Z",
+      "query": "ruggedized radio components",
+      "model": "amazon.titan-embed-text-v2:0",
+      "similarityFloor": 0.35,
+      "candidateLimit": 200,
+      "total": 1,
+      "coverage": {
+        "indexedRecords": 812,
+        "totalRecords": 1043
+      },
+      "notes": [
+        "Nearest-meaning active DIBBS solicitation document passages: the 200 closest active, filter-qualified chunks, best passage per solicitation; similarity is not relevance or eligibility.",
+        "812 of 1043 stored active DIBBS solicitations are indexed for this read; a solicitation without an archived, embedded current document cannot be found here, so an empty page is no close match among the indexed records, never an absence.",
+        "The passage is the archived solicitation text: documentHash names the normalized text, attachmentContentSha256 the archived bytes, and start/end are UTF-16 offsets of the whole stored chunk, not the 400-character snippet.",
+        "Snapshot facts only: archivedAt and textFetchedAt record when the document was fetched, and no continuous change at the same URL is claimed."
+      ],
+      "results": [
+        {
+          "reference": "tango_dibbs_solicitation:5f8c1d2e-9a4b-4c6d-8e7f-0a1b2c3d4e5f",
+          "score": 0.712,
+          "snippet": "RUGGEDIZED PORTABLE RADIO COMPONENTS, 12 EA, delivery to mechanicsburg",
+          "record": {
+            "id": "5f8c1d2e-9a4b-4c6d-8e7f-0a1b2c3d4e5f",
+            "providerId": "SPE7M826T0001",
+            "solicitationNumber": "SPE7M8-26-T-0001",
+            "documentType": "rfq",
+            "title": "RUGGEDIZED RADIO COMPONENTS",
+            "nsn": "5820-01-123-4567",
+            "partNumber": "RAD-9000",
+            "quantity": "12.000",
+            "unitOfIssue": "EA",
+            "setAside": null,
+            "agency": "Defense Logistics Agency",
+            "closeDate": "2027-03-15",
+            "currentSolicitation": true,
+            "url": "https://www.dibbs.example.invalid/SPE7M826T0001.pdf",
+            "observedAt": "2026-11-02T09:15:00.000Z"
+          },
+          "passage": {
+            "sourceTable": "opportunity_attachment",
+            "sourceUrl": "https://www.dibbs.example.invalid/SPE7M826T0001.pdf",
+            "fileName": "SPE7M826T0001.pdf",
+            "documentHash": "a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+            "chunkIndex": 0,
+            "start": 0,
+            "end": 4891,
+            "extractionMethod": "local_parser",
+            "truncated": false,
+            "embeddedAt": "2026-11-02T10:20:00.000Z",
+            "binding": "archived_content_sha256",
+            "canonicalRecordId": "5f8c1d2e-9a4b-4c6d-8e7f-0a1b2c3d4e5f",
+            "providerRecordId": "SPE7M826T0001",
+            "attachmentContentSha256": "b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1",
+            "offsetBasis": "plain_text_normalized_utf16",
+            "archivedAt": "2026-11-02T09:40:00.000Z",
+            "textFetchedAt": "2026-11-02T09:55:00.000Z"
+          },
+          "documents": {
+            "attachments": 1,
+            "withText": 1,
+            "truncated": 0,
+            "indexed": 1
+          }
+        }
+      ]
+    }
+  },
+  "sbirTopics": {
+    "projected": "PROJECTED synthetic fixture for the submitted SBIR wire contract (SCRUM250 d00691); not a database capture.",
+    "request": {
+      "query": "low-power edge inference for unmanned systems",
+      "limit": 5
+    },
+    "response": {
+      "tool": "semantic_search_sbir_topics",
+      "generatedAt": "2026-11-03T12:05:00.000Z",
+      "query": "low-power edge inference for unmanned systems",
+      "model": "amazon.titan-embed-text-v2:0",
+      "similarityFloor": 0.35,
+      "candidateLimit": 200,
+      "total": 1,
+      "coverage": {
+        "indexedRecords": 2407,
+        "totalRecords": 3915
+      },
+      "notes": [
+        "Nearest-meaning open SBIR topic synopses: the 200 closest active, filter-qualified chunks, best passage per topic; similarity is not relevance or eligibility.",
+        "2407 of 3915 stored open SBIR topics are indexed for this read; a topic without stored description text cannot be found here, so an empty page is no close match among the indexed topics, never an absence.",
+        "The synopsis is not the full solicitation; activity and solicitation status are the provider's spellings and can change.",
+        "Snapshot facts only: textFetchedAt and observedAt record when the provider record was read; a null close date is unknown rather than closed."
+      ],
+      "results": [
+        {
+          "reference": "tango_sbir_topic:6a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+          "score": 0.688,
+          "snippet": "low-power edge inference accelerators for small unmanned systems",
+          "record": {
+            "id": "6a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+            "providerId": "AF26-T001",
+            "topicNumber": "AF26-T001",
+            "solicitationNumber": "AF26.1",
+            "title": "Low-Power Edge Inference for Unmanned Systems",
+            "agency": "Department of the Air Force",
+            "year": 2026,
+            "activity": "Open",
+            "solicitationStatus": "Open",
+            "closeDate": "2027-01-14",
+            "currentTopic": true,
+            "url": "https://www.sbir.example.invalid/topic/AF26-T001",
+            "observedAt": "2026-11-02T08:00:00.000Z"
+          },
+          "passage": {
+            "sourceTable": "tango_sbir_topic",
+            "sourceUrl": "https://www.sbir.example.invalid/topic/AF26-T001",
+            "fileName": null,
+            "documentHash": "c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2",
+            "chunkIndex": 0,
+            "start": 0,
+            "end": 1842,
+            "extractionMethod": null,
+            "truncated": null,
+            "embeddedAt": "2026-11-02T10:25:00.000Z",
+            "binding": "provider_topic_id",
+            "canonicalRecordId": "6a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+            "providerRecordId": "AF26-T001",
+            "attachmentContentSha256": null,
+            "offsetBasis": "plain_text_normalized_utf16",
+            "archivedAt": null,
+            "textFetchedAt": "2026-11-02T08:00:00.000Z"
+          }
+        }
+      ]
+    }
+  },
+  "emptyActive": {
+    "projected": "PROJECTED empty page for the active DIBBS family: coverage is the family denominator, results are a nearest page.",
+    "request": {
+      "query": "zzz no such part"
+    },
+    "response": {
+      "tool": "semantic_search_dibbs_solicitations",
+      "generatedAt": "2026-11-03T12:10:00.000Z",
+      "query": "zzz no such part",
+      "model": "amazon.titan-embed-text-v2:0",
+      "similarityFloor": 0.35,
+      "candidateLimit": 200,
+      "total": 0,
+      "coverage": {
+        "indexedRecords": 812,
+        "totalRecords": 1043
+      },
+      "notes": [
+        "Nearest-meaning active DIBBS solicitation document passages: the 200 closest active chunks; similarity is not relevance or eligibility.",
+        "812 of 1043 stored active DIBBS solicitations are indexed for this read, so an empty page is no close match among the indexed records, never an absence.",
+        "No close match among the indexed active DIBBS solicitations for this query; 231 records are not indexed yet.",
+        "Snapshot facts only: archive and text fetch times bound the evidence; a null close date is unknown rather than closed."
+      ],
+      "results": []
+    }
   }
 }
