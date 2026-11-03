@@ -45,11 +45,11 @@ const serviceArn=(cluster,name)=>`arn:aws:ecs:${REGION}:${ACCOUNT}:service/${clu
 const taskDefinitionArn=(family,revision)=>`arn:aws:ecs:${REGION}:${ACCOUNT}:task-definition/${family}:${revision}`;
 function clusterName(deployment){const m=/^arn:aws:ecs:us-east-1:967807252336:cluster\/([A-Za-z0-9_-]{1,255})$/u.exec(deployment?.clusterArn??'');if(!m)fail('deployment.clusterArn');return m[1];}
 
-/** Existing service groups and the control DB marker. AgentCore has separate placement. */
+/** Existing service groups; native provisioning adds the DB client marker to the Temporal worker. AgentCore has separate placement. */
 export function stage3Network(deployment,foundation){
  const f=foundation,subnets=[...deployment.privateSubnetIds];
  return {control:{subnets,securityGroups:[f.ControlSecurityGroupId,f.DbClientSecurityGroupId]},
-  'temporal-worker':{subnets:[...subnets],securityGroups:[f.WorkerSecurityGroupId]},
+  'temporal-worker':{subnets:[...subnets],securityGroups:[f.WorkerSecurityGroupId,...(deployment.features?.nativeProcessing?.enabled===true?[f.DbClientSecurityGroupId]:[])]},
   ...(deploymentRoles(deployment).includes('schedule-worker')?{'schedule-worker':{subnets:[...subnets],securityGroups:[f.WorkerSecurityGroupId,f.DbClientSecurityGroupId]}}:{})};
 }
 
