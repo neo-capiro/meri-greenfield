@@ -18,6 +18,10 @@ import {verifySdkRetentionTarget,forEachSdkRetentionTargetPage,sdkRetentionTarge
 import {createMemoryCandidateRetentionPayloadOwner} from '../memory/retention-payload-owner.mjs';
 import {AsyncLocalStorage} from 'node:async_hooks';
 const RECOVERY_LOCK="hashtextextended('meri_retention_recovery',0)";
+/** Mirrors `SET LOCAL lock_timeout`; a read retry that cannot wait this long cannot acquire the lock. */
+const LOCK_TIMEOUT_MS=2000;
+/** The agreed total window for one standalone read: caller deadline, this window and the request budget all clip it. */
+const READ_WINDOW_MS=5000;
 const tables={conversation:{schema:'meri_conversations',id:'conversation_id'},artifact:{schema:'meri_artifacts',id:'artifact_id'}};
 function parseKey(key){if(typeof key!=='string')fail('RETENTION_INVALID_REQUEST');const parts=key.split(':');if(parts.length<3)fail('RETENTION_INVALID_REQUEST');const kind=parts.at(-2),subjectId=parts.at(-1),tenantId=parts.slice(0,-2).join(':');if(!tables[kind])fail('RETENTION_INVALID_REQUEST');return {tenantId,kind,subjectId};}
 /** `maxRequestMs` bounds every client-side wait (lease acquisition and each statement) independently of the server-side statement and
@@ -43,21 +47,37 @@ export function createPostgresRetentionJournal({pool,now=Date.now,maxRequestMs=1
   * session's default isolation cannot freeze the data snapshot before lock acquisition. A failed COMMIT is UNKNOWN and is never rolled
   * back over; a body failure is rolled back within a short bound, and only a confirmed ROLLBACK makes the lease reusable. */
  async function tx(body,options={}){
-  const held=transitionLease.getStore();return held?held.run(()=>transaction(body,options,held)):transaction(body,options);
+  const held=transitionLease.getStore();
+  if(options.readOnly!==true||held)return held?held.run(()=>transaction(body,options,held)):transaction(body,options);
+  // ONE absolute deadline for this standalone read: min(caller deadline, now+5s, now+maxRequestMs), fixed at entry and
+  // shared by acquisition, both attempts and cleanup, so `maxRequestMs` is never spent once per wait and a caller
+  // cannot extend the read beyond the agreed five-second window. A strictly read-only snapshot that lost the shared
+  // recovery lock (55P03) and was confirmed rolled back may be retried exactly once, in a fresh transaction, and only
+  // while the remaining budget can still fit another lock wait. Writes, held leases, external callbacks, an unknown
+  // COMMIT and every non-lock refusal are never retried.
+  if(options.deadlineMs!==undefined&&(!Number.isSafeInteger(options.deadlineMs)||options.deadlineMs<0))fail('RETENTION_INVALID_REQUEST');
+  const deadlineMs=Math.min(options.deadlineMs??Infinity,now()+READ_WINDOW_MS,now()+maxRequestMs);
+  const attempt=()=>transaction(body,{...options,deadlineMs});
+  try{return await attempt();}
+  catch(error){if(error?.retryableRead!==true||options.signal?.aborted||now()+LOCK_TIMEOUT_MS>deadlineMs)throw error;return attempt();}
  }
- async function transaction(body,{exclusive=false,shared=!exclusive,readCommitted=false,readOnlySnapshot=false,deadlineMs,signal}={},held){
-  let c,begun=false,committing=false,reusable=false,uncertain=false,failure,result;const acquiring=Promise.resolve().then(()=>held?held.client:pool.connect());
+ async function transaction(body,{exclusive=false,shared=!exclusive,readCommitted=false,readOnlySnapshot=false,readOnly=false,deadlineMs,signal}={},held){
+  let c,begun=false,committing=false,reusable=false,uncertain=false,recoveryLockTimeout=false,failure,result;const acquiring=Promise.resolve().then(()=>held?held.client:pool.connect());
   const call=operation=>{if(deadlineMs!==undefined&&now()>=deadlineMs)return Promise.reject(storeError('RETENTION_STORE_UNAVAILABLE'));
    return bounded(operation,deadlineMs===undefined?maxRequestMs:Math.min(maxRequestMs,deadlineMs-now()),signal).then(value=>{if(deadlineMs!==undefined&&now()>=deadlineMs)throw Object.assign(storeError('RETENTION_STORE_UNAVAILABLE'),{deadline:true});return value;}).catch(error=>{if(error?.deadline)uncertain=true;throw error;});};
-  try{c=await call(()=>acquiring);await call(()=>c.query(readOnlySnapshot?'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY':readCommitted?'BEGIN ISOLATION LEVEL READ COMMITTED':'BEGIN'));begun=true;await call(()=>c.query("SET LOCAL statement_timeout = '5s'"));await call(()=>c.query("SET LOCAL lock_timeout = '2s'"));
-   if(shared)await call(()=>c.query(`SELECT pg_advisory_xact_lock_shared(${RECOVERY_LOCK})`));
+  try{c=await call(()=>acquiring);await call(()=>c.query(readOnlySnapshot?'BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY':readCommitted?`BEGIN ISOLATION LEVEL READ COMMITTED${readOnly?' READ ONLY':''}`:readOnly?'BEGIN READ ONLY':'BEGIN'));begun=true;await call(()=>c.query("SET LOCAL statement_timeout = '5s'"));await call(()=>c.query(`SET LOCAL lock_timeout = '${LOCK_TIMEOUT_MS/1000}s'`));
+   if(shared){try{await call(()=>c.query(`SELECT pg_advisory_xact_lock_shared(${RECOVERY_LOCK})`));}catch(error){if(readOnly&&error?.code==='55P03')recoveryLockTimeout=true;throw error;}}
    let accepting=true,pendingFailure;const pending=new Set();
    try{result=await body(Object.freeze({query:(sql,values)=>{if(!accepting)return Promise.reject(storeError('RETENTION_INVALID_REQUEST'));
     const work=call(()=>c.query(sql,values));pending.add(work);work.then(()=>pending.delete(work),error=>{pending.delete(work);pendingFailure??={error};});return work;}}));}
    finally{accepting=false;await Promise.allSettled(pending);if(pendingFailure)throw pendingFailure.error;}
    committing=true;await call(()=>c.query('COMMIT'));reusable=true;}
   catch(error){failure=committing?storeError('RETENTION_COMMIT_UNKNOWN',error):wrap(error);
-   if(c&&begun&&!committing&&!uncertain)try{await bounded(()=>c.query('ROLLBACK'),Math.min(maxRequestMs,1000));reusable=true;}catch{}}
+   // Cleanup shares the same absolute budget, and an already-aborted caller performs no post-cancellation work:
+   // such a lease is retired instead, so no ROLLBACK/BEGIN/read/COMMIT follows the abort.
+   if(c&&begun&&!committing&&!uncertain&&!signal?.aborted)try{const budget=deadlineMs===undefined?maxRequestMs:Math.min(maxRequestMs,Math.max(0,deadlineMs-now()));if(budget>0){await bounded(()=>c.query('ROLLBACK'),Math.min(budget,1000));reusable=true;}}catch{}
+   // Only a strictly read-only standalone transaction whose ROLLBACK was confirmed may be retried, and only for the recovery lock wait.
+   if(readOnly&&!held&&reusable&&!committing&&!uncertain&&recoveryLockTimeout)failure.retryableRead=true;}
   if(held){if(!reusable)held.failure??=failure??storeError('RETENTION_LEASE_UNKNOWN');}
   else failure=retire(c,acquiring,reusable,failure);
   if(failure)throw failure;return result;}

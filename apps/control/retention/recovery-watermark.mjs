@@ -44,7 +44,8 @@ export function watermarkedJournal({journal,watermark,fence,ledger}){
  }
  async function get(key,options={}){
   if(options.exclusive===true)return journal.get(key,options);
-  return readVerified(key,()=>watermark.readProjection(key));
+  // One absolute caller deadline (and abort) reaches the transaction owner; without one the journal bounds the whole read itself.
+  return readVerified(key,()=>watermark.readProjection(key,{deadlineMs:options.deadlineMs,signal:options.signal}));
  }
  async function set(key,row,options={}){
   const sequence=projectionSequence(row),projectionSha256=hash(row);

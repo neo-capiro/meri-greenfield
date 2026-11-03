@@ -35,7 +35,7 @@ export async function nativeResults({config,current,life,state}){
  const servable=async metadata=>{if(!retention)return;
   const subjects=[{tenantId:context.binding.tenantId,kind:'conversation',subjectId:context.binding.conversationId}];
   if(metadata&&metadata.binding.conversationId!==context.binding.conversationId)subjects.push({tenantId:metadata.binding.tenantId,kind:'conversation',subjectId:metadata.binding.conversationId});
-  for(const subject of subjects)await life.run(()=>retention.assertServable(subject));};
+  for(const subject of subjects)await life.run(()=>retention.assertServable(subject,{deadlineMs:life.deadline(),signal:life.signal}));};
  await servable();await current.fresh();
  // Explicit `results` intent, purpose-bound to its own outer resolver digest; before collection the resource is a
  // closed null snapshot identity, so no entry name is bound into the collection grant.

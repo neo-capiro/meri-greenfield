@@ -33,7 +33,7 @@ export function createArtifactService({validators:v,authorize,versions,objects,e
   async function servable(life,context,record=null){if(!retention)return;
     const subjects=[{tenantId:context.binding.tenantId,kind:'conversation',subjectId:context.binding.conversationId}];
     if(record){const b=record.version.binding;if(b.conversationId!==context.binding.conversationId)subjects.push({tenantId:b.tenantId,kind:'conversation',subjectId:b.conversationId});subjects.push({tenantId:b.tenantId,kind:'artifact',subjectId:record.version.artifactId});}
-    for(const subject of subjects)await life.run(()=>retention.assertServable(subject));life.check();}
+    for(const subject of subjects)await life.run(()=>retention.assertServable(subject,{deadlineMs:life.deadline(),signal:life.signal}));life.check();}
   async function recoverTenant(life,context,versionId=null){if(versionId!==null&&versions.recoverVersion)await life.run(signal=>versions.recoverVersion(context.binding.tenantId,versionId,signal));else if(versions.recoverTenant)await life.run(signal=>versions.recoverTenant(context.binding.tenantId,signal));life.check();}
   function scopeVersion(record,id,context){
     closed(record,['version','spec','specSha256','requestSha256','inspection',...(record?.assets===undefined?[]:['assets'])]);record=v.snapshot(record);record.version=v.version(record.version);record.spec=storedArtifactSource(v,record.spec);assertOfficeEditRecord(record.spec,record.version);

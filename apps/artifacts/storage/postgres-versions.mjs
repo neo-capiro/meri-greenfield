@@ -19,7 +19,7 @@ export function createPostgresArtifactVersions(options){const {pool,now,maxReque
  async function allowed(record,life,exclusive=false,c){const b=record.version.binding,tenantId=b.tenantId;for(const subject of [{tenantId,kind:'artifact',subjectId:record.version.artifactId},{tenantId,kind:'conversation',subjectId:b.conversationId}]){
   // Reuse the canonical raw journal reader ON THIS transaction lease while the existing owner holds recovery exclusion.
   if(exclusive){const {projection:row}=await life.run(()=>readRetention(c,`${tenantId}:${subject.kind}:${subject.subjectId}`));if(row&&row.state!=='RELEASED')fail('RETENTION_SUPPRESSED');}
-  else await life.run(()=>assertServable(subject));}life.check();}
+  else await life.run(()=>assertServable(subject,{deadlineMs:life.deadline(),signal:life.signal}));}life.check();}
  const paged=createPostgresPagedPublication({owner,allowed});
  async function verified(c,tenant,artifactId,life){const sql=await readArtifactProjection(c,tenant,artifactId,life),facts=await current(life,tenant);assertArtifactProjection(sql,facts.index,artifactId);return {sql,facts};}
  async function rawVersion(c,id,life){const rows=(await life.run(()=>c.query('SELECT * FROM meri_artifacts.versions WHERE version_id=$1',[uuid(id)]))).rows;life.check();
