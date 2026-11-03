@@ -424,34 +424,40 @@ test('native telemetry refuses a foreign credential or binding without assigning
 });
 
 test('PR599-R1: a Core unit settlement cannot start after its bounded attempt has ended',async t=>{
- // The reviewer's counterexample, kept as an acceptance test: the bounded attempt's own signal must reach the canonical
- // store read, the Core read and the settlement, and an answer that arrives after the attempt ended must dispatch nothing.
- const prompt='[Capiro Outreach recipient unit v1]\nSynthetic recipient, before any draft';
+ // The cleanup's own refusal telemetry is the exact end of the bounded attempt: the delayed read is released at that event,
+ // so the assertion cannot be masked by the Core client's independent request budget.
+ const prompt='[Capiro Outreach recipient unit v1]'+String.fromCharCode(10)+'Synthetic recipient, before any draft';
  const selection={generationJobId:id(80),itemId:id(81),conversationId:binding.conversationId,clientId:id(5),requestId:id(999),prompt,
   outputSchema:{type:'object'},generationKey:'recipient:synthetic',revision:1};
- const readResponse=Promise.withResolvers(),calls=[];
+ const readResponse=Promise.withResolvers(),calls=[],events=[],cleanupRefused=Promise.withResolvers();
+ const telemetry={bind(){},provisional(operation){return operation();},emit(name,value){events.push({name,value});
+  if(value?.code==='OUTREACH_GENERATION_REFUSED')cleanupRefused.resolve(value);}};
  let delayed=false,reads=0,fails=0,readSignal;
- const f=fixture({prompt,requestMs:3000,onCoreFetch:async(url,init)=>{
+ const f=fixture({prompt,requestMs:3000,turnTelemetry:telemetry,onCoreFetch:async(url,init)=>{
    const path=new URL(url).pathname;if(!path.includes('/outreach/sdk/'))return undefined;
    calls.push(path);if(path.endsWith('/sdk/read')){reads++;readSignal=init.signal;return readResponse.promise;}
    if(path.endsWith('/sdk/fail')){fails++;return Response.json({status:'unknown',result:null});}
    assert.fail('no completion or draft effect: '+path);
   },onStoreRead:async({record})=>{if(record?.phase==='settled'&&!delayed){delayed=true;await new Promise(resolve=>setTimeout(resolve,1000));}}});
+ let timer;
+ const bounded=(promise,label)=>Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error(label)),8000);})]);
  try{
   const ended=Object.assign(Error('AGENTCORE_EXECUTION_ENDED'),{code:'AGENTCORE_EXECUTION_ENDED'});
   await f.kickoff();await f.waitForInvocation();f.pending.reject(ended);
   for(let waited=0;!reads&&waited<5000;waited+=20)await new Promise(resolve=>setTimeout(resolve,20));
   assert.equal(reads,1,'the hook resolves the bound unit once');
-  // The bounded attempt ends at its own deadline even though the Core read is still unanswered.
-  await new Promise(resolve=>setTimeout(resolve,3200));
+  // The attempt's own bounded end: the closed cleanup refusal, not a wall-clock sleep.
+  const refusal=await bounded(cleanupRefused.promise,'the bounded attempt never reported its refusal');
+  assert.equal(refusal.stage,'agentcore-settle');
   assert.ok(readSignal,'the Core read carries a signal');
   assert.equal(readSignal.aborted,true,'the bounded attempt signal reaches the actual Core read');
-  // The run is reconciled and stopped exactly as before, whatever the settlement attempt did.
-  assert.equal(f.run.state,'failed');assert.equal(f.record().phase,'settled');assert.equal(f.counts().stops,1);
+  // Release the held read exactly at that event: an answer that arrives now must dispatch nothing.
   readResponse.resolve(Response.json(selection));
-  await new Promise(resolve=>setTimeout(resolve,300));
+  for(let waited=0;waited<200&&!fails;waited+=10)await new Promise(resolve=>setTimeout(resolve,10));
   assert.equal(fails,0,'a read answered after the attempt ended dispatches no Core mutation');
   assert.deepEqual(calls,['/api/engagement/outreach/sdk/read']);
-  t.diagnostic(JSON.stringify({requestMs:3000,storeReadDelayMs:1000,reads,fails,readSignalAbortedAtTimeout:readSignal.aborted,runState:f.run.state,recordPhase:f.record()?.phase}));
- }finally{readResponse.resolve(Response.json(selection));await f.candidate.close();}
+  assert.equal(f.run.state,'failed');assert.equal(f.record().phase,'settled');assert.equal(f.counts().stops,1);
+  t.diagnostic(JSON.stringify({requestMs:3000,storeReadDelayMs:1000,reads,fails,readSignalAbortedAtCleanupRefusal:readSignal.aborted,
+   cleanupCode:refusal.code,runState:f.run.state,recordPhase:f.record()?.phase,stops:f.counts().stops}));
+ }finally{clearTimeout(timer);readResponse.resolve(Response.json(selection));await f.candidate.close();}
 });
