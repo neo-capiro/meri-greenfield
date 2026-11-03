@@ -74,7 +74,11 @@ test('a writable token cannot bypass current artifact.revise permission',async t
  const f=await wopiFixture(t);f.state.readonly=true;assert.equal((await f.send()).status,404);
  assert.equal((await f.send('save',{lock:'one',body:edited()})).status,404);assert.equal(f.draft.sequence,0);
 });
-for(const change of ['token','file','expired','actor','conversation','base','epoch','generation','suppression','session'])test(`current ${change} loss releases no document or lock`,async t=>{
+// Each loss must name its own class: a bare 404 cannot distinguish them in the editor's log.
+const refusals={token:'WOPI_TOKEN_INVALID',file:'WOPI_TOKEN_FILE_MISMATCH',expired:'WOPI_TOKEN_EXPIRED',actor:'WOPI_SESSION_DRIFT',
+ conversation:'WOPI_SESSION_DRIFT',base:'WOPI_DRAFT_DRIFT',epoch:'OFFICE_DRAFT_CONFLICT',generation:'WOPI_RETENTION_DRIFT',
+ suppression:'RETENTION_SUPPRESSED',session:'SESSION_UNAVAILABLE'};
+for(const change of Object.keys(refusals))test(`current ${change} loss releases no document or lock`,async t=>{
  const f=await wopiFixture(t);let request=f.request('getFile');
  if(change==='token')request=new Request(request.url.replace(/access_token=.*/u,'access_token=invalid'));
  if(change==='file')request=new Request(request.url.replace('synthetic-file','another-file'));
@@ -86,6 +90,15 @@ for(const change of ['token','file','expired','actor','conversation','base','epo
  if(change==='suppression')f.sql.suppressed.add(`${f.context.binding.tenantId}:artifact:${f.first.version.artifactId}`);
  if(change==='session')f.sessions.revoke(f.session.credential);
  const response=await f.host.handle(request);assert.notEqual(response.status,200);assert.equal((await bytes(response)).length,0);assert.equal(response.headers.get('x-wopi-lock'),null);
+ assert.equal(response.headers.get('x-wopi-refusal'),refusals[change]);
+});
+test('every refusal names its own class and a served response names none',async t=>{
+ const f=await wopiFixture(t),served=await f.send();
+ assert.equal(served.status,200);assert.equal(served.headers.get('x-wopi-refusal'),null);
+ const named=async request=>{const response=await f.host.handle(request);return [response.status,response.headers.get('x-wopi-refusal')];};
+ assert.deepEqual(await named(new Request(f.request().url.replace('/files/','/files/extra/'))),[404,'WOPI_ROUTE']);
+ assert.deepEqual(await named(new Request(f.request().url,{method:'DELETE'})),[405,'WOPI_REFUSED_405']);
+ assert.deepEqual(await named(new Request(f.request().url+'&authority=allow')),[401,'WOPI_REFUSED_401']);
 });
 for(const stage of ['context','body','after-save','final-retention'])test(`access loss at ${stage} withholds late bytes and never repeats an effect`,async t=>{
  const f=await wopiFixture(t);await f.send('lock',{lock:'one'});

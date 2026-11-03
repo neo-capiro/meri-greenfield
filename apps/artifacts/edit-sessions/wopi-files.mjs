@@ -11,7 +11,7 @@ import {assertNativeConversationScope} from '../../../packages/contracts/runtime
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {inspectOfficeEdit} from './inspect-office.mjs';
 import {assertOfficeWorkbooksPreserved} from './chart-workbooks.mjs';
-import {wopiRequest,wopiBody,wopiResponse,cancelWopiBody,refuse,refusalStatus} from './wopi-http.mjs';
+import {wopiRequest,wopiBody,wopiResponse,cancelWopiBody,refuse,refusalStatus,refusalHeaders} from './wopi-http.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const codeOf=e=>e&&typeof e==='object'&&!types.isProxy(e)?Object.getOwnPropertyDescriptor(e,'code')?.value:undefined;
 const uncertain=e=>e&&typeof e==='object'&&!types.isProxy(e)&&Object.getOwnPropertyDescriptor(e,'outcome')?.value==='UNKNOWN';
@@ -23,7 +23,7 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
  return Object.freeze({async handle(request){let life;
   try{
    const info=wopiRequest(request);let claims;
-   try{claims=codec.verify(info.token,{fileId:info.fileId});}catch{refuse(401);}
+   try{claims=codec.verify(info.token,{fileId:info.fileId});}catch(error){refuse(401,codeOf(error));}
    if(info.tokenExpiresAtMs!==null&&info.tokenExpiresAtMs!==claims.expiresAtMs)refuse(401);
    life=createOperationLifetime({now,signal:info.signal,deadlineMs:Math.min(now()+maxRequestMs,claims.expiresAtMs),errorFactory:()=>Error('WOPI_LIFETIME')});
    const key={conversationId:claims.conversationId,draftId:claims.editSessionId,editorId:claims.editorId,editorEpoch:claims.editorEpoch};
@@ -33,24 +33,24 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
     assertNativeConversationScope({binding:context.binding,scopes:context.scopes,selectedClientId});
     if(context.binding.tenantId!==claims.tenantId||context.binding.actorId!==claims.actorId||context.binding.conversationId!==claims.conversationId||
       canonicalSha256(context.binding)!==canonicalSha256(claims.runBinding)||canonicalSha256(context.scopes)!==claims.scopesSha256||selectedClientId!==claims.selectedClientId||
-      selected.sessionSha256!==claims.sessionSha256||!Number.isSafeInteger(expiresAtMs)||claims.expiresAtMs>expiresAtMs)refuse(404);
+      selected.sessionSha256!==claims.sessionSha256||!Number.isSafeInteger(expiresAtMs)||claims.expiresAtMs>expiresAtMs)refuse(404,'WOPI_SESSION_DRIFT');
     life.limitDeadline(Math.min(context.deadlineMs,expiresAtMs));
     return {context:{...context,deadlineMs:life.deadline()},selection:{binding:context.binding,scopes:context.scopes,selectedClientId,deadlineMs:life.deadline(),signal:life.signal}};
    }
    const call=(route,body,selected)=>life.run(()=>drafts.call(route,{...key,...body},selected.selection));
    async function source(selected){
     const base=await life.run(signal=>artifacts.editorSource(claims.versionId,selected.context,{write:claims.userCanWrite,signal}));
-    if(base.version.versionId!==claims.versionId||!Buffer.isBuffer(base.bytes)||sha(base.bytes)!==base.version.object.sha256)refuse(404);
+    if(base.version.versionId!==claims.versionId||!Buffer.isBuffer(base.bytes)||sha(base.bytes)!==base.version.object.sha256)refuse(404,'WOPI_SOURCE_DRIFT');
     return base;
    }
    function correlate(draft,base){
     if(draft.draftId!==key.draftId||draft.conversationId!==key.conversationId||draft.artifactId!==base.version.artifactId||draft.baseVersionId!==claims.versionId||
-      draft.baseSha256!==base.version.object.sha256||draft.filename!==base.version.filename||!['docx','xlsx','pptx'].includes(draft.format)||!draft.filename.endsWith('.'+draft.format))refuse(404);
+      draft.baseSha256!==base.version.object.sha256||draft.filename!==base.version.filename||!['docx','xlsx','pptx'].includes(draft.format)||!draft.filename.endsWith('.'+draft.format))refuse(404,'WOPI_DRAFT_DRIFT');
    }
    async function retained(base){
     const value=await life.run(()=>generation([{tenantId:claims.tenantId,kind:'conversation',subjectId:claims.conversationId},
      {tenantId:claims.tenantId,kind:'artifact',subjectId:base.version.artifactId}]));
-    if(!Number.isSafeInteger(value)||value!==claims.suppressionGeneration)refuse(404);
+    if(!Number.isSafeInteger(value)||value!==claims.suppressionGeneration)refuse(404,'WOPI_RETENTION_DRIFT');
    }
    let selected=await current(),draft=await call('editorRead',{},selected),base=await source(selected);correlate(draft,base);await retained(base);
    const inspectCurrent=()=>{
@@ -110,7 +110,8 @@ export function createWopiFileApplication({codec,drafts,artifacts,resolveContext
     UserCanWrite:canWrite,ReadOnly:!canWrite,UserCanNotWriteRelative:true,UserCanRename:false,
     SupportsLocks:canWrite,SupportsGetLock:canWrite,SupportsExtendedLockLength:true,SupportsUpdate:canWrite,
     ...(postMessageOrigin===undefined?{}:{PostMessageOrigin:postMessageOrigin})}),{'content-type':'application/json; charset=utf-8'});
-  }catch(error){const code=codeOf(error);return wopiResponse(refusalStatus(error)??(uncertain(error)?500:typeof code==='string'&&code.startsWith('WOPI_TOKEN_')?401:unavailable.has(code)?404:500));}
+  }catch(error){const code=codeOf(error),status=refusalStatus(error)??(uncertain(error)?500:typeof code==='string'&&code.startsWith('WOPI_TOKEN_')?401:unavailable.has(code)?404:500);
+   return wopiResponse(status,null,refusalHeaders(error,status));}
   finally{life?.close();cancelWopiBody(request);}
  }});
 }
