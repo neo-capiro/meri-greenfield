@@ -85,6 +85,18 @@ test('durable reconciliation and hold-failure reasons retain canonical constants
  assert.deepEqual(lines.map(line=>line.reasonCode),['ATTEMPT_LOST','HOLD_CHECKPOINT_FAILED']);
 });
 
+test('a worker refusal line keeps only a closed operation, phase and owner code',()=>{
+ const lines=[],emitter=createTurnLineEmitter({service:'control',write:line=>lines.push(JSON.parse(line))});
+ emitter.emit('meri.worker.refusal',{runId,attemptId,operation:'load',stage:'release',code:'RETENTION_READ_UNAVAILABLE'});
+ assert.deepEqual({operation:lines[0].operation,stage:lines[0].stage,code:lines[0].code},{operation:'load',stage:'release',code:'RETENTION_READ_UNAVAILABLE'});
+ assert.equal(lines[0].runId,runId);
+ for(const code of ['WORKER_AUTHORITY_REFUSED','SCOPE_REFUSED','STALE_WRITER','RETENTION_SUPPRESSED','RETENTION_RECOVERY_BARRIER','NOT_FOUND'])
+  {emitter.emit('meri.worker.refusal',{operation:'load',stage:'service',code});assert.equal(lines.at(-1).code,code,code);}
+ emitter.emit('meri.worker.refusal',{operation:'tenant-secret',stage:'run.terminal',code:'PRIVATE_SECRET'});
+ assert.deepEqual({operation:lines.at(-1).operation,stage:lines.at(-1).stage,code:lines.at(-1).code},{operation:'other',stage:'other',code:'other'});
+ assert.equal(JSON.stringify(lines.at(-1)).includes('tenant-secret'),false);assert.equal(JSON.stringify(lines.at(-1)).includes('PRIVATE_SECRET'),false);
+});
+
 test('pair health uses the fixed P2 vocabulary and never serializes identity pins',()=>{
  const output=[],emitter=createTurnLineEmitter({service:'owner',write:line=>output.push(JSON.parse(line))});
  for(const code of ['PAIR_DRIFT','PAIR_REPROVEN','PAIR_UNAVAILABLE','PAIR_REPROVING']){

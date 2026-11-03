@@ -13,6 +13,7 @@ import {subjectKey} from '../../control/retention/boundary.mjs';
 import {binding as originalBinding,scopes as originalScopes,versions,id} from '../../control/conversations/test/store-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {MODEL_CATALOG} from '../../../packages/contracts/test/model-selection-fixture.mjs';
+import {createTurnTelemetry} from '../telemetry/turn-context.mjs';
 
 // Same opt-in import-only configuration stub used by the existing load fixture.
 // The HTTP boundary uses only fault(); configuration/secret access stays forbidden.
@@ -23,14 +24,14 @@ if(process.env.MERI_DIAGNOSTIC_IMPORT_STUBS==='1')registerHooks({resolve(specifi
 const {createWorkerRunApplication}=await import('../worker-http.mjs');
 const deferred=()=>Promise.withResolvers();
 
-async function fixture(t,{requestMs=2000,executionMs=60000}={}){
+async function fixture(t,{requestMs=2000,executionMs=60000,retention:retentionOverride}={}){
  const f=composeStartup(),subject=subjectOf();await f.startup.start();
  const binding={...originalBinding,tenantId:subject.tenantId,actorId:subject.ownerActorId,conversationId:subject.subjectId};
  const scopes=originalScopes.map(scope=>({...scope,tenantId:binding.tenantId}));
  const counts={task:0,retention:0,release:0,scoped:0,serialized:0,reads:0,journal:0,writes:0,controls:0};
  const state={taskHook:null,taskExpiresAtMs:null,scopedHook:null,serializeHook:null,releaseOptions:null,releaseSubjects:null};
  const attempted=deferred(),scoped=deferred();
- const retention={
+ const retention=retentionOverride??{
   async assertServable(value){counts.retention++;return f.startup.gate.assertServable(value);},
   withRelease(subjects,release,options){counts.release++;state.releaseSubjects=subjects;state.releaseOptions=options;attempted.resolve();
    return f.startup.gate.withRelease(subjects,(signal,assertLocked)=>release(signal,async value=>{
@@ -42,7 +43,7 @@ async function fixture(t,{requestMs=2000,executionMs=60000}={}){
  const saved={run:{binding,scopes,state:'queued',versions,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision},request:{requestId:id(6),prompt:'Synthetic retained prompt',skill:null,window:null,windowRequest:null,modelSelection:MODEL_CATALOG.defaultSelection},lastSequence:1};
  const unused=()=>assert.fail('unexpected effect');
  const store={readModelPolicy:async()=>({maxTurns:20,maxBudgetMicroUsd:2000000}),accept:unused,append(){counts.writes++;return unused();},async read(){counts.reads++;return structuredClone(saved);},
-  lifecycle:{begin:unused,change:unused,get:unused,async controls(){counts.controls++;return [{controlSequence:1,commandSha256:'a'.repeat(64),command:{prompt:'Synthetic steer text'},state:'PENDING'}];},claim:unused,captureSession:unused,readSessionCapture:unused,async execution(){counts.journal++;return {fixtureMarker:'journal-read'};},continuation:unused,cancel:unused,readStopFence:unused}};
+  lifecycle:{begin:unused,change:unused,get:unused,async controls(){counts.controls++;return [{controlSequence:1,commandSha256:'a'.repeat(64),command:{prompt:'Synthetic steer text'},state:'PENDING'}];},claim:unused,captureSession:unused,readSessionCapture:unused,async execution(){counts.journal++;return {fixtureMarker:'journal-read'};},continuation:unused,cancel:unused,readStopFence:unused,dispatchChild:unused,settleChild:unused}};
  const dispatcher={start:unused,cancel:unused,signal:unused};
  const {versions:ignored,...identity}=createExecutionBinding({binding,versions,plan:{synthetic:'retention'},expiresAtMs:Date.now()+executionMs,runtimeSessionId:'conversation-'+hash(binding)});
  const execution={async authenticate(input){assert.equal(input.credential,'synthetic-task');assert.deepEqual(input.binding,binding);counts.task++;await state.taskHook?.(counts.task);
@@ -56,11 +57,13 @@ async function fixture(t,{requestMs=2000,executionMs=60000}={}){
   },async [taskControlPage](input){const result=await lifecycle[taskControlPage](input);state.returned=true;return result;}};
  };
  const configuration={retention:{enabled:true},limits:{requestMs,requestBytes:131072}};
- const options={execution,createService,configuration,retention};
+ const lines=[],turnTelemetry=createTurnTelemetry({service:'control',write:line=>lines.push(line)});
+ const options={execution,createService,configuration,retention,turnTelemetry};
  const app=createWorkerRunApplication(options);
  const request=(signal,route='load')=>new Request('https://control.synthetic.invalid/internal/conversations/'+route,{method:'POST',headers:{authorization:'Bearer synthetic-task','content-type':'application/json'},body:JSON.stringify({binding}),signal});
  const suppress=()=>f.startup.suppression.suppress({principal:f.principal,subject,reason:'Synthetic retention test'});
- return {...f,subject,binding,counts,state,adapters,expiresAtMs:identity.expiresAtMs,options,app,request,suppress,attempted:attempted.promise,scoped:scoped.promise};
+ const refusals=()=>lines.map(line=>JSON.parse(line)).filter(line=>line.event==='meri.worker.refusal');
+ return {...f,subject,binding,counts,state,adapters,expiresAtMs:identity.expiresAtMs,options,app,request,suppress,refusals,attempted:attempted.promise,scoped:scoped.promise};
 }
 
 test('suppression committed during final execution verification withholds the saved load response',{timeout:5000},async t=>{
@@ -155,4 +158,40 @@ test('a runner control page is released under the same subject fence and withhel
  const g=await fixture(t);g.state.taskHook=async count=>{if(g.state.returned)await g.suppress();};
  const withheld=await g.app.handle(g.request(undefined,'next-controls')),body=await withheld.text();
  assert.equal(withheld.status,403);assert.doesNotMatch(body,/Synthetic steer text/);assert.equal(g.counts.controls,1);
+});
+
+// A private worker refusal is one uniform 403 answer for several distinct owners. The
+// diagnostic names the operation, the phase and the refusing owner's closed code; it
+// never changes the answer, its status or any authority/retention decision.
+test('a request-phase refusal names the load operation and the request phase',{timeout:5000},async t=>{
+ const f=await fixture(t);
+ const refused=await f.app.handle(new Request('https://control.synthetic.invalid/internal/conversations/load',{method:'POST',headers:{authorization:'Bearer synthetic-task','content-type':'text/plain'},body:JSON.stringify({binding:f.binding})}));
+ assert.equal(refused.status,403);assert.deepEqual(await refused.json(),{error:{code:'WORKER_REQUEST_REFUSED'}});
+ const [refusal]=f.refusals();
+ assert.deepEqual({operation:refusal.operation,stage:refusal.stage,code:refusal.code},{operation:'load',stage:'request',code:'WORKER_REQUEST_REFUSED'});
+ assert.equal(Object.hasOwn(refusal,'runId'),false,'no binding was parsed, so the line carries no run identity');
+ assert.equal(f.counts.task,0);
+});
+
+test('a retention refusal inside the conversation load names the service phase and its closed code',{timeout:5000},async t=>{
+ const f=await fixture(t);await f.suppress();
+ const refused=await f.app.handle(f.request());
+ assert.equal(refused.status,403);assert.deepEqual(await refused.json(),{error:{code:'WORKER_REQUEST_REFUSED'}});
+ const [refusal]=f.refusals();t.diagnostic(JSON.stringify(refusal));
+ assert.equal(refusal.operation,'load');assert.equal(refusal.stage,'service');assert.equal(refusal.code,'RETENTION_SUPPRESSED');
+ assert.equal(refusal.runId,f.binding.runId);assert.equal(refusal.attemptId,f.binding.attemptId);assert.equal(refusal.service,'control');
+ assert.equal(f.counts.reads,0);assert.equal(f.counts.serialized,0);assert.equal(f.counts.release,0);
+});
+
+test('a retention read that did not answer at the release fence stays a 403 and is named as such',{timeout:5000},async t=>{
+ const cause=Object.assign(new Error('55P03'),{code:'55P03'});
+ const readUnavailable=()=>Object.assign(new Error('RETENTION_READ_UNAVAILABLE'),{code:'RETENTION_READ_UNAVAILABLE',cause});
+ const f=await fixture(t,{retention:{async assertServable(){},withRelease(subjects,release,{signal}){return release(signal,async()=>{throw readUnavailable();});}}});
+ f.state.returned=true;
+ const refused=await f.app.handle(f.request()),body=await refused.text();
+ assert.equal(refused.status,403);assert.deepEqual(JSON.parse(body),{error:{code:'WORKER_REQUEST_REFUSED'}});
+ const [refusal]=f.refusals();t.diagnostic(JSON.stringify({status:refused.status,refusal}));
+ assert.equal(refusal.operation,'load');assert.equal(refusal.stage,'release');assert.equal(refusal.code,'RETENTION_READ_UNAVAILABLE');
+ assert.equal(refusal.runId,f.binding.runId);
+ assert.equal(f.counts.serialized,0,'the withheld body is never serialized');
 });

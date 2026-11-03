@@ -16,6 +16,16 @@ export const AWS_OPERATIONS = Object.freeze(['DescribeTasks','ListTasks','Descri
   'DescribeTaskDefinition','DescribeNetworkInterfaces','DescribeInstances','DescribeSecurityGroups','DescribeSubnets',
   'DescribeVpcs','DescribeTags','ListTagsForResource','RunTask','StopTask','InvokeModel','InvokeModelWithResponseStream',
   'Converse','ConverseStream','other']);
+/** The private worker route family (`apps/runtime/worker-http.mjs`): the run owner's operations, its two child operations and
+ * the browser operations. Closed because one refusal line is emitted for whichever of them the worker stopped on. */
+export const WORKER_OPERATIONS = Object.freeze(['load','publish','next-controls','claim-control','ack-control',
+  'record-checkpoint','record-usage','upload-source','procedure-resolve','site-workflow-resolve',
+  'child-dispatch','child-settle',
+  'browser-prepare','browser-tools','browser-call','browser-hook','browser-approve','browser-settle',
+  'browser-prepare-takeover','browser-capture-takeover','browser-retain-takeover']);
+/** The phases of one worker request in order: the request itself, the first execution check, the conversation/lifecycle
+ * service, a terminal receipt, the closing execution check and the final retention release fence. */
+export const WORKER_REFUSAL_STAGES = Object.freeze(['request','authority','service','receipt','recheck','release']);
 export const RUN_OWNER_OPERATIONS = Object.freeze(['runner/load','runner/publish','runner/next-controls',
   'runner/native/bootstrap','runner/native/admitted','runner/native/prepare','runner/native/verify','runner/native/start','runner/native/started',
   'runner/runtime','runner/checkpoint/capture',
@@ -82,6 +92,10 @@ export const LINE_SCHEMAS=Object.freeze({
  'meri.intent.prepare':{...COMMON,layer:choice(['control']),code:safeCode,dispatched:choice(['owner','before-owner'],'other'),elapsedMs:number,detail:safeText,reason:safeToken},
  // The general-read availability snapshot that failed, in the same shape: the run's reads answer "cannot be read right now" for that turn.
  'meri.read.availability':{...COMMON,layer:choice(['worker','runner','control']),code:safeCode,elapsedMs:number},
+ // A private worker request that answered its caller the uniform 403 WORKER_REQUEST_REFUSED: the operation, the phase that
+ // refused and the refusing owner's closed code, so one indistinguishable refusal is attributable from control's own log
+ // stream. The answer, its status and every authority/retention decision are unchanged by this line.
+ 'meri.worker.refusal':{...COMMON,operation:choice(WORKER_OPERATIONS),stage:choice(WORKER_REFUSAL_STAGES),code:safeCode},
  'meri.health':{service:choice(SERVICES),atMs:number,component:choice(COMPONENTS),transition:choice(['quarantined','poisoned','retired','unavailable','reproven']),code:safeCode},
  'meri.budget.quarantined':{...COMMON,reason:safeCode},
  'meri.process.rollup':{service:choice(SERVICES),atMs:number,windowMs:number,...COUNTERS,ownerExchanges:exchanges,telemetryDropped:number},
