@@ -117,7 +117,10 @@ function compose(context,owners){
  /** One run borrows its live signed-in session. The existing Core membership owner supplies proposal permissions. */
  const intentPreparersFor=broker.runAvailable?value=>{
   if(boundRetention===null)return [];
-  const v=own(value,['binding','scopes','selectedClientId','policyRevision','readCurrent','deadlineMs'],['signal']);
+  const v=own(value,['binding','scopes','selectedClientId','policyRevision','readCurrent','deadlineMs'],['signal','authorityExpiresAtMs']);
+  // The retained review lifetime is the canonical execution authority expiry, kept separate from this request's
+  // operation deadline (`deadlineMs`) so a preparation timeout never becomes the consent window.
+  if(v.authorityExpiresAtMs!==undefined&&!Number.isSafeInteger(v.authorityExpiresAtMs))throw fault('MEMORY_CONFIGURATION');
   const selected=data({binding:v.binding,scopes:v.scopes,selectedClientId:v.selectedClientId});
   assertNativeConversationScope(selected);
   const credentials=broker.run(selected);
@@ -144,6 +147,7 @@ function compose(context,owners){
   };
   const source=createMemoryCommandSource({...selected,policyRevision:v.policyRevision,readCurrent:v.readCurrent,producerFor,now,maxRequestMs:limits.maxRequestMs,deadlineMs:v.deadlineMs});
   return Object.freeze([createMemoryIntentPreparer({...selected,source,newId,now,maxRequestMs:limits.maxRequestMs,deadlineMs:v.deadlineMs,proposalTtlMs:CURRENT_AUTHORITY_LIMITS.proposalTtlMs,
+   ...(v.authorityExpiresAtMs===undefined?{}:{authorityExpiresAtMs:v.authorityExpiresAtMs}),
    metadataStore:createTransactionalApprovalMetadataStore({pool:c.pool})})]);
  }:null;
  retentionBinders.set(context,bindRetention);
