@@ -2,7 +2,6 @@
  * supplies the existing document options/session owners and self-hosted CODE. */
 import {createRuntimeOfficeAccess} from './office-access.mjs';
 import {importOfficeOriginal} from './office-original.mjs';
-import {types} from 'node:util';
 import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 import {own,data} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {OFFICE_SCHEMA,receiveOfficeRequest} from '../../../packages/contracts/dist/office-application.mjs';
@@ -14,7 +13,7 @@ import {createOfficeProposalPublisher} from '../../artifacts/edit-sessions/apply
 import {assertDocumentRevisionSelection} from '../../../packages/contracts/document-revision.mjs';
 import {officeOriginalTitle} from '../../../packages/contracts/office-edit.mjs';
 const refuse=code=>{throw Object.assign(Error(code),{code});};
-import {wopiRequest,wopiResponse,cancelWopiBody,refusalStatus} from '../../artifacts/edit-sessions/wopi-http.mjs';
+import {wopiRequest,wopiResponse,cancelWopiBody,refusalStatus,refusalCode,refusalHeaders} from '../../artifacts/edit-sessions/wopi-http.mjs';
 export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits,retention,drafts,codec,launch,generation,browserOrigin,originalSource}){
  let origin;try{origin=new URL(browserOrigin);}catch{throw Error('OFFICE_CONFIGURATION');}
  if(typeof browserOrigin!=='string'||origin.protocol!=='https:'||origin.origin!==browserOrigin)throw Error('OFFICE_CONFIGURATION');
@@ -47,7 +46,7 @@ export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits
   async handleWopi(request){
    try{
     const info=wopiRequest(request);let claims;
-    try{claims=codec.verify(info.token,{fileId:info.fileId});}catch{return wopiResponse(401);}
+    try{claims=codec.verify(info.token,{fileId:info.fileId});}catch(error){return wopiResponse(401,null,refusalHeaders(error,401));}
     // Borrow only the existing native session the token was launched under. Full authentication and the signed
     // binding/client/scope/session comparison happen again inside the file application.
     const selected=borrow({binding:claims.runBinding,selectedClientId:claims.selectedClientId,sessionSha256:claims.sessionSha256,signal:info.signal});
@@ -58,8 +57,8 @@ export function createRuntimeOfficeApplication({optionsOwner,sessions,now,limits
       return files.handle(request);
      });
    }catch(error){
-    const code=error&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:null;
-    return wopiResponse(refusalStatus(error)??(['ACCESS_DENIED','SESSION_REFUSED','SESSION_UNAVAILABLE','ARTIFACT_AUTHORITY','RETENTION_SUPPRESSED'].includes(code)?404:500));
+    const code=refusalCode(error),status=refusalStatus(error)??(['ACCESS_DENIED','SESSION_REFUSED','SESSION_UNAVAILABLE','ARTIFACT_AUTHORITY','RETENTION_SUPPRESSED'].includes(code)?404:500);
+    return wopiResponse(status,null,refusalHeaders(error,status));
    }
    finally{cancelWopiBody(request);}
   },

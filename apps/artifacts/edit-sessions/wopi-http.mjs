@@ -3,8 +3,23 @@ import {types} from 'node:util';
 import {OFFICE_DRAFT_MAX_BYTES} from './core-draft-wire.mjs';
 export const WOPI_FILE_ROUTE=/^\/api\/meri\/office\/wopi\/files\/([A-Za-z0-9_-]{1,128})(\/contents)?$/u;
 const errors=new WeakMap();
-export function refuse(status){const error=Error('WOPI_REFUSED');errors.set(error,status);throw error;}
-export const refusalStatus=error=>errors.get(error);
+/** `code` names the refusal class; it is diagnostic only and never supplies the status. */
+export function refuse(status,code){const error=Error('WOPI_REFUSED');errors.set(error,code===undefined?{status}:{status,code});throw error;}
+export const refusalStatus=error=>errors.get(error)?.status;
+/** The finite set of refusal labels this boundary may publish. It is an ownership list, not a shape
+ * test: a value some dependency attaches later — even one that looks like our own constant — is not
+ * ours to disclose and falls back to the status. A shared label names a class, not a unique stage. */
+const LABELS=new Set(['WOPI_ROUTE','WOPI_SESSION_DRIFT','WOPI_SOURCE_DRIFT','WOPI_DRAFT_DRIFT','WOPI_RETENTION_DRIFT',
+ 'WOPI_TOKEN_INVALID','WOPI_TOKEN_EXPIRED','WOPI_TOKEN_FILE_MISMATCH',
+ 'SESSION_UNAVAILABLE','SESSION_REFUSED','ACCESS_DENIED',
+ 'OFFICE_DRAFT_ACCESS_DENIED','OFFICE_DRAFT_UNAVAILABLE','OFFICE_DRAFT_EXPIRED','OFFICE_DRAFT_CONFLICT',
+ 'ARTIFACT_AUTHORITY','ARTIFACT_VERSION_CONTEXT','RETENTION_SUPPRESSED']);
+export const refusalCode=error=>error&&typeof error==='object'&&!types.isProxy(error)?Object.getOwnPropertyDescriptor(error,'code')?.value:undefined;
+/** The refusal class reported on the private response, for the caller's existing log. */
+export function refusalHeaders(error,status){
+ const named=[errors.get(error)?.code,refusalCode(error)].find(value=>typeof value==='string'&&LABELS.has(value));
+ return Object.freeze({'x-wopi-refusal':named??`WOPI_REFUSED_${status}`});
+}
 const getters=Object.fromEntries(['url','method','headers','signal','body'].map(k=>[k,Object.getOwnPropertyDescriptor(Request.prototype,k).get]));
 const lock=value=>typeof value==='string'&&/^[\x20-\x7e]{1,1024}$/u.test(value);
 const operations=Object.freeze({LOCK:'lock',REFRESH_LOCK:'refresh',UNLOCK:'unlock',GET_LOCK:'get',PUT_RELATIVE:'relative'});
@@ -12,7 +27,7 @@ export function wopiRequest(request){
  if(!request||types.isProxy(request))refuse(400);
  let r;try{r=Object.fromEntries(Object.entries(getters).map(([k,get])=>[k,get.call(request)]));}catch{refuse(400);}
  const url=new URL(r.url),route=WOPI_FILE_ROUTE.exec(url.pathname),header=name=>Headers.prototype.get.call(r.headers,name);
- if(!route||url.hash)refuse(404);
+ if(!route||url.hash)refuse(404,'WOPI_ROUTE');
  if([...url.searchParams.keys()].some(k=>!['access_token','access_token_ttl','permission'].includes(k))||url.searchParams.getAll('access_token').length!==1)refuse(401);
  // CODE includes its UI permission on reconnect. It is not authority: only the
  // verified token and current Core/artifact checks determine access below.

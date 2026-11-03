@@ -274,5 +274,22 @@ test('a later session for the same run (routine renewal, another view) does not 
  assert.equal((await f.wopi(started.launch)).status,200);
  assert.equal((await f.wopi(started.launch,'getFile')).status,200);
  f.sessions.revoke(f.session.credential);
- assert.equal((await f.wopi(started.launch,'getFile')).status,404);
+ const orphaned=await f.wopi(started.launch,'getFile');
+ assert.equal(orphaned.status,404);assert.equal(orphaned.headers.get('x-wopi-refusal'),'SESSION_UNAVAILABLE');
+});
+test('the composition reports the refusal class of a refused WOPI call',async t=>{
+ const f=await fixture(t),started=await f.start();
+ // A token bound to another file never borrows a session.
+ const foreign=await f.app.handleWopi(new Request(f.request('checkFileInfo',{token:started.launch.fields.access_token}).url));
+ assert.equal(foreign.status,401);assert.equal(foreign.headers.get('x-wopi-refusal'),'WOPI_TOKEN_FILE_MISMATCH');
+ // Releasing the editor leaves the launched lease conflicting with Core.
+ await f.execute('release',{editorId:started.editor.editorId,expectedEpoch:started.editor.epoch});
+ const stale=await f.wopi(started.launch,'getFile');
+ assert.equal(stale.status,404);assert.equal(stale.headers.get('x-wopi-refusal'),'OFFICE_DRAFT_CONFLICT');
+});
+test('the composition publishes only the labels it owns, never a dependency code',async t=>{
+ const f=await fixture(t),started=await f.start();
+ f.state.hook=()=>{throw Object.assign(Error('synthetic'),{code:'OFFICE_DRAFT_PRIVATE_SYNTHETIC'});};
+ const response=await f.wopi(started.launch,'getFile');
+ assert.equal(response.status,500);assert.equal(response.headers.get('x-wopi-refusal'),'WOPI_REFUSED_500');
 });
