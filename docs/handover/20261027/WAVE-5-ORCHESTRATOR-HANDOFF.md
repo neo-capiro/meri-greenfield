@@ -49,13 +49,15 @@ A change is not done until what it replaced is gone.
 
 # Wave 5 orchestrator handoff — 27 October 2026
 
-Prepared 2026-10-27 from retained plans and root instructions. **This is a prospective startup packet, not a Wave 4 completion claim or wholesale new feature allocation.** Section2 records the completed operational handback for startup.
+**Current authority — user-requested stopping point:** the existing Wave 5 orchestrator `01a17d3b-4cf1-7f21-a8ac-f0aa7cd0380d` now coordinates and finishes the remaining Wave 4 work. Existing Release chat `01a17ae6` remains the sole shared target operator; Hermes Agent app/CLI remains the independent review and acceptance owner. The old Wave 4 root stops product and release work at reviewed source integration. Follow the [Wave 4 to Wave 5 takeover](WAVE4-TO-WAVE5-TAKEOVER.md) for the exact remaining sequence and owner references. Earlier root/Fable assignments below are retained history, not a second active orchestration lane.
+
+Prepared 2026-10-27 and updated at the user-requested Wave 4 source-integration stopping point. **This packet now includes ownership of the remaining Wave 4 work; it is not a Wave 4 completion or Wave 5 shipping claim.** The sibling takeover handoff gives the current exact sequence.
 
 ## 1. Stopping point and purpose
 
-The user asked root to finish pending Wave 4 migrations/deployments, hand remaining bugs to Fable, then start a separate Wave 5 orchestrator with briefs. Wave 5 may itself allocate and implement confirmed M5/M7 source slices within these briefs while Fable closes Wave 4 details. It must not duplicate those fixes.
+The user now asks the old Wave 4 root to stop at reviewed source integration and the existing Wave 5 orchestrator to finish the remaining Wave 4 work. Continue the existing Release and Hermes owners; do not create a second operator or repeat the returned Fable scan. Confirmed M5/M7/MF-19 source allocations may continue independently with their existing file reservations.
 
-All pending Wave4 migrations and deployments are complete, with operational handback at11:51:37.565UTC on27October. Formal acceptance and the expanded Fable implementation assignment remain open. Use the exact release record in section2.
+The then-pending Wave 4 migrations/deployments completed at 11:51:37.565 UTC on 27 October; section 2 preserves that historical handback. Core PR195 is merged at `8d77e225fe3c16c891190654efeea8050978aaf8`, equal to reviewed `b49f010174de9a2dfaa598f327caf62761138283` tree `360fe212a3ef699ecb2e5cf7359671ede3d4cf32`. Frontend PR252 is merged at `d96087ae977465ccaec8e25f728e2a80acb1ebd4`, equal to reviewed `77987943e56c876e4810a320a8209e61bfa340ef` tree `330e0f1a672a8d0322bad9613624ae9d86495b04` (functional source `cbf9d5bc78b8817ca5f91adee870cbe5dceec53c`). Meri PR296 is merged at `337e54b3ad92bd80eb65eefc72b4245c4f9ff50d`; its qualified ARM64 image is `sha256:7eabf413c51ce089d860b1426836cb1904e665e2483c10c5bf2d12a4e672734b`, not deployed. The DI-07/S15 stored-locator, before/after and correction-impact projections and S14 governed Coverage readback are implemented, independently source-reviewed and merged in these pins. Source, frontend architecture, author gates and the finite IAM/configuration/preserved-edge review PASS. Final Core/frontend image completion and qualification, actual image/material/flag/edge composition, deployment/readback, Hermes live acceptance and the recorded real-corpus gaps remain pending. No new database/schema/migration/package change is introduced by the final projection amendment; do not replay completed migrations or repack immutable Wave 4 artifacts. **Wave 4 remains OPEN.**
 
 The user's instruction to start Wave 5 authorizes its orchestrator to allocate and implement confirmed remaining M5 documents/files and M7 routines/Cowork/skills requirements within these briefs. Reconcile current source, evidence, dependencies and existing ownership, then assign finite slices without waiting for root to approve routine allocations. A5 remains a multiwave contract-intake pool; the historical wave table is not a blanket implementation order.
 
@@ -74,15 +76,15 @@ Use the [Wave4 deployment handoff](WAVE-4-HANDOFF.md#2-deployed-components-datab
 | Handback/recovery | Release-owner target/browser idle and no release commands at11:51:37.565Z; snapshot, predecessor definitions/images/material and immutable evidence retained. No cleanup deletion required. Shared target operations remain coordinated through Wave4 root/Release. |
 | Formal acceptance | OPEN for later Hermes after Fable fixes deploy. Operational health is not product acceptance or Wave4 completion. |
 
-Fable owns all existing Research Portfolio requirements and Wave4 bug fixes. Begin independent source work from current heads, respecting shared ownership and real dependencies; do not reset another lane's checkout or duplicate its authoring.
+Wave 5 now coordinates remaining Research Portfolio/Wave 4 closure from the merged reviewed pins. Begin independently allocated source work from current heads, respecting actual shared ownership; do not reset another lane’s checkout or duplicate completed authoring.
 
 ## 3. Remaining Wave 4 work and handoff sequence
 
-Fable scans existing Wave 4 advertised paths, preserves counterexamples, makes bounded fixes and closes implementation issues. The user's new scope instruction also assigns Fable all existing Research Portfolio requirements, including MO-05, as defined in [Research Portfolio requirements](RESEARCH-PORTFOLIO-REQUIREMENTS.md); the earlier broader-module deferral is superseded. Fable returns ready PRs to root. Root coordinates Hermes independent review, merges and deploys through Release. **Hermes performs formal acceptance after deployment. Root then tells Wave 5 when Wave 4 is actually complete.**
+Fable returned the static scan; its 33 numbered findings and native controls are reconciled and source-reviewed, and the final DI-07/S15/S14 projection amendment is now reviewed and merged. The existing Wave 5 orchestrator owns the remaining Wave 4 image/composition/deployment/corpus and Hermes acceptance coordination through the [takeover handoff](WAVE4-TO-WAVE5-TAKEOVER.md). Source PASS, merge and image build are not completion. No duplicate scan, module author or acceptance queue is needed.
 
 Keep with Wave 4: all existing Research Portfolio requirements including MO-05, sharing section 16H and the admin/Meri approval flow; branding/publish; FR16.36/source-permission row 11; F09 public/private query/current walls and Workspace/Strategy traversal; F10 task/approval/effect/reload/UNKNOWN; F11 mail/Timeline/Connections and LegiWatch/client/profile/brief/document/note effects; F12 required runtime/Core/storage observations. Follow fresh root statuses and reuse passed evidence; do not create a second Wave 5 acceptance queue.
 
-Row 11 is a required Research Portfolio behavior. Fable reconciles the original specified semantics and existing source owner; only genuinely missing product-policy meaning returns to root. Neither Fable nor Wave 5 invents financial ACLs or silently defers the requirement.
+Row11 remains required. Its interpretation is resolved to canonical qualified public evidence; the Core source correction is independently PASS. Live named-widget refusal and full16H still await deployment/acceptance. Do not reopen a private-source ACL or duplicate the existing evidence owner.
 
 ## 4. Prospective scope and source allocation
 
@@ -98,22 +100,24 @@ Historical §6 also mentions A4 and later L1. Reconcile A4 with already shipped/
 
 Before each finite source slice record repository, exact base, dependency heads, behavior, files, author, Hermes reviewer, release owner, affected checks and cleanup owner. The Wave 5 orchestrator assigns routine M5/M7 slices itself within these briefs. Coordinate actual ownership/resource overlap and raise only genuinely missing product/scope decisions; keep other independent work moving.
 
-Parallelize disjoint work: M5 artifact/read/custody, M7 reconciliation then admitted independent work, A5 contract intake. Frontend consumers start against an agreed public contract. Split further only for concrete independent slices. One writer per shared schema/catalog/migration/lockfile/UI entry/architecture registry; no broad upgrade/recontracting to reorganize work.
+Parallelize the authorized isolated **M5 reader**, **M7 existing-session management** and **MF-19 completion-link** source slices. MF-19 owns only its three allocated intent UI files outside the Wave4 checkout. The two existing M5 document/application access metadata distributions are published at `98e8a53a`, with reported checks PASS. Root has checked competing claims and allocates **contracts0.1.22** to the next isolated Wave5 M5 producer. This permits source/package preparation and finite review, not an unreviewed merge or deployment. Preserve immutable Wave4 contracts0.1.21/UI-stream0.1.8/catalog0.2.23 and their physical archives; no blanket shared schema/catalog/lock ownership transfers. A5 remains intake-only. **No Wave5 shipment is claimed.**
 
-Wave 5 returns exact-head draft PRs to root for integration/release coordination while Wave 4 closes. Preserve full SDK harness, Runtime V1, Core access, existing Temporal and immutable artifact owners. No new provider loop, proxy, grant machinery, scheduler, file platform or permission framework.
+Frontend consumers use the agreed public contract. One writer owns each shared schema/catalog/migration/lockfile/UI entry/architecture registry. Coordinate actual overlap rather than blocking unrelated authorized work; no broad upgrade or recontracting is needed to reorganize lanes.
+
+Wave 5 coordinates exact-head PR integration and existing Release use for remaining Wave 4 and its separately authorized source slices. The old Wave 4 root has stopped product/release work. Preserve full SDK harness, Runtime V1, Core access, existing Temporal and immutable artifact owners; no new provider loop, proxy, grant machinery, scheduler, file platform or permission framework.
 
 ## 6. Qualification and completion
 
 Separate implemented, reviewed, built, deployed and accepted. Reuse unchanged exact-source evidence; repeat only affected checks or an uncovered crossing. Previous DOCX/workbook/deck observations do not prove full M5, but must not be repeated just to create another receipt.
 
-Hermes owns independent review/acceptance. For visual work supply exact Figma source and implemented route for proper Playwright/browser review in its allocated context. Reuse existing setup; this document does not assert a fresh credential/connection check. Root/release supplies current cohort and a no-deploy window before live acceptance.
+Hermes owns independent review/acceptance. For visual work supply actual Figma source and implemented routes for proper Playwright/browser review in its allocated context. Reuse the existing setup and valid evidence; this document does not assert a fresh credential check. Wave 5 coordinates the exact deployed cohort and no-deploy acceptance window with existing Release.
 
 Select meaningful affected checks; label inherited failures against the same base. Old matrices are not mandatory repeated paid runs, natural-aging waits or broad benchmark campaigns. Apply current qualification interpretation while preserving access, idempotency, unknown-effect and data-integrity guarantees.
 
 ## 7. Decisions, exclusions and traps
 
 - Q07 semantic/index is SKIPPED; do not revive it as a dependency without a direct scope decision.
-- The earlier broader Research Portfolio/MO-05 deferral is SUPERSEDED. Fable owns all existing Research Portfolio requirements in Wave 4 closeout. Wave 5 must not duplicate that module; coordinate M5 artifact, M7 skill and shared contract overlap through root/Fable.
+- The earlier broader Research Portfolio/MO-05 deferral is SUPERSEDED. The complete existing scope remains Wave 4 closeout, now coordinated by Wave 5. Reuse the reviewed merged module and coordinate M5 artifact, M7 skill and shared contract overlap through the existing owners.
 - Outreach backend189/frontend245/Meri288 remains separate PR-only/unshipped; no silent merge, release or completion.
 - Onboarding remains excluded; ST-22 intake cannot reopen provisioning/import implementation.
 - Read support is not writer activation, rendered preview, filing, sharing or Office editing.
@@ -133,23 +137,23 @@ Use existing records, not a new evidence framework. Clean only task-owned dispos
 1. Read completed deployment stopping point and Fable handoff; preserve missing Hermes acceptance as open.
 2. Resolve actual bases and active file ownership. Reconcile named M5/M7 requirements against current code/evidence, not a broad audit.
 3. Assign and record finite M5/M7 allocations from the phase briefs, then implement confirmed independent slices without routine root approval. Coordinate actual overlaps; raise only genuinely missing scope/product decisions.
-4. Return ticket/stage progress, exact draft PR/head, affected tests/review, blockers and next owner. Root integrates/releases; Hermes accepts.
+4. Finish the takeover’s remaining Wave 4 release/evidence steps through existing Release and Hermes; report exact source/image/deployed pins, outcomes, limitations and next owner. Keep independent Wave 5 source work within its allocated briefs.
 5. At Wave 5's actual end, commit and push the dated nine-section handoff with canonical requirements, exact evidence/exclusions and remaining work. This startup packet is not that end-of-wave handoff.
 
 
 ## Current ownership and delivery rules
 
-**Wave 5 source-work authority:** the user has asked to start Wave 5. After reconciling current code, evidence and dependencies, the Wave 5 orchestrator may itself assign finite M5/M7 slices and implement confirmed remaining requirements within these briefs. Record the exact base, owned checkout/files, author and affected checks; routine allocations do not need root approval. Coordinate actual shared-file, contract, resource or target overlap with root and the affected owner. Raise only genuinely missing product/scope decisions, and continue other independent work. A5 remains intake-only; all existing Research Portfolio requirements remain Fable's Wave 4 assignment.
+**Wave 5 source-work authority:** parallel M5/M7/MF-19 source allocations remain authorized within their existing briefs and file reservations. M5 metadata `98e8a53a` is published/checks PASS; contracts0.1.22 remains allocated to the next isolated M5 producer. Preserve immutable Wave 4 contracts0.1.21/UI-stream0.1.8/catalog0.2.23 and shared single-writer coordination. No unreviewed merge/deployment or Wave 5 shipment follows from that allocation. Wave 5 now also coordinates the remaining Wave 4 closeout under the takeover; A5 remains intake-only.
 
-**Direct user scope update:** the instruction to finish **all existing Research Portfolio requirements, including MO-05**, supersedes the earlier broader-module deferral. Fable owns that complete existing-spec implementation and bug-fix scope within Wave 4 closeout; see [Research Portfolio requirements](RESEARCH-PORTFOLIO-REQUIREMENTS.md). Root coordinates independent review, merge and deployment, followed by Hermes acceptance. This is not a Wave 5 Research Portfolio assignment. Do not create duplicate module authors; coordinate any shared module, skill, public-contract, catalog, schema or file overlap with root and Fable before edits. The Wave 5 orchestrator may allocate generic M5 artifact and M7 skill work independently within these briefs, coordinating actual overlap with Fable's Research Portfolio ownership. Q07 semantic remains skipped, outreach remains separate and onboarding remains excluded.
+**Direct user scope update:** all existing Research Portfolio requirements, including MO-05, remain Wave 4 closure scope. Fable’s scan and the resulting source work have returned and are reviewed/merged. Wave 5 now coordinates the remaining delivery and evidence rather than duplicating RP implementation. Any new concrete defect uses the existing domain owner with focused checks and Hermes review. Q07 semantic stays skipped, Outreach separate and onboarding excluded.
 
-**Current direct-user instructions override historical roles:** the Wave 5 Codex orchestrator assigns and coordinates confirmed M5/M7 source work autonomously within these briefs. Fable scans and fixes remaining Wave 4 defects, completes all existing Research Portfolio requirements including MO-05, and returns PRs to the existing Wave 4 root. Root coordinates independent review, merges and ships through the designated release owner. **After deployment Hermes Agent app/CLI performs acceptance as usual.** Hermes remains the independent review and acceptance owner; Fable is not the formal acceptance owner. Root will notify Wave 5 when Wave 4 is actually complete after required Hermes acceptance, not at PR handoff or deployment.
+**Current direct-user instructions override historical roles:** the existing Wave 5 orchestrator finishes remaining Wave 4 and continues its bounded M5/M7 source allocations. The old Wave 4 root stops product/release work at reviewed source integration. Release alone performs shared target changes; after deployment Hermes Agent app/CLI performs acceptance. Wave 5 records actual completion only after applicable evidence or an explicit user disposition; Fable is not the formal acceptance owner.
 
 Do not inherit old Fable/dot relay rules, an old prohibition on Fable participating, historical model settings, per-run Fargate, source-only holds or recurring issue watchers. Use the new session's configured default model. No public issue #202 post or external message is authorized by this document.
 
 Reuse the existing owner and unchanged evidence. Check the affected real path early, make the smallest coherent change, run meaningful affected tests, obtain independent exact-head review, and build each candidate once when release needs it. Do not add a framework, generic abstraction, benchmark campaign, broad census or speculative capability to close a narrow ticket. Report tests run and not run; new executable tests need a meaningful failure witness/mutation where required by the existing process. Docs-only work has no executable tests and mutation N/A.
 
-Wave 4 root/release retains the cloud, database, deploy/rollback and shared authenticated browser lock while Wave 4 closes. An isolated checkout does not isolate ports, Docker, schemas, catalogs, public packages or authentication. One writer per path; reserve shared contracts, migration IDs, lockfiles, architecture registry and build configuration before edits. Do not reset, move or clean another owner's checkout. Preserve WSL Codex-Gates, persistent services/data, caches and authentication. Shared target migrations/deploys are outside implementation briefs.
+Existing Release retains sole cloud/database/deploy/rollback operation and the coordinated authenticated browser window; Wave 5 now owns orchestration. An isolated checkout does not isolate ports, Docker, schemas, catalogs, packages or authentication. Preserve one writer per shared path, the WSL environment, services/data, caches and other owners’ checkouts. Target operations remain outside source implementation briefs.
 
 ## Authoritative source map
 
@@ -160,6 +164,6 @@ The authoritative sources were read from C:/dev/w4-final-handoff-20261027 at Mer
 - [Final plan §5 and §6](../20261022/plan/FINAL-PLAN-20261021.md); §5 contains M5, M7 and A5. §6 explicitly calls the dated wave schedule historical sequencing, not a current calendar or source allocation.
 - [Supersession register](../20261022/source-of-truth/SUPERSEDED-BY-ITEM-0.md); full Claude SDK, direct Bedrock, Core gateway and Runtime V1 remain canonical.
 - Meri/application master path, section, line and durable source link accompany each original ticket.
-- Root's final Wave 4 handoff and current decision log supersede dated operational draft facts. Root owns the current release receipt and Wave 4 ownership; Wave 5 assigns its own finite M5/M7 source slices within these briefs.
+- The [Wave 4 to Wave 5 takeover](WAVE4-TO-WAVE5-TAKEOVER.md) and latest direct user instruction supersede older role text. Wave 5 owns remaining Wave 4 coordination and its finite M5/M7 allocations; Release operates targets and Hermes accepts independently.
 
 The canonical prefix is copied verbatim, including source-relative links. The authoritative standing-requirements link above resolves those source paths.

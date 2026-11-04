@@ -48,11 +48,15 @@ A change is not done until what it replaced is gone.
 
 # Research Portfolio requirements for Fable
 
+**Current authority — user-requested stopping point:** the existing Wave 5 orchestrator `01a17d3b-4cf1-7f21-a8ac-f0aa7cd0380d` now coordinates and finishes the remaining Wave 4 work. Existing Release chat `01a17ae6` remains the sole shared target operator; Hermes Agent app/CLI remains the independent review and acceptance owner. The old Wave 4 root stops product and release work at reviewed source integration. Follow the [Wave 4 to Wave 5 takeover](WAVE4-TO-WAVE5-TAKEOVER.md) for the exact remaining sequence and owner references. Earlier root/Fable assignments below are retained history, not a second active orchestration lane.
+
 27 October 2026. Companion to the [Fable handoff](FABLE-HANDOFF.md), [Wave 4 inventory](WAVE4-ITEM-INVENTORY.md), and [current release handoff](WAVE-4-HANDOFF.md).
 
-**Neo now assigns Fable all existing Research Portfolio requirements, including the full module beyond sharing and MO-05's 17-operation Meri integration.** This supersedes the earlier Research Portfolio deferral. Fable recovers requirements, investigates bugs, completes implementation and runs appropriate author checks. Root receives PRs, arranges independent review, merges and deploys. Hermes Agent app/CLI performs formal acceptance after deployment. This document does not transfer target-operation or acceptance ownership to Fable.
+**Scope retained:** all existing Research Portfolio requirements, including the full module beyond sharing and MO-05’s 17-operation Meri integration, remain Wave 4 closure scope. Fable’s returned scan has been reconciled; the existing Wave 5 orchestrator now finishes remaining delivery and evidence through Release and Hermes under the takeover handoff. This does not transfer target-operation or independent acceptance ownership to source authors.
 
-The available authoritative inventory is complete below: 28 module requirements, 18 screens/actions, 24 acceptance scenarios, 12 section 14.2 probes, 17 MO-05 operations, FR-15.22 and FR-16.1–FR-16.45 with sections 16A–16I. **The original functional sections 1–15 and the original F01–F42/V4-01–V4-15 definitions have not been recovered.** Their recovery is part of Fable's assignment; the available inventory must not be presented as a recovered complete original specification.
+The recovered inventory below contains the **70-row register** (28 module requirements, 18 screens/actions and 24 acceptance scenarios), its 12 section 14.2 probes, MO-05's 17 operations, FR-15.22 and full section 16 (FR-16.1–FR-16.45 and 16A–16I). On 27 October Neo directly selected **“Use the recovered scope for final sign-off (Recommended).”** These recovered requirements are the authoritative closure scope. **Original sections 1–15 and F01–F42/V4-01–V4-15 remain unrecovered provenance, not a sign-off blocker.** Do not invent those definitions or describe this as recovery of the missing original specification. Actual applicable implementation, review, deployment and acceptance obligations remain open until evidenced.
+
+Fable returned unverified static findings without fixes. The subsequent Core, Meri and frontend author work is now independently reviewed and merged; [the disposition table](FABLE-FINDING-DISPOSITIONS.md) separates those repairs from deployment and acceptance. This documentation update records the new coordinator and does not mark Wave 4 complete.
 
 ## Source authority and current baseline
 
@@ -73,7 +77,7 @@ The repository documents above were read from `C:/Users/Administrator/Documents/
 
 Use S01–S18 and their actual current components as the available screen requirements. No Figma file URL was recovered in these RP source documents. Follow a real existing design reference when available; recover a missing referenced design rather than invent a new redesign. Appropriate Playwright developer evidence supports Fable's visual fixes; Hermes owns later independent visual acceptance and must inspect actual renders.
 
-## Required source recovery
+## Recovered scope and retained source provenance
 
 The exact available historical statement in `CURRENT-BRANCH-CLOSEOUT-2026-09-28.md`, under “What remains,” is:
 
@@ -81,7 +85,7 @@ The exact available historical statement in `CURRENT-BRANCH-CLOSEOUT-2026-09-28.
 
 The matching JSON additionally records `Original START-HERE/full portable plan/F01-F42 and V4-01-V4-15 definitions/audit unavailable; unknown obligations cannot be invented from ranges/PARTIAL labels.` The earlier `BRANCH-CLOSEOUT-2026-09-28.md` has the same boundary. These sources do not give an extension or exact path for `START-HERE` or the 213155-byte plan; no more precise filename should be fabricated.
 
-Fable must trace those exact search targets through the existing repository/history, the cited legacy PR1903 and its handoff references, and any original functional-requirements attachment already available to the project. Recover original sections 1–15, F01–F42, V4-01–V4-15 and linked designs. Bind each recovered source to its provenance, reconcile its requirements against this available inventory, and append the actual missing definitions. If an attachment is genuinely absent, return its precise known identifier/reference and missing content to root; do not stop unrelated implementation. Do not call all Research Portfolio requirements complete without resolving this source gap and the applicable behavior.
+That September `fullPlan: BLOCKED` statement is preserved as provenance. Neo's later direct decision makes the recovered 70-row register, full section 16 and MO-05 authoritative for final closure; the absent historical files are no longer a blocking dependency. If an original source is later recovered, preserve its exact provenance and let root reconcile any real conflict with the current instruction. Do not invent a requirement from an identifier range or expand work from a historical `PARTIAL` label. Completion still requires the actual applicable recovered behavior and evidence, with explicit user dispositions such as Q07 kept separate.
 
 ## Implementation ownership and sequence
 
@@ -109,7 +113,7 @@ Return small PRs with the Fable handoff's exact base/head/tree, reproduction, re
 
 Section 16 expressly excludes its printable/PDF brief, client portal/login, guest comments and automatic delivery of links/PINs. “All requirements” includes the specification's exclusions; it does not turn them into features. Existing output jobs elsewhere in the module still follow their own supported-format requirements. No external send, provider activation, credential change or target deployment is authorized for Fable by this document.
 
-**FR-16.36/16H row 11 is required.** Publishing must enforce what that publisher can see and restrict frozen content to the chosen client; unsafe content must refuse with the affected widget. The current author trace found public financial inputs and separate lifecycle/legacy import paths, with no demonstrated restricted-input leak; Hermes found no common source-admission decision. Recover the actual source permission specification and trace existing owners. Implement clear existing policy at the real admission/publication boundary and cover affected negatives. If product meaning is still absent, return only that precise missing semantic decision to root, rather than asking whether RP remains in scope. Do not invent per-source ACLs, borrow unrelated corpus policy, use arbitrary domain filters or substitute an unavailable figure for a restricted-source refusal.
+**FR-16.36/16H row 11 remains required; its source-owner decision is resolved.** Hermes retains the existing qualified public source owners, not a new private-source ACL. Source-reviewed Core `96a4f2d21d38b3118dfe6a0c7e99512e45734289` includes canonical family/reference/document/revision/hash/locator checks and the later actual context-occurrence eligible/qualified correction. Hermes source PASS includes named-widget/no-link negative cases. Deployment and live row-11 acceptance remain pending; source refusal is not itself a live acceptance PASS.
 
 The frozen sharing lifecycle is intentionally distinct from authenticated internal output access: FR-16.22 says unlink/archive/access removal alone does not revoke an existing published link, while internal output rules require current authorization. Preserve both at their specified boundaries. Meri FR-15.22 requires the signed-in user's confirmation for create/revoke, with no second approver. Reuse the existing owner-confirmation path; do not import a second approval system from older generic wording.
 
@@ -117,7 +121,7 @@ The frozen sharing lifecycle is intentionally distinct from authenticated intern
 
 | Available source section | Content to finish or preserve |
 | --- | --- |
-| Project closeout: Wave 0 | Reconcile current implementation against all available rows and recover missing source definitions. Historical commands/roles are adapted to current owners. |
+| Project closeout: Wave 0 | Reconcile current implementation against the recovered authoritative rows; retain missing-original provenance without inventing definitions or a new blocker. Historical commands/roles are adapted to current owners. |
 | Project closeout: Wave 1 / phases 0–8 | Lifecycle/grants/client walls, members, rules, reviews/continuity, imports, source/identity/evidence, research/search/comparison/coverage and navigation. |
 | Project closeout: Wave 2 / phase 9 | One financial contribution ledger, basis and precision, frozen snapshots, durable output lifecycle, exact bytes and authenticated canonical filing. |
 | Project closeout: Wave 3 / phase 10 | Full research context and UI/Meri parity, authoritative registry, current server-bound authority, typed result scope and stable receipts. |
@@ -128,7 +132,7 @@ The frozen sharing lifecycle is intentionally distinct from authenticated intern
 | Screen register | S01–18; exact source table below. |
 | Acceptance and probes | AT-01–24 plus all 12 section 14.2 probes; exact source tables below. Fable uses these as behavior requirements, not an assignment to run formal acceptance. |
 | MO-05 | All 17 operations and the existing-owner discovery/scope/result/readback contract below. |
-| Functional section 15 | FR-15.22 is available verbatim. The rest of original sections 1–15 remains a source-recovery obligation. |
+| Functional section 15 | FR-15.22 is available verbatim. The rest of original sections 1–15 remains unrecovered provenance and is not a blocker under Neo's later scope decision. |
 | Functional 16A / FR-16.1–5 | Frozen widgets, settings, honest data states, compatible bases and sources. |
 | Functional 16B / FR-16.6–12 | Grid/keyboard designer, constraints, undo/redo, retained edits/conflicts, reusable versioned designs, responsive previews and role access. |
 | Functional 16C / FR-16.13–27 | Default-off sharing/PIN, current PIN invalidation, publish choices/preview/freeze, secret links, fixed expiry/revoke, history, safe retry and no second approver/send. |
@@ -138,7 +142,34 @@ The frozen sharing lifecycle is intentionally distinct from authenticated intern
 | Functional 16G / FR-16.43–45 | Reuse Workspace links and repair its specified idempotency/truncation defects; no duplicate sharing system. |
 | Functional 16H | Fourteen acceptance scenarios plus administration and Meri confirmation, run by Hermes after deployment. |
 | Functional 16I | Decisions versus assumptions from the source; preserve actual product choices and resolve a real ambiguity instead of inventing a replacement. |
-| Missing original defect registers | F01–F42 and V4-01–V4-15: recover exact definitions and reconcile every applicable row. Their ID ranges alone are not executable requirements. |
+| Missing original defect registers | F01–F42 and V4-01–V4-15 remain unrecovered provenance, not a closure blocker. Their ID ranges alone are not executable requirements. |
+
+## Current uncovered behavior and evidence
+
+The historical tables below remain verbatim. Their old PARTIAL/BLOCKED labels do not establish current defects or completion. All 33 returned findings are reconciled. Core PR195 is merged at `8d77e225fe3c16c891190654efeea8050978aaf8`, equal to reviewed `b49f010174de9a2dfaa598f327caf62761138283` tree `360fe212a3ef699ecb2e5cf7359671ede3d4cf32`. Frontend PR252 is merged at `d96087ae977465ccaec8e25f728e2a80acb1ebd4`, equal to reviewed `77987943e56c876e4810a320a8209e61bfa340ef` tree `330e0f1a672a8d0322bad9613624ae9d86495b04` (functional source `cbf9d5bc78b8817ca5f91adee870cbe5dceec53c`). Meri PR296 is merged at `337e54b3ad92bd80eb65eefc72b4245c4f9ff50d`; its qualified ARM64 image is `sha256:7eabf413c51ce089d860b1426836cb1904e665e2483c10c5bf2d12a4e672734b`, not deployed. The DI-07/S15 stored-locator, before/after and correction-impact projections and S14 governed Coverage readback are implemented, independently source-reviewed and merged in these pins. Source, frontend architecture, author gates and the finite IAM/configuration/preserved-edge review PASS. Final Core/frontend image completion and qualification, actual image/material/flag/edge composition, deployment/readback, Hermes live acceptance and the recorded real-corpus gaps remain pending. No new database/schema/migration/package change is introduced by the final projection amendment; do not replay completed migrations or repack immutable Wave 4 artifacts. **Wave 4 remains OPEN.**
+
+Core's bounded owner map, `work/fable-closeout-20261027/CORE-RECOVERED-SCOPE-MAP-39e0837ea.txt`, traces existing DI/S/OP services and routes. The context-occurrence qualification correction `39e0837ea` and Unicode draft-reader correction `f7b3c4401` now have independent source PASS. Existing native Research, Changes, comparison, Coverage, contribution/evidence, member and bulk-review controls are implemented and source-reviewed; native presence does not establish corpus denominators, historical cycles or live authorization/recovery.
+
+**Required bounded amendment source complete:** DI-07/S15 now project exact stored locators and existing before/after/correction-impact data; S14 projects existing governed Coverage readback. Those canonical read projections are reviewed and merged at the pins above. No new corpus, graph, provider command or requalification owner is introduced. Missing stored data stays explicitly unavailable. The remaining obligation is actual deployment, qualified corpus and Hermes acceptance, not another implementation of these readers.
+
+| Recovered rows | Precise requirement not established by this closeout packet |
+| --- | --- |
+| DI-01/DI-02, S11/S12, AT-10 | Four Research segments and five dossier tabs now have reviewed native/URL owners. Real required narratives, exact evidence and planned/completed milestone precision/history remain unqualified. |
+| DI-03, S06/S12, AT-07/AT-14/AT-21 | Qualified request-edition/FYDP and related-but-distinct enacted/outyear corpus; exact cells/bases; contribution-ledger equality, immutable snapshot/source-correction reproduction and unsupported-history negatives. |
+| DI-04/DI-08, S11 | Dated office/person/relationship transitions, authority semantics, access-filtered counts and unresolved/negative cases. |
+| DI-05/DI-06, S10/S11, AT-08/AT-09 | Qualified acquisition actions and policy/hearing/House/Senate/amendment/report families; physical/logical denominators, exact occurrences and source-correction/dependent-invalidation behavior. |
+| DI-07, S15 | Existing-data locator/before-after/correction-impact projections are implemented, source-reviewed and merged. Real stored-locator/current-access/immutable-target and live focus/return acceptance remain; absent source data is not fabricated. |
+| DI-09, S09, AT-11 | Exact/capability search, URL/detail and selected/page/all export controls are source-reviewed. Difficult-negative and real-result evidence remains. Semantic/index implementation and evaluation remain **SKIPPED under Q07**, not passed or reopened. |
+| DI-10, S13 | Saved comparison workbench, URL state, immutable versions, per-side evidence and selected add/bookmark controls are source-reviewed. Real subjects, current-access and saved-version/evidence acceptance remain. |
+| DI-11, S14, AT-24 | Customer-safe Coverage and existing governed readback are implemented, source-reviewed and merged, preserving unknown denominators. Real completeness attestations/cohort keys/physical-logical denominators and governed outcomes remain unqualified. No new requalification command or internal queue exposure. |
+| RP-03/04/07/08, S04/S07/S16 | Author UI controls do not establish populated-database rule outage/concurrency/manual precedence, qualified taxonomy and old-template reproduction, two-cycle continuity, all-row import receipts, crash/reconcile or compensation after a later edit. |
+| RP-05/09/10, S05/S17, AT-03/AT-13/AT-16/AT-18/AT-22 | Real owner/editor/viewer/wall and pre/during/post-revocation behavior, two-user quiet baselines, exact stored output/render/hash/open, unknown-commit recovery and configured delivery. Watch delivery is currently false; no external provider activation or send is inferred. |
+| MX-01/MX-02/MX-03, S02/S18, AT-15/AT-20 | Retained three-step creation, real ClioArtifact Open/edit/version recovery, tour and native MO-05 receiver are source-reviewed at frontend `6fdf4e5f`/Core `96a4f2d2`. Deployed UI/Meri parity, unsent-input preservation, exact saved IDs/bytes and tour/keyboard/breakpoint acceptance remain pending. |
+| OP-01/OP-04, AT-01/AT-02/AT-04/AT-19 and section 14.2 | Final Core/frontend image completion and qualification, source/image/configuration/material/route/health/rollback receipts; authenticated navigation/concurrency/performance/fault/economics and operator-response evidence. Wave 5 coordinates actual Release and Hermes receipts after deployment. |
+| OP-02/OP-03, AT-06/AT-12/AT-17/AT-23/AT-24 | Governed source qualification/admission, physical corpus and component/account/edition perimeter, two historical cycles plus next-cycle rehearsal, selective continuity and dated geography negatives. No current author report establishes these corpus obligations. |
+| FR-15.22, section 16/16H | Source/edge/package review is PASS; rollout must activate the existing RP registry and exact catalog/material, then Hermes exercises sharing/admin/Meri. All14 historical 16H rows remain without complete PASS. SH3 lock behavior remains required; controlled expiry is not a natural-week PASS. |
+
+The exact previously accepted single-paragraph DOCX and unchanged accepted checks remain reusable at their recorded limits. Overview metric-source documentation and the four recovered concrete frame registrations are now included in the frontend source; unknown frame families and the eleven unrecovered intermediate Timeline targets remain explicitly unverified. The thirteen recorded Timeline recovery targets belong with `3132:78373`; gated receipt/replay controls were not invented. Preserve the accepted shared TextareaField hint-above-field deviation. Independent visual acceptance and any further source recovery remain separate from these documentation updates.
 
 ## Verbatim repository requirement and screen tables
 
