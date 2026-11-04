@@ -27,13 +27,13 @@ export function createSemanticSearchValidators({validateShape}){
   const query=input.query.replace(/\s+/g,' ').trim();
   // JavaScript string length is UTF-16 code units and Core measures the normalized query that way; a JSON Schema
   // minLength/maxLength counts code points, so the schema only prefilters and these checks decide.
-  // Grants share this query bound without changing their legacy agency/filter rules.
+  // Grants share this query bound.
   if((family.utf16Query||id==='semantic_search_grants')?(query.length<3||query.length>2000):query.length<3)fail();
   if(input.dateFrom&&input.dateTo&&input.dateTo<input.dateFrom)fail();
   if(id==='semantic_search_grants'&&input.status!==undefined&&!GRANT_STATUSES.includes(input.status.trim().toLowerCase()))fail();
   for(const key of ['status','agency'])if(typeof input[key]==='string'&&!input[key].trim())fail();
-  // Core trims the agency and then measures it, so the active reads bound the trimmed value in UTF-16 code units.
-  if(family.utf16Query&&typeof input.agency==='string'&&input.agency.trim().length>240)fail();
+  // Core trims the agency and then measures it, so active reads and grants bound the trimmed value in UTF-16 code units.
+  if((family.utf16Query||id==='semantic_search_grants')&&typeof input.agency==='string'&&input.agency.trim().length>240)fail();
   return {input:{...input,query,limit:input.limit??10,...(id==='semantic_search_grants'&&input.status!==undefined?{status:input.status.trim().toLowerCase()}:{})}};
  }
  /** The active-corpus families publish one passage per canonical record and bind it to that record by canonical and
