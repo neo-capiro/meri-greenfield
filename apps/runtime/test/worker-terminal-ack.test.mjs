@@ -9,6 +9,7 @@ import {executionIdentity} from '../../control/conversations/execution-boundary.
 import {createAgentCoreExecutionOwner} from '../agentcore-execution.mjs';
 import {binding,scopes,versions,id} from '../../control/conversations/test/store-fixture.mjs';
 import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
+import {MODEL_CATALOG} from '../../../packages/contracts/test/model-selection-fixture.mjs';
 
 // Import-only config stub already used by the repository's closed worker HTTP tests.
 // Configuration/secret loading is outside this fixture and must not execute.
@@ -32,7 +33,7 @@ async function fixture(t,options={}) {
   const key=[binding.tenantId,binding.conversationId,binding.runId].join(':'),base=f.state.events.get(key).length;
   const execution={async authenticate(input){checks++;if(options.denyAt===checks)throw Error('Synthetic execution refusal');return actual.authenticate(input);}};
   const createService=({credential,binding})=>{const sessions=createExecutionSessions({execution,credential,binding,now});
-   const service=createConversationService({sessions,store:f.store,dispatcher:f.dispatcher,versions,now,...(options.retention?{retention:options.retention}:{})});
+   const service=createConversationService({sessions,store:f.store,dispatcher:f.dispatcher,versions,modelCatalog:MODEL_CATALOG,now,...(options.retention?{retention:options.retention}:{})});
    return {...service,async publish(input){const receipt=await service.publish(input);options.afterPublish?.({expire:()=>{clockOffset=60001;}});return options.receipt?options.receipt(structuredClone(receipt)):receipt;}};
   };
   const app=createWorkerRunApplication({execution,createService,now,configuration:{limits:{requestMs:3000,requestBytes:131072}}});

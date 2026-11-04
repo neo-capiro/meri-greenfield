@@ -5,13 +5,17 @@ import assert from 'node:assert/strict';
 import {holdComposition,assertHoldSettled} from './lifecycle-hold-harness.mjs';
 import {id,binding as fixtureBinding,allocateOriginal,settleInvocation} from './lifecycle-fixture.mjs';
 import {createRunReconciler,ATTEMPT_LOST} from '../run-reconciler.mjs';
+import {executionIdentity} from '../execution-boundary.mjs';
 export {allocateOriginal};
 const terminalEvent=event=>event.type==='run.status'&&['failed','cancelled'].includes(event.data.state);
 /** Finite simulated recording/transport latency that honours the caller's abort signal, as in the review reproduction. */
 export function delay(ms,signal){return new Promise((resolve,reject)=>{if(signal?.aborted)return reject(signal.reason);const timer=setTimeout(resolve,ms);signal?.addEventListener('abort',()=>{clearTimeout(timer);reject(signal.reason);},{once:true});});}
 export async function settlementComposition(options={}){
  const h=await holdComposition(options),f=h.f,binding=options.binding??fixtureBinding;h.retirements=0;h.retireMode='record';
- h.allocate=async()=>{h.allocation=await allocateOriginal(f.store,(await h.history()).run.binding);};
+ // holdComposition already claims the invocation before afterSubmit. Keep its exact expiry/identity: a second
+ // allocation with a new Date.now() expiry is a different invocation and the real journal correctly refuses it.
+ h.allocate=async()=>{const b=(await h.history()).run.binding,saved=await f.store.executions.read(b,()=>{});
+  h.allocation=saved.record?{key:{binding:b,executionId:saved.record.executionId},identity:executionIdentity(saved.record)}:await allocateOriginal(f.store,b);};
  // A definitive response permits the real reconciler to settle; silent/throw preserve its stopping barrier.
  const stopExecution=async({binding:b,executionId,runtimeSessionId})=>{h.retirements++;assert.deepEqual(b,h.allocation?.key.binding??b);if(h.retireMode==='throw')throw Error('synthetic Runtime stop uncertain');return {binding:b,executionId,runtimeSessionId,stopped:h.retireMode==='record'};};
  h.reconciler=createRunReconciler({store:f.store,stopExecution});
@@ -20,9 +24,13 @@ export async function settlementComposition(options={}){
  h.terminals=async()=>(await h.history()).events.filter(e=>e.type==='run.status'&&['failed','cancelled','completed'].includes(e.data.state));
  return h;
 }
-const captureFailureScript=h=>{const inFlight=Promise.withResolvers(),release=Promise.withResolvers(),committed=Promise.withResolvers(),refused=Promise.withResolvers();
+const captureFailureScript=h=>{const inFlight=Promise.withResolvers(),release=Promise.withResolvers(),committed=Promise.withResolvers(),refused=Promise.withResolvers(),interrupted=Promise.withResolvers();
  h.hooks.afterRead=async n=>{if(n===1){inFlight.resolve();await release.promise;}};h.hooks.refused=event=>{if(event.type==='message.delta')refused.resolve();};
- h.script=async function*({init,text,stopped}){yield init;await committed.promise;yield text('after the hold');await stopped;};
+ // The native lifecycle drains the interrupt's terminal SDK result before closing/capturing. Supplying that result
+ // makes this scenario reach its intended capture refusal instead of expiring while waiting for SDK cleanup.
+ h.hooks.interrupted=()=>interrupted.resolve();
+ h.script=async function*({init,text,stopped}){yield init;await committed.promise;yield text('after the hold');await interrupted.promise;
+  yield {type:'result',subtype:'error_during_execution',is_error:true};await stopped;};
  return async run=>{await inFlight.promise;await h.control('pause');committed.resolve();await refused.promise;release.resolve();return run;};};
 const completionWindowScript=h=>{h.script=async function*({init,text,result,stopped}){yield init;yield text('final answer');yield result;await stopped;};};
 /** Every scenario receives a factory for a fresh composition. */
@@ -64,7 +72,7 @@ export const settlementScenarios={
  'an unknown Runtime stop preserves the execution barrier after the immediate failed fence; the hold stays UNKNOWN':async make=>{
   for(const mode of ['silent','throw']){const h=await make({captureFails:true,terminalAttemptMs:20}),drive=captureFailureScript(h);h.hooks.afterSubmit=()=>h.allocate();h.hooks.beforeAppend=async(event,signal)=>{if(terminalEvent(event))await delay(60,signal);};
    await assert.rejects(drive(h.execute()),/EXECUTION_FAILED/);await delay(80);h.hooks.beforeAppend=undefined;h.retireMode=mode;
-   assert.deepEqual(await h.reconcile(),{outcome:'unknown',state:'failed'});assert.deepEqual(await h.row(),{hold:h.controlId('pause'),state:'failed'});assert.equal(await h.control_state('pause'),'UNKNOWN');assert.equal((await h.terminals()).length,1);}},
+   assert.deepEqual(await h.reconcile(),{outcome:'unknown',state:'failed',reasonCode:mode==='silent'?'STOP_RECEIPT_REFUSED':'STOP_CALL_FAILED'});assert.deepEqual(await h.row(),{hold:h.controlId('pause'),state:'failed'});assert.equal(await h.control_state('pause'),'UNKNOWN');assert.equal((await h.terminals()).length,1);}},
  'only the exact original binding settles: a stale attempt or fence is refused without a write':async make=>{
   const h=await make({terminalAttemptMs:20});h.hooks.afterSubmit=()=>h.allocate();h.hooks.beforeAppend=async(event,signal)=>{if(event.type==='message.delta')throw Object.assign(Error('STORE_UNAVAILABLE'),{code:'STORE_UNAVAILABLE'});if(terminalEvent(event))await delay(60,signal);};
   h.script=async function*({init,text,stopped}){yield init;yield text('lost');await stopped;};await assert.rejects(h.execute(),/EXECUTION_FAILED/);await delay(80);h.hooks.beforeAppend=undefined;
