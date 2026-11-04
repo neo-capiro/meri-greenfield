@@ -73,7 +73,7 @@ test('the answer cites records and never names the method or tool; the family gu
  const guidance=READ_FAMILY_GUIDANCE['semantic-search'];
  assert.equal(READ_FAMILIES['semantic-search'].clientScope,'optional');
  assert.equal(guidance.structured,false,'a semantic read never carries the SQL-first sentence of a structured family');
- assert.match(guidance.returns,/stable reference \(congress_bill, federal_grant or sam_opportunity plus id\); cite by title and public number \(bill, opportunity or solicitation number\)/);
+ assert.match(guidance.returns,/stable reference \(congress_bill, federal_grant, sam_opportunity, tango_dibbs_solicitation or tango_sbir_topic plus id\); cite by title and public number/);
  assert.match(guidance.states,/total is the page size, never a count/);
  // The legacy cross-domain candidate search no longer advertises bills, grants or contract opportunities as its coverage.
  assert.doesNotMatch(READ_FAMILY_GUIDANCE['data-search'].covers,/outreach, bills, grants, awards/);
@@ -89,6 +89,21 @@ test('grants and contract notices combine both paths under the funding answer ru
  assert.match(text,/call missing or truncated document text a coverage gap, and answer who won from the awards data/);
  const guidance=READ_FAMILY_GUIDANCE['semantic-search'];
  // The per-result notes from Core carry the offset, status and coverage-gap rules; the family guidance only names the passage.
- assert.match(guidance.covers,/with their attached documents/);
- assert.match(guidance.returns,/funding results add a passage/);
+ assert.match(guidance.covers,/with documents/);
+ assert.match(guidance.returns,/funding and active results add a passage/);
+});
+test('the active DIBBS and SBIR reads add their own routing clause only when one of them is mounted',()=>{
+ const p=prefix,active=[p+'semantic_search_dibbs_solicitations',p+'semantic_search_sbir_topics'];
+ for(const tool of active){
+  const sentence=readPromptSentence(true,[tool]);
+  assert.match(sentence,/Active DIBBS solicitations and open SBIR topics route the same way to semantic_search_dibbs_solicitations or semantic_search_sbir_topics/,tool);
+  assert.match(sentence,/cite the solicitation or topic by its number, title and link/,'public citation facts, never an internal identifier');
+  assert.match(sentence,/coverage is the active stored corpus at its snapshot, so a page is the nearest matches among indexed records, never eligibility, an exhaustive list or a live deadline/,'snapshot and non-exhaustive interpretation');
+  assert.doesNotMatch(sentence,/identifier from the returned reference/);
+  assert.ok(sentence.length<3200,`${tool}: ${sentence.length} characters`);
+ }
+ assert.doesNotMatch(readPromptSentence(true,semantic),/Active DIBBS/,'the old three mounts do not advertise the active clause');
+ // the exact/count rule is unchanged by the active clause
+ const withActive=readPromptSentence(true,[...sql,...active]);
+ assert.match(withActive,/how many, which fields, trends, totals, joins or exact filters \(sponsor, date, agency, status\) goes to text-to-SQL, not semantic search/);
 });

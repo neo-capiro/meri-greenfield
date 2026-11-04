@@ -580,6 +580,404 @@
         "results"
       ],
       "additionalProperties": false
+    },
+    "ActiveSemanticSearchInput": {
+      "type": "object",
+      "properties": {
+        "query": {"type": "string"},
+        "limit": {"type": "integer", "minimum": 1, "maximum": 25},
+        "agency": {"type": "string"},
+        "dateFrom": {"type": "string", "format": "date"},
+        "dateTo": {"type": "string", "format": "date"}
+      },
+      "required": ["query"],
+      "additionalProperties": false
+    },
+    "SemanticActiveDocumentCoverage": {
+      "type": "object",
+      "properties": {
+        "attachments": {"type": "integer", "const": 1},
+        "withText": {"type": "integer", "const": 1},
+        "indexed": {"type": "integer", "const": 1},
+        "truncated": {"type": "integer", "enum": [0, 1]}
+      },
+      "required": ["attachments", "withText", "indexed", "truncated"],
+      "additionalProperties": false
+    },
+    "SemanticDibbsRecord": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "providerId": {"type": "string", "minLength": 1, "maxLength": 128},
+        "solicitationNumber": {"type": "string", "minLength": 1, "maxLength": 128},
+        "documentType": {"enum": ["rfq", "rfp"]},
+        "title": {"$ref": "#/$defs/SemanticNullableText"},
+        "nsn": {"$ref": "#/$defs/SemanticNullableText"},
+        "partNumber": {"$ref": "#/$defs/SemanticNullableText"},
+        "quantity": {"anyOf": [{"type": "string", "maxLength": 64, "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"}, {"type": "null"}]},
+        "unitOfIssue": {"$ref": "#/$defs/SemanticNullableText"},
+        "setAside": {"$ref": "#/$defs/SemanticNullableText"},
+        "agency": {"const": "Defense Logistics Agency"},
+        "closeDate": {"$ref": "#/$defs/SemanticNullableDate"},
+        "currentSolicitation": {"const": true},
+        "url": {"type": "string", "minLength": 1, "maxLength": 2048},
+        "observedAt": {"type": "string", "format": "date-time", "maxLength": 40}
+      },
+      "required": ["id", "providerId", "solicitationNumber", "documentType", "title", "nsn", "partNumber",
+        "quantity", "unitOfIssue", "setAside", "agency", "closeDate", "currentSolicitation", "url", "observedAt"],
+      "additionalProperties": false
+    },
+    "SemanticSbirTopicRecord": {
+      "type": "object",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "providerId": {"type": "string", "minLength": 1, "maxLength": 128},
+        "topicNumber": {"$ref": "#/$defs/SemanticNullableText"},
+        "solicitationNumber": {"$ref": "#/$defs/SemanticNullableText"},
+        "title": {"$ref": "#/$defs/SemanticNullableText"},
+        "agency": {"$ref": "#/$defs/SemanticNullableText"},
+        "year": {"anyOf": [{"type": "integer", "minimum": 1900, "maximum": 2200}, {"type": "null"}]},
+        "activity": {"type": "string", "minLength": 1, "maxLength": 64},
+        "solicitationStatus": {"$ref": "#/$defs/SemanticNullableText"},
+        "closeDate": {"$ref": "#/$defs/SemanticNullableDate"},
+        "currentTopic": {"const": true},
+        "url": {"$ref": "#/$defs/SemanticNullableText"},
+        "observedAt": {"type": "string", "format": "date-time", "maxLength": 40}
+      },
+      "required": ["id", "providerId", "topicNumber", "solicitationNumber", "title", "agency", "year", "activity",
+        "solicitationStatus", "closeDate", "currentTopic", "url", "observedAt"],
+      "additionalProperties": false
+    },
+    "SemanticActivePassage": {
+      "type": "object",
+      "properties": {
+        "sourceTable": {
+          "enum": [
+            "opportunity_attachment",
+            "tango_sbir_topic"
+          ]
+        },
+        "sourceUrl": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "fileName": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "documentHash": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]{64}$"
+        },
+        "chunkIndex": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "extractionMethod": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "truncated": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "embeddedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "binding": {
+          "enum": [
+            "archived_content_sha256",
+            "provider_topic_id"
+          ]
+        },
+        "canonicalRecordId": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "providerRecordId": {
+          "$ref": "#/$defs/SemanticNullableText"
+        },
+        "attachmentContentSha256": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[0-9a-fA-F]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "offsetBasis": {
+          "const": "plain_text_normalized_utf16"
+        },
+        "archivedAt": {
+          "$ref": "#/$defs/SemanticNullableDateTime"
+        },
+        "textFetchedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        }
+      },
+      "required": ["sourceTable", "sourceUrl", "fileName", "documentHash", "chunkIndex", "start", "end",
+        "extractionMethod", "truncated", "embeddedAt", "binding", "canonicalRecordId", "providerRecordId",
+        "attachmentContentSha256", "offsetBasis", "archivedAt", "textFetchedAt"],
+      "additionalProperties": false
+    },
+    "SemanticDibbsResult": {
+      "type": "object",
+      "properties": {
+        "reference": {
+          "type": "string",
+          "maxLength": 160,
+          "pattern": "^tango_dibbs_solicitation:.+$"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "record": {
+          "$ref": "#/$defs/SemanticDibbsRecord"
+        },
+        "passage": {
+          "$ref": "#/$defs/SemanticActivePassage"
+        },
+        "documents": {
+          "$ref": "#/$defs/SemanticActiveDocumentCoverage"
+        }
+      },
+      "required": [
+        "reference",
+        "score",
+        "snippet",
+        "record",
+        "passage",
+        "documents"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticSbirTopicResult": {
+      "type": "object",
+      "properties": {
+        "reference": {
+          "type": "string",
+          "maxLength": 160,
+          "pattern": "^tango_sbir_topic:.+$"
+        },
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "snippet": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "record": {
+          "$ref": "#/$defs/SemanticSbirTopicRecord"
+        },
+        "passage": {
+          "$ref": "#/$defs/SemanticActivePassage"
+        }
+      },
+      "required": [
+        "reference",
+        "score",
+        "snippet",
+        "record",
+        "passage"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticDibbsOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "semantic_search_dibbs_solicitations"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "query": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 2000
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "similarityFloor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "candidateLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "indexedRecords": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "totalRecords": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "indexedRecords",
+            "totalRecords"
+          ],
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "minItems": 1,
+          "maxItems": 8
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SemanticDibbsResult"
+          },
+          "maxItems": 25
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "query",
+        "model",
+        "similarityFloor",
+        "candidateLimit",
+        "total",
+        "coverage",
+        "notes",
+        "results"
+      ],
+      "additionalProperties": false
+    },
+    "SemanticSbirTopicOutput": {
+      "type": "object",
+      "properties": {
+        "tool": {
+          "const": "semantic_search_sbir_topics"
+        },
+        "generatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "maxLength": 40
+        },
+        "query": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 2000
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "similarityFloor": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "candidateLimit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1000
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 25
+        },
+        "coverage": {
+          "type": "object",
+          "properties": {
+            "indexedRecords": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "totalRecords": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "indexedRecords",
+            "totalRecords"
+          ],
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "minItems": 1,
+          "maxItems": 8
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SemanticSbirTopicResult"
+          },
+          "maxItems": 25
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "query",
+        "model",
+        "similarityFloor",
+        "candidateLimit",
+        "total",
+        "coverage",
+        "notes",
+        "results"
+      ],
+      "additionalProperties": false
     }
   }
 }

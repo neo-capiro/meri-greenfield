@@ -19,7 +19,34 @@ for(const id of IDS)test(`${id}: fixed native route carries the literal request 
  assert.equal(f.wire[0].options.headers['x-internal-service-secret'],'SYNTHETIC_INTERNAL_SERVICE');assert.equal(f.wire[0].options.headers.authorization,'Bearer SYNTHETIC_NATIVE_USER');
  assert.equal(Object.hasOwn(f.wire[0].options.headers,'x-meri-read-observation'),false);
  const schema=advertisedArguments(f.contract.descriptor.inputSchema);assert.deepEqual(schema.arguments.parse(f.arguments),f.arguments);
- for(const patch of [{tenantId:'forged'},{limit:26},{query:'ab'},{clientId:'00000003-0000-4000-8000-000000000001'}])assert.equal(schema.arguments.safeParse({...f.arguments,...patch}).success,false);
+ // The advertised JSON Schema only prefilters: a length keyword counts code points, so for the active reads a
+ // two-code-point surrogate query must pass it and the receiver decides with the exact 3..2000 UTF-16 unit bound.
+ if(id==='semantic_search_dibbs_solicitations'||id==='semantic_search_sbir_topics')assert.equal(schema.arguments.safeParse({...f.arguments,query:'😊a'}).success,true,id);
+ for(const patch of [{tenantId:'forged'},{limit:26},{query:null},{clientId:'00000003-0000-4000-8000-000000000001'}])assert.equal(schema.arguments.safeParse({...f.arguments,...patch}).success,false);
+});
+test('the receiver refuses an active query below the UTF-16 unit floor before any Core call',async()=>{
+ const f=semanticCase('semantic_search_dibbs_solicitations');
+ await assert.rejects(f.handler()({...f.call(),request:{...f.arguments,query:'ab'}}),error=>/INVALID_ARGUMENTS/.test(String(error.code??error.message)));
+ assert.equal(f.wire.length,0);
+});
+test('the advertised converter and the receiver accept the exact padded producer query on both active reads',async()=>{
+ for(const id of ['semantic_search_dibbs_solicitations','semantic_search_sbir_topics']){
+  const f=semanticCase(id),padded=' '.repeat(1999)+'radios';
+  assert.equal(padded.length,2005,`${id}: the raw string is longer than any code-point cap would allow`);
+  f.state.page={...structuredClone(f.state.page),query:'radios'};
+  const schema=advertisedArguments(f.contract.descriptor.inputSchema);
+  assert.equal(schema.arguments.safeParse({...f.arguments,query:padded}).success,true,`${id}: the advertised converter admits the raw string`);
+  const request={...f.arguments,query:padded},out=JSON.parse(await f.handler()(f.call(request)));
+  assert.equal(f.wire.length,1,`${id}: exactly one Core call`);
+  assert.equal(f.wire[0].body.query,padded,`${id}: the raw request bytes are sent unchanged, not the normalized echo`);
+  assert.equal(out.result.query,'radios',`${id}: the normalized query is what the page echoes`);
+  assert.deepEqual(out.result,f.state.page,`${id}: the Core page is preserved`);
+ }
+});
+test('the receiver refuses a normalized query beyond the unit ceiling before any Core call',async()=>{
+ const f=semanticCase('semantic_search_dibbs_solicitations');
+ await assert.rejects(f.handler()({...f.call(),request:{...f.arguments,query:'a'.repeat(2001)}}),error=>/INVALID_ARGUMENTS/.test(String(error.code??error.message)));
+ assert.equal(f.wire.length,0);
 });
 test('a filter the family does not apply is refused before any Core call',async()=>{
  const f=semanticCase('semantic_search_grants');
@@ -49,8 +76,19 @@ test('the model-facing description names what the read covers, how to cite and w
  const scene=semanticCase('semantic_search_contract_opportunities'),f=await fixture('semantic-search','semantic_search_contract_opportunities',{scene}),m=await connect(t,f);
  const {tools}=await m.client.listTools();const tool=tools.find(row=>row.name==='semantic_search_contract_opportunities');assert.ok(tool);
  assert.match(tool.description,/^Find contract opportunities by meaning\. /);
- assert.match(tool.description,/Covers: Meaning-based discovery of federal bills, Grants\.gov grants and SAM\.gov contract opportunities \(with their attached documents\)/);
- assert.match(tool.description,/stable reference \(congress_bill, federal_grant or sam_opportunity plus id\); cite by title and public number/);
+ assert.match(tool.description,/Covers: Meaning-based discovery of federal text: bills, Grants\.gov grants, SAM\.gov contract opportunities \(with documents\), active DIBBS solicitations and open SBIR topics/);
+ assert.match(tool.description,/stable reference \(congress_bill, federal_grant, sam_opportunity, tango_dibbs_solicitation or tango_sbir_topic plus id\); cite by title and public number/);
  assert.match(tool.description,/total is the page size, never a count/);
  assert.doesNotMatch(tool.description,/Structured questions:/,'a semantic read is not a structured family');
+});
+test('the two active reads keep their own descriptions, routes and record rules',async t=>{
+ for(const id of ['semantic_search_dibbs_solicitations','semantic_search_sbir_topics']){
+  const scene=semanticCase(id),f=await fixture('semantic-search',id,{scene}),m=await connect(t,f);
+  const {tools}=await m.client.listTools(),tool=tools.find(row=>row.name===id);assert.ok(tool,id);
+  assert.match(tool.description,/^Find (active DIBBS|open SBIR) /,id);
+  assert.match(tool.description,/snapshot/,'a snapshot limit is stated');
+  assert.match(tool.description,/similarity is not relevance or eligibility/);
+  const out=await m.call();assert.equal(out.isError,undefined,JSON.stringify(out));
+  assert.equal(scene.wire.length,1);assert.equal(new URL(scene.wire[0].url).pathname,`/api/clio/tools/${id}`);
+ }
 });

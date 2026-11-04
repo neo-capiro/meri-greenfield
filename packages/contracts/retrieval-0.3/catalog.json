@@ -1,7 +1,7 @@
 {
   "contractVersion": "0.2.0",
   "catalogId": "meri.retrieval",
-  "catalogVersion": "0.2.33",
+  "catalogVersion": "0.2.34",
   "sourceRegistryCommit": "87ea34a812c56524644e4983b215ded5ce8a8f7d",
   "originals": [
     {
@@ -1569,6 +1569,26 @@
       "boundary": "Nearest-meaning public SAM.gov contract opportunity notices by embedding similarity over the stored notice text chunks, de-duplicated to the canonical notice record with a stable sam_opportunity reference per hit. No count, exhaustive-recall or relevance claim.",
       "replacement": {
         "id": "semantic_search_contract_opportunities",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "semantic_search_dibbs_solicitations",
+      "disposition": "selected",
+      "boundary": "Nearest-meaning active DIBBS solicitations by embedding similarity over archived solicitation document text chunks, bound to the canonical solicitation record with a stable tango_dibbs_solicitation reference per hit. No count, exhaustive-recall, eligibility or live-freshness claim.",
+      "replacement": {
+        "id": "semantic_search_dibbs_solicitations",
+        "version": "0.2.0"
+      },
+      "state": "mapped"
+    },
+    {
+      "id": "semantic_search_sbir_topics",
+      "disposition": "selected",
+      "boundary": "Nearest-meaning open SBIR topics by embedding similarity over the stored provider synopsis chunks, bound to the canonical topic record with a stable tango_sbir_topic reference per hit. The synopsis is not the full solicitation. No count, exhaustive-recall, eligibility or live-freshness claim.",
+      "replacement": {
+        "id": "semantic_search_sbir_topics",
         "version": "0.2.0"
       },
       "state": "mapped"
@@ -12533,11 +12553,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchInput",
-        "sha256": "38b3434496d7f10a3b427996a0054415023fb31e1c9c4e006594ae5a5884aea8"
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchOutput",
-        "sha256": "38b3434496d7f10a3b427996a0054415023fb31e1c9c4e006594ae5a5884aea8"
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -12600,11 +12620,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchInput",
-        "sha256": "38b3434496d7f10a3b427996a0054415023fb31e1c9c4e006594ae5a5884aea8"
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchOutput",
-        "sha256": "38b3434496d7f10a3b427996a0054415023fb31e1c9c4e006594ae5a5884aea8"
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -12667,11 +12687,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchInput",
-        "sha256": "38b3434496d7f10a3b427996a0054415023fb31e1c9c4e006594ae5a5884aea8"
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSearchOutput",
-        "sha256": "38b3434496d7f10a3b427996a0054415023fb31e1c9c4e006594ae5a5884aea8"
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -12703,6 +12723,142 @@
       ],
       "fixtureIds": [
         "catalog.binding.semantic_search_contract_opportunities"
+      ]
+    },
+    {
+      "operation": {
+        "id": "semantic_search_dibbs_solicitations",
+        "version": "0.2.0"
+      },
+      "displayName": "Find active DIBBS solicitations by meaning",
+      "whenToUse": "Find active DIBBS solicitations (RFQs and RFPs) whose archived solicitation text is closest in meaning to a topic, part, NSN or requirement, ranked by embedding similarity, with an optional agency and inclusive close-date range. Use it to find, compare or summarize active DIBBS opportunities by meaning; use text-to-SQL for counts, exact fields and joins.",
+      "limitations": [
+        "At most twenty-five records per call from the two hundred nearest active, filter-qualified text chunks; similarity is not relevance or eligibility, and an empty page is not proof that no solicitation exists.",
+        "Only active solicitations whose current document text is archived and embedded can match; coverage states how many active records are indexed, and missing, unreadable or truncated document text is a coverage gap.",
+        "Archive and text snapshots are as of the recorded fetch times; no continuous change at the same URL is claimed, and a null close date is unknown rather than closed.",
+        "Every record is public DIBBS data; no client or tenant record is ranked. Core current authority still governs the call."
+      ],
+      "positiveExamples": [
+        "Which active DIBBS solicitations ask for ruggedized radio components?",
+        "Find DIBBS RFQs similar to this part description and list their closing dates."
+      ],
+      "negativeExamples": [
+        "Treat the returned page as a count of matching solicitations, as proof that one is absent, or as eligibility.",
+        "Use it for how-many, which-field, trend or join questions; those go to text-to-SQL."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "stored_public_data",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/ActiveSemanticSearchInput",
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticDibbsOutput",
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.semantic_search_dibbs_solicitations"
+      ]
+    },
+    {
+      "operation": {
+        "id": "semantic_search_sbir_topics",
+        "version": "0.2.0"
+      },
+      "displayName": "Find open SBIR topics by meaning",
+      "whenToUse": "Find open SBIR topics whose stored synopsis is closest in meaning to a topic, technology or need, ranked by embedding similarity, with an optional agency and close-date range. Use it to find, compare or summarize open SBIR topics by topic or intent; the synopsis is not the full solicitation, and exact fields, counts or joins belong to text-to-SQL.",
+      "limitations": [
+        "At most twenty-five records per call from the two hundred nearest active, filter-qualified synopsis chunks; similarity is not relevance or eligibility, and an empty result is not proof that no topic exists.",
+        "The ranked text is the stored provider synopsis, not the full solicitation; a topic without stored description text stays in active coverage but cannot match.",
+        "Activity, solicitation status and close date are as of the provider snapshot and can change; a null close date is unknown rather than closed.",
+        "Every record is public SBIR data; no client or tenant record is ranked. Core current authority still governs the call."
+      ],
+      "positiveExamples": [
+        "Which open SBIR topics cover low-power edge inference for unmanned systems?",
+        "Find SBIR topics similar to this technology description and list their closing dates."
+      ],
+      "negativeExamples": [
+        "Treat the returned page as a count of matching topics, as proof that one is absent, or as eligibility.",
+        "Treat the synopsis as the full solicitation or use it for how-many, which-field, trend or join questions."
+      ],
+      "sourceRequirements": [
+        {
+          "sourceId": "stored_public_data",
+          "authority": "derived",
+          "purpose": "evidence"
+        }
+      ],
+      "inputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/ActiveSemanticSearchInput",
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
+      },
+      "outputSchema": {
+        "id": "urn:meri:retrieval:semantic-search:0.2.0#/$defs/SemanticSbirTopicOutput",
+        "sha256": "b2612e8bf3499064dd9bb1d8e2fb9fab5e53349fa1fd31343b981c6bc504309b"
+      },
+      "aliases": [],
+      "sideEffect": "none",
+      "requiredGrants": [
+        "tool.read"
+      ],
+      "approvalBoundary": "none",
+      "handler": null,
+      "availability": "unimplemented",
+      "qualification": "pending",
+      "retry": {
+        "maxRetries": 0,
+        "retryableCodes": [],
+        "unknownOutcome": "reconcile-before-retry"
+      },
+      "replacement": null,
+      "requirementIds": [
+        "R-01",
+        "R-04",
+        "R-05"
+      ],
+      "ticketIds": [
+        "REL-02"
+      ],
+      "gateIds": [
+        "RG-02",
+        "RG-05",
+        "RG-07"
+      ],
+      "fixtureIds": [
+        "catalog.binding.semantic_search_sbir_topics"
       ]
     }
   ]

@@ -9,7 +9,7 @@ function unique(values, label) {
 // binding may declare `sinceCatalogVersion`: a catalog must carry every binding its own version
 // includes, and is never required to carry a later successor's. Neither value is caller-controlled,
 // and a preserved catalog therefore keeps asserting at its own exact counts.
-export const CURRENT_CATALOG_VERSION = '0.2.33';
+export const CURRENT_CATALOG_VERSION = '0.2.34';
 function compareCatalogVersions(left, right) {
   const parts = value => String(value).split('.').map(Number);
   const a = parts(left), b = parts(right);
@@ -29,6 +29,8 @@ export const CATALOG_OPERATION_BINDINGS = Object.freeze([
   Object.freeze({id:'find_path_to',nativeId:'find_path_to',group:'graph-paths',input:'GraphPathsInput',output:'GraphPathsOutput',version:'0.2.0',sinceCatalogVersion:'0.2.27',contextKeys:Object.freeze([]),
     normalize:(v,r,c)=>v.graphPathsValidators.normalizeInput(r,c),outputAssert:(v,p,r)=>v.graphPathsValidators.assertOutput(p,r)}),
   ...['semantic_search_bills','semantic_search_grants','semantic_search_contract_opportunities'].map(id=>Object.freeze({id,nativeId:id,group:'semantic-search',input:'SemanticSearchInput',output:'SemanticSearchOutput',version:'0.2.0',sinceCatalogVersion:'0.2.33',contextKeys:Object.freeze([]),
+    normalize:(v,r,c,b)=>v.semanticSearchValidators.normalizeInput(b.id,r,c),outputAssert:(v,p,r,c,b)=>v.semanticSearchValidators.assertOutput(b.id,p,r)})),
+  ...[['semantic_search_dibbs_solicitations','SemanticDibbsOutput'],['semantic_search_sbir_topics','SemanticSbirTopicOutput']].map(([id,output])=>Object.freeze({id,nativeId:id,group:'semantic-search',input:'ActiveSemanticSearchInput',output,version:'0.2.0',sinceCatalogVersion:'0.2.34',contextKeys:Object.freeze([]),
     normalize:(v,r,c,b)=>v.semanticSearchValidators.normalizeInput(b.id,r,c),outputAssert:(v,p,r,c,b)=>v.semanticSearchValidators.assertOutput(b.id,p,r)})),
   Object.freeze({id:'get_pe_buyer_workspace',nativeId:'get_pe_buyer_workspace',group:'buyer-workspace',input:'BuyerWorkspaceInput',output:'BuyerWorkspaceOutput',version:'0.2.0',sinceCatalogVersion:'0.2.26',contextKeys:Object.freeze([]),
     normalize:(v,r,c)=>v.buyerWorkspaceValidators.normalizeInput(r,c),outputAssert:(v,p,r)=>v.buyerWorkspaceValidators.assertOutput(p,r)}),
@@ -524,7 +526,8 @@ function assertCatalog(catalog) {
   const graphPaths = compareCatalogVersions(catalog.catalogVersion,'0.2.27') >= 0 ? 1 : 0;
   const officeEdit = compareCatalogVersions(catalog.catalogVersion,'0.2.32') >= 0 ? 1 : 0;
   const semanticSearch = compareCatalogVersions(catalog.catalogVersion,'0.2.33') >= 0 ? 3 : 0;
-  if (selected.filter(row=>!additive.includes(row.id)).length !== 110 + advancedFunding + buyerWorkspace + graphPaths + officeEdit + semanticSearch || catalog.originals.length - selected.length !== 12 - advancedFunding - buyerWorkspace - graphPaths) fail('D012 disposition mismatch');
+  const semanticSearchActive = compareCatalogVersions(catalog.catalogVersion,'0.2.34') >= 0 ? 2 : 0;
+  if (selected.filter(row=>!additive.includes(row.id)).length !== 110 + advancedFunding + buyerWorkspace + graphPaths + officeEdit + semanticSearch + semanticSearchActive || catalog.originals.length - selected.length !== 12 - advancedFunding - buyerWorkspace - graphPaths) fail('D012 disposition mismatch');
   const operations = new Map();
   const aliases = new Map();
   for (const operation of catalog.operations) {
