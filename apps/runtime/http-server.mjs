@@ -37,7 +37,8 @@ export async function listenRuntime({configuration,application,readiness,signal,
  // and a connection is closed as its last response ends. Kept alive, it would hold the listener open for the whole keep-alive
  // timeout, and close() would end only on its shutdown timer.
  server.on('request',(request,response)=>{const socket=request.socket,open=serving.get(socket)??new Set();serving.set(socket,open.add(response));
-  if(stopping)response.setHeader('connection','close');
+  // Hono can synchronously refuse a malformed URL before this observer runs. Its sent headers must stay untouched.
+  if(stopping&&!response.headersSent)response.setHeader('connection','close');
   response.once('close',()=>{open.delete(response);if(open.size)return;serving.delete(socket);if(stopping)socket.destroySoon();});});
  server.requestTimeout=configuration.limits.requestMs+1000;server.headersTimeout=configuration.limits.requestMs;server.keepAliveTimeout=RUNTIME_KEEP_ALIVE_MS;server.maxHeadersCount=100;
  await new Promise((resolve,reject)=>{if(server.listening)return resolve();server.once('listening',resolve);server.once('error',reject);});

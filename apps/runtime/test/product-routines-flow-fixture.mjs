@@ -6,6 +6,7 @@ import {scheduledJobFixture,id,hash} from '../../control/schedules/test/schedule
 import {createPreparedSchedulePoolFixture} from '../../control/intents/test/prepared-schedule-fixture.mjs';
 import {temporalScheduleService} from '../../control/schedules/test/temporal-schedule-wire-fixture.mjs';
 import {createPostgresConversationStore} from '../../control/conversations/postgres-store.mjs';
+import {SDK_MODEL_CONFIGURATION} from '../../control/conversations/usage.mjs';
 import {createPostgresScheduleOwner} from '../../control/schedules/postgres-schedule-owner.mjs';
 import {createNativeIdentityContext} from '../native-authority/identity-context.mjs';
 import {createCoreMembershipGate} from '../../control/product-access/core-membership.mjs';
@@ -60,9 +61,13 @@ export async function productRoutinesFlowFixture(){
   else{assert.ok(url.endsWith('/context'));if(body.conversationId!==commandBinding.conversationId)return new Response('',{status:403});value={principal,identityRevision:'i1',identitySha256:body.identitySha256,conversationId:commandBinding.conversationId,selectedClientId:h.template.selectedClientId,contextRevision:'c1',...stamp};}
   return Response.json(value);
  };
- const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,commandContext,now,limits:{maxRequestMs:5000,maxFactBytes:65536},enabled:true,currentOwner:{async currentRun(binding){assert.deepEqual(binding,commandBinding);return JSON.stringify({binding,policyRevision:h.template.policyRevision,checkedAtMs:now(),deadlineMs:now()+60000});}}});
+ const identity=createNativeIdentityContext({origin:'https://core.synthetic.invalid',fetchImpl,now,limits:{maxRequestMs:5000,maxFactBytes:65536},enabled:true,
+  admitInitialConversation:async({principal,conversationId,selectedClientId})=>{
+   assert.deepEqual(principal,h.template.principal);assert.equal(conversationId,commandBinding.conversationId);assert.equal(selectedClientId,h.template.selectedClientId);
+   return JSON.stringify({binding:commandBinding,policyRevision:h.template.policyRevision,checkedAtMs:now(),deadlineMs:now()+60000});
+  },currentOwner:{async currentRun(binding){assert.deepEqual(binding,commandBinding);return JSON.stringify({binding,policyRevision:h.template.policyRevision,checkedAtMs:now(),deadlineMs:now()+60000});}}});
  const gate=createCoreMembershipGate({origin:'https://core.synthetic.invalid',identityContext:identity,fetchImpl,now,limits:{maxRequestMs:5000,maxFactBytes:65536}});
- const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,membership:{admit:gate.admit,recheck:gate.recheck},now,limits:{maxSessions:4,maxRequestMs:5000,maxTtlMs:60000,maxFactBytes:65536}}),session=await sessions.issue({identityCredential:'synthetic-native',deadlineMs:now()+5000});
+ const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,membership:{admit:gate.admit,recheck:gate.recheck},now,limits:{maxSessions:4,maxRequestMs:5000,maxTtlMs:60000,maxFactBytes:65536}}),session=await sessions.issue({identityCredential:'synthetic-native',hints:{conversationId:commandBinding.conversationId,clientId:h.template.selectedClientId},deadlineMs:now()+5000});
  const policy={async check({selection,selectionSha256}){
   assert.equal(selectionSha256,hash(selection));state.policies.push(selection);const mutation=!['list_scheduled_tasks','cancel_scheduled_task'].includes(selection.operation);
   return {authorized:!state.revoked&&state.clientVisible,selectionSha256,binding:commandBinding,scopes:h.scopes,selectedClientId:h.template.selectedClientId,
@@ -75,7 +80,8 @@ export async function productRoutinesFlowFixture(){
  const runControl={async cancel(call){const result=await h.options.runControl.cancel(call);abort.abort();return result;}},retirement={async retire(call){state.nativeStops++;return h.options.retirement.retire(call);}};
  const context={commandContext,allocationJson:h.template.allocationJson,template:h.template.task,workflow:{taskQueue:'meri-schedules',workflowIdPrefix:'meri/receiving'},policy,limits:{maxRequestMs:5000,maxFactBytes:65536,retryLimit:0}};
  const feature=createRuntimeRoutinesFeature({enabled:true,pool,client,context,now,newId,runControl,retirement,limits:{maxRequestMs:5000,maxRequestBytes:131072,maxResponseBytes:2097152}});
- const retention={async assertServable(){if(!state.retained)throw Error('synthetic retention suppressed');}},core={async assertCurrent(){throw Error('No Core conversation is created for this occurrence');}};
+ const retention={async assertServable(){if(!state.retained)throw Object.assign(Error('synthetic retention suppressed'),{code:'RETENTION_SUPPRESSED'});},
+  async withRelease(_subjects,release,{signal}){return release(signal,subject=>retention.assertServable(subject));}},core={async assertCurrent(){throw Error('No Core conversation is created for this occurrence');}};
  const configuration={version:1,profile:'isolated-preview',sourceEnabled:false,versions:h.template.versions,limits:{startupMs:1000,shutdownMs:1000,requestMs:1000,requestBytes:131072},native:{maxResponseBytes:2097152},
   temporal:{taskQueue:'meri-schedules'},scheduledDispatch:{enabled:true,conversationTaskQueue:'meri-conversations',maxConcurrentActivities:1}};
  const ports=captureRuntimePorts({routinesApplicationFactory:feature,conversationMembership:gate,conversationCurrentness:core}),app=createRuntimeProductApplications({configuration,sessions,ports,conversationStore:store,retention,now}),routes=createControlRouteApplications({assembly:app,candidate:{handle(){throw Error('private route was used');}}});
@@ -89,7 +95,7 @@ export async function productRoutinesFlowFixture(){
  async function execute(binding,{active=false}={}){
   await h.claim(binding);h.f.state.context.binding=binding;const issued=await h.f.sessions.issue({identityCredential:'synthetic-native-worker'}),ready=Promise.withResolvers(),stopped=Promise.withResolvers();
   const runOwner={load:({binding,signal})=>h.f.service.loadForExecution({credential:issued.credential,binding,signal}),append:({binding,event,signal})=>h.f.service.publish({credential:issued.credential,binding,event,signal})};
-  const activity=createConversationActivity({runOwner,now,newId,prepareRuntime:async()=>({binding,versions:h.template.versions,cwd:'/workspace/conversations/'+binding.conversationId,proxyUrl:'https://proxy.synthetic.invalid',proxyCredential:'synthetic-task-capability',model:'synthetic-no-provider',sessionStore:{async load(){return null;},async append(){}},deadlineMs:now()+30000,maxTurns:2,maxCostMicroUSD:h.allocation.budgets.maxCostMicroUSD,maxOutputBytes:1024}),
+  const activity=createConversationActivity({runOwner,now,newId,prepareRuntime:async()=>({binding,versions:h.template.versions,cwd:'/workspace/conversations/'+binding.conversationId,...SDK_MODEL_CONFIGURATION,providerEnvironment:{},sessionStore:{async load(){return null;},async append(){}},deadlineMs:now()+30000,maxTurns:2,maxCostMicroUSD:h.allocation.budgets.maxCostMicroUSD,maxOutputBytes:1024}),
    query(){state.queries++;return {async *[Symbol.asyncIterator](){yield {type:'assistant',parent_tool_use_id:null,message:{id:'routine-output',content:[{type:'text',text:active?'Partial routine result.':'Completed routine result.'},{type:'thinking',thinking:'PRIVATE_MODEL_REASONING'}]}};ready.resolve();if(active)await stopped.promise;yield {type:'result',subtype:'success',is_error:false};},close(){state.queryCloses++;stopped.resolve();}};}});
   const work=activity({binding,signal:abort.signal});work.catch(()=>{});await Promise.race([ready.promise,work]);return {work,ready:ready.promise};
  }
