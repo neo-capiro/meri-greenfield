@@ -30,6 +30,7 @@ test('the control route allowlist is closed, well-formed and names the routes th
  expect('public','/api/action-followthrough/session');expect('public','/api/conversations/input/admit');expect('public','/api/conversations/list');
  expect('public',`/api/conversations/events/${uuid}/stream`,'/api/conversations/events/:id/stream');
  expect('public','/api/uploads/original/'+uuid,'/api/uploads/original/:id');expect('public','/api/documents/download');expect('public','/api/data-access/read');
+ for(const operation of ['canvas-read','canvas-save']){expect('public','/api/documents/'+operation);expect('private','/api/documents/'+operation,'other');expect('public','/api/documents/'+operation+'/extra','other');}
  expect('private','/api/meri/office/wopi/files/0123456789abcdef0123456789abcdef/contents','/api/meri/office/wopi/files/:id/contents');
  expect('private','/v1/internal/workspace-generation/turn');
  // The other listener's routes, unknown paths, dead routes and identifier-shaped segments fold into `other` before any counting.

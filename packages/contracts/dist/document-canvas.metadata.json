@@ -1,0 +1,45 @@
+{
+  "schemaId": "meri.document-canvas/1",
+  "sources": [
+    {
+      "path": "artifacts-0.2/artifact-formats.mjs",
+      "sha256": "cf9aab9fcefb0a8a040d5f8bcfd2a4907931a7a64f0947fad7e47ab3721caf36",
+      "bytes": 2616
+    },
+    {
+      "path": "dist/conversation-application.mjs",
+      "sha256": "d6daac74611fa7877151bdbd35347c37c4d5479bcaef7996857bfccaba403de8",
+      "bytes": 2073192
+    },
+    {
+      "path": "dist/document-application.mjs",
+      "sha256": "9797e26d1d6ffae3c3526e5c2310371d108ea4dfeebd46df2dd181b1cec61a95",
+      "bytes": 736664
+    },
+    {
+      "path": "document-application/boundary.mjs",
+      "sha256": "3ea0f93063702f161970b8cf1aef5d4a7226400d541a2ae6cf7ae891a3fe0481",
+      "bytes": 2674
+    },
+    {
+      "path": "document-canvas.d.ts",
+      "sha256": "645a9552ee106498d5ab650a28180ffd4f5993b6b5d2201b09ae3119f47fdb38",
+      "bytes": 1884
+    },
+    {
+      "path": "document-canvas.mjs",
+      "sha256": "a818fcf5467530f0b6af8421e8bca63eb4cfd56ea6de31680146a7f56fb1fd8f",
+      "bytes": 3496
+    },
+    {
+      "path": "generate-document-canvas.mjs",
+      "sha256": "220b278476b1cb7670df82a38a78190a55396fe9fa1f0be87d1b3ce485658ace",
+      "bytes": 2293
+    },
+    {
+      "path": "node_modules/canonicalize/lib/canonicalize.js",
+      "sha256": "c1d0195af2a0748454b06af8f218e5c90415c19d39154d0058fee8229c12d859",
+      "bytes": 7145
+    }
+  ]
+}

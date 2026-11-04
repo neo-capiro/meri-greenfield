@@ -48,7 +48,7 @@ export const CONTROL_ROUTE_PATTERNS=Object.freeze({
   '/api/conversations/events/:id/stream','/api/action-followthrough/session','/api/action-followthrough/browser-session','/api/action-followthrough/query',
   ...BROWSER_VIEWER_ROUTES.map(route=>'/api/meri/browser/'+route),ROUTINE_MANAGEMENT_SESSION_PATH,...Object.values(USER_PREFERENCES_PATHS),...Object.values(taskCommandPaths),
   ...Object.values(ROUTINE_PATHS),...Object.values(TENANT_SETTINGS_PATHS),...Object.values(MEMORY_PATHS),DATA_ACCESS_PATH,
-  ...['create','revise','inspect','download','history','list','results','preview','preview-publish','federal-prepare','federal-load','federal-publish','federal-import','federal-approve','federal-history','links/issue','links/redeem'].map(route=>'/api/documents/'+route),
+  ...['create','revise','inspect','download','history','list','results','preview','preview-publish','federal-prepare','federal-load','federal-publish','federal-import','federal-approve','federal-history','links/issue','links/redeem','canvas-read','canvas-save'].map(route=>'/api/documents/'+route),
   ...['initiate','status','inspect','read','remove','original/:id'].map(route=>'/api/uploads/'+route),
  ]),
  private:Object.freeze([

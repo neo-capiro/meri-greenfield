@@ -2,6 +2,7 @@
 import {own} from '../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {storageMethod} from '../artifacts/storage/boundary.mjs';
 import {createRuntimeArtifactApplication} from './artifacts/application.mjs';
+import {createDocumentCanvasApplication} from './artifacts/canvas-application.mjs';
 import {createDownloadLinkGate} from './artifacts/download-gate.mjs';
 import {createSelectedTaskApplication} from './selected/http.mjs';
 import {createNativeSdkSessionApplication} from './sdk-session-http.mjs';
@@ -123,6 +124,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
  const usageOverview=ports.conversationMembership&&typeof conversationStore?.usageOverview?.read==='function'?createUsageOverviewApplication({store:conversationStore,gate:ports.conversationMembership,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const runIndex=historyService&&conversationStore.runs?createRunIndexApplication({store:conversationStore,history:historyService,gate:ports.conversationMembership,currentness:historyCurrentness,management:ports.conversationManagement,retention,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes}}):null;
  const canonicalDocuments=createRuntimeArtifactApplication({sessions,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},...(ports.artifactOptionsOwner?{optionsOwner:ports.artifactOptionsOwner}:{}),...(retention===undefined?{}:{retention})});
+ const canvasDocuments=createDocumentCanvasApplication({application:canonicalDocuments,sessions,now,limits:{maxRequestMs:configuration.limits.requestMs,maxRequestBytes:configuration.limits.requestBytes,maxResponseBytes:configuration.native.maxResponseBytes},...(ports.artifactOptionsOwner?{optionsOwner:ports.artifactOptionsOwner}:{}),...(retention===undefined?{}:{retention})});
  // Signed download links mount over the canonical document routes behind a readiness gate that trusted startup opens (or leaves closed).
  const downloads=createDownloadLinkGate({documents:canonicalDocuments,sessions,now,maxRequestMs:configuration.limits.requestMs,links:configuration.downloadLinks,suppression,authorization:ports.artifactOptionsOwner,store:ports.artifactStore});
  const selected=createSelectedTaskApplication({controller:ports.selectedController??{async handle(){throw fault('UNAVAILABLE');}},now,limits:{requestMs:configuration.limits.requestMs,requestBytes:configuration.limits.requestBytes},sourceEnabled:configuration.sourceEnabled});
@@ -144,6 +146,7 @@ export function createRuntimeProductApplications({configuration,sessions,ports,n
   if(Object.values(HISTORY_PATHS).includes(path))return history?history.handle(request):Response.json({error:{code:'CONVERSATION_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(/^\/api\/action-followthrough\/(query|draft|prepare|execute)$/u.test(path))return handleAction?handleAction(request):Response.json({error:{code:'UNAVAILABLE'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
   if(/^\/api\/task-commands\/(prepare|execute)$/u.test(path))return handleTask?handleTask(request):Response.json({error:{code:'TASK_COMMAND_UNAVAILABLE',outcome:'NOT_DISPATCHED'}},{status:503,headers:{'cache-control':'no-store','x-content-type-options':'nosniff'}});
+  if(path==='/api/documents/canvas-read'||path==='/api/documents/canvas-save')return canvasDocuments.handle(request);
   if(path.startsWith('/api/documents/'))return downloads.handle(request);
   if(path.startsWith('/internal/conversations/selected/'))return selected.handle(request);
   if(path.startsWith('/v1/runner/session/'))return sdkSessions.handle(request);
