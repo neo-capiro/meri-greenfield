@@ -9,8 +9,9 @@ import {createDocumentCanvasApplication} from '../canvas-application.mjs';
 import {captureRuntimePorts,createRuntimeProductApplications} from '../../product-applications.mjs';
 import {createControlRouteApplications} from '../../control-route-boundary.mjs';
 const encode=value=>new TextEncoder().encode(JSON.stringify(value));
-async function fixture({retained=false,assets=false,retainAssets=true}={}){
+async function fixture({retained=false,assets=false,retainAssets=true,general=false}={}){
  const f=nativeDocumentFixture({scopes:[{tenantId:'synthetic-tenant',kind:'client',resourceId:'33333333-3333-4333-8333-000000000090',policyRevision:'r1'}]});
+ if(general)f.context.scopes=[{tenantId:f.context.binding.tenantId,kind:'private-user',resourceId:f.context.binding.actorId,policyRevision:'r1'}];
  if(retained)f.context.evidence=[{sourceId:'program_elements',recordId:'record-synthetic',sourceVersionId:'version-synthetic',observedAt:new Date(f.options.now()).toISOString(),sourceUpdatedAt:null,citationId:randomUUID(),scopes:structuredClone(f.context.scopes),contentSha256:'a'.repeat(64),binding:structuredClone(f.context.binding)}];
  if(assets){
   const bytes=Buffer.from('synthetic retained image bytes'),object={objectId:randomUUID(),versionId:'SYNTHETIC_RETAINED',sha256:sha(bytes),bytes:bytes.length,scopes:structuredClone(f.context.scopes)};
@@ -20,8 +21,8 @@ async function fixture({retained=false,assets=false,retainAssets=true}={}){
   f.options.executor={async execute(input){f.state.executions.push(input);const bytes=Buffer.from(JSON.stringify(input.request.content.blocks));return {bytes,inspection:{sha256:sha(bytes),bytes:bytes.length,format:'docx',nativeOpened:false,rendered:false,recalculated:false,members:[],details:{paragraphs:1,tables:0,pictures:input.assets.length}}};}};
  }
  const first=await f.run(),binding=f.context.binding,now=f.options.now,credential='action_session_'+'a'.repeat(43),expiry=now()+30000;
- const selectedClientId=f.context.scopes[0].resourceId,state={denied:false,resolved:[],phases:[],release:null};
- const sessions={async authenticateSession(){if(state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return {principal:{sessionId:'synthetic-session',tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId},sessionRevision:'synthetic-current',checkedAtMs:now(),expiresAtMs:expiry};},async readCurrentState({authentication}){return {authenticationSha256:hash(authentication),binding,scopes:f.context.scopes,selectedClientId,checkedAtMs:now(),expiresAtMs:expiry};}};
+ const selectedClientId=general?null:f.context.scopes[0].resourceId,state={denied:false,resolved:[],phases:[],release:null,principal:{},current:null};
+ const sessions={async authenticateSession(){if(state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});return {principal:{sessionId:'synthetic-session',tenantId:binding.tenantId,actorId:binding.actorId,conversationId:binding.conversationId,runId:binding.runId,...state.principal},sessionRevision:'synthetic-current',checkedAtMs:now(),expiresAtMs:expiry};},async readCurrentState({authentication}){const current={authenticationSha256:hash(authentication),binding,scopes:f.context.scopes,selectedClientId,checkedAtMs:now(),expiresAtMs:expiry};return state.current?state.current(current):current;}};
  const limits={maxRequestMs:5000,maxRequestBytes:2097152,maxResponseBytes:16777216};
  const optionsOwner={async resolve(call){state.resolved.push(call);return {documentOptions:{sessions,selectedClientId,artifactOptions:{...f.options,ids:()=>({artifactId:randomUUID(),versionId:randomUUID(),objectId:randomUUID()})},now,limits,enabled:true},async recheck({phase}){state.phases.push(phase);if(phase==='release')await state.release?.();if(state.denied)throw Object.assign(Error('ACCESS_DENIED'),{code:'ACCESS_DENIED'});}};}};
  const config={sessions,optionsOwner,now,limits},application=createRuntimeArtifactApplication(config),app=createDocumentCanvasApplication({...config,application});
@@ -48,6 +49,29 @@ test('save uses canonical revise, preserves evidence and exact retained assets, 
  const q=receiveCanvasRequest('canvas-save',encode(h.saveBody));await receiveCanvasResponse('canvas-save',saved.status,encode(saved.body),q);
  const next=await h.read({artifactId:saved.body.version.artifactId,versionId:saved.body.version.versionId,objectSha256:saved.body.version.object.sha256});assert.deepEqual(next.body.request,h.saveBody.request);
  const previous=await h.read();assert.deepEqual(previous.body.request,original.body.request);assert.equal(previous.body.headVersionId,saved.body.version.versionId);
+});
+test('General chat reads and saves canonical documents under the actor private-user scope',async()=>{
+ const h=await fixture({general:true,retained:true}),read=await h.read();assert.equal(read.status,200,JSON.stringify(read.body));
+ const expected=[{tenantId:h.f.context.binding.tenantId,kind:'private-user',resourceId:h.f.context.binding.actorId,policyRevision:'r1'}];
+ assert.deepEqual(read.body.version.scopes,expected);
+ const save=await h.call('canvas-save',h.saveBody);assert.equal(save.status,200,JSON.stringify(save.body));
+ assert.deepEqual(save.body.version.scopes,expected);assert.deepEqual(save.body.version.evidence,h.first.version.evidence);
+ assert.equal(save.body.version.artifactId,h.selection.artifactId);assert.equal(save.body.version.parentVersionId,h.selection.versionId);
+ const next=await h.read({artifactId:save.body.version.artifactId,versionId:save.body.version.versionId,objectSha256:save.body.version.object.sha256});
+ assert.equal(next.status,200);assert.deepEqual(next.body.request,h.saveBody.request);assert.equal(h.f.state.executions.length,2);
+});
+for(const change of ['tenant','client'])test(`late ${change} change fails through current source authorization without releasing text or saving`,async()=>{
+ for(const route of ['canvas-read','canvas-save']){
+  const h=await fixture({general:change==='tenant'});
+  h.state.release=()=>{
+   assert(h.f.state.gets>0,'The private source bytes were read before the release-time identity change');
+   if(change==='tenant')h.state.principal={tenantId:'other-synthetic-tenant'};
+   else h.state.current=current=>({...current,selectedClientId:'33333333-3333-4333-8333-000000000091',scopes:current.scopes.map(scope=>({...scope,resourceId:'33333333-3333-4333-8333-000000000091'}))});
+  };
+  const result=await h.call(route,route==='canvas-read'?{selection:h.selection}:h.saveBody);
+  assert.equal(result.status,403,JSON.stringify(result.body));assert.deepEqual(result.body,{error:{code:'ACCESS_DENIED',outcome:route==='canvas-read'?'READ_UNAVAILABLE':'NOT_DISPATCHED'}});
+  assert.deepEqual(h.state.resolved.map(item=>item.intent),['inspect']);assert.equal(h.f.state.executions.length,1);
+ }
 });
 test('wrong exact selection and release-time revocation release no source or write',async()=>{
  const wrong=await fixture(),result=await wrong.read({...wrong.selection,objectSha256:'f'.repeat(64)});assert.equal(result.status,403);assert.equal(result.body.error.outcome,'READ_UNAVAILABLE');assert.equal(wrong.f.state.executions.length,1);
