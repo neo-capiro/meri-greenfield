@@ -32,6 +32,50 @@ const mutate=(label,id,vector,change)=>test(label,()=>{
  const {request,response}=structuredClone(vector);contract(id).assertOutput(response,{request});change(response,request);
  assert.throws(()=>contract(id).assertOutput(response,{request}));
 });
+test('grants UTF-16 query accepts 1000 supplementary characters after whitespace normalization',()=>{
+ const c=contract('semantic_search_grants'),query='\u{1f600}'.repeat(1000);
+ assert.equal(query.length,2000);
+ assert.deepEqual(c.normalizeInput({query:' \t'+query+'\n '}).input,{query,limit:10});
+});
+test('grants UTF-16 query rejects supplementary overflow before the Core receiver',()=>{
+ const c=contract('semantic_search_grants');
+ for(const query of ['\u{1f600}'.repeat(1001),'\u{1f600}'.repeat(1000)+'a']){
+  assert.ok([...query].length<2000&&query.length>2000,'schema code points fit but Core UTF-16 units exceed its limit');
+  assert.throws(()=>c.normalizeInput({query:' \t'+query+'\n '}),/SEMANTIC_SEARCH_INVALID/);
+ }
+});
+test('grants UTF-16 query preserves ordinary normalization, minimum length and existing filters',()=>{
+ const c=contract('semantic_search_grants'),filters={status:' POSTED ',agency:'  NSF  ',dateFrom:'2026-11-01',dateTo:'2026-12-01',limit:25};
+ assert.deepEqual(c.normalizeInput({query:'  clean\n water\t grants  ',...filters}).input,{query:'clean water grants',...filters,status:'posted'});
+ assert.deepEqual(c.normalizeInput({query:'abc'}).input,{query:'abc',limit:10});
+ for(const query of ['ab','  a  ',' \t\n '])assert.throws(()=>c.normalizeInput({query}));
+ for(const patch of [{status:'open'},{agency:'   '},{dateFrom:'2026-12-01',dateTo:'2026-11-01'},{dateFrom:'2026-1-1'},{congress:119}])
+  assert.throws(()=>c.normalizeInput({query:'water',...patch}));
+ assert.throws(()=>c.normalizeInput({query:'water',agency:'\u{1f600}'.repeat(121)}),/SEMANTIC_SEARCH_INVALID/,'the agency correction rejects values above 240 UTF-16 units');
+});
+test('grants UTF-16 agency accepts 120 supplementary characters after trimming',()=>{
+ const c=contract('semantic_search_grants'),agency=' \t'+'\u{1f600}'.repeat(120)+'\n ';
+ assert.equal(agency.trim().length,240);assert.ok(agency.length>240);
+ assert.deepEqual(c.normalizeInput({query:'water',agency}).input,{query:'water',agency,limit:10});
+});
+test('grants UTF-16 agency rejects 121 supplementary characters',()=>{
+ const c=contract('semantic_search_grants'),agency='\u{1f600}'.repeat(121);
+ assert.equal(agency.length,242);assert.equal([...agency].length,121);
+ for(const value of [agency,' \t'+agency+'\n '])
+  assert.throws(()=>c.normalizeInput({query:'water',agency:value}),/SEMANTIC_SEARCH_INVALID/);
+});
+test('grants UTF-16 agency rejects a mixed 241-unit value',()=>{
+ const c=contract('semantic_search_grants'),agency='\u{1f600}'.repeat(120)+'a';
+ assert.equal(agency.length,241);assert.equal([...agency].length,121);
+ for(const value of [agency,' \t'+agency+'\n '])
+  assert.throws(()=>c.normalizeInput({query:'water',agency:value}),/SEMANTIC_SEARCH_INVALID/);
+});
+test('grants UTF-16 agency preserves ordinary and absent agency behavior',()=>{
+ const c=contract('semantic_search_grants'),agency=' \tNational Science  Foundation\n ';
+ assert.deepEqual(c.normalizeInput({query:'water',agency}).input,{query:'water',agency,limit:10});
+ assert.deepEqual(c.normalizeInput({query:'water'}).input,{query:'water',limit:10});
+ assert.throws(()=>c.normalizeInput({query:'water',agency:' \t\n '}),/SEMANTIC_SEARCH_INVALID/);
+});
 mutate('another tool answered','semantic_search_bills',wire.bills,r=>{r.tool='semantic_search_grants';});
 mutate('query drift','semantic_search_bills',wire.bills,r=>{r.query='something else';});
 mutate('total is not the page size','semantic_search_bills',wire.bills,r=>{r.total=2;});
