@@ -27,7 +27,8 @@ export function createSemanticSearchValidators({validateShape}){
   const query=input.query.replace(/\s+/g,' ').trim();
   // JavaScript string length is UTF-16 code units and Core measures the normalized query that way; a JSON Schema
   // minLength/maxLength counts code points, so the schema only prefilters and these checks decide.
-  if(family.utf16Query?(query.length<3||query.length>2000):query.length<3)fail();
+  // Grants share this query bound without changing their legacy agency/filter rules.
+  if((family.utf16Query||id==='semantic_search_grants')?(query.length<3||query.length>2000):query.length<3)fail();
   if(input.dateFrom&&input.dateTo&&input.dateTo<input.dateFrom)fail();
   if(id==='semantic_search_grants'&&input.status!==undefined&&!GRANT_STATUSES.includes(input.status.trim().toLowerCase()))fail();
   for(const key of ['status','agency'])if(typeof input[key]==='string'&&!input[key].trim())fail();
