@@ -10,7 +10,7 @@ import {createCapiroApplicationAuthorityClient} from '../../control/action-host/
 import {researchContextFields,researchContextFromCurrent,sameResearchContext} from '../../control/action-host/application-adapters/research-context.mjs';
 const refuse=(code='CONVERSATION_UNAVAILABLE',outcome)=>{throw new ProductError(code,outcome);};
 const receiptSkewMs=5000;
-export function createCoreConversationManagement({origin,getServiceSecret,policyRevision,nativeCredentials,fetchImpl=fetch,now=Date.now,maxRequestMs}){
+export function createCoreConversationManagement({origin,getServiceSecret,policyRevision,nativeCredentials,objectiveCore,fetchImpl=fetch,now=Date.now,maxRequestMs}){
  const url=new URL(origin);if(url.protocol!=='https:'||url.pathname!=='/'||url.search||url.hash||url.username||url.password||typeof getServiceSecret!=='function'||typeof policyRevision!=='string'||!policyRevision)refuse();
  const current=createCapiroApplicationAuthorityClient({origin,fetchImpl,now,enabled:true,limits:{maxRequestMs,maxResponseBytes:131072}});
  function forRequest({credential,principal,signal,deadlineMs}){
@@ -45,6 +45,16 @@ export function createCoreConversationManagement({origin,getServiceSecret,policy
  }
  async function assertActiveBinding({binding,scopes,selectedClientId},check=()=>{}){
   check();const clients=scopes.filter(s=>s.kind==='client'),selected=selectedClientId===undefined?(clients.length===1?clients[0].resourceId:null):selectedClientId;
+  // Saved Objective runs have no interactive session. Their existing Core job
+  // owner checks current consent and membership; an unavailable owner never falls back.
+  if(objectiveCore){
+   const objective=await objectiveCore.forBinding({binding});check();
+   if(objective!==null){const current=objective.current;
+    if(current.tenantId!==binding.tenantId||current.actorId!==binding.actorId||current.clientId!==selected||
+       scopes.length!==1||clients.length!==1||clients[0].tenantId!==binding.tenantId||clients[0].resourceId!==selected||clients[0].policyRevision!==policyRevision)refuse();
+    return;
+   }
+  }
   const borrowed=nativeCredentials.nativeCredentialFor({binding,selectedClientId:selected,includeSubject:true}),started=now();
   const subject=researchContextFields(borrowed),research=subject.scopeKind==='research_portfolio';if(research&&selected!==null)refuse();
   const receipt=await current[research?'readResearchCurrent':'readCurrent']({credential:borrowed.credential,conversationId:binding.conversationId,clientId:selected,deadlineMs:started+maxRequestMs});check();

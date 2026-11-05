@@ -1,5 +1,9 @@
 # Representative-task suite (Promptfoo)
 
+## Release scope update — 5 November 2026
+
+Neo withdrew the requirement to supply the 48 approved real-request cases and directed shipping the retained release inventory. Those unavailable slots remain historical placeholders, not release prerequisites and not passing tests. Run the existing executable regression cases with their unchanged assertions, retain their offline label, and verify the affected deployed user flows. This removes the unavailable 60-real-task cohort requirement; it does not waive authorization, tenant isolation, data integrity, image qualification or live acceptance.
+
 Sixty task slots across the plan's five capability groups, twelve each: data and memory (`DM`), government intelligence (`GI`), client work (`CW`), deliverables (`DL`) and agent product (`AP`). The JSON files in `cases/` are the single owner of every slot. Each slot names its capability, expected evidence, permissions (principal, scope kinds, allowed or denied with the canonical refusal code, forbidden markers), output format and success criteria, and lists the graders that apply.
 
 - `AWAITING_APPROVED_REAL_REQUEST_SOURCE` (48 slots): the task needs a real Capiro request, source snapshot and frozen gold evidence. Prompt, scenario and evidence values stay `null` and the slot never runs. This matches `evals/retrieval-r2/manifest.json`, where no real request has been received.
@@ -23,4 +27,4 @@ Sixty task slots across the plan's five capability groups, twelve each: data and
 
 ## What it does not prove
 
-These are LOCAL_FIXTURE observations. No model, Claude Agent SDK query, network, database, Temporal, browser or native Office executor runs. A passing synthetic slot shows that the scripted runtime and the composed owners behave as frozen. It does not show that Meri completes real work. The plan's real-work release criterion (at least 60 representative real tasks at 90% or more completion and 95% or more checked factual correctness, scored against a staging candidate) stays unmet until approved real requests fill the 48 awaiting slots, gold evidence is frozen before grading, and the suite runs against the deployed runtime. The YAML config has not been run under the Promptfoo CLI, and the shape of the JavaScript test generator is unverified against that CLI.
+These are LOCAL_FIXTURE observations. No model, Claude Agent SDK query, network, database, Temporal, browser or native Office executor runs. A passing synthetic slot shows that the scripted runtime and the composed owners behave as frozen. It does not show that Meri completes real work or establish a model-accuracy percentage. The former 60-real-task release criterion is withdrawn under the owner decision above, not satisfied by synthetic results. Report executable regression results separately from actual deployed behavior. Retain source-bound CLI reports; do not infer a CLI pass from provider unit tests.
