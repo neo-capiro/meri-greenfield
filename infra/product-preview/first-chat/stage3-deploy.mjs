@@ -146,7 +146,8 @@ const USAGE=`Usage: node infra/product-preview/first-chat/stage3-deploy.mjs <com
                  (DIR: one list-secret-version-ids --include-deprecated JSON output per material secret, read just before)
   bindings       --deployment-inputs F --foundation-outputs F --private-edge-outputs F --rendered DIR --secret-versions versions.tsv
                  --image-scans scans.json --live-app-template app.live.template.json [--web-search-outputs gw.outputs.json]
-                 [--host-listener-outputs listener.outputs.json (required when the render has the host-currentness listener)] --out NEW_DIR
+                 [--host-listener-outputs listener.outputs.json (required when the render has the host-currentness listener)]
+                 [--native-worker-role-outputs role.outputs.json (required when features.nativeProcessing is enabled)] --out NEW_DIR
   verify-outputs --bindings DIR --app F`;
 
 export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.write(t),err=t=>process.stderr.write(t)}={}){
@@ -188,10 +189,14 @@ export async function main(argv=process.argv.slice(2),{out=t=>process.stdout.wri
    const webSearchOutputs=a['web-search-outputs']===undefined?undefined:outputsObject(await json(a['web-search-outputs']));
    // Required exactly when the render carries the host-currentness listener: the host listener stack's own outputs.
    const hostListenerOutputs=a['host-listener-outputs']===undefined?undefined:outputsObject(await json(a['host-listener-outputs']));
+   // Required exactly when native provisioning is enabled: the prerequisite stack's own outputs own the worker task role,
+   // which the foundation stack does not export.
+   const nativeWorkerRoleOutputs=a['native-worker-role-outputs']===undefined?undefined:outputsObject(await json(a['native-worker-role-outputs']));
    const bindings=buildStage3Bindings({deployment,foundationOutputs:outputsObject(await json(a['foundation-outputs'])),
     privateEdgeOutputs:outputsObject(await json(a['private-edge-outputs'])),renderSummary:await json(join(rendered,'summary.json')),renderedExpected,
     secretVersions:parseVersionsTsv(await readFile(a['secret-versions'],'utf8')),imageScans:await json(a['image-scans']),liveAppTemplate:await json(a['live-app-template']),
-    ...(webSearchOutputs===undefined?{}:{webSearchOutputs}),...(hostListenerOutputs===undefined?{}:{hostListenerOutputs})});
+    ...(webSearchOutputs===undefined?{}:{webSearchOutputs}),...(hostListenerOutputs===undefined?{}:{hostListenerOutputs}),
+    ...(nativeWorkerRoleOutputs===undefined?{}:{nativeWorkerRoleOutputs})});
    const {bodies,sizes}=synthesizeStage3(bindings),dir=await outsideRepository(a.out);
    await mkdir(dir,{recursive:false,mode:0o700});
    for(const key of STAGE3_DEPLOY_ORDER){await writeNew(join(dir,`${key}.binding.json`),JSON.stringify(bindings[key],null,1)+'\n');await writeNew(join(dir,`${key}.template.json`),bodies[key]);}

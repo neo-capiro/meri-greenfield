@@ -11,7 +11,7 @@ import {fileURLToPath} from 'node:url';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {nativeProcessingInputs} from './native-processing-material.fixture.mjs';
 import {PATHS,ROLES,renderMaterial,writeRendered} from './render-material.mjs';
-import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup} from './stage3-bindings.mjs';
+import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup,nativeWorkerTaskRole} from './stage3-bindings.mjs';
 import {parseLatestTsv,coreValues,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,secretLabelReadback,verifyOutputs,main} from './stage3-deploy.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
 import {createActionSessionOwner} from '../../../apps/control/action-host/session/owner.mjs';
@@ -424,15 +424,17 @@ test('native material reaches the Temporal worker task role and database network
  for(const browserOnly of [true,false]){
   const i=await nativeProcessingInputs(fixture);
   if(browserOnly)delete i.deployment.features.nativeProcessing.deployment;
-  const f={...args.foundationOutputs,WorkerTaskRoleArn:i.deployment.foundation.WorkerTaskRoleArn};
+  // No fabricated foundation output: the task role comes from the prerequisite stack that actually owns it.
+  const f=args.foundationOutputs,roleArn=i.deployment.foundation.WorkerTaskRoleArn;
   i.stage3=stage3RenderInput({deployment:i.deployment,foundationOutputs:f,revisions});
   sameSet(i.stage3.network['temporal-worker'].securityGroups,[f.WorkerSecurityGroupId,f.DbClientSecurityGroupId]);
   const rendered=renderMaterial(i);
   const bound=buildStage3Bindings({...args,deployment:i.deployment,foundationOutputs:f,renderSummary:rendered.summary,
-   renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),hostListenerOutputs:edge});
+   renderedExpected:Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected])),hostListenerOutputs:edge,
+   nativeWorkerRoleOutputs:{NativeWorkerTaskRoleArn:roleArn}});
   const t=synthesizeStage3(bound).templates.app,tasks=resources(t,'AWS::ECS::TaskDefinition');
   const worker=tasks.find(d=>d.Family==='meri-product-preview-temporal-worker'),control=tasks.find(d=>d.Family==='meri-product-preview-control');
-  assert.equal(worker.TaskRoleArn,f.WorkerTaskRoleArn,'native provisioning needs the distinct worker role on the actual task');
+  assert.equal(worker.TaskRoleArn,roleArn,'native provisioning needs the distinct worker role on the actual task');
   assert.equal(worker.TaskRoleArn,rendered.summary.wiring['temporal-worker'].taskRoleArn);
   assert.notEqual(worker.TaskRoleArn,control.TaskRoleArn);assert.equal(control.TaskRoleArn,f.ControlTaskRoleArn);
   const workerService=resources(t,'AWS::ECS::Service').find(s=>s.ServiceName==='meri-product-preview-temporal-worker');
@@ -444,11 +446,67 @@ test('native material reaches the Temporal worker task role and database network
  }
 });
 
+test('native provisioning takes the worker task role from its own stack readback, never from the foundation outputs',async()=>{
+ const {args,revisions}=await setup(),edge={HostListenerTargetGroupArn:'arn:aws:elasticloadbalancing:us-east-1:967807252336:targetgroup/meri-preview-host-control/0123456789abcdef'};
+ const i=await nativeProcessingInputs(fixture);
+ delete i.deployment.features.nativeProcessing.deployment;
+ const declared=i.deployment.foundation.WorkerTaskRoleArn;
+ // Reality: the foundation stack exports WorkerExecutionRoleArn and no worker TASK role at all.
+ assert.equal(Object.hasOwn(args.foundationOutputs,'WorkerTaskRoleArn'),false,'the foundation stack exports no worker task role');
+ // The rendered stage3 input must accept the foundation readback as it is; the task role is not one of its outputs.
+ i.stage3=stage3RenderInput({deployment:i.deployment,foundationOutputs:args.foundationOutputs,revisions});
+ const rendered=renderMaterial(i);
+ const renderedExpected=Object.fromEntries(ROLES.map(role=>[role,rendered.roles[role].expected]));
+ const bind=extra=>buildStage3Bindings({...args,deployment:i.deployment,foundationOutputs:args.foundationOutputs,
+  renderSummary:rendered.summary,renderedExpected,hostListenerOutputs:edge,...extra});
+ const bound=bind({nativeWorkerRoleOutputs:{NativeWorkerTaskRoleArn:declared}});
+ assert.equal(bound.app.workerTaskRoleArn,declared);
+ const worker=resources(synthesizeStage3(bound).templates.app,'AWS::ECS::TaskDefinition').find(d=>d.Family==='meri-product-preview-temporal-worker');
+ assert.equal(worker.TaskRoleArn,declared,'the browser-capable worker carries its task role on the actual task');
+ // Fail closed instead of rendering a browser-capable worker with no role.
+ assert.throws(()=>bind({}),/STAGE3_BINDING_REFUSED/u,'no prerequisite stack readback');
+ assert.throws(()=>bind({nativeWorkerRoleOutputs:{}}),/STAGE3_BINDING_REFUSED/u,'readback without the role');
+ assert.throws(()=>bind({nativeWorkerRoleOutputs:{NativeWorkerTaskRoleArn:'arn:aws:iam::967807252336:role/another-worker'}}),
+  /STAGE3_BINDING_REFUSED/u,'readback drifting from the reviewed input');
+});
+
+test('a task role may never be an execution role, and the foundation drift check still applies to every real output',async()=>{
+ const {args}=await setup();
+ // An execution role grants the ECS agent pull/log rights, not the application's cloud calls: the exact live confusion.
+ for(const key of ['WorkerExecutionRoleArn','ControlExecutionRoleArn']){
+  const i=await nativeProcessingInputs(fixture);
+  i.deployment.foundation.WorkerTaskRoleArn=args.foundationOutputs[key];
+  assert.throws(()=>renderMaterial(i),/RENDER_INPUT_REFUSED/u,key);
+ }
+ // The stage3 input refuses a real foundation output that drifted from deployment-inputs.json.
+ const i=await nativeProcessingInputs(fixture);
+ const drifted={...args.foundationOutputs,WorkerSecurityGroupId:'sg-00000000000000000'};
+ assert.throws(()=>stage3RenderInput({deployment:i.deployment,foundationOutputs:drifted,revisions:nextRevisions(parseLatestTsv(LATEST))}),
+  /STAGE3_BINDING_REFUSED/u,'a genuine foundation output still has to match');
+});
+
+for(const [state,nativeProcessing] of [['absent',undefined],['disabled',{enabled:false}]]){
+ test(`native worker role refuses inputs when native processing is ${state}`,()=>{
+  const deployment={foundation:{}};
+  if(nativeProcessing!==undefined)deployment.features={nativeProcessing};
+  const role='arn:aws:iam::967807252336:role/synthetic-native-worker';
+  assert.equal(nativeWorkerTaskRole({deployment}),undefined);
+  // Call the role guard directly so unrelated material validation cannot satisfy these refusals.
+  assert.throws(()=>nativeWorkerTaskRole({deployment:{...deployment,foundation:{WorkerTaskRoleArn:role}}}),{
+   code:'STAGE3_BINDING_REFUSED',message:'STAGE3_BINDING_REFUSED: foundation.WorkerTaskRoleArn requires features.nativeProcessing'
+  });
+  for(const nativeWorkerRoleOutputs of [{},{NativeWorkerTaskRoleArn:role}]){
+   assert.throws(()=>nativeWorkerTaskRole({deployment,nativeWorkerRoleOutputs}),{
+    code:'STAGE3_BINDING_REFUSED',message:'STAGE3_BINDING_REFUSED: nativeWorkerRoleOutputs is only consumed when features.nativeProcessing is enabled'
+   });
+  }
+ });
+}
+
 test('absent or disabled native processing grants neither the native worker role nor database network',async()=>{
  const {args,revisions}=await setup();
  for(const nativeProcessing of [undefined,{enabled:false}]){
   const i=structuredClone(await fixture.setup());
-  i.deployment.foundation.WorkerTaskRoleArn='arn:aws:iam::967807252336:role/synthetic-native-worker';
   if(nativeProcessing!==undefined)i.deployment.features={nativeProcessing};
   const f={...args.foundationOutputs,...i.deployment.foundation};
   i.stage3=stage3RenderInput({deployment:i.deployment,foundationOutputs:f,revisions});

@@ -295,8 +295,13 @@ export function parseDeploymentInputs(raw){
  record(d.database.roles,'deployment.database.roles',['control',...(schedule?['schedule']:[]),...(features?.nativeProcessing?.enabled?['nativeWorker']:[])]);
  if(features?.nativeProcessing?.enabled&&(!/^[a-z_][a-z0-9_]{0,62}$/u.test(d.database.roles.nativeWorker)||
   Object.entries(d.database.roles).some(([k,v])=>k!=='nativeWorker'&&v===d.database.roles.nativeWorker)))fail('RENDER_INPUT_REFUSED','nativeProcessing requires a distinct reviewed database role');
+ // A provisioned host is launched and registered by the worker's own workload identity. An execution role only lets the
+ // ECS agent pull the image and write logs, so accepting one here would render a browser-capable worker that fails at the
+ // first provision — exactly the deployment this guard exists to catch.
  if(features?.nativeProcessing?.enabled&&(!/^arn:aws:iam::967807252336:role\/[A-Za-z0-9_+=,.@/-]{1,512}$/u.test(d.foundation.WorkerTaskRoleArn??'')||
-  d.foundation.WorkerTaskRoleArn===d.foundation.ControlTaskRoleArn))fail('RENDER_INPUT_REFUSED','nativeProcessing requires a distinct worker task role');
+  d.foundation.WorkerTaskRoleArn===d.foundation.ControlTaskRoleArn||
+  Object.entries(d.foundation).some(([key,value])=>key.endsWith('ExecutionRoleArn')&&value===d.foundation.WorkerTaskRoleArn)))
+  fail('RENDER_INPUT_REFUSED','nativeProcessing requires a distinct worker task role, not an execution role');
  if(schedule){
   if(features?.sourceEnabled!==true||features.routines?.enabled!==true||!features.routines.task||!features.routines.core?.unattendedGrant||features.reads?.enabled!==true)
    fail('RENDER_INPUT_REFUSED','schedule-worker requires sourceEnabled, routines task/Core unattendedGrant and enabled reads');
