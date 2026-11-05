@@ -14,6 +14,8 @@ import {PATHS,ROLES,renderMaterial,writeRendered} from './render-material.mjs';
 import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup} from './stage3-bindings.mjs';
 import {parseLatestTsv,coreValues,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,secretLabelReadback,verifyOutputs,main} from './stage3-deploy.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
+import {createActionSessionOwner} from '../../../apps/control/action-host/session/owner.mjs';
+import {canonicalSha256} from '../../../packages/contracts/validate.mjs';
 
 const here=fileURLToPath(new URL('.',import.meta.url));
 const load=async name=>JSON.parse(await readFile(join(here,name),'utf8'));
@@ -199,16 +201,64 @@ test('CLI writes stage3.json, bindings, templates and the deploy plan outside th
  }finally{await rm(work,{recursive:true,force:true});}
 });
 
-test('live stacks: every update keeps control and worker serving, control one task at a time',async()=>{
+/** Scheduler arithmetic from the documented `update-service` contract: `maximumPercent` is an upper bound on
+ * RUNNING/PENDING tasks rounded down, `minimumHealthyPercent` a floor on healthy tasks rounded up, and a service
+ * behind a load balancer counts a task healthy only once the load balancer reports it. A replacement therefore starts
+ * only in a free slot; without one the service must stop a task first, and it may do that only while the remainder
+ * still meets the healthy minimum. Returns what serves while that replacement is still starting. */
+const serviceCapacity=(configuration,desired=1)=>{
+ const slots=Math.floor(desired*configuration.MaximumPercent/100);
+ const requiredHealthy=Math.ceil(desired*configuration.MinimumHealthyPercent/100);
+ const stopsBeforeStart=slots-desired<1&&requiredHealthy<desired;
+ return {slots,requiredHealthy,stopsBeforeStart,servingWhileStarting:stopsBeforeStart?desired-1:desired,peak:Math.min(slots,desired+1)};
+};
+
+/** The actual Control session owner, composed as apps/runtime/control.mjs composes it, with one synthetic identity and
+ * context. Two of these stand in for two Control tasks during a rollout. */
+const SESSION_BINDING={tenantId:'00000000-0000-4000-8000-000000000001',actorId:'00000000-0000-4000-8000-000000000002',
+ conversationId:'00000000-0000-4000-8000-000000000003',runId:'00000000-0000-4000-8000-000000000004',
+ attemptId:'00000000-0000-4000-8000-000000000005',workerId:'00000000-0000-4000-8000-000000000006',writerFence:1};
+const SESSION_CLIENT='00000000-0000-4000-8000-000000000007';
+function sessionOwner(){
+ const at=Date.now(),scopes=[{tenantId:SESSION_BINDING.tenantId,kind:'client',resourceId:SESSION_CLIENT,policyRevision:'policy'}];
+ return createActionSessionOwner({mode:'process-local',now:()=>at,limits:{maxSessions:4,maxRequestMs:1000,maxTtlMs:10000,maxFactBytes:65536},
+  verifyIdentity:async()=>({principal:{tenantId:SESSION_BINDING.tenantId,actorId:SESSION_BINDING.actorId},identityRevision:'identity',checkedAtMs:at,expiresAtMs:at+20000}),
+  resolveContext:async({identity})=>({identitySha256:canonicalSha256(identity),binding:SESSION_BINDING,scopes,selectedClientId:SESSION_CLIENT,
+   contextRevision:'context',checkedAtMs:at,expiresAtMs:at+20000})});
+}
+
+test('a token issued by one Control task is refused by another: overlap needs shared or routed sessions',async()=>{
+ const a=sessionOwner(),b=sessionOwner();
+ try{
+  const issued=await a.issue({identityCredential:'synthetic-native'});
+  const authentication=await a.authenticateSession({credential:issued.credential});
+  assert.equal((await a.readCurrentState({authentication})).binding.conversationId,SESSION_BINDING.conversationId,'the owning task serves its own session');
+  await assert.rejects(b.authenticateSession({credential:issued.credential}),error=>error.code==='SESSION_REFUSED');
+ }finally{a.close();b.close();}
+});
+
+test('live stacks: control keeps one serving task while its action sessions stay process-local',async()=>{
  const {synth:{templates:t},bindings,args}=await setup();
  const svc=(template,id)=>template.Resources[id];
  for(const [template,id] of [[t.app,'controlService'],[t.app,'temporalWorkerService']])
   assert.equal(svc(template,id).Properties.DesiredCount,1,id);
  const control=svc(t.app,'controlService');
+ // Each task owns its sessions in-process and both target groups are non-sticky, so a second serving task refuses a
+ // token issued by the first (proved above). The single-serving profile is deliberate; its cost is the stop-before-start
+ // gap, and closing that gap requires a qualified ownership/routing change, not a higher percentage.
+ const owner=sessionOwner(),mode=owner.status().mode;owner.close();
+ const live=serviceCapacity(control.Properties.DeploymentConfiguration,control.Properties.DesiredCount);
+ assert.equal(mode,'process-local');
+ assert.equal(live.peak,1,`a ${mode} session owner cannot be shared by two serving tasks`);
+ assert.equal(live.stopsBeforeStart,true,'the running task is stopped before its replacement starts; that gap is known, not hidden');
+ // Raising either percentage alone would add a second serving owner: the counterexample this guard rejects.
+ const overlap=serviceCapacity({MaximumPercent:200,MinimumHealthyPercent:100},control.Properties.DesiredCount);
+ assert.equal(overlap.peak,2);
  assert.deepEqual(control.Properties.DeploymentConfiguration,{MaximumPercent:100,MinimumHealthyPercent:0});
  assert.equal(control.Properties.AvailabilityZoneRebalancing,'DISABLED','ECS refuses max 100 while AZ rebalancing is ENABLED');
  assert.equal(control.DependsOn?.includes('runnerTask')??false,false);
  assert.equal(svc(t.app,'temporalWorkerService').Properties.AvailabilityZoneRebalancing,undefined,'only control changes deployment shape');
+ assert.equal(svc(t.app,'temporalWorkerService').Properties.DeploymentConfiguration,undefined,'worker keeps the ECS default deployment shape');
  // Control keeps the live public 8080 group and the private 8082 group.
  assert.equal(bindings.app.controlTargetGroupArn,PUBLIC_TG);
  assert.deepEqual(control.Properties.LoadBalancers.map(l=>l.ContainerPort).sort(),[8080,8082]);

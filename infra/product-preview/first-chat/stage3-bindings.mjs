@@ -185,7 +185,13 @@ export function liveControlTargetGroup(liveAppTemplate){
 /** Qualify the native TLS Temporal cluster and selected AgentCore version before this app update. */
 export const STAGE3_DEPLOY_ORDER=Object.freeze(['app']);
 
-/** Preserve the two live services. Process-local public sessions require control stop-then-start. */
+/** Preserve the two live services. Control keeps exactly one serving task per deployment: each task owns its action
+ * sessions in-process (apps/control/action-host/session accepts only the 'process-local' mode), both target groups are
+ * non-sticky, and a second serving task refuses a token issued by the first with SESSION_REFUSED, which the client
+ * treats as lost access. So `maximumPercent` 100 with `minimumHealthyPercent` 0 stays: the old task is stopped before
+ * the replacement starts, which leaves a startup gap. Close that gap only with a qualified session ownership/routing
+ * change plus reserved capacity for a second full-size task and its database connections; never by raising either
+ * percentage on its own. Rebalancing stays DISABLED; no deployment controller or rollback path is introduced. */
 export function applyLiveServiceProfile(templates){
  const service=(template,id)=>{const r=template.Resources?.[id];if(r?.Type!=='AWS::ECS::Service')fail(`template lacks service ${id}`);return r;};
  for(const id of ['controlService','temporalWorkerService',...(templates.app.Resources.scheduleWorkerTask?['scheduleWorkerService']:[])])service(templates.app,id).Properties.DesiredCount=1;
