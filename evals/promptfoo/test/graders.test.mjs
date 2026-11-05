@@ -45,10 +45,11 @@ test('usable-file checks count, name, canonical MIME, encoding, size, checksum, 
 });
 test('permissions require the exact canonical refusal and no forbidden marker anywhere',()=>{
  const denied=get('DM-02'),allowed=get('DM-01');
- assert.equal(gradePermissions({refusal:{code:'CONVERSATION_UNAVAILABLE'},observed:{}},denied).pass,true);
+ assert.equal(gradePermissions({refusal:{code:'NOT_FOUND'},observed:{}},denied).pass,true);
+ assert.match(gradePermissions({refusal:{code:'CONVERSATION_UNAVAILABLE'}},denied).reason,/REFUSAL_CODE/);
  assert.match(gradePermissions({refusal:{code:'SESSION_REFUSED'}},denied).reason,/REFUSAL_CODE/);
  assert.match(gradePermissions({refusal:null},denied).reason,/REFUSAL_CODE/);
- assert.match(gradePermissions({refusal:{code:'CONVERSATION_UNAVAILABLE'},observed:{prompt:'DM-02-OWNER-SENTINEL private request'}},denied).reason,/FORBIDDEN_MARKER/);
+ assert.match(gradePermissions({refusal:{code:'NOT_FOUND'},observed:{prompt:'DM-02-OWNER-SENTINEL private request'}},denied).reason,/FORBIDDEN_MARKER/);
  assert.match(gradePermissions({refusal:{code:'ACCESS_DENIED'}},allowed).reason,/UNEXPECTED_REFUSAL/);
  assert.equal(gradePermissions({refusal:null},allowed).pass,true);
 });
