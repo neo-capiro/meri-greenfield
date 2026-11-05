@@ -11,7 +11,7 @@ import {fileURLToPath} from 'node:url';
 import {createRenderFixture} from './render-material.fixture.mjs';
 import {nativeProcessingInputs} from './native-processing-material.fixture.mjs';
 import {PATHS,ROLES,renderMaterial,writeRendered} from './render-material.mjs';
-import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup} from './stage3-bindings.mjs';
+import {STAGE3_FAMILIES,STAGE3_EXISTING,STAGE3_DEPLOY_ORDER,nextRevisions,stage3RenderInput,buildStage3Bindings,synthesizeStage3,applyLiveServiceProfile,liveControlTargetGroup,nativeWorkerTaskRole} from './stage3-bindings.mjs';
 import {parseLatestTsv,coreValues,parseVersionsTsv,outputsObject,deployPlan,uploadPlan,secretLabelReadback,verifyOutputs,main} from './stage3-deploy.mjs';
 import {productWorkerTrustsPinnedServerCa} from '../../../apps/runtime/cli.mjs';
 
@@ -435,17 +435,29 @@ test('a task role may never be an execution role, and the foundation drift check
   /STAGE3_BINDING_REFUSED/u,'a genuine foundation output still has to match');
 });
 
+for(const [state,nativeProcessing] of [['absent',undefined],['disabled',{enabled:false}]]){
+ test(`native worker role refuses inputs when native processing is ${state}`,()=>{
+  const deployment={foundation:{}};
+  if(nativeProcessing!==undefined)deployment.features={nativeProcessing};
+  const role='arn:aws:iam::967807252336:role/synthetic-native-worker';
+  assert.equal(nativeWorkerTaskRole({deployment}),undefined);
+  // Call the role guard directly so unrelated material validation cannot satisfy these refusals.
+  assert.throws(()=>nativeWorkerTaskRole({deployment:{...deployment,foundation:{WorkerTaskRoleArn:role}}}),{
+   code:'STAGE3_BINDING_REFUSED',message:'STAGE3_BINDING_REFUSED: foundation.WorkerTaskRoleArn requires features.nativeProcessing'
+  });
+  for(const nativeWorkerRoleOutputs of [{},{NativeWorkerTaskRoleArn:role}]){
+   assert.throws(()=>nativeWorkerTaskRole({deployment,nativeWorkerRoleOutputs}),{
+    code:'STAGE3_BINDING_REFUSED',message:'STAGE3_BINDING_REFUSED: nativeWorkerRoleOutputs is only consumed when features.nativeProcessing is enabled'
+   });
+  }
+ });
+}
+
 test('absent or disabled native processing grants neither the native worker role nor database network',async()=>{
  const {args,revisions}=await setup();
  for(const nativeProcessing of [undefined,{enabled:false}]){
   const i=structuredClone(await fixture.setup());
-  // A task role is only meaningful for an enabled native release; declaring one without it is a contradictory input.
-  i.deployment.foundation.WorkerTaskRoleArn='arn:aws:iam::967807252336:role/synthetic-native-worker';
   if(nativeProcessing!==undefined)i.deployment.features={nativeProcessing};
-  assert.throws(()=>buildStage3Bindings({...args,deployment:i.deployment,foundationOutputs:args.foundationOutputs,
-   renderSummary:{},renderedExpected:{},privateEdgeOutputs:args.privateEdgeOutputs,secretVersions:SECRET_VERSIONS,
-   imageScans:SCANS,liveAppTemplate:LIVE_APP}),/STAGE3_BINDING_REFUSED/u,'a worker task role requires nativeProcessing');
-  delete i.deployment.foundation.WorkerTaskRoleArn;
   const f={...args.foundationOutputs,...i.deployment.foundation};
   i.stage3=stage3RenderInput({deployment:i.deployment,foundationOutputs:f,revisions});
   assert.deepEqual(i.stage3.network['temporal-worker'].securityGroups,[f.WorkerSecurityGroupId]);
