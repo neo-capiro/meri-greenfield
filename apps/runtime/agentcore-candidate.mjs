@@ -75,7 +75,7 @@ function assembleCandidate({configuration,pool,provider,controlCredential,native
  const runStarts=createPostgresObjectiveRunStartStore({enabled:true,pool,now});
  const objectiveCore=getCoreServiceSecret?createObjectiveCorePorts({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,runStarts,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):null;
  const core=createCapiroApplicationAuthorityClient({origin:config.identity.origin,fetchImpl:coreFetch,now,enabled:true,limits:{maxRequestMs:requestMs,maxResponseBytes:131072}});
- const conversationManagement=getCoreServiceSecret?createCoreConversationManagement({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,policyRevision:config.policyRevision,nativeCredentials,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
+ const conversationManagement=getCoreServiceSecret?createCoreConversationManagement({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,policyRevision:config.policyRevision,nativeCredentials,objectiveCore,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
  const conversationSourceReader=getCoreServiceSecret?createCoreConversationSourceReader({origin:config.identity.origin,getServiceSecret:getCoreServiceSecret,fetchImpl:coreFetch,now,maxRequestMs:requestMs}):undefined;
  // Wave5 MO01/ST16: the procedure admission port holds the Core service secret control-side, exactly as the source
  // reader above does. It reaches the worker's run-owner route only through the control conversations service.
