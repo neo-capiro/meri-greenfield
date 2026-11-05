@@ -68,7 +68,7 @@
      "client"
     ],
     "expected": "denied",
-    "refusalCode": "CONVERSATION_UNAVAILABLE",
+    "refusalCode": "NOT_FOUND",
     "forbiddenStrings": [
      "tenant-synthetic-dm-owner",
      "DM-02-OWNER-SENTINEL"

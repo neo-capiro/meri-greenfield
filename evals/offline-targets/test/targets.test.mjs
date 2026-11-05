@@ -6,13 +6,22 @@ const alpha=syntheticPrincipal({tenantId:'tenant-alpha',actorId:'actor-alpha',ta
 test('synthetic identifiers are deterministic UUID-shaped values',()=>{assert.equal(syntheticId('a1fa',11),'00000011-a1fa-4000-8000-000000000000');assert.throws(()=>syntheticId('zz',1),/SYNTHETIC_ID/);assert.equal(alpha.binding.conversationId,syntheticId('a1fa',11));});
 test('scripted conversation application accepts, replays and serves each principal only through its own session',async()=>{const t=await createScriptedConversationApplication({principals:[alpha,beta]});try{
  const a=await t.issue(alpha),b=await t.issue(beta);
- const submit=await t.app.handle(t.request({route:'submit',credential:a,body:{requestId:syntheticId('a1fa',99),prompt:'alpha prompt'}}));assert.equal(submit.status,200);assert.deepEqual(t.state.starts,[alpha.binding.runId]);
- const history=await (await t.app.handle(t.request({route:'history',credential:b,body:{}}))).json();assert.equal(history.error.code,'CONVERSATION_UNAVAILABLE');
+ const aInput={requestId:syntheticId('a1fa',99),prompt:'alpha prompt'};
+ await t.service.allocateInput({credential:a,input:aInput,signal:null});
+ const submit=await t.app.handle(t.request({route:'submit',credential:a,body:aInput}));assert.equal(submit.status,200);assert.deepEqual(t.state.starts,[alpha.binding.runId]);
+ const history=await (await t.app.handle(t.request({route:'history',credential:b,body:{}}))).json();assert.equal(history.error.code,'NOT_FOUND');
  const own=await (await t.app.handle(t.request({route:'history',credential:a,body:{}}))).json();assert.equal(own.request.prompt,'alpha prompt');assert.equal(own.run.binding.tenantId,'tenant-alpha');
  assert.equal((await t.app.handle(t.request({route:'history',credential:'action_session_'+'x'.repeat(43),body:{}}))).status,403);
  await assert.rejects(t.issue({...alpha}),/TARGET_PRINCIPAL_UNKNOWN/);
 }finally{t.close();}});
-test('scripted artifact service creates a text file and downloads it in the same tenant context only',async()=>{const f=createScriptedArtifactService();const context=f.context(alpha);const created=await f.service.create(f.textRequest('Alpha','alpha bytes'),context);
+test('scripted artifact service creates a text file and downloads it in the same tenant context only',async()=>{
+ const f=createScriptedArtifactService();
+ const {artifactValidators:validators}=await import('../../../packages/contracts/retrieval-0.2/validate.mjs');
+ const {canonicalSha256}=await import('../../../packages/contracts/validate.mjs');
+ let _seq=0;
+ const invFor=(req,ctx,base=null)=>{const rs=validators.nativeRequestSha256(req,ctx,base);return {invocation:{invocationId:'sdk:'+canonicalSha256({requestSha256:rs,sequence:++_seq}),versionId:undefined,requestSha256:rs}};};
+ const req=f.textRequest('Alpha','alpha bytes'),ctx=f.context(alpha);
+ const created=await f.service.create(req,ctx,invFor(req,ctx));
  assert.equal((await f.service.download(created.version.versionId,f.context(alpha))).bytes.toString(),'alpha bytes');await assert.rejects(f.service.download(created.version.versionId,f.context(beta)),/ARTIFACT_/);assert.equal(f.records.size,1);});
 test('scripted gateway dispatch returns own-lineage pages and refuses forged authority arguments',async()=>{const now=()=>Date.parse('2026-10-15T00:00:00Z');const ga=gatewayPrincipal(alpha,{tag:'a1fa',now}),gb=gatewayPrincipal(beta,{tag:'be7a',now});const g=createScriptedGatewayDispatch({principals:[ga,gb],now});
  const result=JSON.parse(await g.execute(JSON.stringify({operation,arguments:{}}),ga.credential));assert.equal(result.binding.tenantId,'tenant-alpha');assert.equal(result.data.total,0);
