@@ -28,7 +28,7 @@ export function createOriginalInputJournal({tx,rowRun,now,assertConversationActi
   if(rows.length!==1)fail('INITIAL_INPUT_CORRUPT');const r=rowRun(rows[0]);assertOriginalInputAcceptance(saved.facts,{run:r.projection,request:r.request,selectedClientId:saved.facts.selectedClientId});
  }
  async function claim(raw,check){const proposed=assertOriginalInputFacts(raw),b=proposed.binding;let pinned=proposed;const callerCheck=check;check=()=>{callerCheck();active(proposed);active(pinned);};check();return tx(b,check,async c=>{
-  await current(c,b,check);if(assertConversationActive){await assertConversationActive(proposed,check);check();}await requestOwner(c,proposed,check);const old=await readRow(c,b,check),existing=await runs(c,b,check,old?.state==='ACCEPTED');
+  await current(c,b,check);if(assertConversationActive){await assertConversationActive({...proposed,q:c.query.bind(c)},check);check();}await requestOwner(c,proposed,check);const old=await readRow(c,b,check),existing=await runs(c,b,check,old?.state==='ACCEPTED');
   if(old){pinned=old.facts;check();if(!sameOriginalInputIdentity(old.facts,proposed))fail('INITIAL_INPUT_CONFLICT');consistent(old,existing);return originalInputReceipt(old.facts,old.state,false);}
   if(existing.length)fail('INITIAL_INPUT_ALREADY_EXISTS');
   const conversations=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows;check();

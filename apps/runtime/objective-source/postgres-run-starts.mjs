@@ -70,15 +70,21 @@ export function createPostgresObjectiveRunStartStore(configuration={}){
    throw error;
   }
  }
- /** The run-start for one exact binding: ABSENT (ordinary chat), STARTED with the record, or UNKNOWN after an ambiguous write. */
+ /** The run-start for one exact binding: ABSENT (ordinary chat), STARTED with the record, or UNKNOWN after an ambiguous write.
+  * When `q` is supplied the caller already holds the conversation advisory lock on the same connection; skip the lock and
+  * reuse that connection directly rather than acquiring a new one from the pool (avoids self-deadlock). */
  async function read(value){
-  if(!enabled)refuse();let v,b;try{v=own(value,['binding'],['signal']);b=bound(data(v.binding));}catch{refuse();}const key=hash(b),tenantId=b.tenantId;
-  return tx.operation(v.signal,life=>tx.transaction(life,false,async q=>{
-   await advisory(q,conversationKey(b));
+  if(!enabled)refuse();let v,b,callerQ;try{v=own(value,['binding'],['signal','q']);b=bound(data(v.binding));callerQ=typeof v.q==='function'?v.q:null;}catch{refuse();}const key=hash(b),tenantId=b.tenantId;
+  async function innerRead(q){
    const row=maybe((await q(BY_RUN,[tenantId,b.conversationId,b.runId])).rows);
    if(!row)return data(uncertainRuns.has(key)?{state:'UNKNOWN'}:{state:'ABSENT'});
    const saved=decodeObjectiveRunStartRow(row,{tenantId});if(!same(saved.binding,b))refuse();
    uncertainRuns.delete(key);uncertainJobs.delete(saved.generationJobId);return data({state:'STARTED',record:saved});
+  }
+  if(callerQ)return innerRead(callerQ);
+  return tx.operation(v.signal,life=>tx.transaction(life,false,async q=>{
+   await advisory(q,conversationKey(b));
+   return innerRead(q);
   }));
  }
  /** Private Core readback selects the one immutable job, never a caller-supplied tenant or object locator. */
