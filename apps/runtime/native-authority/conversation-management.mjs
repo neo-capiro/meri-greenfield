@@ -43,12 +43,12 @@ export function createCoreConversationManagement({origin,getServiceSecret,policy
     if(!Array.isArray(r.conversations))refuse();const publicValue={...r,conversations:r.conversations.map(m=>({...scope(m),hasTranscript:false,canManage:false}))};assertConversationHistoryResponse('summaries',publicValue,q);return r;
    },async registration(m){m=scope(m);await active(m);return {conversation:{conversationId:m.conversationId,owner:{tenantId:principal.tenantId,actorId:principal.actorId},scopes:[{kind:m.clientId===null?'private-user':'client',tenantId:principal.tenantId,resourceId:m.clientId===null?principal.actorId:m.clientId,policyRevision}],policyRevision,createdAt:new Date(now()).toISOString()},recheckActive:()=>active(m)};}});
  }
- async function assertActiveBinding({binding,scopes,selectedClientId},check=()=>{}){
+ async function assertActiveBinding({binding,scopes,selectedClientId,q},check=()=>{}){
   check();const clients=scopes.filter(s=>s.kind==='client'),selected=selectedClientId===undefined?(clients.length===1?clients[0].resourceId:null):selectedClientId;
   // Saved Objective runs have no interactive session. Their existing Core job
   // owner checks current consent and membership; an unavailable owner never falls back.
   if(objectiveCore){
-   const objective=await objectiveCore.forBinding({binding});check();
+   const objective=await objectiveCore.forBinding({binding,...(typeof q==='function'?{q}:{})});check();
    if(objective!==null){const current=objective.current;
     if(current.tenantId!==binding.tenantId||current.actorId!==binding.actorId||current.clientId!==selected||
        scopes.length!==1||clients.length!==1||clients[0].tenantId!==binding.tenantId||clients[0].resourceId!==selected||clients[0].policyRevision!==policyRevision)refuse();

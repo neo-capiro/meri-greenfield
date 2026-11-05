@@ -124,7 +124,7 @@ export function createNextRunJournal({tx,rowRun,modelAdmission,assertConversatio
   const f=facts(rawFacts);if(typeof policyRevision!=='string'||!policyRevision||typeof reservedAt!=='string'||Number.isNaN(Date.parse(reservedAt)))fail('NEXT_RUN_FACTS_REFUSED');
   return tx(source,check,async c=>{
    const runs=await eligibleSource(c,{source,facts:f,scopes,versions,policyRevision},check);
-   if(assertActive)await assertActive();else if(assertConversationActive)await assertConversationActive({binding:source,scopes},check);check();
+   if(assertActive)await assertActive();else if(assertConversationActive)await assertConversationActive({binding:source,scopes,q:c.query.bind(c)},check);check();
    const existing=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND source_run_id=$3 FOR UPDATE',[source.tenantId,source.conversationId,source.runId])).rows;check();
    const r=existing.length?row(existing[0]):null;
    // Changed facts cannot reinterpret an immutable reservation, even when their grant set is ineligible.
@@ -156,7 +156,7 @@ export function createNextRunJournal({tx,rowRun,modelAdmission,assertConversatio
   validateShape('Conversation',conversation);assertRun(run);const b=run.binding;request=bounded(request);
   if(conversation.owner.tenantId!==b.tenantId||conversation.owner.actorId!==b.actorId||conversation.conversationId!==b.conversationId||!same(conversation.scopes,run.scopes)||conversation.policyRevision!==run.policyRevision||run.state!=='queued')fail('CONVERSATION_BINDING_REFUSED');
   return tx(b,check,async c=>{
-   if(assertConversationActive){await assertConversationActive({binding:b,scopes:run.scopes},check);check();}
+   if(assertConversationActive){await assertConversationActive({binding:b,scopes:run.scopes,q:c.query.bind(c)},check);check();}
    const old=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[b.tenantId,b.conversationId])).rows[0];check();
    if(!old||hash(old.projection)!==old.projection_sha256||old.owner_actor_id!==b.actorId||!same({...old.projection,createdAt:conversation.createdAt},conversation))fail('CONVERSATION_SCOPE_REFUSED');
    const reserved=(await c.query('SELECT * FROM meri_conversations.next_runs WHERE tenant_id=$1 AND conversation_id=$2 AND target_run_id=$3 FOR UPDATE',[b.tenantId,b.conversationId,b.runId])).rows;check();

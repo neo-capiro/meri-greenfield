@@ -15,8 +15,8 @@ export function createObjectiveCorePorts({origin,getServiceSecret,runStarts,fetc
   if(current.clientId!==a.canonical.clientId||current.consentId!==a.consentId||current.controlVersion!==a.controlVersion||
    current.effectExpiresAtMs<saved.effectExpiresAtMs||saved.effectExpiresAtMs<=now())refuse();return current;
  }
- async function forBinding({binding,signal}){
-  const saved=data(await runStarts.read({binding,signal}));own(saved,['state'],['record']);
+ async function forBinding({binding,signal,q}){
+  const saved=data(await runStarts.read({binding,signal,...(typeof q==='function'?{q}:{})}));own(saved,['state'],['record']);
   if(saved.state==='ABSENT'){if(Object.hasOwn(saved,'record'))refuse();return null;}
   if(saved.state!=='STARTED'||hash(saved.record.binding)!==hash(binding))refuse();
   return {record:saved.record,current:await currentRecord({record:saved.record,signal})};
