@@ -4515,11 +4515,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalBillStatusRequest",
-        "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+        "sha256": "d8183c4703074c5bb1e916b200aa8c543d6f9b12438d94c50bf325d964384a32"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalBillStatusOutput",
-        "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+        "sha256": "d8183c4703074c5bb1e916b200aa8c543d6f9b12438d94c50bf325d964384a32"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -4585,11 +4585,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalFloorVotesRequest",
-        "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+        "sha256": "d8183c4703074c5bb1e916b200aa8c543d6f9b12438d94c50bf325d964384a32"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:federal-legislation:0.2.0#/$defs/FederalFloorVotesOutput",
-        "sha256": "40fa4a0c4416bcd254e631a4c8259e6cac414abe4f8e2a341eb3e8e23e155eeb"
+        "sha256": "d8183c4703074c5bb1e916b200aa8c543d6f9b12438d94c50bf325d964384a32"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -5602,11 +5602,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:regulatory-dockets:0.2.0#/$defs/RegulatoryDocketsQueryInput",
-        "sha256": "67780fed6830f53dbb4fa0f76a681666b426a41408046f5c778be3efdb810654"
+        "sha256": "dd66baecf0f4feeaae7f6f8ec17e96a1c1866d08b8bd4b37e0163ae45dab0897"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:regulatory-dockets:0.2.0#/$defs/RegulatoryDocketsQueryOutput",
-        "sha256": "67780fed6830f53dbb4fa0f76a681666b426a41408046f5c778be3efdb810654"
+        "sha256": "dd66baecf0f4feeaae7f6f8ec17e96a1c1866d08b8bd4b37e0163ae45dab0897"
       },
       "aliases": [],
       "sideEffect": "none",

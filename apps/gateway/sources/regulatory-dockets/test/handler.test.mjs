@@ -47,8 +47,36 @@ test('docket duplicate identities, missing stored fields and invented coverage r
  }
 });
 test('docket selectors cannot inject authority or coerce branch and numeric limits',async()=>{
- const f=storedCase(),call=f.call();for(const request of [{actorId:'other'},{query:'term'},{page:2},{upcomingOnly:'true'},{limit:'1'},{days:0}])await assert.rejects(f.handler()({...call,request}),{message:'INVALID_ARGUMENTS'});
+ const f=storedCase(),call=f.call();for(const request of [{actorId:'other'},{query:'x'.repeat(201)},{query:false},{page:2},{upcomingOnly:'true'},{limit:'1'},{days:0}])await assert.rejects(f.handler()({...call,request}),{message:'INVALID_ARGUMENTS'});
  await assert.rejects(f.handler()({...call,normalizationContext:{asOf:f.page.generatedAt}}),{message:'INVALID_ARGUMENTS'});assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+});
+test('title query reaches both fixed source branches and unrelated or wildcard-expanded rows are withheld',async()=>{
+ for(const upcomingOnly of [false,true]){
+  const request={query:' DoCkEt ',upcomingOnly,limit:1},f=storedCase(id,{request});
+  const out=JSON.parse(await f.handler()(f.call()));assert.deepEqual(f.wire[0].body,request);
+  assert.equal(out.result.results[0].title,f.page.results[0].title);
+  f.state.resultMutator=p=>p.results[0].title='Acknowledgment of receipt';
+  await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+  for(const query of ['%','_','\\']){
+   const g=storedCase(id,{request:{query,upcomingOnly}});
+   await assert.rejects(g.handler()(g.call()),{message:'INVALID_RESULT'});
+   assert.equal(g.wire.length,1);
+  }
+ }
+});
+test('mixed-version docket responses cannot silently omit the applied query, including empty pages',async()=>{
+ for(const upcomingOnly of [false,true])for(const empty of [false,true]){
+  const f=storedCase(id,{request:{query:' docket ',upcomingOnly}});
+  if(empty)f.state.page={...f.page,total:0,results:[]};
+  const out=JSON.parse(await f.handler()(f.call()));assert.equal(out.result.appliedQuery,'docket');
+  for(const mutate of [p=>delete p.appliedQuery,p=>p.appliedQuery='Docket',p=>p.appliedQuery=' docket ']){
+   f.state.resultMutator=mutate;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+  }
+ }
+ for(const query of [undefined,null,'',' ']){
+  const f=storedCase(id,{request:query===undefined?{}:{query}});await f.handler()(f.call());
+  f.state.resultMutator=p=>p.appliedQuery='docket';await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+ }
 });
 test('docket current operation and scope decisions precede credentials and expired bytes are withheld',async()=>{
  const f=storedCase(),call=structuredClone(f.call());call.authority.sourceIds=['stored_intelligence'];await assert.rejects(f.handler()(call),{message:'ACCESS_DENIED'});assert.equal(f.credentialCalls.length,0);

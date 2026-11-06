@@ -18,7 +18,7 @@ export function statusPage(billId='119-hr-1'){
   recentActions:[{date:new Date(at),text:'Introduced',type:null,chamber:null}],floorVotes:[billVote()],governingRules:[governingRule()]};
 }
 export function votesPage(billId='119-hr-1'){
- return {tool:ids[1],generatedAt:at,votesFound:1,votes:[{id:'synthetic-house-119-2-7',congress:119,session:2,billId,title:null,...billVote()}]};
+ return {tool:ids[1],generatedAt:at,votesFound:1,votes:[{id:'synthetic-house-119-2-7',congress:Number(billId.split('-')[0]),session:2,billId,title:null,...billVote()}]};
 }
 export function storedCase(id=ids[0],{defaultCongress=119,request=id===ids[0]?{billId:'H.R. 1'}:{}}={}){
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),normalizationContext={defaultCongress};

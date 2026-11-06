@@ -4,6 +4,7 @@ import {resolveOperationContract} from '../../../../../packages/contracts/retrie
 import {billTextCase,readContext} from '../../bill-text/test/fixture.mjs';
 import {createResearchLegalNewsHandlers} from '../handler.mjs';
 import {newsSliceContext} from '../request-context.mjs';
+import {decodeNativeReadObservation,NATIVE_READ_OBSERVATION_HEADER} from '../../../../../packages/contracts/native-read-observation-0.2/validate.mjs';
 
 export const ids=['search_legiwatch_news'];
 export const requests={search_legiwatch_news:{view:'source',kind:'news',id:'synthetic-source'}};
@@ -18,7 +19,12 @@ export function person(input,at,id='synthetic-person'){
 }
 export function storedPage(id,input,at){
  const stamp=new Date(at).toISOString();let result;
- if(input.view==='personnel')result={items:[person(input,at)],nextOffset:null,year:input.year,notice:personnelNotice};
+ if(input.view==='news'){
+  const {sourceUrl,text,observedAt,complete,authority,...article}=storedPage(id,{view:'source',kind:'news',id:'synthetic-source'},at).result;
+  result={scope:input.scope,matchDefinition:null,items:[{...article,publisher:input.publisher||article.publisher,saved:false,tracking_version:null}],nextOffset:null,coverage:[],
+   window:{since:new Date(at-input.days*86400000).toISOString(),days:input.days},coverageMessage:schema.$defs.ResearchLegalNewsPage.properties.coverageMessage.const};
+ }
+ else if(input.view==='personnel')result={items:[person(input,at)],nextOffset:null,year:input.year,notice:personnelNotice};
  else if(input.kind==='news')result={id:input.id,article_id:'synthetic-article',revision:'synthetic-revision',provider:'synthetic-provider',
   provider_id:null,original_url:'https://source.example.invalid/article',canonical_url:'https://source.example.invalid/article',publisher:'Synthetic publisher',
   author:null,provider_parsed_at:null,title:'Synthetic source title',summary:null,body:null,body_complete:false,language:null,publisher_country:null,
@@ -39,20 +45,24 @@ export function storedPage(id,input,at){
 }
 export function storedCase(id=ids[0],options={}){
  const scene=billTextCase(),operation={id,version:'0.2.0'},contract=resolveOperationContract(operation),request=options.request??requests[id];
- const normalizationContext=options.context??newsSliceContext(operation,request),normalized=contract.normalizeInput(request,normalizationContext),{authority,state,now,wire}=scene;
+ const windowAsOf=request.view==='articles'?new Date(scene.now()).toISOString():null;
+ const normalizationContext=options.context??newsSliceContext(operation,request,undefined,windowAsOf),normalized=contract.normalizeInput(request,normalizationContext),{authority,state,now,wire}=scene;
  const visibleClientIds=normalizationContext.clientResolution?[normalizationContext.clientResolution.clientId]:[];
  if(visibleClientIds.length){const scope={tenantId:authority.binding.tenantId,kind:'client',resourceId:visibleClientIds[0],policyRevision:authority.policyRevision};
   Object.assign(authority.subject,{kind:'client',entityType:'client',entityIds:[visibleClientIds[0]],scopes:[scope]});}
  // call() hands the handler only the canonical read context; the retired claims/decision carrier is not a source of authority.
  authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(source=>source.sourceId))];
  const page=options.page??storedPage(id,normalized.input,now()),transport={...scene.transport,async fetchImpl(url,configuration){
-  wire.push({url,options:configuration,body:JSON.parse(configuration.body)});const value=structuredClone(state.page??page);
+  const body=JSON.parse(configuration.body);wire.push({url,options:configuration,body});
+  const observation=request.view==='articles'?decodeNativeReadObservation(configuration.headers[NATIVE_READ_OBSERVATION_HEADER],{operation,request:body}):null;
+  if(observation)state.consumedAsOf=observation.context.asOf;
+  const value=structuredClone(state.page??(observation?storedPage(id,normalized.input,Date.parse(observation.context.asOf)):page));
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);
  }};
  const nativeReadContextPorts={async readCurrent({request:raw,deadlineMs,signal,...proof}){
-  if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:newsSliceContext(operation,raw,normalizationContext.clientResolution),checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
+  if(signal?.aborted)throw Error('CANCELLED');return JSON.stringify({...proof,context:newsSliceContext(operation,raw,normalizationContext.clientResolution,normalizationContext.windowAsOf),checkedAtMs:now(),expiresAtMs:Math.min(deadlineMs,authority.deadlineMs)});
  }};
- const call=(args=request,current=authority,context=newsSliceContext(operation,args,normalizationContext.clientResolution))=>{
+ const call=(args=request,current=authority,context=newsSliceContext(operation,args,normalizationContext.clientResolution,normalizationContext.windowAsOf))=>{
   const selected=contract.normalizeInput(args,context);
   return {request:args,input:selected.input,argumentsSha256:selected.argumentsSha256,normalizationContext:context,authority:readContext(current)};
  };

@@ -12,6 +12,14 @@ const ajv=new Ajv({strict:true,allErrors:true});addFormats(ajv);ajv.addSchema(sc
 const checks=new Map(Object.keys(schema.$defs).map(name=>[name,ajv.compile({$ref:`${schema.$id}#/$defs/${name}`})]));
 const v=createBillTextValidators({schema,validateShape(name,value){const check=checks.get(name);if(!check?.(value))throw new Error(`${name}: ${ajv.errorsText(check?.errors)}`);return value;}});
 const [SEARCH,READ]=BILL_TEXT_OPERATION_IDS,context={defaultCongress:119},billId='119-hr-1',revisionId='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',textHash='a'.repeat(64),stamp='2026-10-12T12:00:00.000Z';
+test('bill text shares bounded positive Congress identities with status and floor votes',()=>{
+ for(const congress of [1,9,10,118,999])for(const selector of [`${congress}-s-1`,`S. 1 (${congress}th)`]){
+  const selected=v.normalizeBillTextInput(READ,{billId:selector},context).input.billId;
+  assert.equal(selected,`${congress}-s-1`);assert.equal(v.normalizeBillTextInput(READ,{billId:selected},context).input.billId,selected);
+ }
+ assert.equal(v.normalizeBillTextInput(READ,{billId:'009-s-00001'},context).input.billId,'009-s-00001');
+ for(const selector of ['0-s-1','000-s-1','1000-s-1','1-s-00000','1-s-999999'])assert.throws(()=>v.normalizeBillTextInput(READ,{billId:selector},context));
+});
 const encode=(offset,change={})=>Buffer.from(JSON.stringify([change.billId??billId,change.versionCode??'ih',change.revisionId??revisionId,change.textHash??textHash,offset])).toString('base64url');
 function rawBill(){return{id:billId,congress:119,billType:'hr',billNumber:'1',title:'Synthetic bill',introducedDate:null,sponsorName:null,sponsorState:null,sponsorParty:null,sponsorBioguideId:null,latestActionText:null,latestActionDate:null,policyArea:null,subjects:[],peCodes:[],committees:{opaque:true},cosponsorsCount:0,originChamber:null,updateDate:null,updateDateIncludingText:null,status:null,statusAt:null,url:null,lastSyncedAt:stamp};}
 function metadata(){return{tool:SEARCH,generatedAt:stamp,data:[rawBill()],total:1,page:1,limit:20};}
@@ -23,7 +31,7 @@ const check=(op,p,request={})=>v.assertBillTextOutput(op,p,request,context);
 
 test('exact search miss is a bound zero result only after its direct lookup branch',()=>{
  const result={...metadata(),data:[],total:0,resolvedBy:'bill-id'};
- for(const query of ['H.R. 1','119-hr-1','S. 999999','119 S999999','119S999999'])check(SEARCH,result,{query});
+ for(const query of ['1-s-999999','9 S999999','999 S999999','H.R. 1','119-hr-1','S. 999999','119 S999999','119S999999'])check(SEARCH,result,{query});
  for(const altered of [{...result,total:1},{...result,page:2},{...result,resolvedBy:undefined}])assert.throws(()=>check(SEARCH,altered,{query:'H.R. 1'}));
  assert.throws(()=>check(SEARCH,result,{query:'mineral supply chains'}));
 });
@@ -36,7 +44,7 @@ test('exact search six-digit positive and explicit Congress keep the full reques
 });
 test('invalid bill search is explicit and cannot masquerade as observed absence',()=>{
  const invalid={...metadata(),data:[],total:0,currentStatus:'invalid_request',note:'Invalid bill designation or conflicting Congress. No bill lookup was performed; provide an exact bill designation and Congress.'};
- for(const query of ['S. 2809x','S. 28.09','119-s-2809-extra','S. 9007199254740992','S. 1'+' '.repeat(240)+'extra'])check(SEARCH,invalid,{query});
+ for(const query of ['1000-s-1','1000 S1','0-s-1','0 S1','S. 2809x','S. 28.09','119-s-2809-extra','S. 9007199254740992','S. 1'+' '.repeat(240)+'extra'])check(SEARCH,invalid,{query});
  for(const query of ['S. 1','mineral supply chains'])assert.throws(()=>check(SEARCH,invalid,{query}));
  const oldFabricatedEmpty={...metadata(),data:[],total:0,resolvedBy:'bill-id'};
  assert.throws(()=>check(SEARCH,oldFabricatedEmpty,{query:'S. 2809x'}));

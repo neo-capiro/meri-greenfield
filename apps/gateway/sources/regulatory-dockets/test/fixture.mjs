@@ -9,7 +9,7 @@ export function storedCase(selected=id,{request={agencyId:'Synthetic',documentTy
  const {authority,state,now,wire}=scene,input=contract.normalizeInput(request,{}).input;
  authority.decision.operation=`${id}@0.2.0`;authority.sourceIds=[...new Set(contract.descriptor.sourceRequirements.map(s=>s.sourceId))];
  const stamp=new Date(now()).toISOString(),row={id:'synthetic-docket',documentId:'synthetic-document',agencyId:input.upcomingOnly?'Synthetic':input.agencyId??'Synthetic',docketId:null,documentType:input.upcomingOnly?'Notice':input.documentType??'Notice',title:' Stored raw\n docket title ',postedDate:stamp,commentStartDate:null,commentEndDate:input.upcomingOnly?new Date(now()+86400000).toISOString():null,frDocNum:null,subtype:null,withdrawn:false,lastModified:null,syncedAt:stamp};
- const page={tool:id,generatedAt:stamp,total:1,results:[row],...(input.upcomingOnly?{windowDays:input.days}:{})};
+ const page={tool:id,generatedAt:stamp,total:1,results:[row],...(input.upcomingOnly?{windowDays:input.days}:{}),...(input.query?{appliedQuery:input.query}:{})};
  const transport={...scene.transport,async fetchImpl(url,options){
   wire.push({url,options,body:JSON.parse(options.body)});const value=structuredClone(state.page??page);
   state.nativeValue=value;state.resultMutator?.(value);state.afterSource?.();return state.responseFactory?state.responseFactory(value):Response.json(value);

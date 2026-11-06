@@ -79,8 +79,9 @@ test('floor exact bill/chamber/congress selectors refuse substitution',()=>{
   check(V,votes(),{billId:id,chamber:'HOUSE',congress:'119'},ctx);
   reject(V,votes(),{billId:'119-s-2'});reject(V,votes(),{chamber:'senate'});reject(V,votes(),{congress:118});
 });
-test('invalid floor bill/chamber become no filter rather than an invented scoped request',()=>{
-  check(V,votes(),{billId:'not a bill',chamber:'invalid'},ctx);
+test('invalid floor bill refuses while absent bill and unsupported chamber preserve topic mode',()=>{
+  reject(V,votes(),{billId:'not a bill',chamber:'invalid'});
+  check(V,votes(),{chamber:'invalid'},ctx);
   check(V,votes(),{query:'source question or title match'},ctx);
 });
 test('floor member not-found and ambiguous branches are empty and conditional',()=>{
@@ -123,9 +124,10 @@ test('no-bill-vote and rule-failed warnings remain separate and required',()=>{
   p.status='rule_failed';p.statusLabel=schema.$defs.FederalBillStatusLabels.const.rule_failed;reject(B,p);p.note+=' '+schema.$defs.FederalRuleFailedNote.const;check(B,p,raw,ctx);
   const q=bill();q.note='Unsupported proof';reject(B,q);
 });
-test('floor scalar defaults and ineffective zero numeric filters are explicit',()=>{
+test('floor scalar defaults preserve absent Congress and refuse invalid provided numeric filters',()=>{
   const n=normalize(V,{},ctx);assert.equal(n.limit,10);assert.equal(n.congress,null);assert.equal(n.chamber,null);assert.equal(n.billId,null);assert.equal(n.member,null);assert.equal(n.bioguideId,null);
-  for(const congress of [null,0,'0','','bad'])assert.equal(normalize(V,{congress},ctx).congress,null);
+  for(const congress of [null,''])assert.equal(normalize(V,{congress},ctx).congress,null);
+  for(const congress of [0,'0','bad'])assert.throws(()=>normalize(V,{congress},ctx));
   assert.equal(normalize(V,{limit:'2.9'},ctx).limit,2);assert.equal(normalize(V,{limit:999},ctx).limit,25);assert.equal(normalize(V,{limit:' '},ctx).limit,1);
   for(const raw of [{congress:1.5},{congress:2147483648},{congress:'Infinity'},{limit:true},{member:9}])assert.throws(()=>normalize(V,raw,ctx));
   assert.equal(normalize(B,{billId:'119-HR-00001'},ctx).billId,'119-hr-00001');assert.equal(normalize(B,{billId:'H.R. 00001'},ctx).billId,id);

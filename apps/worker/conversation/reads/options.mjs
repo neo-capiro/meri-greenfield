@@ -24,12 +24,12 @@ export function mergeReadOptions(mounted,reads){
  return {...mounted,mcpServers:{...(mounted.mcpServers??{}),...reads.mcpServers},allowedTools:[...(mounted.allowedTools??[]),...reads.allowedTools],
   hooks:mergeHookSets([mounted.hooks??{},reads.hooks]),canUseTool:mounted.canUseTool===undefined?reads.canUseTool:chainPermissions([mounted.canUseTool,reads.canUseTool])};
 }
-const USER_TERMS='Never repeat internal status codes, capability, data set, table, column or layer names, SQL or words such as bounded, read-disabled or activity to the user: say what could not be read and what they can do next, and never recommend a third-party API or scraping as a workaround.';
+const USER_TERMS='Omit internal codes, schema names, SQL and harness jargon by default. If explicitly requested, show the actual SQL or predicate used, label unexecuted proposals and give only verified matching examples. Explain refusals plainly; never suggest a third-party API or scraping as a workaround.';
 /** Guidance follows the mounted tools; it cannot widen the profile or a selected skill.
  * @param {boolean} mounted @param {readonly string[]} [tools] */
 export function readPromptSentence(mounted,tools=[]){
  // The user hears about Capiro's data in their own terms: never the harness vocabulary (status codes, capability names,
- // read-disabled, activity) and never a third-party API or scraping as a substitute for Capiro data.
+ // read-disabled, activity) unless technical details are explicitly requested; never substitute external APIs or scraping.
  if(!mounted)return `Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read. ${USER_TERMS}`;
  const has=(/** @type {string} */name)=>tools.includes(READ_TOOL_PREFIX+name);
  const guidance=['Only the Capiro data sources listed for this conversation can be read; any other source is not connected here.',

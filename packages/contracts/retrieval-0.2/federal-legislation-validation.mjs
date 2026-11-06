@@ -29,12 +29,17 @@ export function createFederalLegislationValidators({validateShape,schema}) {
   function normalizeFederalLegislationInput(operation,request,options) {
     const name=family(operation),raw=snapshotOperationData(request),context=snapshotOperationData(options);
     validateShape('FederalLegislationContext',context);validateShape(`${name}Request`,raw);
-    const selected=resolveCongressionalBillId(text(raw.billId,60)??(operation===BILL?text(raw.query,60):null),context.defaultCongress);
-    if(operation===BILL)return {billId:selected};
+    if(operation===BILL)return {billId:resolveCongressionalBillId(text(raw.billId,60)??text(raw.query,60),context.defaultCongress)};
+    const congress=raw.congress===undefined||raw.congress===null||raw.congress===''?null:Number(raw.congress);
+    if(congress!==null&&(!Number.isInteger(congress)||congress<1||congress>999))fail('Invalid floor-vote Congress');
+    // An exact selection is never clipped or dropped into an unscoped search.
+    if(typeof raw.billId==='string'&&raw.billId.length>60)fail('Invalid floor-vote bill selector');
+    const selector=raw.billId?.trim()||null;
+    const selected=resolveCongressionalBillId(selector,congress??context.defaultCongress);
+    if(selector!==null&&(selected===null||congress!==null&&Number(selected.split('-')[0])!==congress))
+      fail('Invalid floor-vote bill selector or conflicting Congress');
     const member=text(raw.member,80),upper=member?.toUpperCase(),chamber=text(raw.chamber,10)?.toLowerCase();
     const numeric=typeof raw.limit==='number'?raw.limit:typeof raw.limit==='string'?Number(raw.limit):NaN;
-    let congress=raw.congress?Number(raw.congress):null;
-    if(Number.isNaN(congress)||congress===0)congress=null;
     const input={billId:selected,query:text(raw.query,200),member,bioguideId:upper&&/^[A-Z][0-9]{6}$/.test(upper)?upper:null,
       chamber:['house','senate'].includes(chamber)?chamber:null,congress,
       limit:Number.isFinite(numeric)?Math.min(25,Math.max(1,Math.trunc(numeric))):10};
@@ -60,6 +65,12 @@ export function createFederalLegislationValidators({validateShape,schema}) {
     const warnings=[];
     if(page.floorVotes.length===0)warnings.push(schema.$defs.FederalNoBillVoteNote.const);
     if(page.status==='rule_failed')warnings.push(schema.$defs.FederalRuleFailedNote.const);
+    if(Object.hasOwn(page,'lastSyncedAt')){
+      if(page.lastSyncedAt!==null)instant(page.lastSyncedAt);
+      warnings.push(page.lastSyncedAt===null?
+        'The stored bill snapshot sync time is unknown. Live status has not been checked; the response time and action dates do not establish current status.':
+        `Stored bill snapshot last synced at ${page.lastSyncedAt}. Live status has not been checked; the response time and action dates do not establish current status.`);
+    }
     notes(page,warnings.length?warnings.join(' '):null);
     // Governing-rule votes are deliberately never substituted for the bill's
     // floor votes or used here to recompute its persisted status.

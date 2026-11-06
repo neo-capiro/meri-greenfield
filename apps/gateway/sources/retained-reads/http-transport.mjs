@@ -26,6 +26,9 @@ export function createRetainedHttpTransport(configuration){
   const knowledgeObservation=observation==='client-knowledge-asof'&&c.contract.binding.group==='client-knowledge-search'&&c.operation.id==='search_client_knowledge';
   const modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(c.contract.binding.group)&&MODE_READ_OPERATIONS.includes(c.operation.id);
   const producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(c.contract.binding.group);
+  const newsObservation=observation==='news-asof'&&c.contract.binding.group==='research-legal-news'&&c.operation.id==='search_legiwatch_news'&&c.request.view==='articles';
+  const newsClient=c.normalizationContext.clientResolution?.clientId;
+  const observedRequest=newsObservation&&newsClient&&c.request.clientId!==newsClient?{...c.request,clientId:newsClient}:c.request;
   const savedOwner=['saved-records','strategy-saved-records','legiwatch-review','legiwatch-relevance','legislative-comparisons','florida-budget'].includes(c.contract.binding.group);
   const privateData=['capiro-data','capiro-data-v3','capiro-data-v4','capiro-data-v5'].includes(c.contract.binding.group)&&['client_records','research_portfolio','classic_outreach'].includes(c.request.source);
   const expectedPrivateRequest=privateData&&['capiro-data','capiro-data-v3'].includes(c.contract.binding.group)&&c.operation.id==='describe_capiro_data'&&c.request.relations===undefined?{...c.request,relations:[...RETAINED_CAPIRO_PRIVATE_RELATIONS]}:c.request;
@@ -36,9 +39,10 @@ export function createRetainedHttpTransport(configuration){
   const correlation=privateData||strategyData||legiwatchData?canonicalize(frozenData({binding:c.authority.binding,subject:c.authority.subject,
    policyRevision:c.authority.policyRevision,normalizationContext:c.normalizationContext})):undefined;
   if((privateData||strategyData||legiwatchData)&&(typeof correlation!=='string'||Buffer.byteLength(correlation,'utf8')>8192))deny('RESOURCE_LIMIT');
-  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation)||c.operation.version!=='0.2.0'||
-   method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,c.request)))deny('GATEWAY_CONFIGURATION');
+  if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation||newsObservation)||c.operation.version!=='0.2.0'||
+   method!=='POST'||path!==`/api/clio/tools/${c.operation.id}`||!serviceSecret||!same(body,observedRequest)))deny('GATEWAY_CONFIGURATION');
   if(MODE_READ_OPERATIONS.includes(c.operation.id)&&!modeObservation&&!(producerObservation&&c.operation.id==='search_sam_opportunities'))deny('GATEWAY_CONFIGURATION');
+  if(c.contract.binding.group==='research-legal-news'&&c.request.view==='articles'&&!newsObservation)deny('GATEWAY_CONFIGURATION');
   if(readSource){
    const context={binding:c.authority.binding,subject:c.authority.subject,policyRevision:c.authority.policyRevision,normalizationContext:c.normalizationContext};
    return frozenData(await readSource({operation:c.operation.id,input:body??c.input,context,deadlineMs:Math.min(c.deadlineMs,now()+maxRequestMs),signal:c.signal}));
@@ -56,7 +60,8 @@ export function createRetainedHttpTransport(configuration){
    if(Object.keys(proof).some(key=>!same(credentials[key],proof[key]))||!token(credentials.bearerToken)||
     serviceSecret&&!token(credentials.serviceSecret)||!Number.isSafeInteger(credentials.expiresAtMs)||credentials.expiresAtMs<=now())deny('ACCESS_DENIED');
    cutoff=Math.min(cutoff,credentials.expiresAtMs);lifetime.limitDeadline(cutoff);
-   const observationHeader=observation?encodeNativeReadObservation(createNativeReadObservation({operation:c.operation,request:c.request,context:c.normalizationContext}),{operation:c.operation,request:c.request}):undefined;
+   const observationHeader=observation?encodeNativeReadObservation(createNativeReadObservation({operation:c.operation,request:observedRequest,
+    context:newsObservation?{asOf:c.normalizationContext.windowAsOf}:c.normalizationContext}),{operation:c.operation,request:observedRequest}):undefined;
    const response=await lifetime.run(async signal=>{
     const result=await fetchImpl(new URL(path,origin).href,{method,redirect:'error',credentials:'omit',cache:'no-store',signal,
      headers:{authorization:`${credentials.authorizationScheme??'Bearer'} ${credentials.bearerToken}`,accept:'application/json','accept-encoding':'identity',

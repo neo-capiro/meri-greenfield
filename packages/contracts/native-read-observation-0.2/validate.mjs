@@ -13,7 +13,7 @@ export const NATIVE_READ_OBSERVATION_HEADER='x-meri-read-observation';
 export const NATIVE_READ_OBSERVATION_MAX_BYTES=2048;
 export const FUNDING_READ_OPERATIONS=Object.freeze([...FUNDING_OPPORTUNITY_OPERATION_IDS,...FUNDING_ANALYSIS_OPERATION_IDS]);
 export const MODE_READ_OPERATIONS=Object.freeze(['search_federal_grants','search_federal_awards','search_program_elements','get_program_element','get_pe_budget_timeline','search_sam_opportunities']);
-export const NATIVE_READ_OBSERVATION_OPERATIONS=Object.freeze([...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS,'get_certification_status','get_state_rule_status']);
+export const NATIVE_READ_OBSERVATION_OPERATIONS=Object.freeze([...FUNDING_READ_OPERATIONS,'search_client_knowledge',...MODE_READ_OPERATIONS,'get_certification_status','get_state_rule_status','search_legiwatch_news']);
 const ajv=new Ajv({strict:true,allErrors:false}),valid=ajv.compile(schema);
 const refuse=()=>{throw Error('NATIVE_READ_OBSERVATION_REFUSED');};
 const bytes=value=>Buffer.from(canonicalize(value),'utf8');
@@ -22,6 +22,7 @@ function expected(raw){
  const {operation,request}=data(own(raw,['operation','request']));
  own(operation,['id','version']);
  if(operation.version!=='0.2.0'||!NATIVE_READ_OBSERVATION_OPERATIONS.includes(operation.id)||!request||typeof request!=='object'||Array.isArray(request))refuse();
+ if(operation.id==='search_legiwatch_news'&&request.view!=='articles')refuse();
  // Original unwrapped tool JSON. No defaults, trimming, context merge or family normalization here.
  return {operation,requestSha256:canonicalSha256(request)};
 }

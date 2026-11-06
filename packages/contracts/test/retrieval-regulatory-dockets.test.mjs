@@ -40,7 +40,33 @@ test('optional selectors trim clip UTF16 and retain case without aliases',()=>{
  assert.equal(normalize({documentType:' '+ 'd'.repeat(79)+'😀 '}).input.documentType,'d'.repeat(79)+'\ud83d');
  assert.equal(normalize({agencyId:' Agency '}).input.agencyId,'Agency');
  for(const key of ['agencyId','documentType'])for(const value of [true,4,[],{}])assert.throws(()=>normalize({[key]:value}));
- for(const key of ['page','pageSize','query','q','now','asOf','tenantId','actorRole','withdrawn'])assert.throws(()=>normalize({[key]:'caller'}));
+ for(const key of ['page','pageSize','q','now','asOf','tenantId','actorRole','withdrawn'])assert.throws(()=>normalize({[key]:'caller'}));
+});
+test('title query is a bounded literal selector in both branches without truncation or wildcard expansion',()=>{
+ for(const query of [null,'',' \n '])assert.deepEqual(normalize({query}).input,{upcomingOnly:false,limit:20});
+ assert.equal(normalize({query:'  UAS  '}).input.query,'UAS');
+ assert.equal(normalize({query:'x'.repeat(200)}).input.query.length,200);
+ assert.equal(normalize({query:'😀'.repeat(100)}).input.query.length,200);
+ for(const query of [false,3,[],{},'x'.repeat(201),' '+ 'x'.repeat(200),'😀'.repeat(101)])assert.throws(()=>normalize({query}));
+ for(const upcomingOnly of [false,true]){
+  const make=()=>upcomingOnly?upcoming():ordinary(),request={query:' UAS ',upcomingOnly};
+  const match=make();match.appliedQuery='UAS';match.results[0].title='FAA uas operations';check(match,request);
+  const unrelated=make();unrelated.appliedQuery='UAS';unrelated.results[0].title='Acknowledgment of receipt';assert.throws(()=>check(unrelated,request));
+  for(const query of ['%','_','\\']){
+   const literal=make();literal.appliedQuery=query;literal.results[0].title=`Literal ${query} in a title`;check(literal,{query,upcomingOnly});
+   unrelated.appliedQuery=query;
+   assert.throws(()=>check(unrelated,{query,upcomingOnly}),'wildcards cannot admit unrelated rows');
+  }
+ }
+});
+test('a query requires source acknowledgement even for empty or coincidentally matching pages',()=>{
+ for(const upcomingOnly of [false,true])for(const n of [0,1]){
+  const page=upcomingOnly?upcoming(n):ordinary(n);for(const r of page.results)r.title='FAA UAS rules';
+  assert.throws(()=>check(page,{query:' UAS ',upcomingOnly}),'an older producer must not silently ignore the query');
+  page.appliedQuery='UAS';check(page,{query:' UAS ',upcomingOnly});
+  for(const appliedQuery of ['uas',' UAS ','Other',null])assert.throws(()=>check({...page,appliedQuery},{query:' UAS ',upcomingOnly}));
+  for(const query of [undefined,null,'',' '])assert.throws(()=>check(page,{...(query===undefined?{}:{query}),upcomingOnly}));
+ }
 });
 test('branch-irrelevant supplied selectors remain hash-bound without becoming filters',()=>{
  const input={upcomingOnly:true,agencyId:' Other ',documentType:' Rule ',days:2};

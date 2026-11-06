@@ -9,7 +9,7 @@ const mail=['mail_list_messages','mail_search_messages','mail_read_thread'].map(
 
 test('SQL routing is admitted only with both actual query tools, and only as routing',()=>{
  for(const tools of [[],[describe],[query]])assert.doesNotMatch(readPromptSentence(true,tools),/Structured questions about Capiro data/);
- assert.equal(readPromptSentence(false,[describe,query]),`Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read. Never repeat internal status codes, capability, data set, table, column or layer names, SQL or words such as bounded, read-disabled or activity to the user: say what could not be read and what they can do next, and never recommend a third-party API or scraping as a workaround.`);
+ assert.equal(readPromptSentence(false,[describe,query]),`Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read. Omit internal codes, schema names, SQL and harness jargon by default. If explicitly requested, show the actual SQL or predicate used, label unexecuted proposals and give only verified matching examples. Explain refusals plainly; never suggest a third-party API or scraping as a workaround.`);
  const prompt=readPromptSentence(true,[describe,query]);
  assert.match(prompt,/Structured questions about Capiro data .* go to describe_capiro_data once per source and then query_capiro_data/);
  assert.match(prompt,/public is the default source and clientId only narrows access/);
@@ -69,7 +69,7 @@ test('the user hears about disconnected or refused Capiro data in their own term
  assert.match(none,/^Capiro's data is not connected in this conversation: tell the user so in their own terms, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read\./);
  assert.match(mounted,/When a read answers that it is not connected or not permitted, tell the user in their own terms that this Capiro data is not connected or not permitted for this conversation, answer only what is not specific to Capiro's or the client's records, and say plainly that those records could not be read and what they can do next\./);
  assert.doesNotMatch(mounted,/general knowledge|prepares a proposal|Core /,'no invented client facts, no internals');
- for(const prompt of [none,mounted])assert.match(prompt,/Never repeat internal status codes, capability, data set, table, column or layer names, SQL or words such as bounded, read-disabled or activity to the user: say what could not be read and what they can do next, and never recommend a third-party API or scraping as a workaround\./);
+ for(const prompt of [none,mounted])assert.match(prompt,/Omit internal codes, schema names, SQL and harness jargon by default\. If explicitly requested, show the actual SQL or predicate used, label unexecuted proposals and give only verified matching examples\. Explain refusals plainly; never suggest a third-party API or scraping as a workaround\./);
  assert.doesNotMatch(none,/bounded session|read-disabled here|return UNAVAILABLE|ProPublica/);
- assert.equal(none.split(/\.\s/).length,2,'two sentences');
+ assert.equal(none.split(/\.\s/).length,4,'disconnected context plus technical-request exception');
 });
