@@ -68,6 +68,15 @@ for(const options of [{client:false},{client:true}])test(`SDK current native sco
  assert.equal(m.runtime.receipts()[0].resultSha256,canonicalSha256(value));
  f.revoke();assert.equal((await m.call()).isError,true);assert.equal(scene.wire.length,1);assert.equal(m.runtime.receipts().length,1);
 });
+for(const id of IDS)test(`${id}: a four-second source keeps genuine authority and post-source revocation is still enforced`,async t=>{
+ const scene=semanticCase(id),f=await fixture('semantic-search',id,{scene,advancingClock:true}),m=await connect(t,f);
+ scene.state.afterSource=()=>f.advanceClock(4000);
+ const out=await m.call();assert.equal(out.isError,undefined,JSON.stringify(out));
+ assert.deepEqual(JSON.parse(out.content[0].text).result,scene.state.page);
+ assert.equal(scene.wire.length,1);assert.equal(m.runtime.receipts().length,1);
+ scene.state.afterSource=()=>{f.advanceClock(4000);f.revoke();};
+ assert.equal((await m.call()).isError,true);assert.equal(m.runtime.receipts().length,1);
+});
 test('current authority loss during a read withholds the page',async t=>{
  const scene=semanticCase('semantic_search_grants',{client:true}),f=await fixture('semantic-search','semantic_search_grants',{scene}),m=await connect(t,f);
  scene.state.afterSource=()=>f.revoke();assert.equal((await m.call()).isError,true);assert.equal(scene.wire.length,1);assert.deepEqual(m.runtime.receipts(),[]);
