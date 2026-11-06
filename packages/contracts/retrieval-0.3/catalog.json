@@ -4751,11 +4751,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:bill-text:0.2.0#/$defs/CongressBillSearchInput",
-        "sha256": "5983fb9e105457a3aa4324ee3e379367837e9485984c84b8b448a8465d684c06"
+        "sha256": "be6fc3e98ced6afc3ca02fbf6bf8432536004ccd94e07444cfb81cfe9bbdf064"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:bill-text:0.2.0#/$defs/CongressBillSearchOutput",
-        "sha256": "5983fb9e105457a3aa4324ee3e379367837e9485984c84b8b448a8465d684c06"
+        "sha256": "be6fc3e98ced6afc3ca02fbf6bf8432536004ccd94e07444cfb81cfe9bbdf064"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -4822,11 +4822,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:bill-text:0.2.0#/$defs/BillTextReadInput",
-        "sha256": "5983fb9e105457a3aa4324ee3e379367837e9485984c84b8b448a8465d684c06"
+        "sha256": "be6fc3e98ced6afc3ca02fbf6bf8432536004ccd94e07444cfb81cfe9bbdf064"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:bill-text:0.2.0#/$defs/BillTextReadOutput",
-        "sha256": "5983fb9e105457a3aa4324ee3e379367837e9485984c84b8b448a8465d684c06"
+        "sha256": "be6fc3e98ced6afc3ca02fbf6bf8432536004ccd94e07444cfb81cfe9bbdf064"
       },
       "aliases": [],
       "sideEffect": "none",
