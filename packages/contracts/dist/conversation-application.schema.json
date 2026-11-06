@@ -880,9 +880,37 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 100
+        },
+        "acceptEmpty": {
+          "const": true
         }
       },
       "required": [],
+      "additionalProperties": false
+    },
+    "ConversationEmptyHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "meri.conversation-history-empty/1"
+        },
+        "binding": {
+          "$ref": "#/$defs/Canonical_RunBinding_84f2304c"
+        },
+        "scopes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Canonical_Scope_f882edb5"
+          },
+          "minItems": 1,
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "schema",
+        "binding",
+        "scopes"
+      ],
       "additionalProperties": false
     },
     "ConversationCancelRequest": {
@@ -1986,6 +2014,91 @@
       "type": "string",
       "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
     },
+    "Canonical_RunBinding_84f2304c": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "actorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "conversationId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "runId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "attemptId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "workerId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "writerFence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "tenantId",
+        "actorId",
+        "conversationId",
+        "runId",
+        "attemptId",
+        "workerId",
+        "writerFence"
+      ],
+      "additionalProperties": false
+    },
+    "Canonical_Scope_f882edb5": {
+      "type": "object",
+      "properties": {
+        "tenantId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tenant",
+            "client",
+            "mailbox",
+            "memory",
+            "document",
+            "private-user",
+            "public"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "policyRevision": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "required": [
+        "tenantId",
+        "kind",
+        "resourceId",
+        "policyRevision"
+      ],
+      "additionalProperties": false
+    },
     "Canonical_NormalizedWindow_e50ec0ed": {
       "oneOf": [
         {
@@ -2114,91 +2227,6 @@
           "additionalProperties": false
         }
       ]
-    },
-    "Canonical_RunBinding_84f2304c": {
-      "type": "object",
-      "properties": {
-        "tenantId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
-        },
-        "actorId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
-        },
-        "conversationId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "runId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "attemptId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "workerId": {
-          "type": "string",
-          "format": "uuid"
-        },
-        "writerFence": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 9007199254740991
-        }
-      },
-      "required": [
-        "tenantId",
-        "actorId",
-        "conversationId",
-        "runId",
-        "attemptId",
-        "workerId",
-        "writerFence"
-      ],
-      "additionalProperties": false
-    },
-    "Canonical_Scope_f882edb5": {
-      "type": "object",
-      "properties": {
-        "tenantId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
-        },
-        "kind": {
-          "type": "string",
-          "enum": [
-            "tenant",
-            "client",
-            "mailbox",
-            "memory",
-            "document",
-            "private-user",
-            "public"
-          ]
-        },
-        "resourceId": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 256
-        },
-        "policyRevision": {
-          "type": "string",
-          "minLength": 1,
-          "maxLength": 128
-        }
-      },
-      "required": [
-        "tenantId",
-        "kind",
-        "resourceId",
-        "policyRevision"
-      ],
-      "additionalProperties": false
     },
     "Canonical_RuntimeVersions_7edb8efc": {
       "type": "object",

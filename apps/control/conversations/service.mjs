@@ -21,6 +21,7 @@ import {ProductError} from '../product-access/errors.mjs';
 import {skillRefusal} from './skills/refusals.mjs';
 import {authenticatedCurrentState} from '../action-host/session/owner.mjs';
 import {reportHistoryStage} from './history-diagnostics.mjs';
+import {EMPTY_HISTORY_SCHEMA} from '../../../packages/contracts/conversation-application/protocol.mjs';
 import {resolveSdkModelConfiguration} from './usage.mjs';
 import {assertModelSelection,availableModelSelection,storedModelSelection,HISTORICAL_MODEL_SELECTION} from '../../../packages/contracts/model-selection.mjs';
 import {assertUsageInput} from '../../../packages/contracts/runtime-0.2/usage.mjs';
@@ -165,10 +166,10 @@ export function createConversationService({sessions,store,dispatcher,versions,fi
    return release(saved);});
  }
  const submit=input=>acceptInput(input,true),admitInput=input=>acceptInput(input,false);
- // One saved page under the pinned context. An admitted conversation has no run row until its first input is accepted: that is
- // "no saved turns yet" (404), not corruption.
- async function readPage(c,life,after,limit){const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null)fail('NOT_FOUND');if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;}
- async function history({credential,after=0,limit=100,signal,historyStage}){return operation(credential,signal,(c,life)=>{reportHistoryStage(historyStage,'store');return readPage(c,life,after,limit);},{historyStage});}
+ // The current session owner already proves this exact initial binding or reserved successor. A zero-row initial
+ // history read is a successful absence, never a run/cursor or permission to resend. Observers still require a run.
+ async function readPage(c,life,after,limit,allowEmpty=false){const result=typeof store.readOptional==='function'?await life.run(()=>store.readOptional(c.binding,{after,limit},life.check)):await life.run(()=>store.read(c.binding,{after,limit},life.check));if(result===null){if(!allowEmpty||after!==0||typeof store.readOptional!=='function')fail('NOT_FOUND');return {schema:EMPTY_HISTORY_SCHEMA,binding:c.binding,scopes:c.scopes};}if(!same(result.run.scopes,c.scopes))fail('SCOPE_REFUSED');return result;}
+ async function history({credential,after=0,limit=100,acceptEmpty=false,signal,historyStage}){return operation(credential,signal,(c,life)=>{reportHistoryStage(historyStage,'store');return readPage(c,life,after,limit,acceptEmpty===true);},{historyStage});}
  async function feedbackRead({credential,input,signal}){
   if(typeof store.feedback?.read!=='function')fail('CONVERSATION_UNAVAILABLE');
   return operation(credential,signal,(c,life)=>life.run(()=>store.feedback.read(c,input,life.check)));

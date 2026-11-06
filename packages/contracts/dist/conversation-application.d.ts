@@ -13,7 +13,8 @@ export type ConversationApplicationEnvelope =
   | ConversationFeedbackRequest
   | ConversationFeedbackReadRequest
   | ConversationFeedbackResponse
-  | ConversationFeedbackReadResponse;
+  | ConversationFeedbackReadResponse
+  | ConversationEmptyHistoryResponse;
 export type Canonical_WindowRequestF314F340 =
   | {
       basis: 'calendar-week';
@@ -1253,6 +1254,7 @@ export interface ConversationSubmitRequest {
 export interface ConversationHistoryRequest {
   after?: number;
   limit?: number;
+  acceptEmpty?: true;
 }
 export interface ConversationCancelRequest {}
 export interface ConversationEventsRequest {
@@ -2376,6 +2378,15 @@ export interface ConversationFeedbackReadResponse {
    */
   receipts: ConversationFeedbackReceipt[];
 }
+export interface ConversationEmptyHistoryResponse {
+  schema: 'meri.conversation-history-empty/1';
+  binding: Canonical_RunBinding_84F2304C;
+  /**
+   * @minItems 1
+   * @maxItems 100
+   */
+  scopes: [Canonical_ScopeF882Edb5, ...Canonical_ScopeF882Edb5[]];
+}
 
 export type ConversationRoute = 'submit' | 'history' | 'cancel' | 'events' | 'feedback' | 'feedback-read';
 /** Canonical immutable choices; runtime authorization and availability are decided by the server. */
@@ -2384,13 +2395,14 @@ export declare const CONVERSATION_SKILLS:readonly ConversationSkillDescriptor[];
 /** The closed run.status reasonCode vocabulary (conversation-application/protocol.mjs RUN_REASON_CODES); null on an ordinary transition. */
 export type RunReasonCode = 'EXECUTION_FAILED' | 'EXECUTION_STOPPED' | 'USER_CANCELLED' | 'CONTROL_CHECKPOINTED' | 'HOLD_CHECKPOINT_FAILED' | 'ATTEMPT_LOST' | 'SKILL_RUNTIME_REFUSED' | 'SKILL_SOURCES_UNAVAILABLE' | 'MODEL_TURNS_EXHAUSTED' | 'MODEL_BUDGET_EXHAUSTED' | 'OUTPUT_LIMIT';
 export declare const RUN_REASON_CODES:readonly RunReasonCode[];
+export declare const EMPTY_HISTORY_SCHEMA:'meri.conversation-history-empty/1';
 declare const admittedRequest: unique symbol;
 declare const admittedView: unique symbol;
 declare const admittedCursor: unique symbol;
 export interface ConversationRequestMap { submit:ConversationSubmitRequest; history:ConversationHistoryRequest; cancel:ConversationCancelRequest; events:ConversationEventsRequest; feedback:ConversationFeedbackRequest; 'feedback-read':ConversationFeedbackReadRequest; }
 export type AdmittedConversationRequest<R extends ConversationRoute> = Readonly<ConversationRequestMap[R]> & {readonly [admittedRequest]:R};
 export type AdmittedConversationView = Readonly<ConversationSubmittedResponse | ConversationHistoryResponse> & {readonly [admittedView]:true};
-export interface ConversationResponseMap {submit:Readonly<ConversationSubmittedResponse> & {readonly [admittedView]:true}; history:Readonly<ConversationHistoryResponse> & {readonly [admittedView]:true}; cancel:Readonly<ConversationCancelledResponse>; events:never; feedback:ConversationFeedbackResponse; 'feedback-read':ConversationFeedbackReadResponse;}
+export interface ConversationResponseMap {submit:Readonly<ConversationSubmittedResponse> & {readonly [admittedView]:true}; history:(Readonly<ConversationHistoryResponse> & {readonly [admittedView]:true}) | Readonly<ConversationEmptyHistoryResponse>; cancel:Readonly<ConversationCancelledResponse>; events:never; feedback:ConversationFeedbackResponse; 'feedback-read':ConversationFeedbackReadResponse;}
 export type ConversationResponse<R extends ConversationRoute> = ConversationResponseMap[R] | ConversationErrorResponse;
 export interface ConversationCursor {readonly conversationId:string; readonly after:number; readonly [admittedCursor]:true;}
 export declare class ConversationResponseError extends Error {readonly code:string;}

@@ -10,8 +10,8 @@
     },
     {
       "path": "../../apps/control/conversations/initial-input-journal.mjs",
-      "sha256": "c5bc14eeb35035e9a01e2c22326193ed0ad4bd0afb3605cba990b7135c62aaf1",
-      "bytes": 7986
+      "sha256": "8469cd09c1eb1a0bf7b7f59edbf0c5166ae463e4e153232478eaf2330c4456e8",
+      "bytes": 8009
     },
     {
       "path": "../../apps/control/conversations/initial-input/http.mjs",
@@ -25,13 +25,13 @@
     },
     {
       "path": "../../apps/control/conversations/postgres-store.mjs",
-      "sha256": "0107a5d347f886ad6c9d02c3aeff37e11ebddcc816774a7a0b349be16c3d4b4b",
-      "bytes": 27107
+      "sha256": "e215f309aa4bce35af438215756c854efbb14d7119e5f18558f7726bde2e3fa6",
+      "bytes": 27125
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "3cd4d823f8cf7998ac0c91f6af7cbce08456daa830f92f8e6acdec060ce276e2",
-      "bytes": 42184
+      "sha256": "f03439fedcc9b061ac78cb9be284c05640ea5b141aef6ce3df8f7b8af1b4b7a0",
+      "bytes": 42584
     },
     {
       "path": "conversation-initial-input/protocol.mjs",
@@ -65,18 +65,18 @@
     },
     {
       "path": "dist/conversation-application.d.ts",
-      "sha256": "75d0b86fde2a1ade43e663b102afde13dc5a77622b5eecb954bc496d7f6ffcd1",
-      "bytes": 63334
+      "sha256": "d07e1ad018130ed6570376e2da1f1a386953392560a36d63789643cd6398b15b",
+      "bytes": 63777
     },
     {
       "path": "dist/conversation-application.metadata.json",
-      "sha256": "e7806d6b677494b2b15b9ba03e073a97e100652afb8c13b99b74a141a3d2f9be",
+      "sha256": "2e3375bf0c13ba559a265546d19e6a2c07d5506d4f16849e1582e73d429ba626",
       "bytes": 12217
     },
     {
       "path": "dist/conversation-application.mjs",
-      "sha256": "d6daac74611fa7877151bdbd35347c37c4d5479bcaef7996857bfccaba403de8",
-      "bytes": 2073192
+      "sha256": "e19498c67dea6053bdc8f648fb46506fb5e711b6b344f19307c62180ea7ed375",
+      "bytes": 2102520
     },
     {
       "path": "dist/conversation-input.d.ts",
@@ -85,7 +85,7 @@
     },
     {
       "path": "dist/conversation-input.metadata.json",
-      "sha256": "644603f4f1b16164ddee97bc9ade84d1f9b5215bc9df143144b3c20028135d4f",
+      "sha256": "b3d30dddfbd23019e352e95d5ac1bdb521fb5251228bce4aa2fe914980fdc495",
       "bytes": 3500
     },
     {

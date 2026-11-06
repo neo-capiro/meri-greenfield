@@ -6,6 +6,26 @@ import {assertConversationHistoryRequest,assertConversationHistoryResponse} from
 import {PRODUCT_ERROR_STATUSES} from '../../../apps/control/product-access/http.mjs';
 import {id,bytes,binding,conversation,transcript,resumed} from './conversation-history-fixture.mjs';
 const input={conversationId:binding.conversationId};
+test('owned empty transcript is a distinct success with no run, events, or cursor authority',async()=>{
+ const input={conversationId:binding.conversationId,acceptEmpty:true};
+ const empty={schema:'meri.conversation-transcript-empty/1',conversation},admitted=request('transcript',bytes(input));
+ assert.deepEqual(await receive('transcript',200,bytes(empty),admitted),empty);
+ assert.deepEqual(assertConversationHistoryResponse('transcript',empty,input),empty);
+ for(const invalid of [false,null,'true',1])assert.throws(()=>request('transcript',bytes({...input,acceptEmpty:invalid})));
+ for(const [query,body] of [
+  [{conversationId:binding.conversationId},empty],
+  [{...input,after:1},empty],
+  [input,{...empty,conversation:{...conversation,conversationId:id(99)}}],
+  [input,{...empty,conversation:{...conversation,scopes:conversation.scopes.map(s=>({...s,tenantId:'foreign'}))}}],
+  [input,{...empty,latestRun:transcript().latestRun}],
+ ]){
+  await assert.rejects(receive('transcript',200,bytes(body),request('transcript',bytes(query))));
+  assert.throws(()=>assertConversationHistoryResponse('transcript',body,query));
+ }
+ for(const [status,code] of [[404,'CONVERSATION_NOT_FOUND'],[403,'ACCESS_DENIED'],[409,'MEMBERSHIP_CHANGED']]){
+  const error={error:{code}};assert.deepEqual(await receive('transcript',status,bytes(error),admitted),error);
+ }
+});
 test('metadata supplies exact fixed transport limits, native auth, versions and statuses',()=>{
  assert.equal(metadata.packageVersion,'0.1.43');assert.equal(metadata.historyVersion,'1.7.0');assert.equal(metadata.limits.responseBytes,2097152);assert.equal(metadata.limits.requestBytes,131072);
  assert.deepEqual(Object.values(metadata.routes).map(v=>v.path),['/api/conversations/export','/api/conversations/list','/api/conversations/transcript','/api/conversations/next-turn','/api/conversations/summaries','/api/conversations/manage','/api/conversations/deletions/list','/api/conversations/deletions/status']);assert.equal(metadata.authentication.serverSideCredentialOnly,true);assert.equal(metadata.authentication.validationGrantsAuthority,false);

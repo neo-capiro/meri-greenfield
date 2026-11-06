@@ -31,9 +31,9 @@ export async function generateConversationContracts({check=false}={}){
    out[key]='#/$defs/'+seen.get(full);
   }else out[key]=transform(v,owner);}return out;}
  root.$defs={...transform(root.$defs,root.$id),...defs};
- const names=['ConversationSubmitRequest','ConversationHistoryRequest','ConversationCancelRequest','ConversationEventsRequest','ConversationSubmittedResponse','ConversationHistoryResponse','ConversationCancelledResponse','ConversationEvent','ConversationErrorResponse','ConversationFeedbackRequest','ConversationFeedbackReadRequest','ConversationFeedbackResponse','ConversationFeedbackReadResponse'];
+ const names=['ConversationSubmitRequest','ConversationHistoryRequest','ConversationCancelRequest','ConversationEventsRequest','ConversationSubmittedResponse','ConversationHistoryResponse','ConversationCancelledResponse','ConversationEvent','ConversationErrorResponse','ConversationFeedbackRequest','ConversationFeedbackReadRequest','ConversationFeedbackResponse','ConversationFeedbackReadResponse','ConversationEmptyHistoryResponse'];
  const ajv=new Ajv({strict:true,allErrors:false,code:{source:true,esm:true}});formats(ajv);ajv.addSchema(root);
- const exportNames=['validateSubmitRequest','validateHistoryRequest','validateCancelRequest','validateEventsRequest','validateSubmitted','validateHistory','validateCancelled','validateEvent','validateError','validateFeedbackRequest','validateFeedbackReadRequest','validateFeedback','validateFeedbackRead'],exports={};
+ const exportNames=['validateSubmitRequest','validateHistoryRequest','validateCancelRequest','validateEventsRequest','validateSubmitted','validateHistory','validateCancelled','validateEvent','validateError','validateFeedbackRequest','validateFeedbackReadRequest','validateFeedback','validateFeedbackRead','validateEmptyHistory'],exports={};
  names.forEach((name,i)=>{const ref=root.$id+'#/$defs/'+name;ajv.compile({$ref:ref});exports[exportNames[i]]=ref;});
  const generated=standalone(ajv,exports);
  const bundled=await build({absWorkingDir:dir,preserveSymlinks:true,stdin:{contents:await readFile(new URL('conversation-application/receive.mjs',HERE),'utf8'),sourcefile:'conversation-application-receiver.mjs',resolveDir:resolve(dir,'conversation-application')},bundle:true,write:false,platform:'browser',format:'esm',target:'es2022',legalComments:'inline',metafile:true,plugins:[{name:'conversation-generated',setup(b){b.onResolve({filter:/^\.\/generated-validator\.mjs$/},a=>({path:a.path,namespace:'conversation-generated'}));b.onLoad({filter:/.*/,namespace:'conversation-generated'},()=>({contents:generated,resolveDir:dir,loader:'js'}));}}]});
@@ -47,13 +47,14 @@ export declare const CONVERSATION_SKILLS:readonly ConversationSkillDescriptor[];
 /** The closed run.status reasonCode vocabulary (conversation-application/protocol.mjs RUN_REASON_CODES); null on an ordinary transition. */
 export type RunReasonCode = ${RUN_REASON_CODES.map(code=>"'"+code+"'").join(' | ')};
 export declare const RUN_REASON_CODES:readonly RunReasonCode[];
+export declare const EMPTY_HISTORY_SCHEMA:'meri.conversation-history-empty/1';
 declare const admittedRequest: unique symbol;
 declare const admittedView: unique symbol;
 declare const admittedCursor: unique symbol;
 export interface ConversationRequestMap { submit:ConversationSubmitRequest; history:ConversationHistoryRequest; cancel:ConversationCancelRequest; events:ConversationEventsRequest; feedback:ConversationFeedbackRequest; 'feedback-read':ConversationFeedbackReadRequest; }
 export type AdmittedConversationRequest<R extends ConversationRoute> = Readonly<ConversationRequestMap[R]> & {readonly [admittedRequest]:R};
 export type AdmittedConversationView = Readonly<ConversationSubmittedResponse | ConversationHistoryResponse> & {readonly [admittedView]:true};
-export interface ConversationResponseMap {submit:Readonly<ConversationSubmittedResponse> & {readonly [admittedView]:true}; history:Readonly<ConversationHistoryResponse> & {readonly [admittedView]:true}; cancel:Readonly<ConversationCancelledResponse>; events:never; feedback:ConversationFeedbackResponse; 'feedback-read':ConversationFeedbackReadResponse;}
+export interface ConversationResponseMap {submit:Readonly<ConversationSubmittedResponse> & {readonly [admittedView]:true}; history:(Readonly<ConversationHistoryResponse> & {readonly [admittedView]:true}) | Readonly<ConversationEmptyHistoryResponse>; cancel:Readonly<ConversationCancelledResponse>; events:never; feedback:ConversationFeedbackResponse; 'feedback-read':ConversationFeedbackReadResponse;}
 export type ConversationResponse<R extends ConversationRoute> = ConversationResponseMap[R] | ConversationErrorResponse;
 export interface ConversationCursor {readonly conversationId:string; readonly after:number; readonly [admittedCursor]:true;}
 export declare class ConversationResponseError extends Error {readonly code:string;}

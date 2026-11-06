@@ -7,7 +7,7 @@ import {assertNativeSourceEventSemantics} from '../conversation-sources/semantic
 import {assertUploadSourceEventSemantics} from '../conversation-sources/upload-semantics.mjs';
 /** Shared post-schema correlation and request normalization; receives parsed/snapshotted JSON only. */
 import canonicalize from 'canonicalize';
-import {MANAGEMENT_VERSION,conversationHistoryMetadata} from './protocol.mjs';
+import {MANAGEMENT_VERSION,conversationHistoryMetadata,EMPTY_TRANSCRIPT_SCHEMA} from './protocol.mjs';
 export class ConversationHistoryResponseError extends Error{constructor(code){super(code);this.name='ConversationHistoryResponseError';this.code=code;}}
 export const fail=code=>{throw new ConversationHistoryResponseError(code);};
 const same=(a,b)=>canonicalize(a)===canonicalize(b),uuid=v=>typeof v==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/u.test(v);
@@ -40,7 +40,7 @@ export function normalizeHistoryRequest(route,value){
   if(v.before!==undefined&&v.before!==null){before=closed(v.before,['createdAt','conversationId'],[],'CONVERSATION_CURSOR_INVALID');if(!uuid(before.conversationId))fail('CONVERSATION_REQUEST_INVALID');if(typeof before.createdAt!=='string'||!Number.isFinite(Date.parse(before.createdAt))||new Date(before.createdAt).toISOString()!==before.createdAt)fail('CONVERSATION_CURSOR_INVALID');}
   return {before,limit:page(v.limit)};
  }
- if(route==='transcript'){const v=closed(value,['conversationId'],['after','limit'],'CONVERSATION_REQUEST_INVALID');if(!uuid(v.conversationId))fail('CONVERSATION_REQUEST_INVALID');const after=v.after===undefined?0:v.after;if(!integer(after,0))fail('CONVERSATION_CURSOR_INVALID');return {conversationId:v.conversationId,after,limit:page(v.limit)};}
+ if(route==='transcript'){const v=closed(value,['conversationId'],['after','limit','acceptEmpty'],'CONVERSATION_REQUEST_INVALID');if(!uuid(v.conversationId)||v.acceptEmpty!==undefined&&v.acceptEmpty!==true)fail('CONVERSATION_REQUEST_INVALID');const after=v.after===undefined?0:v.after;if(!integer(after,0))fail('CONVERSATION_CURSOR_INVALID');return {conversationId:v.conversationId,after,limit:page(v.limit),...(v.acceptEmpty===true?{acceptEmpty:true}:{})};}
  if(route==='nextTurn'){const v=closed(value,['conversationId','sourceRunId'],[],'CONVERSATION_REQUEST_INVALID');if(!uuid(v.conversationId)||!uuid(v.sourceRunId))fail('CONVERSATION_REQUEST_INVALID');return v;}
  fail('INVALID_ROUTE');
 }
@@ -59,6 +59,11 @@ function conversation(c){if(c.scopes.some(s=>s.tenantId!==c.owner.tenantId||s.po
 function run(r,c){if(r.binding.tenantId!==c.owner.tenantId||r.binding.actorId!==c.owner.actorId||r.binding.conversationId!==c.conversationId||r.policyRevision!==c.policyRevision||!same(r.scopes,c.scopes))fail('RUN_MISMATCH');}
 function target(source,target){if(target.tenantId!==source.tenantId||target.actorId!==source.actorId||target.conversationId!==source.conversationId||['runId','attemptId','workerId'].some(k=>target[k]===source[k])||target.writerFence!==source.writerFence+1)fail('TARGET_MISMATCH');}
 export function assertHistoryResponseSemantics(route,request,result){
+ if(route==='transcript'&&result.schema===EMPTY_TRANSCRIPT_SCHEMA){
+  if(request.acceptEmpty!==true)fail('INVALID_RESPONSE');
+  conversation(result.conversation);if(result.conversation.conversationId!==request.conversationId)fail('REQUEST_MISMATCH');
+  if(request.after!==0)fail('CURSOR_MISMATCH');return result;
+ }
  if(route==='deletions'){
   const order=(a,b)=>a.createdAt.localeCompare(b.createdAt)||a.requestId.localeCompare(b.requestId);
   const ids=new Set();let previous=request.before;

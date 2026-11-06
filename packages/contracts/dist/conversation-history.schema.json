@@ -1035,6 +1035,9 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 100
+        },
+        "acceptEmpty": {
+          "const": true
         }
       },
       "required": [
@@ -1566,6 +1569,22 @@
         "sourceBinding",
         "targetBinding",
         "state"
+      ],
+      "additionalProperties": false
+    },
+    "ConversationHistoryEmptyTranscriptResponse": {
+      "type": "object",
+      "properties": {
+        "schema": {
+          "const": "meri.conversation-transcript-empty/1"
+        },
+        "conversation": {
+          "$ref": "#/$defs/Canonical_Conversation_8b5174a8"
+        }
+      },
+      "required": [
+        "schema",
+        "conversation"
       ],
       "additionalProperties": false
     },

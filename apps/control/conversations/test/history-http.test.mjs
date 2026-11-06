@@ -68,6 +68,38 @@ async function fixture({lifecycle=false,extraClient=false,general=false}={}){
  }
  return {...f,store,owner,post,turn,gate,currentness,historyService:service,retentionOwner};
 }
+test('public transcript returns an owned empty conversation through the same release fence; internal readers still require a run',async()=>{
+ const f=await fixture();try{
+  const conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision};
+  assert.equal((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,404);
+  await f.store.management.register({principal:f.state.member,conversation,recheckActive:async()=>{}},()=>{});
+  assert.equal((await f.post('transcript',{conversationId:binding.conversationId})).status,404,'cached clients retain their existing no-run response');
+  const response=await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true});
+  assert.equal(response.status,200);assert.deepEqual(await response.json(),{schema:'meri.conversation-transcript-empty/1',conversation});
+  assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.ok(f.state.retentionChecks>=3);assert.ok(f.state.coreReads.length>=1);
+  for(const [path,body] of [
+   ['transcript',{conversationId:binding.conversationId,after:1,acceptEmpty:true}],
+   ['next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId}],
+   ['export',{conversationId:binding.conversationId}],
+  ])assert.equal((await f.post(path,body)).status,404);
+  await assert.rejects(f.store.history.transcript({principal:f.state.member,conversationId:binding.conversationId,after:0,limit:1},()=>{}),/NOT_FOUND/);
+  f.state.coreState='revoked';assert.notEqual((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,200);
+  f.state.coreState='active';f.state.suppressed=true;assert.notEqual((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,200);
+  f.state.suppressed=false;f.state.member.actorId=id(99);assert.equal((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,404);
+ }finally{f.close();}
+});
+test('an authenticated reserved successor returns negotiated empty history without another reservation or run',async()=>{
+ const f=await fixture();try{
+  const {admitted}=await f.turn(1),runCount=f.state.runs.size,reservations=f.state.nextRuns.size;
+  f.state.checkCurrentBinding=requested=>f.owner.currentRun(requested);
+  const session=await f.sessions.issue({identityCredential:'synthetic-native'});
+  await assert.rejects(f.service.history({credential:session.credential}),/NOT_FOUND/);
+  assert.deepEqual(await f.service.history({credential:session.credential,acceptEmpty:true}),{schema:'meri.conversation-history-empty/1',binding:admitted.targetBinding,scopes});
+  assert.equal(f.state.runs.size,runCount);assert.equal(f.state.nextRuns.size,reservations);
+  await assert.rejects(f.service.history({credential:session.credential,acceptEmpty:true,after:1}),/NOT_FOUND/);
+ }finally{f.close();}
+});
+
 test('history enforces its public byte caps when startup permits larger transport limits',async()=>{
  const f=await fixture();try{let calls=0,retained;const app=createConversationHistoryApplication({gate:f.gate,currentness:f.currentness,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:1048576,maxResponseBytes:8388608},service:{async list(call){assert.equal(Object.hasOwn(call,'credential'),false);assert.equal(typeof call.recheckConversation,'function');retained=call.recheckConversation;calls++;return {oversized:'x'.repeat(2097152)};}}});
   const post=body=>app.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body}));

@@ -2,6 +2,13 @@ import {receiveConversationRequest,receiveConversationResponse,createConversatio
 const dto:ConversationSubmitRequest={requestId:'00000000-0000-4000-8000-000000000001',prompt:'Hello',windowRequest:{basis:'unbounded'}};
 const request=receiveConversationRequest('submit',new TextEncoder().encode(JSON.stringify(dto)));
 const response=await receiveConversationResponse('submit',200,new Uint8Array(),request);
+const historyRequest=receiveConversationRequest('history',new TextEncoder().encode('{}'));
+const history=await receiveConversationResponse('history',200,new Uint8Array(),historyRequest);
+if(!('error' in history)&&'schema' in history){
+ const schema:'meri.conversation-history-empty/1'=history.schema;void schema;
+ // @ts-expect-error a successful empty read grants no run observation or cursor
+ createConversationCursor(history);
+}
 if(!('error' in response)){let cursor:ConversationCursor=createConversationCursor(response,0);cursor=receiveConversationEvent(new Uint8Array(),cursor).cursor;const reconnect=conversationReconnect(cursor);const method:'GET'=reconnect.method;void method;}
 // @ts-expect-error shape-only views do not bypass response admission
 createConversationCursor({run:{},lastSequence:1});

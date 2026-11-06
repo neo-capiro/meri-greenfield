@@ -26,8 +26,8 @@
   "sources": [
     {
       "path": "conversation-history/protocol.mjs",
-      "sha256": "8da1f730afa4aba267e410843b8085deca716f265c413ba4c0b4e525c183bca9",
-      "bytes": 2758
+      "sha256": "fc9b928f9ee7245ed59c73fc61e380b8b8fd0f392c57597bddf2b1c98ea696d5",
+      "bytes": 2835
     },
     {
       "path": "conversation-sources/hearing-media-semantics.mjs",

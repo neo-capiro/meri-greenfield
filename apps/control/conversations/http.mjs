@@ -46,7 +46,7 @@ export function createConversationApplication({service,now=Date.now,maxRequestBy
       const input=assertFeedbackShape(route[1]==='feedback'?'ConversationFeedbackRequest':'ConversationFeedbackReadRequest',body),method=route[1]==='feedback'?'feedback':'feedbackRead';
       return response(await life.run(signal=>service[method]({credential:auth.slice(7),input,signal})),200);
      }
-     if(route[1]==='history'){const input=publicRequest('history',body);diagnostic?.stage('session');const result=await life.run(signal=>service.history({credential:auth.slice(7),after:input.after??0,limit:input.limit??100,signal,historyStage:diagnostic?.stage}));diagnostic?.stage('response');return finish(response(result,200));}
+     if(route[1]==='history'){const input=publicRequest('history',body);diagnostic?.stage('session');const result=await life.run(signal=>service.history({credential:auth.slice(7),after:input.after??0,limit:input.limit??100,acceptEmpty:input.acceptEmpty===true,signal,historyStage:diagnostic?.stage}));diagnostic?.stage('response');return finish(response(result,200));}
      if(body&&Object.hasOwn(body,'command')){const input=publicRequest('events',body);after=0;selector=input.command.conversationId;}
      else{closedBody(body,[],['after','limit']);after=body.after??0;const limit=body.limit??100;if(!Number.isSafeInteger(limit)||limit<1||limit>100)fail('INVALID_CURSOR');}
    }
