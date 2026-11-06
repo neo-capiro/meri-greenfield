@@ -7,7 +7,7 @@ import {OBJECTIVE_ACTIVITY_OPERATIONS} from '../native-authority/objective-runs-
 export const OBJECTIVE_GENERATION_ACTIVITY_NAMES=Object.freeze(Object.keys(OBJECTIVE_ACTIVITY_OPERATIONS));
 const fault=()=>Error('OBJECTIVE_GENERATION_ACTIVITY_CONFIGURATION');
 const uuid=v=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[1-8][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/u.test(v);
-const sha=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
+const sha=v=>typeof v==='string'&&v.length===64&&/^[a-f0-9]{64}$/u.test(v);
 export function createObjectiveWorkerActivities(ports={}){
  let c;try{c=own(ports,[],['native','context']);}catch{throw fault();}const context=c.context??(()=>Context.current());
  if(typeof context!=='function'||c.native!==undefined&&typeof c.native?.call!=='function')throw fault();
@@ -20,6 +20,7 @@ export function createObjectiveWorkerActivities(ports={}){
   const signal=context().cancellationSignal;nativeSignal(signal);
   const reply=data(await c.native.call(OBJECTIVE_ACTIVITY_OPERATIONS[name],v,{signal}));
   if(reply.kind==='ready'&&name==='objectiveGenerationSource'){own(reply,['kind','sourceAdmissionSha256','requestSha256','effectExpiresAtMs']);if(!sha(reply.sourceAdmissionSha256)||!sha(reply.requestSha256)||!Number.isSafeInteger(reply.effectExpiresAtMs))throw fault();}
+  else if(reply.kind==='failed'&&name==='objectiveGenerationSource'){own(reply,['kind','sourceAdmissionSha256','objectiveReceiptSha256']);if(!sha(reply.sourceAdmissionSha256)||!sha(reply.objectiveReceiptSha256))throw fault();}
   else if(reply.kind==='completed'&&name==='objectiveGenerationComplete'){own(reply,['kind','strategyId','strategyVersionId','objectiveReceiptSha256']);if(!uuid(reply.strategyId)||!uuid(reply.strategyVersionId)||!sha(reply.objectiveReceiptSha256))throw fault();}
   else if(reply.kind==='state'&&name==='objectiveGenerationReadRun'){own(reply,['kind','state']);if(!['queued','starting','running','completed','failed','cancelled','paused','waiting-for-approval'].includes(reply.state))throw fault();}
   else{own(reply,['kind']);if(reply.kind!=='unconfirmed'&&!(name==='objectiveGenerationStartRun'&&['not-started','started','absent','refused'].includes(reply.kind)))throw fault();}
