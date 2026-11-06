@@ -6,7 +6,7 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {assertCorePrincipal,retainedOrigin} from '../../../packages/contracts/runtime-0.2/retained-reads.mjs';
 import {nativeReadFault,nativeReadFailureCode} from '../../../packages/contracts/runtime-0.2/reads.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
-import {readJsonResponse,responseBody,cancelBody} from '../../gateway/sources/json-response.mjs';
+import {readJsonResponse,responseBody,cancelBody,sourceStatusCode} from '../../gateway/sources/json-response.mjs';
 import {safeFailure} from '../../gateway/dispatch/operation-result.mjs';
 
 const UUID=/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/u,SHA=/^[a-f0-9]{64}$/u;
@@ -62,7 +62,8 @@ export function createClientReferenceReader(configuration){
    pending.then(response=>{if(life.signal.aborted)try{cancelBody(responseBody(response));}catch{}},()=>{});return pending;
   });
   const body=responseBody(acquired);
-  if(acquired.status<200||acquired.status>=300||acquired.redirected)refuse('UNAVAILABLE');
+  if(acquired.redirected)refuse('UNAVAILABLE');
+  if(acquired.status<200||acquired.status>=300)refuse(sourceStatusCode(acquired.status));
   // Nest POST normally returns201. Adapt status only, preserving the same bounded bytes/headers/stream.
   const response=acquired.status===200?acquired:new Response(body,{status:200,headers:acquired.headers});
   const result=data(await readJsonResponse(response,{lifetime:life,maxResponseBytes:MAX_RESPONSE_BYTES}));

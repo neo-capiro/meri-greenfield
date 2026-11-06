@@ -22,7 +22,7 @@ function fixture(changes={}){
  return {state,now,principal,authorityClient,configuration,read:createClientReferenceReader(configuration),request:()=>({credential:'SYNTHETIC_NATIVE',reference:'  Café 東京 — Client  ',deadlineMs:now()+10000})};
 }
 const failure=async(p,code)=>{
- await assert.rejects(p,error=>{if(code)assert.equal(error.message,code);assert.match(error.message,/^(CONFIGURATION|INVALID_ARGUMENTS|ACCESS_DENIED|UNAVAILABLE|DEADLINE|CANCELLED|INVALID_RESULT|RESOURCE_LIMIT)$/u);assert.equal(error.message.includes('PRIVATE'),false);return true;});
+ await assert.rejects(p,error=>{if(code)assert.equal(error.message,code);assert.match(error.message,/^(CONFIGURATION|INVALID_ARGUMENTS|ACCESS_DENIED|UNAVAILABLE|SOURCE_UNAVAILABLE|DEADLINE|CANCELLED|INVALID_RESULT|RESOURCE_LIMIT)$/u);assert.equal(error.message.includes('PRIVATE'),false);return true;});
 };
 
 for(const status of [200,201,202,299])test(`fixed reference POST accepts native2xx ${status} inside exact identity brackets`,async()=>{
@@ -83,6 +83,15 @@ for(const [label,value] of [
  const f=fixture();f.state.response=(v,p)=>Response.json(p===path?value:v,{status:p===path?201:200});await failure(f.read(f.request()));assert.equal(f.state.calls.length,2);
 });
 
+for(const [status,code] of [[401,'ACCESS_DENIED'],[403,'ACCESS_DENIED'],[404,'UNAVAILABLE'],[410,'UNAVAILABLE'],[429,'SOURCE_UNAVAILABLE'],[500,'SOURCE_UNAVAILABLE'],[503,'SOURCE_UNAVAILABLE']])test(`native HTTP classification ${status} preserves meaning and cancels unread private bytes`,async()=>{
+ const f=fixture();let cancelled=0,reads=0;
+ const stream=new ReadableStream({start(c){c.enqueue(new TextEncoder().encode('PRIVATE upstream detail'));},cancel(){cancelled++;}});
+ const getReader=stream.getReader.bind(stream);stream.getReader=(...args)=>{reads++;return getReader(...args);};
+ f.state.response=(v,p)=>p===path?new Response(stream,{status}):Response.json(v);
+ await failure(f.read(f.request()),code);
+ assert.equal(reads,0);assert.equal(cancelled,1);
+ assert.deepEqual(f.state.calls.map(call=>call.path),[identityPath,path]);
+});
 for(const [label,response] of [
  ['403',()=>new Response('PRIVATE',{status:403})],['500',()=>new Response('PRIVATE',{status:500})],['204',()=>new Response(null,{status:204})],
  ['wrong media',()=>new Response('{}',{status:201})],['encoding',()=>new Response('{}',{status:201,headers:{'content-type':'application/json','content-encoding':'gzip'}})],
