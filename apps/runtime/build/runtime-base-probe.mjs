@@ -28,7 +28,7 @@ export async function probeRuntimeImage() {
   assert.equal(swc.getBinaryMetadata().target,'aarch64-unknown-linux-gnu');
   assert(!fs.existsSync(path.join(root,'.build-native')));
   const bridgePackage=require.resolve('@temporalio/core-bridge/package.json');
-  assert.equal(JSON.parse(fs.readFileSync(bridgePackage,'utf8')).version,'1.24.0');
+  assert.equal(JSON.parse(fs.readFileSync(bridgePackage,'utf8')).version,'1.25.0');
   const bridge=path.join(path.dirname(bridgePackage),'releases/aarch64-unknown-linux-gnu/index.node');
   inspectNativeFile(bridge); require('@temporalio/core-bridge');
   const workerRequire=createRequire(path.join(root,'apps/worker/conversation/package.json'));
@@ -48,6 +48,8 @@ with open(sys.argv[1]) as stream: lock=json.load(stream)
 assert sysconfig.get_path('purelib')==lock['sitePackages']
 import pip
 assert pip.__version__=='26.2.2'
+from pip._vendor import certifi
+assert certifi.__version__=='2026.10.23'
 for row in lock['wheels']:
  assert importlib.metadata.version(row['name'])==row['version'],row['name']
  importlib.import_module(row['importName'])
@@ -64,7 +66,7 @@ print(json.dumps({'python':platform.python_version(),'imports':len(lock['wheels'
     encoding:'utf8',timeout:30000,maxBuffer:65536,
   }));}finally{fs.rmSync(directory,{recursive:true});}
   return {platform:'linux/arm64',node:process.version,uid:process.getuid(),readOnlyRoot:true,writableTaskPaths:true,
-    swc:binding.version,temporal:'1.24.0',sdk:sdkPackage.version,cli:sdkPackage.claudeCodeVersion,python:pythonResult};
+    swc:binding.version,temporal:'1.25.0',sdk:sdkPackage.version,cli:sdkPackage.claudeCodeVersion,python:pythonResult};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(path.resolve(process.argv[1])).href){
   if(process.argv.length===3&&process.argv[2]==='--help')console.log('Native ARM64 image smoke: --check under UID1000/read-only root with writable task mounts. No model, service or database calls.');

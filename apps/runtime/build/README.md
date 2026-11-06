@@ -31,17 +31,23 @@ not a claim that npm has published a fixed release.
 
 Python uses standard offline pip installation with `--require-hashes`,
 `--only-binary=:all:` and `pip check`. The 22 retained PyPI wheels total
-57,939,153 bytes. All compiled wheels are CPython 3.13 manylinux AArch64;
+57,941,817 bytes. All compiled wheels are CPython 3.13 manylinux AArch64;
 universal wheels are architecture independent. The wheel lock records the
 upstream URL, size and SHA256 of every archive. The set retains the former
 image's Python libraries and adds the pandas/pypdf dependencies already used
 by the canonical artifact source and worker requirements. It supports document,
 spreadsheet, presentation, chart and typed table-analysis generation. Pillow is
-13.0.0; pypdf 6.21.2 includes the upstream PDF parsing fixes. pip installs these
+13.0.0; pypdf 6.21.4 includes the upstream PDF parsing fixes. pip installs these
 application libraries in the image's standard
 `/usr/lib/python3.13/site-packages`; `--break-system-packages` explicitly permits
 that build-time installation into Wolfi's managed interpreter. The pinned set
-does not replace pip or its distribution dependencies. Native probes check the
+does not replace pip or its distribution dependencies. The three pip APKs are
+26.2.2-r2 from the existing vendor-signed index, including vendored certifi
+2026.10.23 for CVE-2026-111943. The runtime probe checks that vendored version.
+Temporal packages are coherently pinned to 1.25.0 across runtime, conversations
+and their compatibility fixture; the complete upstream native bridge contains
+the fixed zip 9.0.5 dependency. Its Cargo metadata and native payload remain
+intact. Workflow bundles must be rebuilt with the same SDK version as the worker. Native probes check the
 installation path, exact library versions and every import. PptxGenJS retains
 its canonical generator with a scoped image-size 2.0.4 dependency override.
 

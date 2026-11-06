@@ -1,7 +1,7 @@
 // W02-03 inert deterministic orchestration workflow fixture.
 //
 // Preparation only. This module is compiled against @temporalio/workflow
-// 1.24.0 and is NEVER run: no Worker is created, no connection is opened, and
+// 1.25.0 and is NEVER run: no Worker is created, no connection is opened, and
 // there is no model/browser/Office call. Importing this module initializes JS
 // workflow declarations; no native worker core or server is invoked. The pure
 // planContinuation helper and a separate mock-SDK control-flow test qualify

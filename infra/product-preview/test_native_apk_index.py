@@ -1241,7 +1241,7 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         name the staged revision, and the assertion below is written so that dropping that pin is
         detected rather than silently accepted.
         """
-        pin = "py3-pip-wheel=26.2.2-r1"
+        pin = "py3-pip-wheel=26.2.2-r2"
 
         def pinned(statement):
             return pin in statement
@@ -1363,7 +1363,7 @@ class SourceBuiltClamavPayload(unittest.TestCase):
         # both installs that name the second repository are real and cover the compiler python + wheel
         two_repo = self.TWO_REPOSITORY_INSTALLS(DOCKERFILE)
         self.assertEqual(len(two_repo), 2, "expected the compiler and runtime installs, found %r" % two_repo)
-        self.assertIn("py3-pip-wheel=26.2.2-r1", " ".join(two_repo),
+        self.assertIn("py3-pip-wheel=26.2.2-r2", " ".join(two_repo),
                       "no two-repository install requests the fixed wheel")
         self.assertIn("python-3.13=", " ".join(two_repo),
                       "the compiler interpreter install no longer names the second repository")

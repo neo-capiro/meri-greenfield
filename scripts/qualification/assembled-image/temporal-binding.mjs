@@ -6,7 +6,7 @@ export function resolveTemporal(root) {
   root=fs.realpathSync(root);
   const runtime=path.join(root,'apps/runtime');
   const owner=JSON.parse(fs.readFileSync(path.join(runtime,'package.json'),'utf8'));
-  if(owner.name!=='@meri/assembled-runtime'||owner.dependencies?.['@temporalio/worker']!=='1.24.0')throw Error('Temporal runtime owner pin differs');
+  if(owner.name!=='@meri/assembled-runtime'||owner.dependencies?.['@temporalio/worker']!=='1.25.0')throw Error('Temporal runtime owner pin differs');
   const require=createRequire(path.join(runtime,'temporal-worker.mjs'));
   const entry=fs.realpathSync(require.resolve('@temporalio/worker'));
   const packageFile=fs.realpathSync(require.resolve('@temporalio/worker/package.json'));

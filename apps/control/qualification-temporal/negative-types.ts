@@ -1,7 +1,7 @@
 // W02-03 negative and positive type fixtures.
 //
 // Preparation only. Every `@ts-expect-error` below asserts that the pinned
-// 1.24.0 API rejects an incorrect option shape. If a future SDK relaxes one of
+// 1.25.0 API rejects an incorrect option shape. If a future SDK relaxes one of
 // these rules, the directive becomes "unused" and `tsc --noEmit` fails with
 // TS2578 — so the fixture fails closed when the API changes.
 //
