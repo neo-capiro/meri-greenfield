@@ -36,7 +36,8 @@ export function createCoreObjectiveGenerationTransport(configuration){
    response=await life.run(signal=>{const pending=Promise.resolve(fetchImpl(origin.origin+route,{method:reading?'GET':'POST',redirect:'error',credentials:'omit',cache:'no-store',signal,
     headers:{'x-internal-service-secret':secret,...(reading?{}:{'content-type':'application/json'}),accept:'application/json','accept-encoding':'identity'},...(reading?{}:{body})}));
     pending.then(r=>{if(life.signal.aborted)cancel(r);},()=>{});return pending;});life.check();
-   if(types.isProxy(response)||!(response instanceof Response)||response.redirected||response.status!==((reading||phase==='current')?200:201))return unavailable();
+   if(types.isProxy(response)||!(response instanceof Response)||response.redirected||
+    response.status!==((reading||phase==='current')?200:201)&&!(response.status===409&&['publish','request-read'].includes(phase)))return unavailable();
    const length=response.headers.get('content-length');
    if(!/^application\/json(?:\s*;\s*charset=utf-8)?$/iu.test(response.headers.get('content-type')??'')||![null,'identity'].includes(response.headers.get('content-encoding'))||
     length!==null&&(!/^(0|[1-9][0-9]*)$/u.test(length)||Number(length)>maxFactBytes))refuse();

@@ -118,6 +118,32 @@ export function decodePublicationReply(raw,expected,{admission:admitted}){
  }catch{refuse();}
 }
 
+/** Existing request route's committed pre-publication failure. The authenticated
+ * Core owner has already recorded the public ObjectiveReceipt; a bare HTTP error
+ * is never this evidence. Return digests only, not content in workflow history. */
+export function decodePublicationFailureReply(raw,expected,{admission:admitted}){
+ try{
+  const source=expectedSource(expected),a=admission(admitted,source),c=a.canonical;
+  const r=closed(raw,['schemaVersion','generationJobId','sourceAdmissionSha256','outcome','objectiveReceipt','objectiveReceiptSha256']);
+  const receipt=closed(r.objectiveReceipt,['schemaVersion','requestId','source','context','result','failure']);
+  const s=closed(receipt.source,['clientId','objectiveId','objectiveVersion','objectiveRevisionId']);
+  const context=closed(receipt.context,['reobservedAt','state','packetId','compiledAt','sourceDigest','coverageDigest','inputDigest','issues']);
+  const failure=closed(receipt.failure,['code','message']);
+  if(r.schemaVersion!==1||r.generationJobId!==a.generationJobId||r.sourceAdmissionSha256!==coreApplicationSha256(a)||r.outcome!=='failed'||
+   sha(r.objectiveReceiptSha256)!==coreApplicationSha256(receipt)||receipt.schemaVersion!==1||receipt.requestId!==a.generationRequestId||
+   !same(s,{clientId:c.clientId,objectiveId:c.objectiveId,objectiveVersion:c.requestedObjectiveVersion,objectiveRevisionId:c.requestedObjectiveRevisionId})||
+   receipt.result!==null||failure.code!=='OBJECTIVE_CONTEXT_INCOMPLETE'||typeof failure.message!=='string'||!failure.message||failure.message.length>256||
+   context.state!=='incomplete'||context.reobservedAt!==null||!Array.isArray(context.issues)||!context.issues.length)refuse();
+  if(context.packetId!==null)uuid(context.packetId);
+  if(context.compiledAt!==null&&(typeof context.compiledAt!=='string'||!Number.isFinite(Date.parse(context.compiledAt))))refuse();
+  for(const key of ['sourceDigest','coverageDigest','inputDigest'])if(context[key]!==null)sha(context[key]);
+  for(const rawIssue of context.issues){const issue=closed(rawIssue,['group','code','message']);
+   if(!['government_targets','government_profile_support','represented_facilities','current_directory','member_notes','target_recommendations','state_directory','relationship_history'].includes(issue.group)||
+    !['REQUIRED_CONTEXT_UNAVAILABLE','REQUIRED_FIELDS_EXCEED_PACKET_BUDGET'].includes(issue.code)||typeof issue.message!=='string'||!issue.message||issue.message.length>256)refuse();}
+  return frozen({kind:'failed',sourceAdmissionSha256:r.sourceAdmissionSha256,objectiveReceiptSha256:r.objectiveReceiptSha256});
+ }catch{refuse();}
+}
+
 /** Core's actual saved acceptance, compared to the immutable run-start when supplied. */
 export function decodeAcceptanceReply(raw,expected,{admission:admitted,record}){
  try{

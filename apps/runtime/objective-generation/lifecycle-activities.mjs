@@ -42,9 +42,18 @@ export function createObjectiveGenerationActivities({clientFor,runs,context=()=>
   try{
    await client.current({signal,deadlineMs});
    const a=await client.admit({signal,deadlineMs}),p=await client.publish({admission:a.sourceAdmission,signal,deadlineMs});
+   if(p.kind==='failed')return data(p);
    return data({kind:'ready',sourceAdmissionSha256:a.sourceAdmissionSha256,requestSha256:p.requestSha256,
     effectExpiresAtMs:Math.min(a.sourceAdmission.effectExpiresAtMs,p.request.originalExpiresAtMs)});
-  }catch{return unconfirmed();}
+  }catch{
+   // A lost failure reply may leave current/admit effects refused because the
+   // job is already failed. Existing retained reads need no renewed consent.
+   try{
+    const a=await client.readAdmission({signal,deadlineMs}),p=await client.readRequest({admission:a.sourceAdmission,signal,deadlineMs});
+    if(p.kind==='failed'&&a.acceptance===null)return data(p);
+   }catch{}
+   return unconfirmed();
+  }
  }
  async function objectiveGenerationStartRun(value){
   const v=parse(value,['mode','requestSha256']);if(!['effect','read'].includes(v.mode)||!sha(v.requestSha256))throw fault();

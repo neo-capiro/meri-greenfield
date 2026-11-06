@@ -2,10 +2,26 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {assertPreparedObjectiveSelection} from '../../../../packages/runtime/objective-generation-custody.mjs';
 import {coreApplicationSha256} from '../../../../packages/runtime/core-application-digest.mjs';
-import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodeAcceptanceReply,decodeCompletionReply,objectiveSourceSelection} from '../core-replies.mjs';
+import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodePublicationFailureReply,decodeAcceptanceReply,decodeCompletionReply,objectiveSourceSelection} from '../core-replies.mjs';
 import {coreRepliesFixture,NOW} from './core-replies-fixture.mjs';
 const refused=/OBJECTIVE_GENERATION_CORE_REPLY_REFUSED/;
 const mutate=(value,change)=>{const copy=structuredClone(value);change(copy);return copy;};
+
+test('committed publication failure binds exact job, admission, receipt source and hash; never exposes content to the driver',()=>{
+ const x=coreRepliesFixture(),reply=x.replies.publicationFailure(),ctx={admission:x.admission};
+ assert.deepEqual(decodePublicationFailureReply(reply,x.source,ctx),{kind:'failed',sourceAdmissionSha256:x.sourceAdmissionSha256,
+  objectiveReceiptSha256:reply.objectiveReceiptSha256});
+ for(const change of [r=>{r.extra=true;},r=>{r.generationJobId=x.source.binding.runId;},r=>{r.sourceAdmissionSha256='0'.repeat(64);},
+  r=>{r.outcome='unconfirmed';},r=>{r.objectiveReceiptSha256='0'.repeat(64);},r=>{r.objectiveReceipt.source.objectiveVersion++;},
+  r=>{r.objectiveReceipt.requestId=x.source.binding.runId;},r=>{r.objectiveReceipt.failure.code='OTHER';},
+  r=>{r.objectiveReceipt.result={};},r=>{r.objectiveReceipt.context.state='pending';},r=>{r.objectiveReceipt.context.issues=[];},
+  r=>{r.objectiveReceipt.context.issues[0].code='OTHER';},r=>{r.objectiveReceipt.context.issues[0].group='private';}]){
+  const raw=mutate(reply,change);
+  if(raw.objectiveReceiptSha256===reply.objectiveReceiptSha256)raw.objectiveReceiptSha256=coreApplicationSha256(raw.objectiveReceipt);
+  assert.throws(()=>decodePublicationFailureReply(raw,x.source,ctx),refused);
+ }
+ assert.throws(()=>decodePublicationFailureReply(reply,{...x.source,binding:{...x.source.binding,actorId:'foreign'}},ctx),refused);
+});
 
 test('admission reply decodes to the exact closed Core admission and its sorted-key digest',()=>{
  const x=coreRepliesFixture(),decoded=decodeAdmissionReply(x.replies.admit(),x.source);

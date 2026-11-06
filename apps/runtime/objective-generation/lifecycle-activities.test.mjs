@@ -11,7 +11,7 @@ function harness({replies={},runs:runOptions={},withRuns=true,withClient=true}={
  const queue={current:[{schemaVersion:1,generationJobId:x.source.generationJobId,tenantId:x.source.binding.tenantId,actorId:x.source.binding.actorId,clerkUserId:x.admission.clerkUserId,clientId:x.admission.canonical.clientId,role:'admin',consentId:x.admission.consentId,controlVersion:x.admission.controlVersion,checkedAtMs:NOW,effectExpiresAtMs:x.admission.effectExpiresAtMs}],admit:[x.replies.admit()],publish:[x.replies.publication()],accept:[],readAdmission:[x.replies.admissionRead()],readRequest:[x.replies.publication()],
   complete:[x.replies.completion()],readCompletion:['unavailable'],...replies};
  const transport={available:()=>true,...Object.fromEntries(Object.keys(queue).map(m=>[m,async value=>{calls.push(m);
-  const next=queue[m].length>1?queue[m].shift():queue[m][0];if(next===undefined||next==='unavailable')return {kind:'unavailable'};return {kind:'unqualified-response',status:200,value:structuredClone(next)};}]))};
+  const next=queue[m].length>1?queue[m].shift():queue[m][0];if(next===undefined||next==='unavailable')return {kind:'unavailable'};return {kind:'unqualified-response',status:next?.outcome==='failed'?409:200,value:structuredClone(next)};}]))};
  const clientFor=source=>{assert.deepEqual(source,x.source);return createCoreObjectiveGenerationClient({transport,source,now:()=>NOW});};
  const runs={async start(value){runState.starts.push(value);if(runOptions.startFails)throw Error('lost');runState.run={state:'queued'};return runOptions.startAnswer??{kind:'started'};},
   async read(){if(runOptions.readFails)throw Error('down');return runState.run;}};
@@ -26,6 +26,21 @@ test('source admits then publishes and returns digests and the effect bound only
  assert.deepEqual(h.calls,['current','admit','publish']);assert.equal(JSON.stringify(out).includes(h.x.executionContext.prompt),false);
  assert.deepEqual(await harness({withClient:false}).activities.objectiveGenerationSource(h.input),{kind:'unconfirmed'});
  assert.deepEqual(await harness({replies:{publish:['unavailable']}}).activities.objectiveGenerationSource(h.input),{kind:'unconfirmed'});
+});
+
+test('confirmed publication failure terminates source and a lost reply reconciles through retained reads',async()=>{
+ const reply=coreRepliesFixture().replies.publicationFailure(),expected={kind:'failed',sourceAdmissionSha256:reply.sourceAdmissionSha256,objectiveReceiptSha256:reply.objectiveReceiptSha256};
+ for(const replies of [{publish:[reply]},{publish:['unavailable'],readAdmission:[coreRepliesFixture().replies.admissionRead(null)],readRequest:[reply]},
+  {current:['unavailable'],readAdmission:[coreRepliesFixture().replies.admissionRead(null)],readRequest:[reply]}]){
+  const h=harness({replies}),out=await h.activities.objectiveGenerationSource(h.input);
+  assert.deepEqual(out,expected);assert.equal(h.runState.starts.length,0);
+  assert.equal(JSON.stringify(out).includes(reply.objectiveReceipt.failure.message),false);
+ }
+ const h=harness({replies:{current:['unavailable'],readRequest:[{...reply,objectiveReceiptSha256:'0'.repeat(64)}]}});
+ assert.deepEqual(await h.activities.objectiveGenerationSource(h.input),{kind:'unconfirmed'});
+ assert.deepEqual(h.calls,['current','readAdmission','readRequest']);
+ const contradictory=harness({replies:{current:['unavailable'],readRequest:[reply]}});
+ assert.deepEqual(await contradictory.activities.objectiveGenerationSource(contradictory.input),{kind:'unconfirmed'});
 });
 
 test('run start re-reads Core, passes the published prompt and decoded selection to the run owner once',async()=>{

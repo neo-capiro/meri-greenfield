@@ -27,7 +27,12 @@ export function coreRepliesFixture(){
    completionId,checkpointId:'00000000-0000-4000-8000-000000000062',checkpointSha256:'1'.repeat(64),resultRef:completionId,resultSha256:'2'.repeat(64),rawFileSha256:'3'.repeat(64),
    executionSha256:'4'.repeat(64),completedAtMs:NOW+10,payloadSha256:'5'.repeat(64),corePayloadSha256:'6'.repeat(64)},
   objectiveReceipt,objectiveReceiptSha256:coreApplicationSha256(objectiveReceipt),snapshotDigest:'7'.repeat(64)};
+ const failedReceipt={...clone(objectiveReceipt),result:null,failure:{code:'OBJECTIVE_CONTEXT_INCOMPLETE',message:'Government relationship context is incomplete. Review its coverage before generating.'},
+  context:{reobservedAt:null,state:'incomplete',packetId:null,compiledAt:null,sourceDigest:null,coverageDigest:null,inputDigest:null,
+   issues:[{group:'target_recommendations',code:'REQUIRED_FIELDS_EXCEED_PACKET_BUDGET',message:'Required fields do not fit the approved context budget.'}]}};
+ const publicationFailure={schemaVersion:1,generationJobId:admission.generationJobId,sourceAdmissionSha256,outcome:'failed',
+  objectiveReceipt:failedReceipt,objectiveReceiptSha256:coreApplicationSha256(failedReceipt)};
  return {f,source,admission,sourceAdmissionSha256,request,executionContext,record,
-  replies:{admit:()=>clone(admit),publication:()=>clone(publication),accept:()=>clone(accept),admissionRead,completion:()=>clone(completion)},
+  replies:{admit:()=>clone(admit),publication:()=>clone(publication),publicationFailure:()=>clone(publicationFailure),accept:()=>clone(accept),admissionRead,completion:()=>clone(completion)},
   executionSelection:{provider:SDK_MODEL_CONFIGURATION.usageBasis.provider,model:SDK_MODEL_CONFIGURATION.model}};
 }
