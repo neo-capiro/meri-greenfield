@@ -90,7 +90,8 @@ test('actual Docker-filtered COPY contains every role dependency and all three r
         assert.equal(result.signal, null);
         const help = spawnSync(process.execPath, [join(tree, 'apps/runtime/cli.mjs'), '--help'], { cwd: tree, encoding: 'utf8', timeout: 10000, env: { PATH: process.env.PATH, TMPDIR: temp } });
         assert.equal(help.status, 0, help.stderr);
-        assert.match(help.stdout, /control\|temporal-worker\|conversation-runner/u);
+        assert.match(help.stdout, /<control\|temporal-worker\|schedule-worker>/u);
+        assert.doesNotMatch(help.stdout, /\bconversation-runner\b/u);
         console.log(JSON.stringify({ phase: 'cli-help', status: help.status }));
     }
     finally {
