@@ -26,9 +26,10 @@ test('the default constructor (Temporal Context) and every activity name match t
  const a=createObjectiveWorkerActivities();assert.deepEqual(Object.keys(a),OBJECTIVE_GENERATION_ACTIVITY_NAMES);
  const workflow=await readFile(new URL('../../control/conversations/objective-generation-workflow.ts',import.meta.url),'utf8');
  for(const name of OBJECTIVE_GENERATION_ACTIVITY_NAMES)assert.match(workflow,new RegExp(`\\b${name}\\(input`,'u'),name);
- // The poller registers the four Objective activities next to its own two broker activities; no name is shared.
- const registered=Object.keys(workerOptions({configuration:{temporal:{namespace:'synthetic',taskQueue:'synthetic'},limits:{shutdownMs:1000}},connection:{},native:{}}).activities);
- assert.deepEqual(registered.filter(name=>!OBJECTIVE_GENERATION_ACTIVITY_NAMES.includes(name)),['executeConversation','reconcileConversation']);
+ // The poller also owns broker and retention activities; registration must not call any native operation.
+ const native={async call(){assert.fail('registration must not invoke native work');}};
+ const registered=Object.keys(workerOptions({configuration:{temporal:{namespace:'synthetic',taskQueue:'synthetic'},limits:{shutdownMs:1000}},connection:{},native}).activities);
+ assert.deepEqual(registered.filter(name=>!OBJECTIVE_GENERATION_ACTIVITY_NAMES.includes(name)),['executeConversation','reconcileConversation','sweepConversationRetention']);
  assert.deepEqual(registered.filter(name=>OBJECTIVE_GENERATION_ACTIVITY_NAMES.includes(name)),OBJECTIVE_GENERATION_ACTIVITY_NAMES);
 });
 
