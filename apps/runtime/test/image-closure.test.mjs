@@ -71,6 +71,12 @@ test('actual Docker-filtered COPY contains every role dependency and all three r
         const aliases = docker.split('\n').filter(line => line.startsWith('RUN mkdir -p node_modules/'));
         assert.equal(aliases.length, 1);
         run('bash', ['-c', aliases[0].slice(4)], { cwd: tree });
+        // This separate production alias places retention's workflow under the
+        // conversation prefix's locked Temporal dependency owner as well.
+        const retentionAliases = docker.split('\n').filter(line => line.startsWith('RUN ln -s ') && line.endsWith(' apps/control/retention/node_modules'));
+        assert.deepEqual(retentionAliases, ['RUN ln -s ../conversations/node_modules apps/control/retention/node_modules']);
+        run('bash', ['-c', retentionAliases[0].slice(4)], { cwd: tree });
+        assert.equal(realpathSync(join(tree, 'apps/control/retention/node_modules')), realpathSync(join(tree, 'apps/control/conversations/node_modules')));
         const contained = path => { for (const entry of readdirSync(path, { withFileTypes: true })) {
             const next = join(path, entry.name), stat = lstatSync(next);
             if (stat.isSymbolicLink()) {
