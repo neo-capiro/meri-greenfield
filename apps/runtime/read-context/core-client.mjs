@@ -50,7 +50,7 @@ export function createNativeToolAuthorityClient(configuration={}){
    !ROLES.has(r.role)||c.selectedClientId!==null&&!r.clientIds.includes(c.selectedClientId))refuse('ACCESS_DENIED');
   life.limitDeadline(r.expiresAtMs);life.check();
   return assertNativeToolAuthority({principal:r.principal,identityRevision:r.identityRevision,actorRole:r.role,clientIds:r.clientIds,membershipRevision:r.membershipRevision,
-   checkedAtMs:r.checkedAtMs,expiresAtMs:Math.min(cutoff,r.expiresAtMs),contextRevision:r.contextRevision,
+   checkedAtMs:r.checkedAtMs,expiresAtMs:Math.min(v.deadlineMs,r.expiresAtMs),contextRevision:r.contextRevision,
    ...(research?{...subject,researchPortfolio:r.researchPortfolio,contextRevision:r.contextRevision}:{})},{started:began,now});
  }catch(error){if([401,403,409].includes(error?.status))refuse('ACCESS_DENIED');throw failure(error);}finally{life?.close();}}
  const resourceIdentity=identity?{readIdentity:identity.readIdentity,readContext:identity.readContext}:null;

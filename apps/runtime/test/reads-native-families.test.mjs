@@ -61,12 +61,20 @@ for(const general of [true,false]){
 }
 test('clock: local revalidation does not extend the original Core authority expiry',async()=>{
  const f=await fixture('bill-text','read_bill_text',{advancingClock:true});
- // Core current authority is bounded to three seconds, while this execution and
+ // Core current authority explicitly issues a 3-second expiry, while this execution and
  // the read budget remain live. A new observation timestamp must not renew it.
+ f.scene.state.coreCurrentExpiry=f.now()+3000;
  f.scene.state.afterSource=()=>f.advanceClock(3100);
  const r=await f.execute(),body=await r.json();
  assert.equal(body.error?.code,'DEADLINE');assert.equal(body.resultJson,undefined);
  assert.equal(f.calls.filter(p=>p.endsWith('/application-authority/current')).length,1);
  assert.equal(f.calls.filter(p=>p.endsWith('/tools/read_bill_text')).length,1);
  assert(f.now()<f.deadlineMs);
+});
+for(const id of ['search_congress_bills'])test(`clock: ${id} source may outlive the three-second authority acquisition timeout`,async()=>{
+ const family='bill-text';
+ const f=await fixture(family,id,{advancingClock:true});
+ f.scene.state.afterSource=()=>f.advanceClock(4000);
+ const r=await f.execute();assert.equal(r.status,200,await r.clone().text());
+ assert.equal(f.calls.filter(p=>p===`/api/clio/tools/${id}`).length,1);
 });

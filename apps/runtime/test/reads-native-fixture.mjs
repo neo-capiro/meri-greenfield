@@ -37,7 +37,7 @@ export async function fixture(family,id,options={}){
      content:[{type:'text',text:JSON.stringify({id:'fixture',results:[{text:'Fixture managed result',url:'https://public.example.invalid/managed',title:'Fixture'}]})}]}});}
    calls.push(path);
    assert.equal(options.headers.authorization,'Bearer SYNTHETIC_NATIVE');
-   if(path.endsWith('/application-authority/current'))return Response.json({principal,role:'standard_user',permissions:[],clientIds,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:binding.conversationId,selectedClientId,checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
+   if(path.endsWith('/application-authority/current'))return Response.json({principal,role:'standard_user',permissions:[],clientIds,identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),conversationId:binding.conversationId,selectedClientId,checkedAtMs:scene.now(),expiresAtMs:scene.state.coreCurrentExpiry??identity.expiresAtMs});
    if(path.endsWith('/application-authority/identity'))return Response.json({principal,identityRevision:'a'.repeat(64),checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
    if(path.endsWith('/application-authority/context'))return Response.json({identitySha256:body.identitySha256,principal,identityRevision:'a'.repeat(64),conversationId:body.conversationId,selectedClientId:contextClientId??body.clientId,contextRevision:'c'.repeat(64),checkedAtMs:scene.now(),expiresAtMs:identity.expiresAtMs});
    // The read-mode observation carries the reads service secret, the same identity Core checks on every tool route.
