@@ -34,7 +34,8 @@ export function uploadRecord(raw){
 }
 export const uploadRequestHash=r=>hash({owner:r.owner,requestId:r.requestId,declaration:r.declaration});
 /** A request-scoped current port is the existing authenticated/Core recheck, not caller-supplied owner fields. */
-export function createUploadCustody({store,objects,inspection,current,retention,removeOriginal,now=Date.now,ids}){
+export function createUploadCustody({store,objects,inspection,current,retention,removeOriginal,now=Date.now,ids,onStoredRecovery}){
+ if(onStoredRecovery!==undefined&&typeof onStoredRecovery!=='function')fail('UPLOAD_CONFIGURATION');
  if(typeof current!=='function'||typeof removeOriginal!=='function'||typeof now!=='function'||typeof ids!=='function')fail('UPLOAD_CONFIGURATION');
  const requestRead=Object.getOwnPropertyDescriptor(store,'readByRequest')?storageMethod(store,'readByRequest'):null;
  store=Object.fromEntries(['prepare','read','transition'].map(k=>[k,storageMethod(store,k)]));
@@ -69,11 +70,15 @@ export function createUploadCustody({store,objects,inspection,current,retention,
    return await guard(async check=>{const r=result.record??result,again=await read(r.uploadId);check();if(equal(r,again))return result;if(!reconcile)fail('UPLOAD_CHANGED');return again;});
   }finally{life.close();}
  }
- function status(id,byRequest,options){return operation(options,async({read,readByRequest,move,life})=>{let r=await (byRequest?readByRequest:read)(id);
+ function status(id,byRequest,options){let recovered=false;return operation(options,async({read,readByRequest,move,life})=>{let r=await (byRequest?readByRequest:read)(id);
    if(r.state==='writing'){
     const object=await life.run(signal=>objects.observePut({objectId:r.objectId,scopes:r.scopes,sha256:r.declaration.sha256,bytes:r.declaration.bytes,requestSha256:uploadRequestHash(r)},signal));
-    if(object!==null)r=await move(r,{state:'stored',object}); // Missing is still UNKNOWN, not permission to retry.
-   }return r;},{reconcile:true});}
+    if(object!==null){r=await move(r,{state:'stored',object});recovered=true;} // Missing is still UNKNOWN, not permission to retry.
+   }return r;},{reconcile:true}).then(r=>{
+    // Notify only the actual writing-to-stored recovery, after currentness and retention release.
+    // Ordinary pending reads and settled/refused inspections never restart native work.
+    if(recovered&&r.state==='stored'&&r.inspection===null)onStoredRecovery?.(r);return r;
+   });}
 
  const owner={
   initiate(raw,options){const call=own(data(raw),['requestId','declaration']);uuid(call.requestId);uploadDeclaration(call.declaration);

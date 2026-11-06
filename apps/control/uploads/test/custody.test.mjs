@@ -421,3 +421,51 @@ test('an unsettled event carries only an allowlisted code, and the runtime shutd
  const after=await g.app.handle(g.put(second.uploadId));assert.equal(after.status,200);await g.turns();
  assert.equal(scans,1,'after shutdown nothing new is dispatched');
 });
+
+for(const byRequest of [false,true])test(`lost original ACK recovery starts inspection once via ${byRequest?'request':'upload'} status`,async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}});let scans=0;f.state.onScan=()=>{scans++;};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ f.state.lostAck=true;const lost=await f.app.handle(f.put(begun.uploadId));assert.equal(lost.status,503);
+ assert.equal((await lost.json()).error.code,'UPLOAD_PUT_UNKNOWN');assert.equal(f.state.rows.get(begun.uploadId).state,'writing');
+ const selector=byRequest?{requestId:id(10)}:{uploadId:begun.uploadId};
+ const recovered=await f.app.handle(f.request('status',selector));assert.equal(recovered.status,200);assert.equal((await recovered.json()).storageStatus,'stored');
+ const landed=await f.settled(begun.uploadId);assert.equal(landed.scanStatus,'clean');assert.equal(landed.extraction.status,'available');
+ assert.equal(scans,1);assert.equal(f.state.puts,1);assert.equal(landed.original.versionId,'NATIVE_ORIGINAL_VERSION');
+ await Promise.all(Array.from({length:5},()=>f.app.handle(f.request('status',selector))));await f.turns();assert.equal(scans,1);
+});
+
+test('recovery notification does not dispatch for absent originals, denied reads or removed records',async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}});let scans=0;f.state.onScan=()=>{scans++;};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();
+ f.state.lostAck=true;await f.app.handle(f.put(begun.uploadId));f.state.absent=true;
+ assert.equal((await f.status(begun.uploadId)).storageStatus,'unknown');await f.turns();assert.equal(scans,0);
+ f.state.absent=false;f.state.denied=true;assert.equal((await f.app.handle(f.request('status',{requestId:id(10)}))).status,403);await f.turns();assert.equal(scans,0);
+ f.state.denied=false;
+ assert.equal((await f.app.handle(f.request('status',{requestId:id(10)},{authorization:'Bearer other.session'}))).status,403);assert.equal(scans,0);
+ await f.status(begun.uploadId);await f.settled(begun.uploadId);assert.equal(scans,1);
+ await f.app.handle(f.request('remove',{uploadId:begun.uploadId}));assert.equal((await f.status(begun.uploadId)).storageStatus,'removed');await f.turns();assert.equal(scans,1);assert.equal(f.state.puts,1);
+});
+
+test('recovered dispatch remains bounded after refusal or unknown exhaustion; status never retries it',async()=>{
+ for(const code of ['UPLOAD_UNAVAILABLE','UPLOAD_INSPECTION_OUTCOME_UNKNOWN']){
+  let attempts=0;const f=applicationFixture({dispatch:{attempts:2,backoffMs:0},inspection:{async inspect(){attempts++;throw Object.assign(Error(code),{code});}}});
+  const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();f.state.lostAck=true;await f.app.handle(f.put(begun.uploadId));
+  await f.status(begun.uploadId);await f.settled(begun.uploadId,()=>f.state.events.length>0);
+  const expected=code==='UPLOAD_UNAVAILABLE'?1:2;assert.equal(attempts,expected);
+  for(let i=0;i<5;i++)await f.status(begun.uploadId);await f.turns();assert.equal(attempts,expected);assert.equal(f.state.events.length,1);assert.equal(f.state.puts,1);
+ }
+});
+
+test('concurrent recovered status reads never inspect the same original twice',async()=>{
+ const f=applicationFixture({dispatch:{backoffMs:0}}),entered=Promise.withResolvers(),finish=Promise.withResolvers();let scans=0;
+ f.state.onScan=async()=>{scans++;entered.resolve();await finish.promise;};
+ const begun=await (await f.app.handle(f.request('initiate',{requestId:id(10),...f.declaration}))).json();f.state.lostAck=true;await f.app.handle(f.put(begun.uploadId));
+ try{
+  const replies=await Promise.all([f.app.handle(f.request('status',{requestId:id(10)})),f.app.handle(f.request('status',{uploadId:begun.uploadId}))]);
+  assert(replies.some(reply=>reply.status===200));
+  for(const reply of replies)if(reply.status!==200){assert.equal(reply.status,409);assert.equal((await reply.json()).error.code,'UPLOAD_CHANGED');}
+  await entered.promise;assert.equal(scans,1);
+  await Promise.all(Array.from({length:4},()=>f.status(begun.uploadId)));assert.equal(scans,1);
+ }finally{finish.resolve();}
+ await f.settled(begun.uploadId);assert.equal(scans,1);assert.equal(f.state.puts,1);
+});

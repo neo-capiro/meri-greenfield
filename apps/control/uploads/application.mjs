@@ -105,8 +105,10 @@ export function createUploadApplication(configuration){
   const current=createRequestCurrent({credential,deadlineMs,signal:life.signal,ports,now,maxBytes:65536,
    commandContext:{binding:selected.binding,clientResolution:selected.selectedClientId===null?null:{clientId:selected.selectedClientId,reference:selected.selectedClientId}}});
   await current.fresh(life);
-  const custody=createUploadCustody({store,objects,inspection,retention,removeOriginal,now,ids,current:async()=>{const observed=await current.fresh(life);return observed.current;}});
   const owner=hash({tenantId:selected.binding.tenantId,actorId:selected.binding.actorId,conversationId:selected.binding.conversationId,clientId:selected.selectedClientId});
+  const custody=createUploadCustody({store,objects,inspection,retention,removeOriginal,now,ids,
+   onStoredRecovery:record=>dispatch.start(owner,record.uploadId,credential),
+   current:async()=>{const observed=await current.fresh(life);return observed.current;}});
   return {current,custody,owner,options:{signal:life.signal,deadlineMs:life.deadline()}};
  }
  const dispatch=createInspectionDispatch({attempts,backoffMs,now,signal,open,log});
