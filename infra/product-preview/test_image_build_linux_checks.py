@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import re
 import stat
 import subprocess
 import sys
@@ -149,12 +150,31 @@ class ShellIsolation(unittest.TestCase):
             self.assertEqual(result.returncode,0,result.stderr)
             records=[part.splitlines() for part in (root/'calls').read_text().split('BEGIN ')[1:]]
             runs=[r[1:-1] for r in records if r[0].endswith('/docker') and r[1]=='run']
-            self.assertEqual(len(runs),8)
-            for args in runs:
-                for value in ['--rm','--read-only','1000:1000','none','ALL','no-new-privileges','256','2g']:
+            creates=[r[1:-1] for r in records if r[0].endswith('/docker') and r[1]=='create']
+            starts=[r[1:-1] for r in records if r[0].endswith('/docker') and r[1]=='start']
+            self.assertEqual(len(runs),10); self.assertEqual(len(creates),3); self.assertEqual(len(starts),3)
+            for args in runs+creates:
+                for value in ['--read-only','1000:1000','none','ALL','no-new-privileges','256','2g']:
                     self.assertIn(value,args)
                 self.assertEqual(args[args.index('--platform')+1],'linux/arm64')
+                self.assertEqual(args[args.index('--cpus')+1],'2')
                 self.assertFalse(any(x in args for x in ['-v','--volume','--env-file','--privileged']))
+                mounts=[args[i+1] for i,value in enumerate(args) if value=='--tmpfs']
+                for path in ['/tmp:','/workspace:','/run/meri-temporal:']:
+                    mount=next(value for value in mounts if value.startswith(path))
+                    for flag in ['nosuid','nodev','noexec','size=']: self.assertIn(flag,mount)
+            for args in runs:
+                self.assertIn('--rm',args); self.assertNotIn('--mount',args)
+                self.assertIn('/run/meri:rw,nosuid,nodev,noexec,size=16m,uid=1000,gid=1000,mode=0700',args)
+            self.assertEqual([args[-1] for args in creates],['control','temporal-worker','schedule-worker'])
+            for args,start in zip(creates,starts):
+                name=args[args.index('--name')+1]
+                self.assertEqual(args[-3:-1],[fixture.IMAGE_ID,'apps/runtime/build/material-init-image-probe.mjs'])
+                self.assertEqual(args[args.index('--mount')+1],f'type=volume,source={name}-vol,destination=/run/meri')
+                container_id=hashlib.sha256(name.encode()).hexdigest()
+                self.assertEqual(start,['start','-a',container_id])
+                self.assertIn(['rm','-f',container_id],[r[1:-1] for r in records if r[0].endswith('/docker')])
+                self.assertIn(['volume','rm',name+'-vol'],[r[1:-1] for r in records if r[0].endswith('/docker')])
             joined='\n'.join('\n'.join(x) for x in runs)
             self.assertTrue(any(args[-2:]==['apps/runtime/agentcore-entrypoint.mjs','--help'] for args in runs))
             self.assertTrue(any(args[-2:]==['apps/runtime/cli.mjs','--help'] for args in runs))
@@ -162,16 +182,26 @@ class ShellIsolation(unittest.TestCase):
             self.assertIn('runtime-base-probe.mjs',joined); self.assertIn('executor-generation-smoke.mjs',joined)
             self.assertIn('apk\n',joined); self.assertIn('info\n-vv',joined)
             self.assertIn('python3.13\n',joined); self.assertIn('-m\npip\nlist\n--format=json',joined)
+            self.assertIn('/usr/share/meri/clamav_component_coverage.py\n--bind',joined)
+            self.assertIn('/usr/bin/iconv -f SHIFT_JIS',joined)
             self.assertNotIn('image_probe',joined); self.assertNotIn('native-cli.mjs',joined)
 
     @unittest.skipIf(os.name=='nt','Git Bash cannot enforce Linux RLIMIT_FSIZE; native Linux check remains required')
     def test_linux_timeout_and_live_file_limit(self):
-        text=fixture.BUILD.read_text(); function=text[text.index('run() {'):text.index('cleanup() {')]
+        text=fixture.BUILD.read_text()
+        match=re.search(r'^run\(\) \{\n.*?^\}\n(?=cleanup\(\) \{\n)',text,re.MULTILINE|re.DOTALL)
+        self.assertIsNotNone(match,'extract the global run helper, not an init-probe function')
+        function=match.group()
         with tempfile.TemporaryDirectory(prefix='meri-shell-limit-') as temp:
             env={**os.environ,'evidence':temp}
-            for command in ['run 1 timeout.log sleep 30', "run 10 output.log python3 -c 'import sys; sys.stdout.buffer.write(b\"x\" * (40*1024**2))'"]:
-                result=subprocess.run([fixture.BASH,'-c',function+'\n'+command],env=env,capture_output=True,timeout=15)
-                self.assertNotEqual(result.returncode,0)
-            self.assertLessEqual((Path(temp)/'output.log').stat().st_size,32*1024**2)
+            result=subprocess.run([fixture.BASH,'-c',function+'\nrun 1 timeout.log sleep 30'],env=env,capture_output=True,timeout=15)
+            self.assertEqual(result.returncode,124,result.stderr)
+            self.assertTrue((Path(temp)/'timeout.log').is_file())
+            command="run 10 output.log python3 -c 'import sys; sys.stdout.buffer.write(b\"x\" * (40*1024**2))'"
+            result=subprocess.run([fixture.BASH,'-c',function+'\n'+command],env=env,capture_output=True,timeout=15)
+            self.assertNotIn(result.returncode,[0,124,127],result.stderr)
+            output=Path(temp)/'output.log'
+            self.assertTrue(output.is_file())
+            self.assertEqual(output.stat().st_size,32*1024**2)
 
 if __name__=='__main__': unittest.main()
