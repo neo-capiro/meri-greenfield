@@ -1,5 +1,6 @@
 /** Public receiving metadata only. No credential or authority is supplied. */
 const freeze = value => { if (value && typeof value === 'object') { Object.values(value).forEach(freeze); Object.freeze(value); } return value; };
+export const EMPTY_HISTORY_SCHEMA='meri.conversation-history-empty/1';
 export const conversationErrorStatuses = freeze({
   NOT_FOUND:[404], METHOD_NOT_ALLOWED:[405], SESSION_REFUSED:[401,403],
   UNSUPPORTED_MEDIA_TYPE:[415], INVALID_REQUEST:[400], INVALID_CURSOR:[400], REQUEST_REPLAY_REFUSED:[400],

@@ -2,7 +2,7 @@ import {SITE_WORKFLOW_SELECTION_SCHEMA} from '../site-workflow-selection.mjs';
 import {PROCEDURE_SELECTION_SCHEMA} from '../procedure-selection.mjs';
 import {UPLOAD_SELECTIONS_SCHEMA} from '../upload-selection.mjs';
 import {WORK_SELECTION_SCHEMA} from '../work-selection.mjs';
-import {conversationErrorStatuses} from './protocol.mjs';
+import {conversationErrorStatuses,EMPTY_HISTORY_SCHEMA} from './protocol.mjs';
 import {DOCUMENT_REVISION_SELECTION_SCHEMA,SELECTED_DOCUMENT_REVISION_SKILL_SCHEMA} from '../document-revision.mjs';
 import addedSkills from '../retrieval-0.3/skill-manifest.schema.json' with {type:'json'};
 import {MODEL_SELECTION_SCHEMA} from '../model-selection.mjs';
@@ -23,7 +23,8 @@ export function conversationSchema(){
  return {$schema:'https://json-schema.org/draft/2020-12/schema',$id:'urn:meri:conversation-application:0.4.0',$defs:{
   ...feedbackDefinitions,
   ConversationSubmitRequest:{...object({requestId,prompt,windowRequest:common('WindowRequest'),skill:selection,modelSelection:MODEL_SELECTION_SCHEMA,documentRevision:DOCUMENT_REVISION_SELECTION_SCHEMA,uploads:UPLOAD_SELECTIONS_SCHEMA,procedure:PROCEDURE_SELECTION_SCHEMA,siteWorkflow:SITE_WORKFLOW_SELECTION_SCHEMA,work:WORK_SELECTION_SCHEMA},['requestId','prompt']),not:{properties:{skill:{},procedure:{}},required:['skill','procedure']},if:{properties:{skill:{},documentRevision:{}},required:['skill','documentRevision']},then:{properties:{skill:SELECTED_DOCUMENT_REVISION_SKILL_SCHEMA}}},
-  ConversationHistoryRequest:object({after:sequence,limit:{type:'integer',minimum:1,maximum:100}},[]),
+  ConversationHistoryRequest:object({after:sequence,limit:{type:'integer',minimum:1,maximum:100},acceptEmpty:{const:true}},[]),
+  ConversationEmptyHistoryResponse:object({schema:{const:EMPTY_HISTORY_SCHEMA},binding:pub('RunBinding'),scopes:{type:'array',items:pub('Scope'),minItems:1,maxItems:100}}),
   ConversationCancelRequest:object({}),
   ConversationEventsRequest:object({command:object({conversationId:uuid,intent:{const:'view.subscribe'}})}),
   ConversationSkillAssetPin:object({skillId:skill('skillId'),skillVersion:skill('skillVersion'),manifestSha256:sha256,proseSha256:sha256,catalogSha256:sha256}),

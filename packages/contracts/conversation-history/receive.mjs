@@ -2,7 +2,9 @@ import {parseBytes} from '../document-application/boundary.mjs';
 export {receiveRunIndexRequest,receiveRunIndexResponse,RunIndexResponseError,RUN_INDEX_SCHEMA,RUN_DETAIL_SCHEMA,RUN_INDEX_PATHS,runIndexMetadata} from './run-receive.mjs';
 import {validateDeletionsRequest,validateDeletionsResponse,validateDeletionStatusRequest,validateDeletionStatusResponse,validateExportRequest,validateExportResponse,validateListRequest,validateTranscriptRequest,validateNextTurnRequest,validateSummariesRequest,validateManageRequest,validateListResponse,validateTranscriptResponse,validateNextTurnResponse,validateSummariesResponse,validateManageResponse,validateError} from './generated-validator.mjs';
 import {normalizeHistoryRequest,assertHistoryResponseSemantics,fail,ConversationHistoryResponseError} from './semantics.mjs';
-import {conversationHistoryMetadata,historyErrorStatuses} from './protocol.mjs';
+import {validateEmptyTranscriptResponse} from './generated-validator.mjs';
+import {conversationHistoryMetadata,historyErrorStatuses,EMPTY_TRANSCRIPT_SCHEMA} from './protocol.mjs';
+export {EMPTY_TRANSCRIPT_SCHEMA} from './protocol.mjs';
 export {conversationHistoryMetadata,conversationHistoryVersion,HISTORY_PATHS,DISCOVERY_SCHEMA,HISTORY_SCHEMA,TURN_SCHEMA,EXPORT_SCHEMA,MANAGEMENT_VERSION} from './protocol.mjs';
 export {ConversationHistoryResponseError};
 const requests=new WeakMap(),requestValidators={export:validateExportRequest,list:validateListRequest,transcript:validateTranscriptRequest,nextTurn:validateNextTurnRequest,summaries:validateSummariesRequest,manage:validateManageRequest,deletions:validateDeletionsRequest,deletionStatus:validateDeletionStatusRequest},responseValidators={export:validateExportResponse,list:validateListResponse,transcript:validateTranscriptResponse,nextTurn:validateNextTurnResponse,summaries:validateSummariesResponse,manage:validateManageResponse,deletions:validateDeletionsResponse,deletionStatus:validateDeletionStatusResponse};
@@ -16,7 +18,8 @@ export async function receiveConversationHistoryResponse(route,httpStatus,utf8By
   const {code,outcome}=result.error;if(!['nextTurn','manage'].includes(route)&&outcome!==undefined&&!(code==='CONVERSATION_UNAVAILABLE'&&httpStatus===503&&outcome==='NOT_DISPATCHED'))fail('INVALID_ERROR_RESPONSE');
   if(outcome==='UNKNOWN'&&!['DEADLINE','CANCELLED','CONVERSATION_UNAVAILABLE','PRODUCT_UNAVAILABLE'].includes(code))fail('INVALID_ERROR_RESPONSE');return result;
  }
- if(!responseValidators[route](result))fail('INVALID_RESPONSE');return assertHistoryResponseSemantics(route,admitted.normalized,result);
+ const validate=route==='transcript'&&result?.schema===EMPTY_TRANSCRIPT_SCHEMA?validateEmptyTranscriptResponse:responseValidators[route];
+ if(!validate(result))fail('INVALID_RESPONSE');return assertHistoryResponseSemantics(route,admitted.normalized,result);
 }
 /** Convenience byte validators; callers needing typed admitted bodies use the receivers above. */
 export function validateConversationHistoryRequest(route,utf8Bytes){try{receiveConversationHistoryRequest(route,utf8Bytes);return true;}catch{return false;}}

@@ -9,13 +9,13 @@
     },
     {
       "path": "../../apps/control/conversations/http.mjs",
-      "sha256": "f62dfbcaa09c63a89a354b01af26072bd53540b276b8836bcc56aac4eefdf8cc",
-      "bytes": 7400
+      "sha256": "e9d20e77ccb28eef546269289e534284e8817e0442c55f2fda4abc401d170cac",
+      "bytes": 7437
     },
     {
       "path": "../../apps/control/conversations/service.mjs",
-      "sha256": "3cd4d823f8cf7998ac0c91f6af7cbce08456daa830f92f8e6acdec060ce276e2",
-      "bytes": 42184
+      "sha256": "f03439fedcc9b061ac78cb9be284c05640ea5b141aef6ce3df8f7b8af1b4b7a0",
+      "bytes": 42584
     },
     {
       "path": "../skills/./originals/bill_watch/1.1.1/manifest.json",
@@ -174,7 +174,7 @@
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "993ba2acf4f1a818a6ea985ba0e1202c0eb8ebe575e2b2b9096d1db715dade15",
+      "sha256": "eaabc53e636ed61a0d54232ad9242fa35538abb8f98acd3369c18f6260c70712",
       "bytes": 5185
     },
     {
@@ -194,18 +194,18 @@
     },
     {
       "path": "conversation-application/protocol.mjs",
-      "sha256": "60fbd194a326e264410be5a026029b5d06c408e3f046ae4d40a5339b7208910f",
-      "bytes": 4828
+      "sha256": "1d72bdf0d32427ca4aee1818d63dbd5ca0e8c103ca96fd0788322e836f647a31",
+      "bytes": 4899
     },
     {
       "path": "conversation-application/receive.mjs",
-      "sha256": "a1c3d92a01b9503993e0d8384f7646b62e1c3f3dedc82c8c2f39723ca99a26f8",
-      "bytes": 10610
+      "sha256": "cdf8b3b54eac3639fde1cf6da57b0f1725fb1a82447d2fab835c9dcc72224615",
+      "bytes": 11212
     },
     {
       "path": "conversation-application/schema.mjs",
-      "sha256": "751a8a74cfeaf952f80ca617e85f96b6900bf6a11bdabeab67863eff2e6f1bfc",
-      "bytes": 6629
+      "sha256": "b8af2be2762b409a9e513c29755bb691756f1396a985714afcefdff6ac3e6950",
+      "bytes": 6848
     },
     {
       "path": "conversation-sources/hearing-semantics.mjs",
@@ -313,7 +313,7 @@
       "bytes": 1986
     }
   ],
-  "schemaSha256": "5cf0a7a83794ad61b7a8133fb71cef19627086c27234adc10e8db7a59379fa2a",
+  "schemaSha256": "c920ec8296d0d675fd782646dd98ab1f829b7cf2b8d5de6d33835ee70a4ef30c",
   "browserInputs": [
     "artifacts-0.2/artifact-formats.mjs",
     "conversation-application/conversation-application-receiver.mjs",

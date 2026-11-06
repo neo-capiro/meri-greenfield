@@ -21,9 +21,18 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
   const worker=async()=>{while(!failure&&next<conversations.length){const index=next++,conversation=conversations[index];try{results[index]=await read(conversation);}catch(error){failure??={error};}}};
   await Promise.all(Array.from({length:Math.min(CURRENTNESS_CONCURRENCY,conversations.length)},worker));if(failure)throw failure.error;return results;}
  const currentAll=(recheckConversation,conversations,readScheduleOriginRows)=>readAll(conversations,c=>current(recheckConversation,c,readScheduleOriginRows));
- async function transcript({principal,request,signal,deadlineMs,recheckConversation},deferCurrentness=false){
+ async function transcript({principal,request,signal,deadlineMs,recheckConversation,management:core},deferCurrentness=false,allowEmpty=false){
   // Subject ownership/client authorization precedes subject-specific retention observations.
-  const result=await store.history.transcript({principal,...request},check(signal));
+  const read=()=>store.history.transcript({principal,...request,allowEmpty},check(signal));let result;
+  try{result=await read();}catch(error){
+   if(!allowEmpty||request.after!==0||productFailure(error)?.code!=='CONVERSATION_NOT_FOUND'||typeof core?.metadata!=='function'||typeof core?.registration!=='function'||typeof store.management?.register!=='function')throw error;
+   // Core bootstrap precedes the first local run. Materialize only its real owned subject through the existing
+   // registration owner; unknown IDs and integrity/storage failures never become empty history.
+   const metadata=await core.metadata(request.conversationId),registration=await core.registration(metadata);
+   await servable(principal,request.conversationId,{signal,deadlineMs});
+   await store.management.register({principal,...registration},check(signal));
+   result=await read();
+  }
   await servable(principal,request.conversationId,{signal,deadlineMs});if(!deferCurrentness)await current(recheckConversation,result.conversation);
   // Keep both local retention observations; final fenced release checks retention again after its fresh Core read.
   await servable(principal,request.conversationId,{signal,deadlineMs});return result;
@@ -40,7 +49,7 @@ export function createConversationHistoryService({store,nextRunOwner,gate,retent
    return {...result,conversations:visible};
   }),
   // Read-only transcript releases only through the final serving fence, like list; nextTurn keeps every early/fresh check.
-  transcript:guard(call=>transcript(call,true)),
+  transcript:guard(call=>transcript(call,true,call.request.acceptEmpty===true)),
   export:guard(call=>exportConversationMessages({call,read:value=>transcript(value,true)})),
   // One fence spans ALL subjects, final native membership/Core checks and response serialization.
   recheckRelease:guard(async({principal,request,result,operation,signal,deadlineMs,recheckMembership,recheckConversation,recheckMetadata,management:core,publish})=>{

@@ -1,6 +1,6 @@
 // Stored congressional metadata and current-evidence text projections only.
 import {snapshotOperationData} from './operation-contracts.mjs';
-import {resolveCongressionalBillId} from './congressional-identity.mjs';
+import {resolveCongressionalBillId,inspectCongressionalBillSearch} from './congressional-identity.mjs';
 import {decodeBillTextCursor,assertBillTextCursor} from './bill-text-cursor.mjs';
 const fail=message=>{throw new Error(message);};
 export const BILL_TEXT_OPERATION_IDS=Object.freeze(['search_congress_bills','read_bill_text']);
@@ -19,20 +19,22 @@ export function createBillTextValidators({validateShape,schema}){
  function validateBillTextShape(definition,value){if(!definitions.has(definition))fail('Unknown bill-text definition');validateShape(definition,snapshotOperationData(value));return value;}
  function normalizeBillTextInput(id,request,context={}){
   const input=snapshotOperationData(request),trusted=snapshotOperationData(context);validateBillTextShape('BillTextContext',trusted);validateBillTextShape(billTextInputDefinition(id),input);
-  let directBillId=null,continuation=null;
+  let directBillId=null,invalidBillSelector=false,continuation=null;
   if(id===SEARCH){
-   const query=text(input.query,240)??text(input.search,240);delete input.query;delete input.search;if(query!==null)input.query=query;
+   const rawQuery=text(input.query,Number.MAX_SAFE_INTEGER)??text(input.search,Number.MAX_SAFE_INTEGER),query=rawQuery?.slice(0,240)??null;delete input.query;delete input.search;if(query!==null)input.query=query;
    for(const [key,cap] of [['policyArea',120],['activeSince',30],['textQuery',300]]){const value=text(input[key],cap);delete input[key];if(value!==null)input[key]=value;}
    if(input.congress===0||input.congress===null)delete input.congress;
    input.page??=1;input.limit=input.textQuery?Math.min(input.limit??8,10):input.limit??20;
-   if(!input.textQuery)directBillId=resolveCongressionalBillId(query,trusted.defaultCongress);
+   if(!input.textQuery){const selector=inspectCongressionalBillSearch(rawQuery,trusted.defaultCongress,input.congress);directBillId=selector.kind==='exact'?selector.billId:null;invalidBillSelector=selector.kind==='invalid';
+    // Preserve an overlong invalid literal for Core's explicit refusal, never truncate it into an exact lookup.
+    if(invalidBillSelector&&rawQuery.length>240)input.query=rawQuery;}
   }else{
    const billId=resolveCongressionalBillId(text(input.billId,60),trusted.defaultCongress);if(!billId)fail('Exact bill selector required');input.billId=billId;
    for(const [key,cap] of [['versionCode',32],['query',300]]){const value=text(input[key],cap);delete input[key];if(value!==null)input[key]=value;}
    if(input.query&&Object.hasOwn(input,'cursor'))fail('Bill locator and continuation conflict');
    if(Object.hasOwn(input,'cursor'))continuation=assertBillTextCursor(input.cursor,{billId,...(input.versionCode?{versionCode:input.versionCode}:{})});
   }
-  return Object.freeze({input:Object.freeze(input),metadata:Object.freeze({authoritative:false,sourceConnected:false,producerQualified:false,absenceEvidence:false,currentPointerQualified:false,directBillId,continuation,
+  return Object.freeze({input:Object.freeze(input),metadata:Object.freeze({authoritative:false,sourceConnected:false,producerQualified:false,absenceEvidence:false,currentPointerQualified:false,directBillId,invalidBillSelector,continuation,
    mode:id===SEARCH?(input.textQuery?'bill_text':'metadata'):(input.query?'locator':'sequential')})});
  }
  function assertSearch(data,input,metadata){
@@ -65,7 +67,10 @@ export function createBillTextValidators({validateShape,schema}){
   }else{
    if(Object.hasOwn(data,'mode')||data.limit!==input.limit||data.data.length>input.limit)fail('Congress metadata selection mismatch');
    unique(data.data,'id');
-   if(data.resolvedBy){if(!metadata.directBillId||data.data.length!==1||data.total!==1||data.page!==1||data.data[0].id!==metadata.directBillId)fail('Congress direct designation substitution');}
+   if(metadata.invalidBillSelector){if(data.currentStatus!=='invalid_request')fail('Invalid bill selector cannot claim a lookup');return;}
+   if(data.currentStatus!==undefined)fail('Valid bill search cannot become an invalid selector');
+   if(metadata.directBillId){if(data.resolvedBy!=='bill-id'||data.data.length>1||data.total!==data.data.length||data.page!==1||data.data.length===1&&data.data[0].id!==metadata.directBillId)fail('Congress direct designation substitution');}
+   else if(data.resolvedBy)fail('Congress direct designation substitution');
    else if(data.page!==input.page)fail('Congress metadata page substitution');
    if(!data.resolvedBy&&input.activeSince!==undefined)validateBillTextShape('BillTextActionDateSelector',input.activeSince);
    const activeAfter=!data.resolvedBy&&input.activeSince!==undefined?Date.parse(input.activeSince):null;

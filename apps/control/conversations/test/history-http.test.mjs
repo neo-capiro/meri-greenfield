@@ -20,7 +20,7 @@ import {assertConversationHistoryResponse} from '../../../../packages/contracts/
 import {assertContinuationEnvelope} from '../../../../packages/contracts/conversation-lifecycle/validate.mjs';
 /** The actor's private scope, the only General conversation scope (assertNativeConversationScope). */
 const privateScopes=[{tenantId:binding.tenantId,kind:'private-user',resourceId:binding.actorId,policyRevision:scopes[0].policyRevision}];
-async function fixture({lifecycle=false,extraClient=false,general=false}={}){
+async function fixture({lifecycle=false,extraClient=false,general=false,bootstrapRegistration=false}={}){
  const f=await (lifecycle?lifecycleFixture({extraClient,scopes:general?privateScopes:undefined,selectedClientId:general?null:undefined}):applicationFixture({initialInput:true})),state=f.state;let serial=1000;
  if(!lifecycle){const original=f.service;let initialAllocation;
   // The original submit requires the canonical durable input allocation; successors already have next-run reservations.
@@ -56,7 +56,12 @@ async function fixture({lifecycle=false,extraClient=false,general=false}={}){
    !scopes.some(scope=>scope.tenantId===principal.tenantId&&(general?scope.kind==='private-user'&&scope.resourceId===principal.actorId:scope.kind==='client'&&scope.resourceId===state.coreClientId))||state.coreState!=='active')throw Error('Core context unavailable');
  }};
  const turnOwner={async admitTurn(input){const result=await owner.admitTurn(input);await state.onTurnAdmitted?.();return result;}};
- const service=createConversationHistoryService({store,nextRunOwner:turnOwner,gate,retention}),app=createConversationHistoryApplication({service,gate,currentness,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
+ state.registrationCalls=0;state.registrationSubject={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision};
+ const management=bootstrapRegistration?{forRequest({credential,principal,signal,deadlineMs}){
+  const active=async()=>{await currentness.assertCurrent({credential,principal,conversationId:binding.conversationId,scopes,signal,deadlineMs});};
+  return {async metadata(conversationId){if(conversationId!==binding.conversationId||principal.actorId!==binding.actorId||state.bootstrapMissing)throw new ProductError('CONVERSATION_NOT_FOUND');await active();return {conversationId,clientId:id(5),scopeKind:'client',status:'active'};},async registration(){state.registrationCalls++;await active();return {conversation:state.registrationSubject,recheckActive:active};}};
+ }}:undefined;
+ const service=createConversationHistoryService({store,nextRunOwner:turnOwner,gate,retention}),app=createConversationHistoryApplication({service,gate,currentness,management,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:131072,maxResponseBytes:2097152}});
  const post=async(path,body,token='native')=>{const response=await app.handle(new Request(`https://meri.invalid/api/conversations/${path}`,{method:'POST',headers:{authorization:`Bearer ${token}`,'content-type':'application/json'},body:JSON.stringify(body)}));
   if(response.status===200)assertConversationHistoryResponse(path==='next-turn'?'nextTurn':path,await response.clone().json(),body);return response;};
  async function turn(n){const source=state.context.binding;if(n===1)await f.service.submit({credential:f.credential,input:f.input});
@@ -68,6 +73,72 @@ async function fixture({lifecycle=false,extraClient=false,general=false}={}){
  }
  return {...f,store,owner,post,turn,gate,currentness,historyService:service,retentionOwner};
 }
+test('public transcript returns an owned empty conversation through the same release fence; internal readers still require a run',async()=>{
+ const f=await fixture();try{
+  const conversation={conversationId:binding.conversationId,owner:{tenantId:binding.tenantId,actorId:binding.actorId},scopes,createdAt:new Date().toISOString(),policyRevision:scopes[0].policyRevision};
+  assert.equal((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,404);
+  await f.store.management.register({principal:f.state.member,conversation,recheckActive:async()=>{}},()=>{});
+  assert.equal((await f.post('transcript',{conversationId:binding.conversationId})).status,404,'cached clients retain their existing no-run response');
+  const response=await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true});
+  assert.equal(response.status,200);assert.deepEqual(await response.json(),{schema:'meri.conversation-transcript-empty/1',conversation});
+  assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.ok(f.state.retentionChecks>=3);assert.ok(f.state.coreReads.length>=1);
+  for(const [path,body] of [
+   ['transcript',{conversationId:binding.conversationId,after:1,acceptEmpty:true}],
+   ['next-turn',{conversationId:binding.conversationId,sourceRunId:binding.runId}],
+   ['export',{conversationId:binding.conversationId}],
+  ])assert.equal((await f.post(path,body)).status,404);
+  await assert.rejects(f.store.history.transcript({principal:f.state.member,conversationId:binding.conversationId,after:0,limit:1},()=>{}),/NOT_FOUND/);
+  f.state.coreState='revoked';assert.notEqual((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,200);
+  f.state.coreState='active';f.state.suppressed=true;assert.notEqual((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,200);
+  f.state.suppressed=false;f.state.member.actorId=id(99);assert.equal((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,404);
+ }finally{f.close();}
+});
+test('negotiated initial transcript registers only a real active Core bootstrap before its first run',async()=>{
+ const f=await fixture({bootstrapRegistration:true});try{
+  const request={conversationId:binding.conversationId,acceptEmpty:true};
+  assert.equal(f.state.conversations.size,0);
+  assert.equal((await f.post('transcript',{conversationId:binding.conversationId})).status,404);
+  assert.equal((await f.post('transcript',{...request,after:1})).status,404);assert.equal(f.state.registrationCalls,0);
+  f.state.bootstrapMissing=true;assert.equal((await f.post('transcript',request)).status,404);assert.equal(f.state.registrationCalls,0);
+  f.state.bootstrapMissing=false;f.state.suppressed=true;assert.notEqual((await f.post('transcript',request)).status,200);assert.equal(f.state.conversations.size,0);
+  f.state.suppressed=false;f.state.coreState='revoked';assert.notEqual((await f.post('transcript',request)).status,200);assert.equal(f.state.conversations.size,0);
+  f.state.coreState='active';const response=await f.post('transcript',request);assert.equal(response.status,200);
+  assert.deepEqual(await response.json(),{schema:'meri.conversation-transcript-empty/1',conversation:f.state.registrationSubject});
+  assert.equal(f.state.conversations.size,1);assert.equal(f.state.runs.size,0);assert.equal(f.state.events.size,0);assert.equal(f.state.starts,0);
+  const registrations=f.state.registrationCalls;assert.equal((await f.post('transcript',request)).status,200);assert.equal(f.state.registrationCalls,registrations);
+  f.state.member.actorId=id(99);assert.equal((await f.post('transcript',request)).status,404);
+ }finally{f.close();}
+});
+
+test('an authenticated reserved successor returns negotiated empty history without another reservation or run',async()=>{
+ const f=await fixture();try{
+  const {admitted}=await f.turn(1),runCount=f.state.runs.size,reservations=f.state.nextRuns.size;
+  f.state.checkCurrentBinding=requested=>f.owner.currentRun(requested);
+  const session=await f.sessions.issue({identityCredential:'synthetic-native'});
+  await assert.rejects(f.service.history({credential:session.credential}),/NOT_FOUND/);
+  assert.deepEqual(await f.service.history({credential:session.credential,acceptEmpty:true}),{schema:'meri.conversation-history-empty/1',binding:admitted.targetBinding,scopes});
+  assert.equal(f.state.runs.size,runCount);assert.equal(f.state.nextRuns.size,reservations);
+  await assert.rejects(f.service.history({credential:session.credential,acceptEmpty:true,after:1}),/NOT_FOUND/);
+ }finally{f.close();}
+});
+
+test('initial transcript registration re-reads a concurrently accepted first run instead of returning empty',async()=>{
+ const f=await fixture({bootstrapRegistration:true});try{
+  let accepted=false;f.state.onCoreRead=async()=>{if(!accepted){accepted=true;await f.service.submit({credential:f.credential,input:f.input});}};
+  const response=await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true});assert.equal(response.status,200);
+  const result=await response.json();assert.equal(result.schema,'meri.conversation-transcript/1');assert.equal(result.latestRun.binding.runId,binding.runId);
+  assert.equal(f.state.conversations.size,1);assert.equal(f.state.runs.size,1);assert.equal(f.state.starts,1);
+ }finally{f.close();}
+});
+
+test('negotiated transcript corruption never invokes bootstrap registration',async()=>{
+ const f=await fixture({bootstrapRegistration:true});try{
+  await f.service.submit({credential:f.credential,input:f.input});
+  f.state.conversations.values().next().value.projection_sha256='0'.repeat(64);
+  assert.equal((await f.post('transcript',{conversationId:binding.conversationId,acceptEmpty:true})).status,500);assert.equal(f.state.registrationCalls,0);
+ }finally{f.close();}
+});
+
 test('history enforces its public byte caps when startup permits larger transport limits',async()=>{
  const f=await fixture();try{let calls=0,retained;const app=createConversationHistoryApplication({gate:f.gate,currentness:f.currentness,now:Date.now,limits:{maxRequestMs:2000,maxRequestBytes:1048576,maxResponseBytes:8388608},service:{async list(call){assert.equal(Object.hasOwn(call,'credential'),false);assert.equal(typeof call.recheckConversation,'function');retained=call.recheckConversation;calls++;return {oversized:'x'.repeat(2097152)};}}});
   const post=body=>app.handle(new Request('https://meri.invalid/api/conversations/list',{method:'POST',headers:{authorization:'Bearer native','content-type':'application/json'},body}));

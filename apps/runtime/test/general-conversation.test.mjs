@@ -11,6 +11,8 @@ import {canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs'
 import {receiveConversationInitialInputRequest,receiveConversationInitialInputResponse} from '../../../packages/contracts/dist/conversation-initial-input.mjs';
 import {assertInputContext,expectedContext} from '../../../packages/contracts/conversation-input/semantics.mjs';
 import {assertOriginalInputFacts} from '../../control/conversations/initial-input-facts.mjs';
+import {createCoreConversationManagement} from '../native-authority/conversation-management.mjs';
+import {createConversationHistoryService} from '../../control/conversations/history/service.mjs';
 
 const conversationId=id(710),clientId=id(5),policyRevision='general-policy',origin='https://core.synthetic.invalid';
 const bytes=v=>new TextEncoder().encode(JSON.stringify(v));
@@ -34,8 +36,27 @@ function fixture(change={}){
  const sessions=createActionSessionOwner({mode:'process-local',verifyIdentity:identity.verifyIdentity,resolveContext:identity.resolveContext,withAuthority:identity.withAuthority,membership:{admit:membership.admit,recheck:membership.recheck},now,
   limits:{maxSessions:10,maxRequestMs:3000,maxTtlMs:120000,maxFactBytes:131072},refusals(step,error){state.refusal={step,code:error.code,message:error.message,cause:error.reason};}});
  const issue=async()=>{try{return await sessions.issue({identityCredential:'original-user-bearer',hints:{conversationId,clientId:null}});}catch(error){throw new Error(JSON.stringify(state.refusal),{cause:error});}};
- return {...f,state,sessions,initialBindings,identity,issue};
+ return {...f,database:f.state,state,sessions,initialBindings,identity,issue};
 }
+
+test('actual initial session identity can read an empty transcript before any local conversation or input exists',async()=>{
+ const f=fixture();try{
+  const session=await f.issue(),store=f.store();assert.equal(f.bindings.length,1);assert.equal(f.database.conversations.size,0);assert.equal(f.allocations.size,0);
+  const principal={tenantId:binding.tenantId,actorId:binding.actorId,clientIds:[]},signal=new AbortController().signal,deadlineMs=f.now()+2000;
+  const owner=createCoreConversationManagement({origin,getServiceSecret:async()=>'synthetic-service',policyRevision,now:f.now,maxRequestMs:1000,fetchImpl:async(url,init)=>{
+   assert.equal(init.headers.authorization,'Bearer original-user-bearer');const input=JSON.parse(init.body);assert.equal(input.conversationId,conversationId);
+   if(new URL(url).pathname.endsWith('/metadata'))return Response.json({conversationId,title:'New Meri session',status:'active',revision:'0',scopeKind:'general',clientId:null,updatedAt:new Date(f.now()).toISOString(),archivedAt:null,trashedAt:null,restoreUntil:null});
+   assert.equal(new URL(url).pathname,'/api/clio/application-authority/current');return Response.json({principal:{tenantId:principal.tenantId,actorId:principal.actorId},identityRevision:'a'.repeat(64),membershipRevision:'b'.repeat(64),contextRevision:'c'.repeat(64),role:'standard_user',permissions:[],clientIds:[],conversationId,selectedClientId:null,checkedAtMs:f.now(),expiresAtMs:f.now()+10000});
+  }});
+  const core=owner.forRequest({credential:'original-user-bearer',principal,signal,deadlineMs}),request={conversationId,after:0,limit:100,acceptEmpty:true};
+  const recheckMembership=async()=>{await f.sessions.authenticateSession({credential:session.credential});};
+  const service=createConversationHistoryService({store,gate:{recheck:recheckMembership}}),call={principal,request,signal,deadlineMs,management:core};
+  const result=await service.transcript(call);
+  const released=await service.recheckRelease({...call,result,operation:'transcript',recheckMembership,recheckMetadata:({conversationId})=>core.metadata(conversationId),publish:value=>value});
+  assert.equal(released.schema,'meri.conversation-transcript-empty/1');assert.equal(released.conversation.conversationId,session.context.conversationId);
+  assert.equal(f.database.conversations.size,1);assert.equal(f.database.runs.size,0);assert.equal(f.allocations.size,0);assert.equal(f.bindings.length,1);
+ }finally{f.sessions.close();}
+});
 
 test('one control configuration admits two tenants, two actors and their independently owned clients and General conversations',async()=>{
  const f=fixture(),actors=[{tenantId:'synthetic-tenant-a',actorId:'synthetic-actor-a'},{tenantId:'synthetic-tenant-b',actorId:'synthetic-actor-b'}];

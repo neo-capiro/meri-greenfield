@@ -1030,6 +1030,9 @@
         },
         {
           "$ref": "#/$defs/CongressBillTextSearchOutput"
+        },
+        {
+          "$ref": "#/$defs/CongressBillInvalidSearchOutput"
         }
       ]
     },
@@ -1044,6 +1047,52 @@
         {
           "$ref": "#/$defs/BillTextLocatedOutput"
         }
+      ]
+    },
+    "CongressBillInvalidSearchOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "tool": {
+          "const": "search_congress_bills"
+        },
+        "generatedAt": {
+          "$ref": "#/$defs/BillTextInstant"
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CongressBillRaw"
+          },
+          "maxItems": 0
+        },
+        "total": {
+          "const": 0
+        },
+        "page": {
+          "const": 1
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 50
+        },
+        "currentStatus": {
+          "const": "invalid_request"
+        },
+        "note": {
+          "const": "Invalid bill designation or conflicting Congress. No bill lookup was performed; provide an exact bill designation and Congress."
+        }
+      },
+      "required": [
+        "tool",
+        "generatedAt",
+        "data",
+        "total",
+        "page",
+        "limit",
+        "currentStatus",
+        "note"
       ]
     }
   }

@@ -10,8 +10,9 @@ import canonicalize from 'canonicalize';
 import {parseBytes} from '../document-application/boundary.mjs';
 import {validateSubmitRequest,validateHistoryRequest,validateCancelRequest,validateEventsRequest,validateSubmitted,validateHistory,validateCancelled,validateEvent,validateError,validateFeedbackRequest,validateFeedbackReadRequest,validateFeedback,validateFeedbackRead} from './generated-validator.mjs';
 import {assertFeedbackResponse} from './feedback-semantics.mjs';
-import {conversationErrorStatuses,conversationApplicationMetadata} from './protocol.mjs';
-export {conversationApplicationMetadata,RUN_REASON_CODES} from './protocol.mjs';
+import {validateEmptyHistory} from './generated-validator.mjs';
+import {conversationErrorStatuses,conversationApplicationMetadata,EMPTY_HISTORY_SCHEMA} from './protocol.mjs';
+export {conversationApplicationMetadata,RUN_REASON_CODES,EMPTY_HISTORY_SCHEMA} from './protocol.mjs';
 export class ConversationResponseError extends Error {constructor(code){super(code);this.name='ConversationResponseError';this.code=code;}}
 const fail=code=>{throw new ConversationResponseError(code);};
 const parse=(bytes,cap)=>{try{return parseBytes(bytes,cap);}catch(error){fail(error.code??'INVALID_BYTES');}};
@@ -55,6 +56,13 @@ export async function receiveConversationResponse(route,httpStatus,utf8Bytes,req
  const selected=currentView===undefined?null:viewFacts(currentView),result=parse(utf8Bytes,conversationApplicationMetadata.limits.responseBytes);
  if(httpStatus!==200){if(!validateError(result)||!conversationErrorStatuses[result.error.code].includes(httpStatus))fail('INVALID_ERROR_RESPONSE');return result;}
  if(route==='events')fail('STREAM_RESPONSE_REQUIRED');
+ if(route==='history'&&result?.schema===EMPTY_HISTORY_SCHEMA){
+  if(request.acceptEmpty!==true||!validateEmptyHistory(result))fail('INVALID_RESPONSE');
+  if(selected||request.after)fail('CURSOR_MISMATCH');
+  if(result.scopes.some(scope=>scope.tenantId!==result.binding.tenantId)||new Set(result.scopes.map(scope=>scope.policyRevision)).size!==1)fail('RUN_SCOPE_MISMATCH');
+  // Absence is deliberately not an admitted run: no cursor, cancellation, or input authority follows.
+  return result;
+ }
  if(route==='feedback'||route==='feedback-read'){
   if(!(route==='feedback'?validateFeedback:validateFeedbackRead)(result))fail('INVALID_RESPONSE');
   return assertFeedbackResponse(route,result,request,selected,fail);

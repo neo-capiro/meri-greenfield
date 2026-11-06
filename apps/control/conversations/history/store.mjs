@@ -3,6 +3,7 @@ import {assertConversationEvent,isNativeSourceEventType} from '../../../../packa
 import {hash,same,validateShape} from '../boundary.mjs';
 import {refuse} from '../../product-access/errors.mjs';
 import {DISCOVERY_SCHEMA,HISTORY_SCHEMA} from './protocol.mjs';
+import {EMPTY_TRANSCRIPT_SCHEMA} from '../../../../packages/contracts/conversation-history/protocol.mjs';
 import {promptLineages} from './lineage.mjs';
 import {assertNextRunReservation} from '../next-run-reservation.mjs';
 // Brand pure canonical decoding failures only. Driver/transport failures retain their unavailable semantics.
@@ -29,12 +30,11 @@ export function createConversationHistoryStore({tx,rowRun,continuationCustody}){
   const entries=rows.map(r=>conversation(r,principal)),selected=entries.slice(0,limit);
   return {schema:DISCOVERY_SCHEMA,conversations:selected,nextBefore:entries.length>limit?{createdAt:selected.at(-1).createdAt,conversationId:selected.at(-1).conversationId}:null};
  });}
- async function transcript({principal,conversationId,after,limit},check){const key={tenantId:principal.tenantId,conversationId};return tx(key,check,async c=>{
+ async function transcript({principal,conversationId,after,limit,allowEmpty=false},check){const key={tenantId:principal.tenantId,conversationId};return tx(key,check,async c=>{
   const row=(await c.query('SELECT * FROM meri_conversations.conversations WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[key.tenantId,conversationId])).rows[0];check();
   const subject=conversation(row,principal),runs=(await c.query('SELECT * FROM meri_conversations.runs WHERE tenant_id=$1 AND conversation_id=$2 FOR UPDATE',[key.tenantId,conversationId])).rows.map(row=>decode(()=>rowRun(row))).sort((a,b)=>a.projection.binding.writerFence-b.projection.binding.writerFence);check();
-  // A verified bootstrap may now be registered for metadata before its first
-  // prompt. The owned, valid zero-run record has no transcript yet.
-  if(!runs.length)refuse('NOT_FOUND');let end=0;
+  // Only the public transcript read opts into an owned, valid zero-run result. Internal readers still require a run.
+  if(!runs.length){if(!allowEmpty||after!==0)refuse('NOT_FOUND');return {schema:EMPTY_TRANSCRIPT_SCHEMA,conversation:subject};}let end=0;
   for(let n=0;n<runs.length;n++){const r=runs[n],b=r.projection.binding,base=Number(r.sequence_base),last=Number(r.last_sequence),closed=r.sequence_end==null?null:Number(r.sequence_end);
    if(b.tenantId!==principal.tenantId||b.actorId!==principal.actorId||b.conversationId!==conversationId||!same(r.projection.scopes,subject.scopes)||
     !Number.isSafeInteger(base)||base!==end||!Number.isSafeInteger(last)||last<1||!Number.isSafeInteger(base+last)||n&&b.writerFence<=runs[n-1].projection.binding.writerFence||

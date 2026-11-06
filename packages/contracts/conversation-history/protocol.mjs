@@ -2,6 +2,7 @@
 const freeze=value=>{if(value&&typeof value==='object'){Object.values(value).forEach(freeze);Object.freeze(value);}return value;};
 export const conversationHistoryVersion='1.7.0';
 export const EXPORT_SCHEMA='meri.conversation-export/1';
+export const EMPTY_TRANSCRIPT_SCHEMA='meri.conversation-transcript-empty/1';
 export const MANAGEMENT_VERSION='meri.conversation-management.v1';
 export const DISCOVERY_SCHEMA='meri.conversation-list/1',HISTORY_SCHEMA='meri.conversation-transcript/1',TURN_SCHEMA='meri.conversation-turn/1';
 export const HISTORY_PATHS=freeze({export:'/api/conversations/export',list:'/api/conversations/list',transcript:'/api/conversations/transcript',nextTurn:'/api/conversations/next-turn',summaries:'/api/conversations/summaries',manage:'/api/conversations/manage',deletions:'/api/conversations/deletions/list',deletionStatus:'/api/conversations/deletions/status'});

@@ -17,7 +17,8 @@ export type ConversationHistoryEnvelope =
   | ConversationHistoryDeletionsRequest
   | ConversationHistoryDeletionsResponse
   | ConversationHistoryDeletionStatusRequest
-  | ConversationHistoryDeletionStatusResponse;
+  | ConversationHistoryDeletionStatusResponse
+  | ConversationHistoryEmptyTranscriptResponse;
 export type ConversationHistoryStoredRequest = {
   requestId: CanonicalRequestIdF00D75C2;
   prompt: CanonicalPrompt_4E4Fccab;
@@ -606,6 +607,7 @@ export interface ConversationHistoryTranscriptRequest {
   conversationId: string;
   after?: number;
   limit?: number;
+  acceptEmpty?: true;
 }
 export interface ConversationHistoryNextTurnRequest {
   conversationId: string;
@@ -2970,12 +2972,16 @@ export interface ConversationHistoryDeletionStatusResponse {
   checkedAtMs: number;
   retainedSharedCopies: boolean;
 }
+export interface ConversationHistoryEmptyTranscriptResponse {
+  schema: 'meri.conversation-transcript-empty/1';
+  conversation: Canonical_Conversation_8B5174A8;
+}
 
 export type ConversationHistoryRoute='export'|'list'|'transcript'|'nextTurn'|'summaries'|'manage'|'deletions'|'deletionStatus';
 declare const admittedHistoryRequest:unique symbol;
 export interface ConversationHistoryRequestMap {export:ConversationHistoryExportRequest;list:ConversationHistoryListRequest;transcript:ConversationHistoryTranscriptRequest;nextTurn:ConversationHistoryNextTurnRequest;summaries:ConversationHistorySummariesRequest;manage:ConversationHistoryManageRequest;deletions:ConversationHistoryDeletionsRequest;deletionStatus:ConversationHistoryDeletionStatusRequest;}
 export type AdmittedConversationHistoryRequest<R extends ConversationHistoryRoute>=Readonly<ConversationHistoryRequestMap[R]>&{readonly [admittedHistoryRequest]:R};
-export interface ConversationHistoryResponseMap {export:Readonly<ConversationHistoryExportResponse>;list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;summaries:Readonly<ConversationHistorySummariesResponse>;manage:Readonly<ConversationHistoryManageResponse>;deletions:Readonly<ConversationHistoryDeletionsResponse>;deletionStatus:Readonly<ConversationHistoryDeletionStatusResponse>;}
+export interface ConversationHistoryResponseMap {export:Readonly<ConversationHistoryExportResponse>;list:Readonly<ConversationHistoryListResponse>;transcript:Readonly<ConversationHistoryTranscriptResponse | ConversationHistoryEmptyTranscriptResponse>;nextTurn:Readonly<ConversationHistoryNextTurnResponse>;summaries:Readonly<ConversationHistorySummariesResponse>;manage:Readonly<ConversationHistoryManageResponse>;deletions:Readonly<ConversationHistoryDeletionsResponse>;deletionStatus:Readonly<ConversationHistoryDeletionStatusResponse>;}
 export type ConversationHistoryResponse<R extends ConversationHistoryRoute>=ConversationHistoryResponseMap[R]|ConversationHistoryErrorResponse;
 export declare class ConversationHistoryResponseError extends Error {readonly code:string;}
 export declare const conversationHistoryMetadata: {
@@ -3123,6 +3129,7 @@ export declare const conversationHistoryMetadata: {
 };
 export declare const conversationHistoryVersion:'1.7.0';
 export declare const EXPORT_SCHEMA:'meri.conversation-export/1';
+export declare const EMPTY_TRANSCRIPT_SCHEMA:'meri.conversation-transcript-empty/1';
 export declare const MANAGEMENT_VERSION:'meri.conversation-management.v1';
 export declare const HISTORY_PATHS: {
   "export": "/api/conversations/export",
