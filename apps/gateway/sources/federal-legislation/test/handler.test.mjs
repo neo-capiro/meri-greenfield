@@ -77,8 +77,34 @@ test('invalid selected bill remains raw; status query cannot override a nonempty
   const f=storedCase('get_bill_status',{request}),out=JSON.parse(await f.handler()(f.call()));
   assert.equal(out.result.currentStatus,'invalid_request');assert.deepEqual(f.wire[0].body,request);assert.equal(Object.hasOwn(out.result,'billId'),false);
  }
- const f=storedCase('search_floor_votes',{request:{billId:'not a bill',query:'H.R. 1'}});
- await f.handler()(f.call());assert.deepEqual(f.wire[0].body,f.arguments);assert.equal(f.call().input.billId,null);
+});
+
+test('floor explicit Congress binds the emitted exact selector and refuses malformed or conflicting raw requests before credentials',async()=>{
+ for(const billId of ['H.R. 1','118-hr-1','H.R. 1 (118th)']){
+  const request={billId,congress:118},f=storedCase('search_floor_votes',{request});
+  const out=JSON.parse(await f.handler()(f.call()));
+  assert.equal(out.result.votes[0].billId,'118-hr-1');assert.equal(out.result.votes[0].congress,118);
+  assert.deepEqual(f.wire[0].body,{...request,billId:'118-hr-1'});
+ }
+ for(const request of [{billId:'not a bill',query:'H.R. 1'},{billId:`H.R. 1${' '.repeat(60)}suffix`},{billId:7},
+   {billId:'119-hr-1',congress:118},{billId:'H.R. 1 (119th)',congress:118},{congress:0},{congress:1000}]){
+  const f=storedCase('search_floor_votes'),call={...f.call(),request};
+  await assert.rejects(f.handler()(call),{message:'INVALID_ARGUMENTS'});
+  assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+ }
+});
+
+test('stored bill sync metadata and precise non-live caveat survive JSON receiving without changing legacy output',async()=>{
+ const legacy=storedCase(),old=JSON.parse(await legacy.handler()(legacy.call()));assert.equal(Object.hasOwn(old.result,'lastSyncedAt'),false);
+ for(const lastSyncedAt of ['2026-09-01T12:00:00.000Z',null]){
+  const f=storedCase();f.state.page={...statusPage(),lastSyncedAt,note:lastSyncedAt===null?
+   'The stored bill snapshot sync time is unknown. Live status has not been checked; the response time and action dates do not establish current status.':
+   `Stored bill snapshot last synced at ${lastSyncedAt}. Live status has not been checked; the response time and action dates do not establish current status.`};
+  const out=JSON.parse(await f.handler()(f.call()));assert.equal(out.result.lastSyncedAt,lastSyncedAt);assert.equal(out.result.note,f.state.page.note);
+  for(const mutate of [p=>delete p.note,p=>p.note='Live status checked',p=>p.lastSyncedAt='2026-09-01T12:00:00Z']){
+   f.state.resultMutator=mutate;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+  }
+ }
 });
 
 test('stored absent bill is an explicit source result with no invented status',async()=>{

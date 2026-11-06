@@ -47,7 +47,7 @@ test('all eight designation kinds support documented punctuation and explicit Co
 test('canonical IDs retain zeroes while designation numbers normalize under producer grammar',()=>{
   assert.equal(normalize(BILL,{billId:' 119-HR-00007 '},context()).billId,'119-hr-00007');
   assert.equal(normalize(BILL,{billId:'H.R. 00007'},context()).billId,'119-hr-7');
-  assert.equal(normalize(BILL,{billId:'00-hr-00000'},context()).billId,'00-hr-00000');
+  assert.equal(normalize(BILL,{billId:'00-hr-00000'},context()).billId,null);
   assert.equal(normalize(BILL,{billId:'H.R. 0'},context()).billId,null);
   assert.equal(normalize(BILL,{billId:'H.R. 7 (119TH)'},context()).billId,null);
 });
@@ -56,11 +56,11 @@ test('bill alias/default refusal preserves primary selector precedence and UTF-1
   assert.equal(normalize(BILL,{billId:'nonsense',query:'H.R. 7'},context()).billId,null);
   for(const raw of [{},{billId:' '},{billId:'x'.repeat(60)+'H.R. 7'},{billId:'119-xx-7'}])assert.equal(normalize(BILL,raw,context()).billId,null);
 });
-test('floor input normalizes optional filters and explicitly drops invalid bill/chamber',()=>{
+test('floor input normalizes optional filters and refuses invalid selected bills without changing chamber fallback',()=>{
   assert.deepEqual(normalize(VOTES,{},context()),{billId:null,query:null,member:null,bioguideId:null,chamber:null,congress:null,limit:10});
   const input=normalize(VOTES,{billId:'H.R. 7',query:' x ',member:' a000001 ',chamber:' HOUSE ',congress:'119',limit:'3.9'},context());
   assert.deepEqual(input,{billId:'119-hr-7',query:'x',member:'a000001',bioguideId:'A000001',chamber:'house',congress:119,limit:3});
-  assert.equal(normalize(VOTES,{billId:'wrong',chamber:'both'},context()).billId,null);
+  assert.throws(()=>normalize(VOTES,{billId:'wrong',chamber:'both'},context()));
   assert.equal(normalize(VOTES,{chamber:'both'},context()).chamber,null);
 });
 test('floor text windows preserve UTF-16 and canonical member versus name distinction',()=>{
@@ -68,11 +68,11 @@ test('floor text windows preserve UTF-16 and canonical member versus name distin
   assert.equal(input.query.length,200);assert.equal(input.member.length,80);assert.equal(input.bioguideId,null);assert.equal(input.chamber,null);
   assert.equal(normalize(VOTES,{member:'A001'},context()).bioguideId,null);
 });
-test('floor numeric parsing preserves effective truthiness and bounded typed admission',()=>{
+test('floor limit coercion stays bounded while provided Congress requires a positive integer at most999',()=>{
   for(const [limit,want] of [[null,10],['bad',10],['Infinity',10],['',1],[-1,1],[0,1],[100,25],[3.9,3]])assert.equal(normalize(VOTES,{limit},context()).limit,want);
-  for(const congress of [null,0,'0','','bad'])assert.equal(normalize(VOTES,{congress},context()).congress,null);
-  assert.equal(normalize(VOTES,{congress:-1},context()).congress,-1);
-  for(const congress of [1.5,'Infinity',2147483648])assert.throws(()=>normalize(VOTES,{congress},context()));
+  for(const congress of [null,''])assert.equal(normalize(VOTES,{congress},context()).congress,null);
+  for(const congress of [0,'0',' ','bad',-1,1.5,'Infinity',1000,2147483648])assert.throws(()=>normalize(VOTES,{congress},context()));
+  for(const congress of [1,118,'119',999])assert.equal(normalize(VOTES,{congress},context()).congress,Number(congress));
 });
 test('model arguments cannot inject current authority or defaultCongress',()=>{
   for(const raw of [{defaultCongress:119},{actorId:'actor'},{tenantId:'tenant'},{authorized:true},{sourceConnected:true},{cursor:'x'},{query:false}])
@@ -179,8 +179,69 @@ test('resolved member with no matching votes preserves explicit no-inference war
 test('floor exact bill/chamber/congress selectors and returned counts correlate',()=>{
   const page=votes();check(VOTES,page,{billId:'H.R. 7',chamber:'house',congress:119},context());
   for(const raw of [{billId:'119-hr-8'},{chamber:'senate'},{congress:118}])assert.throws(()=>check(VOTES,page,raw,context()));
-  check(VOTES,page,{billId:'invalid',chamber:'unsupported',query:'SQL-owned query'},context());
+  assert.throws(()=>check(VOTES,page,{billId:'invalid',chamber:'unsupported',query:'SQL-owned query'},context()));
+  check(VOTES,page,{chamber:'unsupported',query:'SQL-owned query'},context());
   page.votesFound=0;assert.throws(()=>check(VOTES,page,{},context()));
+});
+
+test('floor exact selector uses explicit Congress and rejects full malformed or conflicting selections',()=>{
+  for(const billId of ['S. 2809','118-s-2809','S. 2809 (118th)'])
+    assert.equal(normalize(VOTES,{billId,congress:'118'},context()).billId,'118-s-2809');
+  for(const billId of ['119-s-2809','S. 2809 (119th)','not a bill','S. 2809 suffix',`S. 2809${' '.repeat(60)}suffix`,'S. 999999',0,false,{}])
+    assert.throws(()=>normalize(VOTES,{billId,congress:118},context()));
+  for(const request of [{},{billId:null},{billId:''},{billId:' ' }]){
+    const input=normalize(VOTES,{...request,query:'passage',member:'A000001',congress:118},context());
+    assert.equal(input.billId,null);assert.equal(input.query,'passage');assert.equal(input.bioguideId,'A000001');assert.equal(input.congress,118);
+  }
+});
+
+test('shared federal identity admits positive one-to-three-digit Congress idempotently without broadening bill numbers',()=>{
+  for(const congress of [1,9,10,118,999])for(const selector of [`${congress}-s-1`,`S. 1 (${congress}th)`]){
+    const expected=`${congress}-s-1`;
+    assert.equal(normalize(BILL,{billId:selector},context()).billId,expected);
+    assert.equal(normalize(VOTES,{billId:selector,congress},context()).billId,expected);
+    assert.equal(resolveCongressionalBillId(expected,119),expected);
+    assert.equal(normalize(VOTES,{billId:'S. 1',congress},context()).billId,expected);
+  }
+  for(const selector of ['009-s-00001','119-hr-00007'])assert.equal(resolveCongressionalBillId(selector,119),selector);
+  for(const selector of ['0-s-1','00-s-1','000-s-1','1000-s-1','1-s-0','9-s-00000','S. 1 (0th)','S. 1 (1000th)']){
+    assert.equal(normalize(BILL,{billId:selector},context()).billId,null);
+    assert.throws(()=>normalize(VOTES,{billId:selector},context()));
+  }
+  assert.equal(resolveCongressionalBillId('S. 1',1000),null);
+  assert.equal(resolveCongressionalBillId('1-s-999999',119),null);
+});
+
+const freshnessNote=at=>at===null?
+  'The stored bill snapshot sync time is unknown. Live status has not been checked; the response time and action dates do not establish current status.':
+  `Stored bill snapshot last synced at ${at}. Live status has not been checked; the response time and action dates do not establish current status.`;
+test('found bill accepts optional canonical stored sync time with an exact non-live freshness warning',()=>{
+  for(const at of [OLDER,null]){
+    const page=bill();page.lastSyncedAt=at;page.note=freshnessNote(at);
+    assert.equal(check(BILL,page,{billId:'119-hr-7'},context()),page);
+    for(const mutate of [p=>delete p.note,p=>p.note=freshnessNote(NOW),p=>p.note='Status checked now']){
+      const bad=structuredClone(page);mutate(bad);assert.throws(()=>check(BILL,bad,{billId:'119-hr-7'},context()));
+    }
+  }
+});
+test('freshness warning follows existing no-vote and rule-failed warnings without replacing them',()=>{
+  const page=bill();page.floorVotes=[];page.status='rule_failed';page.statusLabel=note('FederalBillStatusLabels').rule_failed;
+  page.lastSyncedAt=null;
+  const prior=note('FederalNoBillVoteNote')+' '+note('FederalRuleFailedNote');page.note=prior+' '+freshnessNote(null);
+  check(BILL,page,{billId:'119-hr-7'},context());
+  for(const warning of [freshnessNote(null),freshnessNote(null)+' '+prior,prior]){
+    page.note=warning;assert.throws(()=>check(BILL,page,{billId:'119-hr-7'},context()));
+  }
+});
+test('sync time is absent from legacy and not-found claims and is canonical when supplied',()=>{
+  const legacy=bill();check(BILL,legacy,{billId:'119-hr-7'},context());
+  legacy.note=freshnessNote(null);assert.throws(()=>check(BILL,legacy,{billId:'119-hr-7'},context()));
+  for(const at of ['2026-10-11T00:00:00Z','2026-10-11T01:00:00.000+01:00','invalid',0]){
+    const page=bill();page.lastSyncedAt=at;page.note=freshnessNote(at);assert.throws(()=>check(BILL,page,{billId:'119-hr-7'},context()));
+  }
+  for(const [page,request] of [[unavailable(),{billId:'119-hr-7'}],[invalid(),{}]]){
+    page.lastSyncedAt=null;assert.throws(()=>check(BILL,page,request,context()));
+  }
 });
 test('floor max25 and request limit are independent of no total/completeness promise',()=>{
   const page=votes();page.votes=Array.from({length:25},(_,i)=>({...searchVote(),id:`vote-${i}`}));page.votesFound=25;
@@ -225,7 +286,7 @@ test('shared congressional identity helper has strict primitive admission and no
   assert.equal(effects,0);assert.equal(resolveCongressionalBillId(null,119),null);
   assert.equal(resolveCongressionalBillId(' H.R. 7 (118th) ',119),'118-hr-7');
   assert.equal(resolveCongressionalBillId('H.R. 7',1),'1-hr-7');
-  assert.equal(resolveCongressionalBillId('H.R. 7',2147483647),'2147483647-hr-7');
+  assert.equal(resolveCongressionalBillId('H.R. 7',2147483647),null);
 });
 test('inherited prototype-key statuses cannot invent a label omitted by the pinned source',()=>{
   for(const status of Object.getOwnPropertyNames(Object.prototype)){

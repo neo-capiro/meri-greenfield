@@ -237,8 +237,8 @@
           "anyOf": [
             {
               "type": "integer",
-              "minimum": -2147483648,
-              "maximum": 2147483647
+              "minimum": 1,
+              "maximum": 999
             },
             {
               "type": "null"
@@ -905,6 +905,18 @@
           "maxLength": 1048576
         },
         "statusAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lastSyncedAt": {
           "anyOf": [
             {
               "type": "string",
