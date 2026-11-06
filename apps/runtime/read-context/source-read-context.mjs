@@ -194,7 +194,12 @@ export function createSourceReadContext({contract,proof,native,defaultCongress,n
  if(['bill-text','federal-legislation'].includes(group))return {defaultCongress};
  if(group==='acquisition-personnel')return {actorRole:native.actorRole};
  if(['research-legal-legislation','research-legal-news','research-legal-candidates'].includes(group)){
-  const context=(group==='research-legal-legislation'?legalSliceContext:group==='research-legal-news'?newsSliceContext:researchCandidatesContext)(contract.descriptor.operation,proof.request,clientReferenceObservation);
+  let windowAsOf=null;
+  if(group==='research-legal-news'&&proof.request.view==='articles'){
+   const at=now();if(!Number.isSafeInteger(at)||at<0||at>8640000000000000)refuse('ACCESS_DENIED');
+   windowAsOf=priorContext?.windowAsOf??new Date(at).toISOString();
+  }
+  const context=(group==='research-legal-legislation'?legalSliceContext:group==='research-legal-news'?newsSliceContext:researchCandidatesContext)(contract.descriptor.operation,proof.request,clientReferenceObservation,windowAsOf);
   if(context.clientResolution===null){if(proof.subject.kind==='client'||proof.subject.entityType==='client')refuse('ACCESS_DENIED');}
   else if(context.clientResolution.clientId!==clientSubject(proof,native))refuse('ACCESS_DENIED');
   return context;

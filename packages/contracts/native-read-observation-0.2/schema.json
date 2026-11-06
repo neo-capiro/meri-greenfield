@@ -26,7 +26,8 @@
             "get_state_rule_status",
             "explain_opportunity_match",
             "compare_funding_opportunities",
-            "build_opportunity_action_plan"
+            "build_opportunity_action_plan",
+            "search_legiwatch_news"
           ]
         },
         "version": {
@@ -160,7 +161,8 @@
                       "search_client_knowledge",
                       "explain_opportunity_match",
                       "compare_funding_opportunities",
-                      "build_opportunity_action_plan"
+                    "build_opportunity_action_plan",
+                    "search_legiwatch_news"
                     ]
                   }
                 },

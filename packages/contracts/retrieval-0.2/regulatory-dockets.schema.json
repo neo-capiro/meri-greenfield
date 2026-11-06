@@ -5,6 +5,14 @@
     "RegulatoryDocketsQueryInput": {
       "type": "object",
       "properties": {
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "maxLength": 200,
+          "description": "Optional literal case-insensitive substring of the stored title, applied before list or deadline limits. Blank or null means no title filter."
+        },
         "upcomingOnly": {
           "type": [
             "boolean",
@@ -135,6 +143,12 @@
     "RegulatoryDocketsQueryOutput": {
       "type": "object",
       "properties": {
+        "appliedQuery": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Exact trimmed literal title query applied by the stored source before limits and count; present only for a nonblank query."
+        },
         "tool": {
           "const": "query_regulatory_dockets"
         },

@@ -15,10 +15,12 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
  if(!NATIVE_READ_FAMILIES.includes(family)||[requestBody,resultBody,requirePerCall].some(value=>value!==undefined&&(typeof value!=='function'||types.isProxy(value))))deny('GATEWAY_CONFIGURATION');
  const fundingObservation=observation==='funding-asof'&&['funding-opportunities','funding-analysis'].includes(family),knowledgeObservation=observation==='client-knowledge-asof'&&family==='client-knowledge-search',
   modeObservation=observation==='evidence-mode'&&['public-data','program-elements'].includes(family),
-  producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(family);
- if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation)||requestBody!==undefined||resultBody!==undefined))deny('GATEWAY_CONFIGURATION');
+  producerObservation=observation==='producer-context'&&['certification-status','rule-status','sam-opportunities'].includes(family),
+  newsObservation=observation==='news-asof'&&family==='research-legal-news';
+ if(observation!==undefined&&(!(fundingObservation||knowledgeObservation||modeObservation||producerObservation||newsObservation)||!newsObservation&&requestBody!==undefined||resultBody!==undefined))deny('GATEWAY_CONFIGURATION');
  if(['certification-status','rule-status','sam-opportunities'].includes(family)&&!producerObservation)deny('GATEWAY_CONFIGURATION');
  if(['funding-opportunities','funding-analysis'].includes(family)&&observation!=='funding-asof')deny('GATEWAY_CONFIGURATION');
+ if(family==='research-legal-news'&&!newsObservation)deny('GATEWAY_CONFIGURATION');
  const fixed=frozenData(routes);
  // SQL successors have exact reviewed versions; other retained reads keep their 0.2 binding.
  const version=family==='capiro-data-v5'?'0.5.0':family==='capiro-data-v4'?'0.4.0':family==='capiro-data-v3'?'0.3.0':'0.2.0';
@@ -45,10 +47,11 @@ export function createStoredNativeReadHandlers(configuration,operations,specific
    try{contract.normalizeInput(data.request,data.normalizationContext);}catch{deny('INVALID_ARGUMENTS');}
    const current=retainedCall(operation,{...data,...(signal===undefined?{}:{signal})},c.now);
    // Observation support cannot be inferred from a static credential or a matching response clock.
-   if((observation||requirePerCall?.(current))&&!credentialsForCall&&!c.readSource)deny('UNAVAILABLE');
+   const currentObservation=newsObservation&&current.request.view!=='articles'?undefined:observation;
+   if((currentObservation||requirePerCall?.(current))&&!credentialsForCall&&!c.readSource)deny('UNAVAILABLE');
    const selected=credentialsForCall?createRetainedHttpTransport({...c,getCredentials:credentialsForCall(operation,call)}):transport;
    const body=requestBody?frozenData(requestBody(current)):current.request;
-   const result=await selected.read(current,{path:fixed[operation.id],method:'POST',body,serviceSecret:true,...(observation?{observation}:{})});
+   const result=await selected.read(current,{path:fixed[operation.id],method:'POST',body,serviceSecret:true,...(currentObservation?{observation:currentObservation}:{})});
    const received=resultBody?frozenData(await resultBody(current,result,call)):result;
    try{contract.assertOutput(received,{request:current.request,...current.normalizationContext});}catch{deny('INVALID_RESULT');}
    if(current.signal?.aborted)deny('CANCELLED');if(c.now()>=current.deadlineMs)deny('DEADLINE');

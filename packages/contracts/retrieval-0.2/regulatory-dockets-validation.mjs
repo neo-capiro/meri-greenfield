@@ -57,6 +57,13 @@ export function createRegulatoryDocketsValidators({validateShape, schema}) {
   function normalizeRegulatoryDocketsInput(id, request) {
     const input = snapshotOperationData(request);
     validateRegulatoryDocketsShape(regulatoryDocketsInputDefinition(id), input);
+    // The current owner bounds the original UTF-16 string before trimming; never
+    // silently shorten a topic or expose its SQL LIKE escaping in the contract.
+    if (typeof input.query === 'string' && input.query.length > 200)
+      fail('Regulatory docket title query exceeds the source bound');
+    const query = input.query?.trim();
+    delete input.query;
+    if (query) input.query = query;
     input.upcomingOnly = input.upcomingOnly === true;
     input.limit ??= 20;
     if (input.upcomingOnly) input.days ??= 30;
@@ -79,6 +86,10 @@ export function createRegulatoryDocketsValidators({validateShape, schema}) {
     validateRegulatoryDocketsShape(regulatoryDocketsOutputDefinition(id), data);
     if (Object.hasOwn(data, 'windowDays') !== input.upcomingOnly)
       fail('Regulatory docket branch substitution');
+    if (Object.hasOwn(data, 'appliedQuery') !== (input.query !== undefined) || data.appliedQuery !== input.query)
+      fail('Regulatory docket applied query substitution');
+    if (input.query !== undefined && data.results.some(row => !row.title.toLowerCase().includes(input.query.toLowerCase())))
+      fail('Regulatory docket title query substitution');
     if (input.upcomingOnly) {
       if (data.windowDays !== input.days || data.results.length !== Math.min(data.total, input.limit))
         fail('Upcoming docket window or wrapper limit substitution');
