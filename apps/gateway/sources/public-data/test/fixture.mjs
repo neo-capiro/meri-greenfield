@@ -13,14 +13,16 @@ export function storedPage(input,at){
   totalPopulation:null,medianHouseholdIncome:null,medianAge:null,percentBachelorPlus:null,percentPoverty:null,
   unemploymentRate:null,laborForceSize:null,topIndustries:{reported:['Synthetic industry',null,3]},
  }]};
- if(input.source==='bls')return {tool:id,source:'bls',generatedAt,data:[{
+ if(input.source==='bls')return {tool:id,source:'bls',generatedAt,...(input.year===undefined?{}:{appliedYear:input.year}),data:[{
   seriesId:input.seriesId??'synthetic-series',title:'Synthetic stored indicator',surveyName:null,periodType:'reported-period',
-  recentDataPoints:[{year:2026,period:'M13',value:-2.5},{year:2025,period:'M12',value:1}],
+  recentDataPoints:input.year===undefined?[{year:2026,period:'M13',value:-2.5},{year:2025,period:'M12',value:1}]:[{year:input.year,period:'M13',value:-2.5}],
  }]};
- if(input.source==='bea')return {tool:id,source:'bea',generatedAt,data:[{
+ if(input.source==='bea'){
+  if(input.state!==undefined&&input.state!=='FL')throw Error('SYNTHETIC_STATE_UNSUPPORTED');
+  return {tool:id,source:'bea',generatedAt,...(input.year===undefined?{}:{appliedYear:input.year}),...(input.state===undefined?{}:{appliedState:input.state}),data:[{
   datasetName:input.datasetName??'Synthetic dataset',tableName:'Synthetic table',description:'Synthetic stored economic measure',
-  year:input.year??2026,period:'Annual',value:17.31,units:null,
- }]};
+  year:input.year??2026,period:'Annual',value:17.31,units:null,geoFips:input.state?'12000':null,state:input.state??null,
+ }]};}
  return {tool:id,error:`Unknown source "${input.source}". Use "census", "bls", or "bea".`};
 }
 

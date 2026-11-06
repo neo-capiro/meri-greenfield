@@ -158,6 +158,50 @@ test('BEA dataset alias, explicit dataset precedence, year and nullable units re
  }
 });
 
+test('economic selection acknowledgements reject older producers even for empty pages',async()=>{
+ for(const request of [{source:'bea',datasetName:'Regional',state:'FL'},{source:'bls',year:2025},{source:'bea',year:2025}])for(const empty of [false,true]){
+  const f=storedCase(id,{request});f.state.resultMutator=p=>{delete p.appliedState;delete p.appliedYear;if(empty)p.data=[];};
+  await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+ }
+});
+test('unsupported economic source selectors refuse before credentials or transport',async()=>{
+ const f=storedCase();
+ for(const request of [{source:'census',query:'GDP'},{source:'census',seriesId:'series'},{source:'census',dataset:'Regional'},
+  {source:'census',year:0},{source:'bls',state:'FL'},{source:'bls',district:'01'},{source:'bls',datasetName:'Regional'},
+  {source:'bea',district:'01'},{source:'bea',seriesId:'series'},{source:'bea',state:'FL',datasetName:'NIPA'}]){
+  await assert.rejects(f.handler()({...f.call(),request}),{message:'INVALID_ARGUMENTS'});
+ }
+ assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+ for(const request of [{source:'census',query:' ',year:null},{source:'bls',state:null,dataset:' '},{source:'bea',district:' ',seriesId:null}]){
+  const allowed=storedCase(id,{request});await allowed.handler()(allowed.call());assert.equal(allowed.wire.length,1);
+ }
+});
+test('BLS selected years including zero bind both producer acknowledgement and every observation',async()=>{
+ for(const year of [0,2025]){
+  const f=storedCase(id,{request:{source:'bls',year}}),out=JSON.parse(await f.handler()(f.call())).result;
+  assert.equal(out.appliedYear,year);assert.equal(out.data[0].recentDataPoints[0].year,year);
+  for(const mutate of [p=>p.appliedYear=year+1,p=>p.data[0].recentDataPoints[0].year=year+1,p=>p.data[0].recentDataPoints=[]]){
+   f.state.resultMutator=mutate;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+  }
+  f.state.resultMutator=p=>p.data=[];assert.deepEqual(JSON.parse(await f.handler()(f.call())).result.data,[]);
+ }
+ const unscoped=storedCase(id,{request:{source:'bls'}});unscoped.state.resultMutator=p=>p.appliedYear=2025;
+ await assert.rejects(unscoped.handler()(unscoped.call()),{message:'INVALID_RESULT'});
+});
+test('BEA state selection binds Regional aggregates and preserves unscoped legacy rows',async()=>{
+ const request={source:'bea',state:' fl ',year:2025},f=storedCase(id,{request}),out=JSON.parse(await f.handler()(f.call())).result;
+ assert.equal(f.call().input.datasetName,'Regional');assert.deepEqual(f.wire[0].body,request);
+ assert.equal(out.appliedState,'FL');assert.equal(out.appliedYear,2025);assert.equal(out.data[0].geoFips,'12000');assert.equal(out.data[0].state,'FL');
+ for(const mutate of [p=>p.appliedState='NC',p=>p.data[0].state='NC',p=>p.data[0].geoFips='12001',
+  p=>{delete p.data[0].geoFips;delete p.data[0].state;},p=>p.data[0].datasetName='NIPA']){
+  f.state.resultMutator=mutate;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+ }
+ f.state.resultMutator=p=>p.data=[];assert.deepEqual(JSON.parse(await f.handler()(f.call())).result.data,[]);
+ const unscoped=storedCase(id,{request:{source:'bea'}});
+ unscoped.state.resultMutator=p=>{delete p.data[0].geoFips;delete p.data[0].state;};
+ assert.equal(Object.hasOwn(JSON.parse(await unscoped.handler()(unscoped.call())).result.data[0],'state'),false);
+ unscoped.state.resultMutator=p=>p.appliedState='FL';await assert.rejects(unscoped.handler()(unscoped.call()),{message:'INVALID_RESULT'});
+});
 test('empty bounded stored pages retain no assertion of exhaustive or authoritative absence',async()=>{
  for(const source of ['census','bls','bea']){
   const f=storedCase(id,{request:{source}});f.state.page={...f.page,data:[]};const out=JSON.parse(await f.handler()(f.call())).result;

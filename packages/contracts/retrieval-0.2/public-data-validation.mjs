@@ -52,10 +52,20 @@ export function createPublicDataValidators({validateShape, schema}) {
       input.source = ['census', 'bls', 'bea'].includes(source.toLowerCase()) ? source.toLowerCase() : source;
       const dataset = text(raw.datasetName, 60) ?? text(raw.dataset, 60);
       if (dataset !== null) input.datasetName = dataset;
-      if (raw.year) {
+      if (raw.year !== undefined && raw.year !== null && !(typeof raw.year === 'string' && !raw.year.trim())) {
         const year = Number(raw.year);
         if (!Number.isInteger(year) || year < -2147483648 || year > 2147483647) fail('Invalid stored economic year selector');
-        if (year !== 0) input.year = year;
+        input.year = year;
+      }
+      // A selector from another source must not silently turn into an unfiltered
+      // success. Defaults and blank aliases retain their existing meaning.
+      const unsupported = input.source === 'census' ? ['seriesId','query','datasetName','year']
+        : input.source === 'bls' ? ['state','district','datasetName']
+        : input.source === 'bea' ? ['district','seriesId'] : [];
+      if (unsupported.some(key => input[key] !== undefined)) fail('Economic selector is not supported by this source');
+      if (input.source === 'bea' && input.state !== undefined) {
+        input.datasetName ??= 'Regional';
+        if (input.datasetName !== 'Regional') fail('BEA state selection requires the Regional dataset');
       }
     } else if (id === 'search_federal_awards') {
       const page = raw.page ?? 1;
@@ -72,14 +82,25 @@ export function createPublicDataValidators({validateShape, schema}) {
     }
     if (page.source !== input.source || Object.hasOwn(page, 'error')) fail('Economic source substitution');
     if (page.data.length > input.limit) fail('Economic result exceeds requested window');
+    if (['bls','bea'].includes(input.source) &&
+        (Object.hasOwn(page, 'appliedYear') !== (input.year !== undefined) || page.appliedYear !== input.year))
+      fail('Economic applied year substitution');
+    if (input.source === 'bea' &&
+        (Object.hasOwn(page, 'appliedState') !== (input.state !== undefined) || page.appliedState !== input.state))
+      fail('BEA applied state substitution');
     assertPublicDataInstant(page.generatedAt);
     for (const row of page.data) {
       if (page.source === 'census' && ((input.state && row.state !== input.state) || (input.district && row.district !== input.district)))
         fail('Census exact selector substitution');
       if (page.source === 'bls' && input.seriesId && row.seriesId !== input.seriesId) fail('BLS exact series substitution');
+      if (page.source === 'bls' && input.year !== undefined &&
+          (!row.recentDataPoints.length || row.recentDataPoints.some(point => point.year !== input.year)))
+        fail('BLS observation year substitution');
       if (page.source === 'bea') {
         if ((input.datasetName && row.datasetName !== input.datasetName) || (input.year !== undefined && row.year !== input.year))
           fail('BEA exact selector substitution');
+        if (input.state !== undefined && (row.state !== input.state || !/^[0-9]{2}000$/u.test(row.geoFips ?? '')))
+          fail('BEA state aggregate substitution');
         if (row.description.length > 240) fail('BEA description exceeds UTF-16 window');
       }
     }

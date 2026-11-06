@@ -11,43 +11,50 @@
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "description": "Stored census district demographics, bls time series, or bea economic measures. Each source supports only its stated filters."
         },
         "state": {
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "description": "Two-letter state code for Census or BEA Regional state totals; not supported for BLS."
         },
         "district": {
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "description": "Congressional district selector for Census only."
         },
         "seriesId": {
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "description": "Exact BLS series identifier; not supported for Census or BEA."
         },
         "query": {
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "description": "Stored BLS title/survey or BEA description text; not supported for Census."
         },
         "datasetName": {
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "description": "Exact BEA dataset name; a state selector requires Regional, which is the default when a state is supplied."
         },
         "dataset": {
           "type": [
             "string",
             "null"
-          ]
+          ],
+          "description": "Alias for BEA datasetName; a nonblank datasetName takes precedence."
         },
         "year": {
           "anyOf": [
@@ -60,7 +67,8 @@
             {
               "type": "null"
             }
-          ]
+          ],
+          "description": "Exact stored BEA year or BLS observation year; not supported for Census. Null or blank means no year filter."
         },
         "limit": {
           "anyOf": [
@@ -472,6 +480,21 @@
             "string",
             "null"
           ]
+        },
+        "geoFips": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Unmodified stored BEA geographic FIPS; null or blank carries no inferred geography."
+        },
+        "state": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Z]{2}$",
+          "description": "Source-derived state code only for a recognized state aggregate; county and unrecognized codes remain null."
         }
       },
       "required": [
@@ -482,7 +505,15 @@
         "period",
         "value",
         "units"
-      ]
+      ],
+      "dependentRequired": {
+        "geoFips": [
+          "state"
+        ],
+        "state": [
+          "geoFips"
+        ]
+      }
     },
     "EconomicCensusOutput": {
       "type": "object",
@@ -533,6 +564,12 @@
             "$ref": "#/$defs/BlsSeriesRow"
           },
           "maxItems": 50
+        },
+        "appliedYear": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647,
+          "description": "Exact year applied by the source before its result limits; present only when a year was requested."
         }
       },
       "required": [
@@ -562,6 +599,17 @@
             "$ref": "#/$defs/BeaRow"
           },
           "maxItems": 50
+        },
+        "appliedYear": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647,
+          "description": "Exact year applied by the source before its result limits; present only when a year was requested."
+        },
+        "appliedState": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "Exact normalized state applied by the source before its result limit; present only when a state was requested."
         }
       },
       "required": [

@@ -19,7 +19,7 @@ const stamp = '2026-09-10T12:00:00.000Z';
 const census = () => ({id: 'synthetic-district', state: 'CA', district: 'AL', congress: 119,
   totalPopulation: null, medianHouseholdIncome: null, medianAge: null, percentBachelorPlus: null,
   percentPoverty: null, unemploymentRate: null, laborForceSize: null, topIndustries: []});
-const econ = (source = 'census', data = [census()]) => ({tool: economic, source, generatedAt: stamp, data});
+const econ = (source = 'census', data = [census()], applied = {}) => ({tool: economic, source, generatedAt: stamp, data, ...applied});
 const grant = () => ({id: 'synthetic-grant', title: 'Synthetic grant', agency: 'Synthetic agency', subAgency: null,
   opportunityNumber: null, category: null, awardCeiling: null, awardFloor: null, estimatedFunding: null,
   openDate: null, closeDate: null, deadlineStatus: 'unknown', syncedStatus: 'posted', eligibility: [], url: null});
@@ -53,11 +53,44 @@ test('standalone shape selection rejects coercive names before invoking caller c
 
 test('economic selectors normalize defaults, exact aliases and supported producer extensions', () => {
   assert.deepEqual(normalize(economic, {}), {source: 'census', limit: 20});
-  assert.deepEqual(normalize(economic, {source: ' BEA ', datasetName: ' ', dataset: ' NIPA ', year: '2026', state: 'ca'}),
-    {source: 'bea', limit: 20, datasetName: 'NIPA', year: 2026, state: 'CA'});
+  assert.deepEqual(normalize(economic, {source: ' BEA ', datasetName: ' ', dataset: ' Regional ', year: '2026', state: 'ca'}),
+    {source: 'bea', limit: 20, datasetName: 'Regional', year: 2026, state: 'CA'});
   assert.deepEqual(normalize(economic, {source: 'bls', seriesId: ' synthetic ', year: 0}),
-    {source: 'bls', seriesId: 'synthetic', limit: 20});
+    {source: 'bls', seriesId: 'synthetic', year: 0, limit: 20});
   assert.equal(normalize(economic, {source: 'bea', datasetName: 'first', dataset: 'second'}).datasetName, 'first');
+});
+test('economic source selectors are applied or refused, never silently ignored', () => {
+  const unsupported = {census: ['query','seriesId','datasetName','dataset','year'], bls: ['state','district','datasetName','dataset'], bea: ['district','seriesId']};
+  for (const [source, fields] of Object.entries(unsupported)) for (const field of fields) {
+    assert.throws(() => normalize(economic, {source, [field]: field === 'year' ? 2025 : 'selected'}));
+    for (const value of [null, '', ' ']) assert.deepEqual(normalize(economic, {source, [field]: value}), {source, limit: 20});
+  }
+  assert.deepEqual(normalize(economic, {source: 'bea', state: ' fl '}), {source: 'bea', state: 'FL', datasetName: 'Regional', limit: 20});
+  for (const datasetName of ['NIPA','regional']) assert.throws(() => normalize(economic, {source: 'bea', state: 'FL', datasetName}));
+});
+test('economic applied selectors bind empty pages, year zero and actual BLS observation years', () => {
+  for (const source of ['bls','bea']) for (const year of [0,2025]) {
+    const request = {source, year};
+    check(economic, econ(source, [], {appliedYear: year}), request);
+    for (const page of [econ(source, []), econ(source, [], {appliedYear: year + 1})]) assert.throws(() => check(economic, page, request));
+    assert.throws(() => check(economic, econ(source, [], {appliedYear: year}), {source}));
+  }
+  const row = {seriesId:'S',title:'Stored',surveyName:null,periodType:'reported',recentDataPoints:[{year:2025,period:'M13',value:-1}]};
+  check(economic, econ('bls',[row],{appliedYear:2025}), {source:'bls',year:2025});
+  for (const recentDataPoints of [[], [{year:2024,period:'M13',value:-1}]])
+    assert.throws(() => check(economic, econ('bls',[{...row,recentDataPoints}],{appliedYear:2025}), {source:'bls',year:2025}));
+});
+test('BEA geography is source-projected and scoped results require the applied state, including empty pages', () => {
+  const row = {datasetName:'Regional',tableName:'SAGDP1',description:'Stored GDP',year:2025,period:'2025',value:1,units:null,geoFips:'12000',state:'FL'};
+  const request = {source:'bea',state:'FL'}, page = econ('bea',[row],{appliedState:'FL'});
+  check(economic,page,request);check(economic,econ('bea',[],{appliedState:'FL'}),request);
+  for (const change of [{state:'NC',geoFips:'37000'},{state:null,geoFips:'12001'},{geoFips:null},{geoFips:'12001'}])
+    assert.throws(() => check(economic,econ('bea',[{...row,...change}],{appliedState:'FL'}),request));
+  for (const data of [[],[row]]) for (const applied of [{},{appliedState:'NC'}]) assert.throws(() => check(economic,econ('bea',data,applied),request));
+  assert.throws(() => check(economic,page,{source:'bea'}));
+  const {state,geoFips,...legacy}=row;check(economic,econ('bea',[legacy]),{source:'bea'});
+  check(economic,econ('bea',[{...row,state:null,geoFips:'12001'}]),{source:'bea'});
+  for (const key of ['state','geoFips']) {const partial={...row};delete partial[key];assert.throws(() => check(economic,econ('bea',[partial]),{source:'bea'}));}
 });
 test('source limit normalization retains clamping and finite scalar coercion without caller mutation', () => {
   const input = {limit: '2.9', query: ' synthetic '};
@@ -105,15 +138,15 @@ test('Census exact state/district selectors bind only its own variant', () => {
 test('BLS preserves period and value semantics and nested twelve-point ceiling', () => {
   const row = {seriesId: 'series', title: 'Synthetic indicator', surveyName: null, periodType: 'reported-period',
     recentDataPoints: [{year: 2026, period: 'M13', value: -2.5}]};
-  check(economic, econ('bls', [row]), {source: 'bls', seriesId: 'series', state: 'NY'});
+  check(economic, econ('bls', [row]), {source: 'bls', seriesId: 'series'});
   assert.throws(() => check(economic, econ('bls', [row]), {source: 'bls', seriesId: 'foreign'}));
   assert.throws(() => check(economic, econ('bls', [{...row, recentDataPoints: Array(13).fill(row.recentDataPoints[0])}]), {source: 'bls'}));
   assert.throws(() => check(economic, econ('bls', [{...row, units: 'invented'}]), {source: 'bls'}));
 });
 test('BEA nullable values/units and exact dataset/year bind without new unit assumptions', () => {
   const row = {datasetName: 'NIPA', tableName: 'synthetic-table', description: '', year: 2026, period: 'Annual', value: null, units: null};
-  check(economic, econ('bea', [row]), {source: 'bea', dataset: 'NIPA', year: 2026});
-  assert.throws(() => check(economic, econ('bea', [row]), {source: 'bea', year: 2025}));
+  check(economic, econ('bea', [row], {appliedYear: 2026}), {source: 'bea', dataset: 'NIPA', year: 2026});
+  assert.throws(() => check(economic, econ('bea', [row], {appliedYear: 2025}), {source: 'bea', year: 2025}));
   assert.throws(() => check(economic, econ('bea', [{...row, description: '🧭'.repeat(121)}]), {source: 'bea'}));
 });
 test('unknown economic source retains an error branch and cannot fabricate empty success', () => {
