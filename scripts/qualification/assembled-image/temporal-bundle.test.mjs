@@ -13,7 +13,7 @@ test('runtime-owned upstream Temporal bundles canonical workflow with no connect
   globalThis.fetch=deny;http.default.request=deny;https.default.request=deny;net.default.connect=deny;net.default.createConnection=deny;tls.default.connect=deny;net.default.Server.prototype.listen=deny;
   try {
     const {entry,version}=resolveTemporal(root);
-    assert.equal(version,'1.24.0');
+    assert.equal(version,'1.25.0');
     const {bundleWorkflowCode,DefaultLogger}=await import(pathToFileURL(entry).href);
     const {workerOptions}=await import('../../../apps/runtime/temporal-worker.mjs');
     let nativeCalls=0;const native={call:async()=>{nativeCalls++;throw Error('QUALIFICATION_NATIVE_REFUSED');}};

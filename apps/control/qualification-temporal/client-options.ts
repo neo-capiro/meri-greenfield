@@ -1,7 +1,7 @@
 // W02-03 inert client/NativeConnection TLS + JWT option fixtures.
 //
 // Preparation only. These builders construct real, typed connection option
-// objects for the pinned @temporalio/client and @temporalio/worker 1.24.0
+// objects for the pinned @temporalio/client and @temporalio/worker 1.25.0
 // packages. No connection is ever established: nothing here talks to a server,
 // a database, a model provider or any network endpoint.
 //

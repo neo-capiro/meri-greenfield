@@ -2,7 +2,7 @@
 
 Preparation for the production Temporal design decision: an **inert** TypeScript
 fixture that is compiled and statically checked against the exact pinned
-`@temporalio/*` 1.24.0 packages, plus a five-role deployment fixture validated
+`@temporalio/*` 1.25.0 packages, plus a five-role deployment fixture validated
 against prohibited-boundary cases.
 
 This is PREPARATION ONLY. Nothing here is a deployed server, database, Fargate
@@ -16,7 +16,7 @@ execute.
 ## Layout
 
 ```
-package.json               private ESM package; five exact @temporalio 1.24.0 deps
+package.json               private ESM package; five exact @temporalio 1.25.0 deps
 package-lock.json          nested lockfile (npm ci from this lock only)
 .gitignore                 ignores node_modules/, .runtime/, *.tsbuildinfo
 tsconfig.json              strict NodeNext, noEmit
@@ -71,7 +71,7 @@ continuation counter (0=one Continue-as-New, 1=complete, else rejected).
   sha512 integrity, and agree across package.json / package-lock.json /
   component-pins.json; the fixture's `server` block is byte-identical to the
   pinned server digests (exact equality, not a regex).
-- The installed 1.24.0 declarations really contain the asserted members
+- The installed 1.25.0 declarations really contain the asserted members
   (`WorkerDeploymentOptions` requiring `defaultVersioningBehavior` when
   `useWorkerVersioning:true` and `?: never` otherwise; `TLSConfig`; `apiKey`;
   `VersioningBehavior`; `WorkerDeploymentVersion`; the workflow API).

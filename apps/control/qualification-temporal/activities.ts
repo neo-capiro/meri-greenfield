@@ -3,7 +3,7 @@
 // Preparation only. These functions are never executed and perform NO I/O, no
 // database access, no provider/model call and no browser/Office work. They exist
 // to give the deterministic workflow (workflow.ts) a real, typed activity
-// interface compiled against @temporalio/activity 1.24.0.
+// interface compiled against @temporalio/activity 1.25.0.
 //
 // A production activity would live in a separately restricted trusted worker
 // that receives task-bound short-lived capabilities, never a database/provider/

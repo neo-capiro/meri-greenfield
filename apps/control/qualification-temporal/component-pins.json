@@ -33,21 +33,21 @@
     "note": "No signature/scan/runtime acceptance."
   },
   "typescriptSdk": {
-    "version": "1.24.0",
-    "sourceCommit": "1fd1c81a0383f5f5c7923dd735472c7d1ffdc867",
+    "version": "1.25.0",
+    "sourceCommit": "efafd16ef4533da24029277bd72caf564c7aa007",
     "license": "MIT",
     "minNodeVersion": ">= 20.3.0",
     "supportedNodeMajors": [20, 22, 24],
     "targetTriple": "x86_64-unknown-linux-gnu",
     "participatingPackages": [
-      { "name": "@temporalio/client", "version": "1.24.0", "integrity": "sha512-/GGg6ZYl+pN/bQEvq414CyjDvyM+MM1WsMzi/7SCYb3UlivVXx9nOmH/6BGx8OfYFayp11fkmfSh6rt7vW/ePQ==", "license": "MIT", "kind": "direct" },
-      { "name": "@temporalio/worker", "version": "1.24.0", "integrity": "sha512-Lq79WAHOQFuCFJe1ZJcwcs/u8ZPhHyoTpnWZq1gr6mnB9IRMImAYrJFXY/MY/VdXVltTpy+7T6u/V+P327J+gQ==", "license": "MIT", "kind": "direct" },
-      { "name": "@temporalio/workflow", "version": "1.24.0", "integrity": "sha512-pIA9nxkDCCbBnNuMSffQ44HWHYe3zXFfrDpDLwzh/FUSx8uLbsBM8jwf5oUMf+5eV/qVW9PknZhOu9IFO4XnPA==", "license": "MIT", "kind": "direct" },
-      { "name": "@temporalio/activity", "version": "1.24.0", "integrity": "sha512-eBBho/r9XHe2KczYGzmaSp6e9+6c9ta/GGOBldIBr00D/cV34kJ76iAY3Ue1pQTaP7YaX3phMuOz07uUg/IKyA==", "license": "MIT", "kind": "direct" },
-      { "name": "@temporalio/common", "version": "1.24.0", "integrity": "sha512-jXp77fXwynBcVNc/CaGMT33TVYnhcN26S959HDv7Q71oc0rN6d8RHWR5z0nRCDAu5CQwZQRRhVK0TRdyAiEg7Q==", "license": "MIT", "kind": "direct" },
-      { "name": "@temporalio/proto", "version": "1.24.0", "integrity": "sha512-vhlhB9GpoyJx+78r3lDahHywpdri6LKx7kt7djLIw6XzHyb8FQTIi4lX8DSJBqKp3+HVfL1CLwiqO26KFRzg/g==", "license": "MIT", "kind": "transitive" },
-      { "name": "@temporalio/nexus", "version": "1.24.0", "integrity": "sha512-SQOQia98KFowgpgH6Cn+7rcpWVEjmJbV5FlqQVQoDH82Q7yl5gT81GO9vN7YRYj5RE2P+DVzEsCc8ohT7Hy57g==", "license": "MIT", "kind": "transitive" },
-      { "name": "@temporalio/core-bridge", "version": "1.24.0", "integrity": "sha512-6kzPB8RsHcPU6HDNUSDBFC0JG2UFrV3ThmPmJkeEafKh2DFrKARM8IzxgKeE5MzvdIXYmONFM0UmHg+TZ0/qrQ==", "license": "MIT", "kind": "transitive" }
+      { "name": "@temporalio/client", "version": "1.25.0", "integrity": "sha512-IbWlxzQiQg2fuIum+d2PkQWOGPVPyeN294sKdBCylKxVsGc1IoixXjWjEZ0dxVuYNFZq+16Vn9Fh2UNVDfXePA==", "license": "MIT", "kind": "direct" },
+      { "name": "@temporalio/worker", "version": "1.25.0", "integrity": "sha512-I4b/OwhDb/UhyoHLJDCnuKqROSlT95xHACRxOsg0UjH6qgcYCusch+9mLol1IN7ml2cNkSbnm+5hvzpVuywP3Q==", "license": "MIT", "kind": "direct" },
+      { "name": "@temporalio/workflow", "version": "1.25.0", "integrity": "sha512-2Z5BvOtsfOHL3Dy+4cewXEHDu9NeseEn4FeaaitNwn704POgEfshz0zxyZB8ofxbna2P0wsC5l3rnYHkOvtX9A==", "license": "MIT", "kind": "direct" },
+      { "name": "@temporalio/activity", "version": "1.25.0", "integrity": "sha512-IBz6/pqfwlZpZcw2KBFSQa5iu7B9gH6/RUCI/VCqywP9gfj0KVs6rGVAQj1/48oY63eIU5WcAllWdbaRDWY1+A==", "license": "MIT", "kind": "direct" },
+      { "name": "@temporalio/common", "version": "1.25.0", "integrity": "sha512-R9q/5wJZLi47kktJ3GfGh+eMO2HleRxKQGDysCvoObdVjK7Q+F+Vq0M1EeMu4EMHQZdT9A4vgN5rQ9L8cTgU8w==", "license": "MIT", "kind": "direct" },
+      { "name": "@temporalio/proto", "version": "1.25.0", "integrity": "sha512-cZF6C1F4ZHWrVwrDNW6hTB7HvBi1sofqPWxQrqJq0b9hPE21y5IU5rTNEUx3Ju6G03xqdpwdH0LECAul0KAi2Q==", "license": "MIT", "kind": "transitive" },
+      { "name": "@temporalio/nexus", "version": "1.25.0", "integrity": "sha512-uUq7FK0WdCQcwj57Tt1wIeLc51fn8FgAPN6+hiFD1A/o+EDpao7YZ2A/holuJ9cjFZk4c9lswKJaNZYTznE2fw==", "license": "MIT", "kind": "transitive" },
+      { "name": "@temporalio/core-bridge", "version": "1.25.0", "integrity": "sha512-4C7lOpBXo9nTTwuEZwlPWGEZy3dchSbEgp+HeX87EbovC4QlPf1Th9iWz7jcce0C9l/O3kaXfA34uPMGRu15DA==", "license": "MIT", "kind": "transitive" }
     ]
   },
   "compiler": {
@@ -55,7 +55,7 @@
     "version": "5.9.3",
     "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
     "license": "Apache-2.0",
-    "rationale": "Latest stable 5.x line; the SDK v1.24.0 repository declares typescript ^5.6.3, so a 5.x compiler is the tested line rather than the newer 7.x native port."
+    "rationale": "Retained exact TypeScript 5.9.3 compiler; the current offline compatibility and negative type fixtures qualify it against SDK 1.25.0."
   },
   "typesNode": {
     "name": "@types/node",

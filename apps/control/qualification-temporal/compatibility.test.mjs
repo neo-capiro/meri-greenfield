@@ -3,7 +3,7 @@
 // Deterministic and hermetic: no Temporal server, database, Fargate task,
 // Docker, model provider, browser or Office execution. The tests exercise real
 // boundaries only: exact package/lock/pin alignment, the exact installed
-// 1.24.0 type declarations, the inert source fixtures, the five-role deployment
+// 1.25.0 type declarations, the inert source fixtures, the five-role deployment
 // boundary rules (including the previously-accepted false positives), a real
 // compiler diagnostic check, and the actual workflow's JavaScript control flow
 // with deterministic SDK/activity stubs. Those probes do not initialize any
@@ -33,22 +33,22 @@ const pins = readJson('component-pins.json');
 const fixture = readJson('deployment.fixture.json');
 
 const DIRECT_TEMPORAL = ['@temporalio/activity', '@temporalio/client', '@temporalio/common', '@temporalio/worker', '@temporalio/workflow'];
-const SDK_VERSION = '1.24.0';
+const SDK_VERSION = '1.25.0';
 const SERVER_VERSION = '1.32.1';
 
 // ---------------------------------------------------------------------------
 // Exact package / lock / pin alignment (exact values, not loose regexes)
 // ---------------------------------------------------------------------------
 
-test('package.json pins the five exact @temporalio 1.24.0 packages and the exact compiler/types', () => {
+test('package.json pins the five exact @temporalio 1.25.0 packages and the exact compiler/types', () => {
   assert.equal(pkg.private, true);
   assert.equal(pkg.type, 'module');
   assert.deepEqual(pkg.dependencies, {
-    '@temporalio/activity': '1.24.0',
-    '@temporalio/client': '1.24.0',
-    '@temporalio/common': '1.24.0',
-    '@temporalio/worker': '1.24.0',
-    '@temporalio/workflow': '1.24.0',
+    '@temporalio/activity': '1.25.0',
+    '@temporalio/client': '1.25.0',
+    '@temporalio/common': '1.25.0',
+    '@temporalio/worker': '1.25.0',
+    '@temporalio/workflow': '1.25.0',
   });
   assert.deepEqual(pkg.devDependencies, { '@types/node': '24.19.2', typescript: '5.9.3' });
 });
@@ -73,7 +73,7 @@ test('component-pins.json records the exact server pins (exact equality, not reg
   assert.equal(pins.adminTools.imageAmd64Digest, 'sha256:4fdaf9122f8beb448c823976232f6616a8cd94687f6984eeaf25c2b1457d5fed');
   assert.equal(pins.adminTools.cliVersion, '1.9.1');
   assert.equal(pins.typescriptSdk.version, SDK_VERSION);
-  assert.equal(pins.typescriptSdk.sourceCommit, '1fd1c81a0383f5f5c7923dd735472c7d1ffdc867');
+  assert.equal(pins.typescriptSdk.sourceCommit, 'efafd16ef4533da24029277bd72caf564c7aa007');
 });
 
 test('component-pins.json agrees with package.json, lock and the postgres candidates', () => {
@@ -101,7 +101,7 @@ test('the fixture server block is byte-identical to the pinned component digests
 });
 
 // ---------------------------------------------------------------------------
-// Exact installed 1.24.0 type declarations (not hypothetical APIs)
+// Exact installed 1.25.0 type declarations (not hypothetical APIs)
 // ---------------------------------------------------------------------------
 
 test('installed WorkerDeploymentOptions requires defaultVersioningBehavior when versioning is on', () => {

@@ -200,10 +200,10 @@ class ExpatSecurityFix(unittest.TestCase):
             'glibc-2.44-locale-posix-2.44-r10', 'glibc-2.44-2.44-r10', 'ld-linux-2.44-2.44-r10',
             'ncurses-terminfo-base-6.6.20261024-r0', 'ncurses-6.6.20261024-r0', 'bash-5.3-r14',
             'libcrypt1-2.44-2.44-r10', 'glibc-2.44-iconv-2.44-r10', 'libatomic-16.2.0-r1', 'libstdc++-16.2.0-r1',
-            'libuuid-2.42.4-r1', 'py3-pip-wheel-26.2.2-r1', 'libbz2-1-1.0.8-r28', 'libexpat1-2.10.0-r0',
+            'libuuid-2.42.4-r1', 'py3-pip-wheel-26.2.2-r2', 'libbz2-1-1.0.8-r28', 'libexpat1-2.10.0-r0',
             'libffi-3.8.0-r2', 'gdbm-1.26-r9', 'xz-5.8.4-r0', 'mpdecimal-4.0.1-r6', 'readline-8.3-r3',
             'sqlite-libs-3.54.1-r0', 'python-3.13-base-3.13.18_git20261030-r0', 'py3.13-setuptools-84.2.1-r0',
-            'py3.13-pip-base-26.2.2-r1', 'py3.13-pip-26.2.2-r1', 'python-3.13-3.13.18_git20261030-r0']))
+            'py3.13-pip-base-26.2.2-r2', 'py3.13-pip-26.2.2-r2', 'python-3.13-3.13.18_git20261030-r0']))
         # Negative controls: dropping a pin selects the newer unstaged revision. ncurses requires its exact
         # terminfo-base revision, so the pair drifts together.
         for pins, drifted in (([' ncurses=6.6.20261024-r0', ' ncurses-terminfo-base=6.6.20261024-r0'],

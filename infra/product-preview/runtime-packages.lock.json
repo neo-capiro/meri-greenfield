@@ -56,19 +56,19 @@
     },
     {
       "name": "py3.13-pip",
-      "version": "26.2.2-r1",
+      "version": "26.2.2-r2",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r1.apk",
-      "sha256": "34a962e6d79bf3bfd9eca4f73ea8c2688a5535316d27e9f41d01d49f31dfd800",
-      "bytes": 37767
+      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-26.2.2-r2.apk",
+      "sha256": "a4e2e6f7f3b18e4df337c23d7702b0d140b54726cc50c12c6793d72a1cf49de4",
+      "bytes": 46234
     },
     {
       "name": "py3.13-pip-base",
-      "version": "26.2.2-r1",
+      "version": "26.2.2-r2",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r1.apk",
-      "sha256": "66b1b058b55b931e1a925961099d251f0d35ab2958269dc07de76721e7f8983a",
-      "bytes": 4021890
+      "source": "https://packages.wolfi.dev/os/aarch64/py3.13-pip-base-26.2.2-r2.apk",
+      "sha256": "d3fb40094628ffb11a8758d1e37f41a30351a56ee29cbd8570be3ff4fd1a2b33",
+      "bytes": 4028397
     },
     {
       "name": "libreoffice-26.8",
@@ -1781,11 +1781,11 @@
     },
     {
       "name": "py3-pip-wheel",
-      "version": "26.2.2-r1",
+      "version": "26.2.2-r2",
       "architecture": "aarch64",
-      "source": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk",
-      "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93",
-      "bytes": 1838069,
+      "source": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r2.apk",
+      "sha256": "6dcca154f23de54db689ec2006bb65c67de74d556f55f8836bf5d438da8b8ee1",
+      "bytes": 1845348,
       "origin": "py3-pip-wheel",
       "role": "pinned transitive native dependency of the pinned native layers (python, renderer, upload); resolved from the retained vendor-signed index, so the build neither resolves nor fetches it from the rolling live index"
     },
@@ -3236,11 +3236,11 @@
          },
          {
           "name": "py3-pip-wheel",
-          "version": "26.2.2-r1",
-          "filename": "py3-pip-wheel-26.2.2-r1.apk",
-          "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93",
-          "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk",
-          "role": "named in the interpreter install: python-3.13-base depends on an unversioned py3-pip-wheel while the staged index also advertises r0 and r2, so the installed revision is pinned here instead of left to apk's resolution"
+          "version": "26.2.2-r2",
+          "filename": "py3-pip-wheel-26.2.2-r2.apk",
+          "sha256": "6dcca154f23de54db689ec2006bb65c67de74d556f55f8836bf5d438da8b8ee1",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r2.apk",
+          "role": "named in the interpreter install: python-3.13-base depends on an unversioned py3-pip-wheel while the staged index also advertises older revisions, so the installed revision is pinned here instead of left to apk's resolution"
          }
         ],
         "resolvedFromTheRuntimeRepository": [
@@ -3254,10 +3254,10 @@
          },
          {
           "name": "py3-pip-wheel",
-          "version": "26.2.2-r1",
-          "filename": "py3-pip-wheel-26.2.2-r1.apk",
-          "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93",
-          "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r1.apk",
+          "version": "26.2.2-r2",
+          "filename": "py3-pip-wheel-26.2.2-r2.apk",
+          "sha256": "6dcca154f23de54db689ec2006bb65c67de74d556f55f8836bf5d438da8b8ee1",
+          "url": "https://packages.wolfi.dev/os/aarch64/py3-pip-wheel-26.2.2-r2.apk",
           "role": "directly pinned in the interpreter install; the archive comes from the mounted fixed-pip staging set"
          },
          {
@@ -3362,6 +3362,16 @@
         "buildOnly": "the ClamAV compiler stage keeps its development-closure libexpat1 2.9.0-r0; that stage is not exported",
         "qualification": "Authenticated source/index/package closure only; actual ARM image execution and zero-HIGH/CRITICAL scan required."
       },
+      "pipCertificateSecurityCorrection": {
+        "cve": "CVE-2026-111943",
+        "affectedVersion": "26.2.2-r1",
+        "fixedVersion": "26.2.2-r2",
+        "vendorSource": "https://github.com/wolfi-dev/os/blob/main/py3-pip.yaml",
+        "vendorFix": "vendored certifi 2026.10.23",
+        "index": "fixedPipIndex",
+        "indexUnchanged": true,
+        "qualification": "Signed-index control checksum and package datahash verified; actual ARM install, runtime probe and zero-HIGH/CRITICAL scans remain required."
+      },
       "fixedPipIndex": {
     "source": "https://packages.wolfi.dev/os/aarch64/APKINDEX.tar.gz",
     "path": "infra/product-preview/native-apk-index/aarch64-APKINDEX-d6f8b212573cb558a4476d29eea5279c3de8a6e0b5bcc6361715bd70932a8e64.tar.gz",
@@ -3373,9 +3383,9 @@
     "trustRoot": "the vendor RSA keys already installed in the pinned base keyring; apk verifies this index signature before selecting any package from it"
   },
   "fixedPipPackages": [
-    {"name": "py3.13-pip", "version": "26.2.2-r1", "sha256": "34a962e6d79bf3bfd9eca4f73ea8c2688a5535316d27e9f41d01d49f31dfd800", "bytes": 37767, "from": "fixedPipIndex"},
-    {"name": "py3.13-pip-base", "version": "26.2.2-r1", "sha256": "66b1b058b55b931e1a925961099d251f0d35ab2958269dc07de76721e7f8983a", "bytes": 4021890, "from": "fixedPipIndex"},
-    {"name": "py3-pip-wheel", "version": "26.2.2-r1", "sha256": "3481499c46ac5ae2b7e10ee50ff80f5c4c0e55501e0d096c8c06437f51283c93", "bytes": 1838069, "from": "fixedPipIndex"}
+    {"name": "py3.13-pip", "version": "26.2.2-r2", "sha256": "a4e2e6f7f3b18e4df337c23d7702b0d140b54726cc50c12c6793d72a1cf49de4", "bytes": 46234, "from": "fixedPipIndex"},
+    {"name": "py3.13-pip-base", "version": "26.2.2-r2", "sha256": "d3fb40094628ffb11a8758d1e37f41a30351a56ee29cbd8570be3ff4fd1a2b33", "bytes": 4028397, "from": "fixedPipIndex"},
+    {"name": "py3-pip-wheel", "version": "26.2.2-r2", "sha256": "6dcca154f23de54db689ec2006bb65c67de74d556f55f8836bf5d438da8b8ee1", "bytes": 1845348, "from": "fixedPipIndex"}
   ],
   "retainedSignedIndex": {
         "source": "https://apk.cgr.dev/chainguard/aarch64/APKINDEX.tar.gz",
@@ -3414,7 +3424,7 @@
         "statement": "The base image's own installed package set is UNOBSERVED: no pull, manifest inspection or in-image apk info was performed, and no base-installed version is claimed here. The intended effect of this delta is an UPGRADE of the shared C++ runtime to the index-newest revisions the closure pins (libstdc++ 16.2.0-r2, libgcc 16.2.0-r2) while libatomic stays at its approved 16.2.0-r1 pin.",
         "failClosed": "Because every upload-layer install names exact archive files, a base digest that already carried a newer revision of any named package makes apk add refuse the older explicit file: the build fails closed instead of silently drifting to a different version."
       },
-      "pythonWheels": "The upload parser imports pypdf, openpyxl, lxml and Pillow; all four are already pinned in infra/product-preview/runtime-wheels.lock.json and installed by the existing pip layer (pypdf 6.21.2, openpyxl 3.1.5, lxml 6.1.3, pillow 13.0.0). No new wheel record is required.",
+      "pythonWheels": "The upload parser imports pypdf, openpyxl, lxml and Pillow; all four are already pinned in infra/product-preview/runtime-wheels.lock.json and installed by the existing pip layer (pypdf 6.21.4, openpyxl 3.1.5, lxml 6.1.3, pillow 13.0.0). No new wheel record is required.",
       "qualification": "Unqualified source installation pins. The exact ARM image must pass the observed no-network/non-root/read-only/no-credentials/limited child sandbox, real ClamAV/Tesseract/Poppler versions and a representative scanned/Office/PDF corpus before any upload native availability claim."
     }
   }
