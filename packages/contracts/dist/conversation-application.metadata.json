@@ -169,12 +169,12 @@
     },
     {
       "path": "../skills/assets.json",
-      "sha256": "5db943066d128af85ca1a2a4a8899c1e5137d338df9b37809590ca799aeec1a5",
+      "sha256": "a4ef9351e100c538de1db0179036a8f336630510e5c8e0b383c7245d0dc10e53",
       "bytes": 16904
     },
     {
       "path": "../skills/index.mjs",
-      "sha256": "eaabc53e636ed61a0d54232ad9242fa35538abb8f98acd3369c18f6260c70712",
+      "sha256": "b836f38c97714400adda4c87ec01b27328bb88f9b064d178d4490bcf7c43609d",
       "bytes": 5185
     },
     {
