@@ -33,8 +33,8 @@ export function createFederalLegislationValidators({validateShape,schema}) {
     const congress=raw.congress===undefined||raw.congress===null||raw.congress===''?null:Number(raw.congress);
     if(congress!==null&&(!Number.isInteger(congress)||congress<1||congress>999))fail('Invalid floor-vote Congress');
     // An exact selection is never clipped or dropped into an unscoped search.
+    if(typeof raw.billId==='string'&&raw.billId.length>60)fail('Invalid floor-vote bill selector');
     const selector=raw.billId?.trim()||null;
-    if(selector!==null&&selector.length>60)fail('Invalid floor-vote bill selector');
     const selected=resolveCongressionalBillId(selector,congress??context.defaultCongress);
     if(selector!==null&&(selected===null||congress!==null&&Number(selected.split('-')[0])!==congress))
       fail('Invalid floor-vote bill selector or conflicting Congress');

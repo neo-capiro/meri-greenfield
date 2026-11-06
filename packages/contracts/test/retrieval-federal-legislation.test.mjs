@@ -295,3 +295,10 @@ test('inherited prototype-key statuses cannot invent a label omitted by the pinn
   }
   const page=bill();page.status='future_status';page.statusLabel='future_status';check(BILL,page,{billId:'119-hr-7'},context());
 });
+
+test('floor selector bounds the entire raw string before trimming, including blank input',()=>{
+  for(const billId of [' '.repeat(55)+'S. 2809',' '.repeat(61)])
+    assert.throws(()=>normalize(VOTES,{billId},context()));
+  assert.equal(normalize(VOTES,{billId:' '.repeat(53)+'S. 2809'},context()).billId,'119-s-2809');
+  assert.equal(normalize(VOTES,{billId:' '.repeat(60)},context()).billId,null);
+});
