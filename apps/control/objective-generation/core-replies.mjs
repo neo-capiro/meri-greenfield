@@ -23,9 +23,10 @@ import {strategyTypes} from '../../../packages/contracts/strategy-operations-can
 import {coreApplicationSha256} from '../../../packages/runtime/core-application-digest.mjs';
 import {strategyApplication} from '../objective-planner/core-receipts.mjs';
 import {ProductError} from '../product-access/errors.mjs';
+import {assertObjectivePrompt,OBJECTIVE_PUBLICATION_MAX_BYTES} from '../../../packages/runtime/objective-input-capacity.mjs';
 
 export const OBJECTIVE_ADMISSION_NAMESPACE='capiro.objective-strategy.admission:v1';
-const TIME_MAX=8_640_000_000_000_000,MAX_PROMPT=100000;
+const TIME_MAX=8_640_000_000_000_000;
 const tokenKeys=['canonicalPlanId','tenantId','clientId','objectiveId','canonicalStrategyId','canonicalProjectId','bindingVersion','epoch','requestedIntentId','requestedObjectiveRevisionId','requestedObjectiveVersion','snapshotHash'];
 const admissionKeys=['schemaVersion','namespace','canonical','actorUserId','clerkUserId','consentId','controlVersion','generationJobId','generationRequestId','admittedAtMs','effectExpiresAtMs','expectedStrategyVersionId'];
 const refuse=()=>{throw new ProductError('OBJECTIVE_GENERATION_CORE_REPLY_REFUSED');};
@@ -109,11 +110,13 @@ export function decodePublicationReply(raw,expected,{admission:admitted}){
      q.source.objectiveId!==c.objectiveId||q.source.objectiveRevisionId!==c.requestedObjectiveRevisionId||
      q.source.objectiveVersion!==c.requestedObjectiveVersion||q.source.snapshotSha256!==c.snapshotHash||
      q.originalExpiresAtMs>a.effectExpiresAtMs||!strategyTypes.includes(q.input.typeHint))refuse();
-  if(e.schemaVersion!==1||typeof e.prompt!=='string'||!e.prompt.trim()||e.prompt.length>MAX_PROMPT||
+  assertObjectivePrompt(e.prompt);
+  if(e.schemaVersion!==1||
      createHash('sha256').update(e.prompt,'utf8').digest('hex')!==sha(e.promptSha256)||e.contextPacketId!==q.context.packetId||
      !Array.isArray(e.ownerRefs)||e.ownerRefs.length!==q.context.ownerRefs.length)refuse();
   const refs=new Set();for(const raw of e.ownerRefs){const o=closed(raw,['ownerRef','clerkUserId']);opaque(o.clerkUserId);
    if(typeof o.ownerRef!=='string'||refs.has(o.ownerRef)||!q.context.ownerRefs.includes(o.ownerRef))refuse();refs.add(o.ownerRef);}
+  if(Buffer.byteLength(JSON.stringify(r),'utf8')>OBJECTIVE_PUBLICATION_MAX_BYTES)refuse();
   return frozen({sourceAdmissionSha256:digest,request:q,requestSha256:r.requestSha256,executionContext:e,queuedType:q.input.typeHint});
  }catch{refuse();}
 }

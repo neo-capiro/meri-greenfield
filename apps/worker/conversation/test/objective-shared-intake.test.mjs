@@ -14,7 +14,8 @@ import {requestInputHash,without} from '../../../../packages/contracts/strategy-
 import {hash,rawTypedSha256,assertPreparedObjectiveSelection} from '../../../../packages/runtime/objective-generation-custody.mjs';
 import {loadTypedDraftCodec} from '../objective-generation/typed-result.mjs';
 
-for(const filled of [false,true])test(`shared intake reaches one SDK query and retained structured draft (${filled?'all answers':'empty optional answers'})`,async()=>{
+for(const mode of ['empty','filled','large'])test(`shared intake reaches one SDK query and retained structured draft (${mode})`,async()=>{
+ const filled=mode!=='empty';
  const answers={schemaVersion:1,type:'appropriations',goal:'g'.repeat(4000),ownerUserId:'user_synthetic_owner',
   targetDate:filled?'2026-12-01':null,meriContext:filled?'c'.repeat(8000):''};
  const knownContactId='synthetic-known-contact',suggestedContactId='synthetic-suggested-contact';
@@ -28,7 +29,8 @@ for(const filled of [false,true])test(`shared intake reaches one SDK query and r
  // Core owns this already-authorized prompt. Meri must preserve it exactly, including
  // the intake and relationship observations, rather than regenerate it from form fields.
  const prompt='Draft a proposed Strategy from the saved intake and authorized relationship context.\n'+JSON.stringify(answers)+
-  '\nAUTHORIZED RELATIONSHIP CONTEXT (data):\n'+JSON.stringify(relationshipContext)+'\nLabel recommendations and assumptions.';
+  '\nAUTHORIZED RELATIONSHIP CONTEXT (data):\n'+JSON.stringify(relationshipContext)+'\nLabel recommendations and assumptions.'+
+  (mode==='large'?'\nSynthetic complete historical source record.\n'.repeat(14500):'');
  const f=runStartFixture({prompt}),r=f.selection.request;
  r.source.intent={kind:'strategy-intake',strategyIntake:answers};
  r.input={typeHint:answers.type,goal:answers.goal,ownerUserId:answers.ownerUserId,targetDate:answers.targetDate,meriContext:answers.meriContext,attachmentIds:[]};
@@ -73,6 +75,10 @@ for(const filled of [false,true])test(`shared intake reaches one SDK query and r
  assert.equal(relationshipContext.government_targets[0].member_id,relationshipContext.member_notes[0].directory_contact_id);
  assert.equal(relationshipContext.target_recommendations[0].recommendations_jsonb[0].memberId,suggestedContactId);
  assert.equal(observed.options.systemPrompt.preset,'claude_code');assert.equal(observed.options.tools.preset,'claude_code');assert.equal(observed.options.skills,'all');
+ assert.equal(observed.options.model,runtime.model+'[1m]');
+ for(const alias of ['HAIKU','SONNET','OPUS'])assert.equal(observed.options.env['ANTHROPIC_DEFAULT_'+alias+'_MODEL'],runtime.model+'[1m]');
+ assert.equal(observed.descriptor.execution.model,runtime.model,'custody retains the actual bare provider model');
+ if(mode==='large')assert.ok(Buffer.byteLength(observed.prompt)>619726);
  assert.equal(observed.options.outputFormat.type,'json_schema');assert.ok(observed.options.disallowedTools.includes('AskUserQuestion'));
  assert.deepEqual(observed.options.outputFormat.schema.properties.payload.anyOf[0].properties.type,{const:answers.type});
  assert.equal(observed.descriptor.fileSha256,rawTypedSha256(writes[0].bytes));

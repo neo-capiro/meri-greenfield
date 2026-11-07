@@ -14,9 +14,15 @@ export function createObjectiveGenerationRuntime({selection,now=Date.now,codec=l
    const entry=data(own(raw,['objectiveGeneration','objectiveStrategy','expiresAtMs']));
    const selected=assertPreparedObjectiveSelection({objectiveGeneration:entry.objectiveGeneration,objectiveStrategy:entry.objectiveStrategy},{binding:v.binding,acceptedRequest:v.request,expiresAtMs:entry.expiresAtMs,nowMs:now()});
    if(selected.strategy.executionSelection.model!==v.model)refuse();
+   // Claude Code defaults plain Sonnet to 200K even though this provider model
+   // supports 1M. The SDK consumes/strips [1m]; durable model identity stays bare.
+   const execution=selected.strategy.executionSelection;
+   if(!(execution.provider==='bedrock'&&v.model==='us.anthropic.claude-sonnet-4-6'||
+    execution.provider==='claude-api'&&v.model==='claude-sonnet-4-6'))refuse();
+   const sdkModel=v.model+'[1m]';
    const deadlineMs=Math.min(v.deadlineMs,entry.expiresAtMs);life.limitDeadline(deadlineMs);
    const selectedCodec=await life.run(()=>codec(selected.strategy.request)),bound=selectedCodec.selection(selected);let captured=false;
-   return Object.freeze({outputFormat:selectedCodec.outputFormat(bound),deadlineMs,async capture({sdkResult,signal}){
+   return Object.freeze({outputFormat:selectedCodec.outputFormat(bound),deadlineMs,sdkModel,async capture({sdkResult,signal}){
     if(captured||signal?.aborted||now()>=deadlineMs)refuse();captured=true;
     const captureLife=createOperationLifetime({now,signal,deadlineMs:Math.min(deadlineMs,now()+maxRequestMs),errorFactory:typedFault});
     try{const current=await captureLife.run(signal=>read({binding:v.binding,signal}));if(current===null||!same(current,entry))refuse();

@@ -10,7 +10,7 @@ import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/ex
 import {validateShape,canonicalSha256 as hash} from '../../../packages/contracts/validate.mjs';
 import {createOperationLifetime} from '../../../packages/runtime/operation-lifetime.mjs';
 import {createInitialRunBindingJournal} from '../../control/conversations/initial-run-binding-journal.mjs';
-import {prepareOriginalInputFacts} from '../../control/conversations/initial-input-facts.mjs';
+import {prepareObjectiveInputFacts} from '../../control/conversations/initial-input-facts.mjs';
 import {sdkMethod} from '../../control/schedules/temporal-schedule-mutations.mjs';
 import {assertObjectiveRunStartRecord,objectiveRunIdentity,objectiveAcceptedRequest} from '../objective-source/run-starts.mjs';
 
@@ -98,12 +98,12 @@ export function createObjectiveNativeAdmission(options){
    const conversation={conversationId:b.conversationId,owner:{tenantId:b.tenantId,actorId:b.actorId},scopes:c.scopes,createdAt,policyRevision:t.policyRevision};
    const event={contractVersion:'0.1.0',eventId:c.identity.eventId,binding:b,sequence:1,createdAt,scopes:c.scopes,type:'run.status',data:{state:'queued',reasonCode:null}};
    validateShape('Conversation',conversation);validateShape('Run',run);validateShape('UIEvent',event);
-   const facts=await life.run(()=>prepareOriginalInputFacts({binding:b,scopes:c.scopes,versions:t.versions,selectedClientId:c.clientId,
+   const facts=await life.run(()=>prepareObjectiveInputFacts({record:c.record,binding:b,scopes:c.scopes,versions:t.versions,selectedClientId:c.clientId,
     input:{requestId:c.accepted.requestId,prompt:c.accepted.prompt},request:c.accepted,allocatedAtMs:saved.createdAtMs,expiresAtMs:saved.expiresAtMs}));
    if(facts.requestSha256!==c.record.sourceRequestSha256)fail('INPUT');
    const reserved=data(await life.run(()=>claimInput(facts,life.check)));closed(reserved,['allocation','state','created'],'INPUT');
    if(!same(reserved.allocation,facts)||!['RESERVED','ACCEPTED'].includes(reserved.state)||typeof reserved.created!=='boolean'||reserved.created&&reserved.state!=='RESERVED')fail('INPUT');
-   const accepted=data(await life.run(()=>acceptInput({conversation,run,request:c.accepted,event,selectedClientId:c.clientId},life.check)));
+   const accepted=data(await life.run(()=>acceptInput({conversation,run,request:c.accepted,event,selectedClientId:c.clientId,objectiveRunStart:c.record},life.check)));
    closed(accepted,['run','request','lastSequence','replayed'],'INPUT');
    if(!same(accepted.run.binding,b)||!same(accepted.request,c.accepted)||!same(accepted.run.versions,t.versions)||!same(accepted.run.scopes,c.scopes)||
     accepted.run.createdAt!==createdAt||typeof accepted.replayed!=='boolean'||!integer(accepted.lastSequence)||accepted.lastSequence<1)fail('INPUT');

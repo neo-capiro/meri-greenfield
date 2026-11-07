@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import {createCompletionJournal} from '../completion-journal.mjs';
 import {hash} from '../boundary.mjs';
 import {rawTypedSha256,typedExecutionWitness} from '../../../../packages/runtime/objective-generation-custody.mjs';
+import {createPostgresConversationStore} from '../postgres-store.mjs';
+import {storeFixture,versions} from './store-fixture.mjs';
+import {OBJECTIVE_COMPLETION_MAX_BYTES} from '../../../../packages/runtime/objective-input-capacity.mjs';
 
 const id=n=>`11111111-1111-4111-8111-${String(n).padStart(12,'0')}`;
 const binding={tenantId:id(1),actorId:id(2),conversationId:id(3),runId:id(4),attemptId:id(5),workerId:id(6),writerFence:1};
@@ -57,10 +60,26 @@ test('Objective result and issued selection are pinned together in one completio
  assert.deepEqual(f.identity().typedResult,pair.typedResult);
 });
 
-test('admitted 100000-character prompt remains journalable with its paired execution context',async()=>{
- const acceptedRequest={...request,prompt:'p'.repeat(100000)},f=fixture(acceptedRequest),pair=typedPair(acceptedRequest);
+for(const prompt of ['p'.repeat(100000),'p'.repeat(786432),'x'+'\u0000'.repeat(152900)])test('admitted bounded prompt remains journalable with its paired execution context ('+prompt.length+')',async()=>{
+ const acceptedRequest={...request,prompt},f=fixture(acceptedRequest),pair=typedPair(acceptedRequest);
  assert.ok(Buffer.byteLength(JSON.stringify(pair.typedSelection),'utf8')>131072);
  const first=await f.journal.begin({...key,...pair},check);
  assert.equal(first.capture,true);
  assert.equal((await f.journal.read(key,check)).typedSelection.strategy.executionContext.prompt,acceptedRequest.prompt);
+ assert.ok(Buffer.byteLength(JSON.stringify(first))<OBJECTIVE_COMPLETION_MAX_BYTES,'the complete three-prompt journal envelope stays within private completion capacity');
+});
+
+test('actual conversation transaction commits and returns the complete large Objective completion identity',async()=>{
+ const acceptedRequest={...request,prompt:'x'+'\u0000'.repeat(152900)},pair=typedPair(acceptedRequest),f=storeFixture();
+ const projection={binding,scopes,versions,state:'running',policyRevision:'policy',createdAt:'2026-11-07T00:00:00.000Z'};
+ f.state.runs.set([binding.tenantId,binding.conversationId,binding.runId].join(':'),{tenant_id:binding.tenantId,
+  conversation_id:binding.conversationId,run_id:binding.runId,projection,projection_sha256:hash(projection),
+  request:acceptedRequest,request_id:acceptedRequest.requestId,request_sha256:hash(acceptedRequest),last_sequence:3});
+ const store=createPostgresConversationStore({pool:f.pool}),first=await store.completions.begin({...key,...pair},check);
+ assert.ok(Buffer.byteLength(JSON.stringify(first))>2097152);
+ assert.ok(Buffer.byteLength(JSON.stringify(first))<OBJECTIVE_COMPLETION_MAX_BYTES);
+ assert.equal(first.sourceRequest.prompt,acceptedRequest.prompt);assert.equal(f.state.completions.size,1);
+ const read=await store.completions.read(key,check);assert.equal(read.typedSelection.acceptedRequest.prompt,acceptedRequest.prompt);
+ assert.equal((await store.completions.begin({...key,...pair},check)).capture,false);
+ assert.equal(f.state.calls.includes('ROLLBACK'),false);
 });

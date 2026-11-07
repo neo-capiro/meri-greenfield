@@ -4,6 +4,7 @@ import {assertPreparedObjectiveSelection} from '../../../../packages/runtime/obj
 import {coreApplicationSha256} from '../../../../packages/runtime/core-application-digest.mjs';
 import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodePublicationFailureReply,decodeAcceptanceReply,decodeCompletionReply,objectiveSourceSelection} from '../core-replies.mjs';
 import {coreRepliesFixture,NOW} from './core-replies-fixture.mjs';
+import {createHash} from 'node:crypto';
 const refused=/OBJECTIVE_GENERATION_CORE_REPLY_REFUSED/;
 const mutate=(value,change)=>{const copy=structuredClone(value);change(copy);return copy;};
 
@@ -65,6 +66,16 @@ test('publication decodes the closed initial request bound to the admission and 
  const x=coreRepliesFixture(),p=decodePublicationReply(x.replies.publication(),x.source,{admission:x.admission});
  assert.equal(p.requestSha256,x.replies.publication().requestSha256);assert.equal(p.queuedType,'appropriations');
  assert.deepEqual(p.executionContext,x.executionContext);assert.deepEqual(p.request,x.request);
+});
+test('publication preserves full large Objective text and enforces independent UTF8 and escaped JSON bounds',()=>{
+ const x=coreRepliesFixture(),raw=x.replies.publication(),setPrompt=prompt=>{
+  raw.executionContext.prompt=prompt;raw.executionContext.promptSha256=createHash('sha256').update(prompt).digest('hex');
+ };
+ setPrompt('Synthetic full required context.\n'.repeat(20000));
+ assert.equal(decodePublicationReply(raw,x.source,{admission:x.admission}).executionContext.prompt,raw.executionContext.prompt);
+ for(const prompt of ['x'.repeat(786433),'é'.repeat(393217),'x'+'\u0000'.repeat(153000)]){
+  setPrompt(prompt);assert.throws(()=>decodePublicationReply(raw,x.source,{admission:x.admission}),refused);
+ }
 });
 
 test('publication refuses digest/admission drift, regeneration dialect, foreign source and execution context drift',()=>{

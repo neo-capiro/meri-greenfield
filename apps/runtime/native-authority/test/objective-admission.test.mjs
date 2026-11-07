@@ -15,8 +15,10 @@ import {createMemoryRetentionJournal} from '../../../control/retention/memory-jo
 import {createRetentionReadGate} from '../../../control/retention/suppression.mjs';
 import {createServingGate} from '../../../control/retention/reconciliation.mjs';
 import {subjectKey} from '../../../control/retention/boundary.mjs';
+import {rawInventory} from '../../../control/conversations/test/retention-content-fixture.mjs';
+import {decodeConversationInventoryRows} from '../../../control/conversations/retention-inventory-decode.mjs';
 
-function fixture(){
+function fixture(prompt){
  const conversations=initialInputFixture(),bindings=new Map(),copy=v=>structuredClone(v),key=p=>p.slice(0,2).join(':');
  conversations.advance(NOW-conversations.now());
  const pool={async connect(){const client=await conversations.pool.connect();let backup;return {async query(sql,p=[]){
@@ -31,7 +33,7 @@ function fixture(){
   if(sql.startsWith('SELECT 1 FROM meri_conversations.next_runs'))return rows([]);
   return client.query(sql,p);
  },release(reason){client.release(reason);}};}};
- const now=conversations.now,store=createPostgresConversationStore({pool,now}),f=runStartFixture();
+ const now=conversations.now,store=createPostgresConversationStore({pool,now}),f=runStartFixture(prompt===undefined?{}:{prompt});
  const template={versions,policyRevision:'policy1',configurationSha256:'c'.repeat(64),runWindowMs:60000};
  const policy={calls:[],expiresAtMs:f.record.effectExpiresAtMs,refuse:null};
  const scopes=[{tenantId:f.tenantId,kind:'client',resourceId:f.clientId,policyRevision:'policy1'}];
@@ -88,6 +90,26 @@ test('admits exactly the derived original run with Core request ID and prompt, b
  assert.equal(x.policy.calls.length,1);assert.deepEqual(x.policy.calls[0].record,x.f.record);
  const replay=await createObjectiveNativeAdmission(x.options).admit({record:x.f.record});
  assert.deepEqual(replay,{...first,replayed:true});assert.deepEqual(counts(x),{bindings:1,inputs:1,runs:1});
+});
+
+test('private Objective admission retains and replays a complete large prompt while ordinary store acceptance stays bounded',async()=>{
+ const prompt='Synthetic retained profile and Directory context.\n'.repeat(14000),x=fixture(prompt);
+ assert.ok(Buffer.byteLength(prompt)>619726);
+ const first=await x.admission.admit({record:x.f.record});
+ const saved=await x.store.readOptional(x.f.binding,{after:0,limit:1},()=>{});
+ assert.equal(saved.request.prompt,prompt);assert.equal(hash(saved.request),first.requestSha256);
+ const snapshot=rawInventory(x.conversations.state,x.f.binding);
+ assert.doesNotThrow(()=>decodeConversationInventoryRows(snapshot),'unfinished large Objective remains inspectable by retention');
+ for(const change of [r=>{r.prompt+='tampered';},r=>{r.skill={};},r=>{r.prompt='é'.repeat(393217);}]){
+  const bad=structuredClone(snapshot);change(bad.runs[0].request);
+  if(bad.runs[0].request.prompt===prompt)bad.runs[0].request_sha256=hash(bad.runs[0].request);
+  assert.throws(()=>decodeConversationInventoryRows(bad));
+ }
+ assert.equal((await x.admission.admit({record:x.f.record})).replayed,true);
+ const input={conversation:[...x.conversations.state.conversations.values()][0].projection,run:saved.run,request:saved.request,
+  event:saved.events[0],selectedClientId:x.f.clientId};
+ await assert.rejects(x.store.initialInputs.accept(input,()=>{}),/REQUEST_TOO_LARGE/);
+ await assert.rejects(x.store.initialInputs.accept({...input,objectiveRunStart:{...x.f.record,binding:{...x.f.binding,runId:id(99)}}},()=>{}));
 });
 
 test('Core current job/actor/client/consent mismatch refuses before canonical admission',async()=>{
