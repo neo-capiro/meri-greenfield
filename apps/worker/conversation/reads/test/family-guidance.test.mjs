@@ -64,3 +64,12 @@ test('the shared result-state vocabulary names every closed failure meaning the 
 test('an unknown family cannot be described',()=>{
  assert.throws(()=>describeRead(rows[0].descriptor,'no-such-family',{sqlPrimary:false}),{code:'READ_GUIDANCE_CONFIGURATION'});
 });
+
+test('program element guidance names the loaded funding data and refuses to estimate unpopulated budget positions',()=>{
+ const pe=READ_FAMILY_GUIDANCE['program-elements'];
+ assert.match(pe.covers,/by federal fiscal year and stage \(request, HASC\/SASC and HAC-D\/SAC-D marks, NDAA conference, enacted\)/u);
+ assert.match(pe.returns,/USD millions per federal FY and stage/u);
+ assert.match(pe.states,/an absent stage is not loaded, not zero/u);
+ assert.match(pe.states,/budget-position table unpopulated, say amounts are not loaded; give funding by FY from the timeline or program_element_years; never estimate/u);
+ for(const [key,limit] of Object.entries(GUIDANCE_LIMITS))assert.ok(pe[key].length<=limit,key);
+});
