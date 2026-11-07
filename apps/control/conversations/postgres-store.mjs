@@ -17,7 +17,7 @@ import {productFailure,ProductError} from '../product-access/errors.mjs';
 import {transact} from '../product-persistence/transaction.mjs';
 import {createOriginalInputJournal} from './initial-input-journal.mjs';
 import {createInitialRunBindingJournal} from './initial-run-binding-journal.mjs';
-import {assertOriginalInputActive} from './initial-input-facts.mjs';
+import {assertOriginalInputActive,assertObjectiveOriginalInput} from './initial-input-facts.mjs';
 import {createMemoryProposalContextJournal} from './memory-proposal-context-journal.mjs';
 import {assertUsageInput} from '../../../packages/contracts/runtime-0.2/usage.mjs';
 import {accountSdkSnapshot} from './usage.mjs';
@@ -29,19 +29,23 @@ import {assertContinuationEnvelope} from '../../../packages/contracts/conversati
 import {assertModelCatalog,availableModelSelection,storedModelSelection} from '../../../packages/contracts/model-selection.mjs';
 import {storedUserPreferencesDocument} from '../../../packages/contracts/user-preferences-application/document.mjs';
 import {createFeedbackJournal} from './feedback-journal.mjs';
+import {OBJECTIVE_COMPLETION_MAX_BYTES} from '../../../packages/runtime/objective-input-capacity.mjs';
 export function createPostgresConversationStore({pool,transitionAuthority,retentionGate,retentionHead,now=Date.now,onPublished,modelCatalog,assertConversationActive}){
  if(typeof pool?.connect!=='function')fail('STORE_CONFIGURATION');
- async function tx(binding,check,body,{beforeConversation,sessionSnapshot=false}={}){let c,begun=false,committing=false,reusable=false,failure,result;
+ async function tx(binding,check,body,{beforeConversation,sessionSnapshot=false,objectiveCompletion=false}={}){let c,begun=false,committing=false,reusable=false,failure,result;
+  const resultLimit=()=>objectiveCompletion&&result?.typedSelection?OBJECTIVE_COMPLETION_MAX_BYTES:2097152;
   try{check();c=await pool.connect();check();await c.query('BEGIN');begun=true;check();await c.query("SET LOCAL statement_timeout = '5s'");await c.query("SET LOCAL lock_timeout = '2s'");check();
    if(beforeConversation){
     await c.query('SELECT pg_advisory_xact_lock_shared(hashtextextended($1,0))',
      [`meri_retention_transition:${binding.tenantId}:conversation:${binding.conversationId}`]);check();
     await beforeConversation();check();
    }
-   await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${binding.tenantId}:${binding.conversationId}`]);check();result=await body(c);check();committing=true;await c.query('COMMIT');reusable=true;check();
+   await c.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))',[`${binding.tenantId}:${binding.conversationId}`]);check();result=await body(c);check();
+   if(objectiveCompletion)bounded(result,resultLimit());
+   committing=true;await c.query('COMMIT');reusable=true;check();
   }catch(e){failure=!committing&&productFailure(e)?e:Object.assign(new Error(committing?'STORE_COMMIT_UNKNOWN':e.code??'STORE_UNAVAILABLE'),{code:committing?'STORE_COMMIT_UNKNOWN':e.code??'STORE_UNAVAILABLE'});if(begun&&!committing)try{await c.query('ROLLBACK');reusable=true;}catch{}}
   finally{if(c)try{c.release(reusable?undefined:failure);}catch{failure??=Object.assign(new Error('STORE_RELEASE_UNKNOWN'),{code:'STORE_RELEASE_UNKNOWN'});}}
-  if(failure)throw failure;return sessionSnapshot?copySessionJson(result,34*1024*1024):bounded(result,2097152);
+  if(failure)throw failure;return sessionSnapshot?copySessionJson(result,34*1024*1024):bounded(result,resultLimit());
  }
  /** Admission cap only: no reservations. Concurrent admitted runs may finish above it; SDK bounds each run. */
  async function modelPolicy(c,b,check,admission=false){
@@ -113,9 +117,10 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
    if(written.length!==1||written[0].sdk_usage_sha256!==hash(usage))usageRefuse('SDK_USAGE_STORE_CORRUPT');return {status:usage.status,reason:usage.reason,replayed:false};
   },{check,unavailable:'SDK_USAGE_STORE_UNAVAILABLE',uncertain:'SDK_USAGE_COMMIT_UNKNOWN'});
  }
- async function accept({conversation,run,request,event},check,selectedClientId){
+ async function accept({conversation,run,request,event},check,selectedClientId,objectiveRunStart){
   let allocation=null;const callerCheck=check;check=()=>{callerCheck();if(allocation)assertOriginalInputActive(allocation.facts,now());};
-  validateShape('Conversation',conversation);assertRun(run);const b=run.binding;request=bounded(request);
+  validateShape('Conversation',conversation);assertRun(run);const b=run.binding;
+  request=objectiveRunStart===undefined?bounded(request):assertObjectiveOriginalInput({record:objectiveRunStart,binding:b,request,selectedClientId,scopes:run.scopes});
   if(conversation.owner.tenantId!==b.tenantId||conversation.owner.actorId!==b.actorId||conversation.conversationId!==b.conversationId||!same(conversation.scopes,run.scopes)||conversation.policyRevision!==run.policyRevision||run.state!=='queued')fail('CONVERSATION_BINDING_REFUSED');
   return tx(b,check,async c=>{
    allocation=selectedClientId===undefined?null:await initialInputs.match(c,{run,request,selectedClientId},check);check();
@@ -190,7 +195,7 @@ export function createPostgresConversationStore({pool,transitionAuthority,retent
  const appendSource=(binding,input,check,expectedScopes)=>{if(!isNativeSourceEventType(input?.type)||!expectedScopes)fail('EVENT_TYPE_REFUSED');return appendEvent(binding,{...input,createdAt:new Date(now()).toISOString()},check,expectedScopes,false,true);};
  const lifecycle=createLifecycleJournal({tx,rowRun,transitionAuthority,assertConversationActive,now,onPublished,modelAdmission,cancelAppend:(binding,event,check,scopes)=>appendEvent(binding,event,check,scopes,true)});
  const preparation=createNativePreparationJournals({tx,rowRun});
- const initialInputs=createOriginalInputJournal({tx,rowRun,now,assertConversationActive}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId']);if(i.selectedClientId!==null)uuid(i.selectedClientId);return accept(i,check,i.selectedClientId);}});
+ const initialInputs=createOriginalInputJournal({tx,rowRun,now,assertConversationActive}),originalInputPorts=Object.freeze({claim:initialInputs.claim,read:initialInputs.read,accept(raw,check){const i=own(raw,['conversation','run','request','event','selectedClientId'],['objectiveRunStart']);if(i.selectedClientId!==null)uuid(i.selectedClientId);return accept(i,check,i.selectedClientId,i.objectiveRunStart);}});
  const nextRuns=createNextRunJournal({tx,rowRun,modelAdmission,assertConversationActive});
  const feedback=createFeedbackJournal({tx,rowRun,retentionGate,now});
  return Object.freeze({feedback,accept:(input,check)=>accept(input,check),appendBrowserReceipt,initialBindings:createInitialRunBindingJournal({pool,now}),initialInputs:originalInputPorts,append,appendSource,read,readOptional,findRequest,recordUsage,readUsage,readModelPolicy,readCurrentModelPolicy,assertModelAdmission,readDefaultModelSelection,readModelSelection,history:createConversationHistoryStore({tx,rowRun,continuationCustody:lifecycle.readContinuation}),runs:createRunIndexStore({tx}),usageOverview:createUsageOverviewStore({pool,now,continuationCustody:lifecycle.readContinuation}),management:createConversationManagementStore({tx,rowRun,settlement:nextRuns.settlementInTransaction,now}),nextRuns,completions:createCompletionJournal({tx,rowRun,onPublished}),...preparation,executions:createExecutionJournal({tx,rowRun,now}),selectedOutputs:createSelectedOutputJournal({tx,rowRun}),memoryProposalContexts:createMemoryProposalContextJournal({tx,rowRun,pool,retentionGate,retentionHead,now}),lifecycle});

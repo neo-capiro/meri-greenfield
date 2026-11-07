@@ -31,7 +31,7 @@ test('selected Objective captures a typed result through one SDK query and the e
  const format={type:'json_schema',schema:{type:'object',properties:{state:{type:'string'}},required:['state'],additionalProperties:false}};
  let prepared=0,captured=0;
  let f,descriptor;
- const objectiveGeneration={async prepare(input){prepared++;assert.equal(input.model,SDK_MODEL_CONFIGURATION.model);assert.equal('proxyCredential' in input,false);assert.equal('proxyCredentialSha256' in input,false);return {deadlineMs:NOW+900,outputFormat:format,async capture({sdkResult}){captured++;assert.equal(sdkResult.structured_output.state,'succeeded');descriptor=syntheticDescriptor(f.binding,f.request,f.sessionId);return descriptor;}};}};
+ const objectiveGeneration={async prepare(input){prepared++;assert.equal(input.model,SDK_MODEL_CONFIGURATION.model);assert.equal('proxyCredential' in input,false);assert.equal('proxyCredentialSha256' in input,false);return {sdkModel:SDK_MODEL_CONFIGURATION.model+'[1m]',deadlineMs:NOW+900,outputFormat:format,async capture({sdkResult}){captured++;assert.equal(sdkResult.structured_output.state,'succeeded');descriptor=syntheticDescriptor(f.binding,f.request,f.sessionId);return descriptor;}};}};
  f=fixture({objectiveGeneration});assert.deepEqual(await f.execute({binding:f.binding}),{state:'completed'});
  assert.deepEqual({prepared,captured,queries:f.observed.queries,captures:f.observed.captures},{prepared:1,captured:1,queries:1,captures:1});
  assert.deepEqual(f.observed.options.outputFormat,format);assert.deepEqual(f.observed.typed,descriptor);
@@ -39,7 +39,7 @@ test('selected Objective captures a typed result through one SDK query and the e
 });
 
 test('selected Objective without completion capture refuses before opening an SDK query',async()=>{
- const f=fixture({objectiveGeneration:{async prepare(){return {deadlineMs:NOW+900,outputFormat:{type:'json_schema',schema:{type:'object'}},capture(){}};}},captureEnabled:false});
+ const f=fixture({objectiveGeneration:{async prepare(){return {sdkModel:SDK_MODEL_CONFIGURATION.model+'[1m]',deadlineMs:NOW+900,outputFormat:{type:'json_schema',schema:{type:'object'}},capture(){}};}},captureEnabled:false});
  await assert.rejects(f.execute({binding:f.binding}),/EXECUTION_FAILED/);
  assert.equal(f.observed.queries,0);assert.equal(f.observed.captures,0);
  assert.deepEqual(f.observed.events.map(e=>e.data.state),['starting','failed']);
@@ -54,7 +54,7 @@ test('Objective output format is opt-in and refuses a conflicting or malformed f
  assert.throws(()=>buildConversationOptions(runtime,new AbortController(),undefined,undefined,undefined,undefined,undefined,undefined,{type:'json',schema:{type:'object'}}),/RUNTIME_CONFIGURATION/);
 });
 test('an Objective run never admits the SDK clarifying-question tool; such a policy is refused before any SDK query',async()=>{
- const f=fixture({objectiveGeneration:{async prepare(){return {deadlineMs:NOW+900,outputFormat:{type:'json_schema',schema:{type:'object'}},capture(){}};}},capabilities:{userQuestions:true}});
+ const f=fixture({objectiveGeneration:{async prepare(){return {sdkModel:SDK_MODEL_CONFIGURATION.model+'[1m]',deadlineMs:NOW+900,outputFormat:{type:'json_schema',schema:{type:'object'}},capture(){}};}},capabilities:{userQuestions:true}});
  await assert.rejects(f.execute({binding:f.binding}),/EXECUTION_FAILED/);
  assert.equal(f.observed.queries,0);assert.deepEqual(f.observed.events.map(e=>e.data.state),['starting','failed']);
 });

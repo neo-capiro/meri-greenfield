@@ -5,7 +5,7 @@ import {runStartFixture,syntheticObjectivePool,NOW} from '../objective-source/te
 import {createPostgresObjectiveRunStartStore} from '../objective-source/postgres-run-starts.mjs';
 import {createObjectiveSelectionOwner} from './selection-owner.mjs';
 import {createObjectiveGenerationRuntime} from '../../worker/conversation/objective-generation/runtime.mjs';
-import {createObjectiveGenerationReadback} from './retained-result.mjs';
+import {createObjectiveGenerationReadback,MAX_OBJECTIVE_READBACK_BYTES} from './retained-result.mjs';
 import {SDK_MODEL_CONFIGURATION} from '../../control/conversations/usage.mjs';
 import {executionIdentity} from '../../control/conversations/execution-boundary.mjs';
 import {result} from '../../../packages/contracts/strategy-operations-candidate/fixture-source.mjs';
@@ -17,7 +17,7 @@ import {createServingGate} from '../../control/retention/reconciliation.mjs';
 import {HISTORICAL_MODEL_SELECTION} from '../../../packages/contracts/model-selection.mjs';
 import {createObjectiveNativeAdmission} from '../native-authority/objective-admission.mjs';
 const check=()=>{};
-async function fixture(t){t.mock.timers.enable({apis:['Date'],now:NOW});const o=runStartFixture(),scopes=[{tenantId:o.tenantId,kind:'client',resourceId:o.clientId,policyRevision:'policy1'}];
+async function fixture(t,prompt){t.mock.timers.enable({apis:['Date'],now:NOW});const o=runStartFixture(prompt===undefined?{}:{prompt}),scopes=[{tenantId:o.tenantId,kind:'client',resourceId:o.clientId,policyRevision:'policy1'}];
  const state={now:NOW,gets:0,objects:new Map(),suppressed:false,afterGet:null},f=await lifecycleFixture({binding:o.binding,scopes,selectedClientId:o.clientId,retention:{async assertServable(){if(state.suppressed)throw Error('suppressed');}}});t.after(f.close);
  const pg=syntheticObjectivePool(),runStarts=createPostgresObjectiveRunStartStore({enabled:true,pool:pg.pool,now:()=>state.now});await runStarts.putOnce({record:o.record});
  // Objective owns this original input; the ordinary chat fixture now resolves
@@ -50,6 +50,18 @@ test('completion returns actual committed native proof and exact typed bytes onl
  await x.settle();const r=await x.reader.completion(input);assert.equal(r.completion.kind,'native-session');assert.equal(r.completion.completionId,x.o.binding.runId);
  assert.deepEqual(Buffer.from(r.file.base64,'base64'),x.bytes);assert.equal(r.file.object.sha256,nativeFileSha256(x.bytes));assert.equal(x.f.state.checkpoints.size,0);
  x.state.now=x.o.record.effectExpiresAtMs+1;assert.deepEqual(await x.reader.completion(input),r,'retained read does not renew or require the expired compute/effect window');
+});
+test('maximum escaped Objective prompt survives private acceptance, native completion and complete retained readback envelope',async t=>{
+ const prompt='x'+'\u0000'.repeat(152900),x=await fixture(t,prompt);
+ await x.complete();await x.settle();const r=await x.reader.completion({...x.input,binding:x.o.binding});
+ assert.equal(r.request.prompt,prompt);assert.equal(r.completion.sourceRequest.prompt,prompt);
+ assert.equal(r.completion.typedSelection.acceptedRequest.prompt,prompt);
+ assert.equal(r.completion.typedSelection.strategy.executionContext.prompt,prompt);
+ assert.equal(r.record.selection.executionContext.prompt,prompt);
+ // Exact serialized envelope, including all five prompt copies, with the largest
+ // permitted raw result's base64 length. No customer record or provider call.
+ const maximumFileEnvelope={...r,file:{...r.file,base64:Buffer.alloc(2097152).toString('base64')}};
+ assert.ok(Buffer.byteLength(JSON.stringify(maximumFileEnvelope))<MAX_OBJECTIVE_READBACK_BYTES);
 });
 test('serving lease cancellation aborts retained object retrieval and withholds completion bytes',async t=>{
  const x=await fixture(t);await x.complete();await x.settle();const gate=new AbortController();let aborted=false;

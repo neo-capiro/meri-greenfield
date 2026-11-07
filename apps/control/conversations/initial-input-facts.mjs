@@ -4,6 +4,8 @@ import {bounded,own,hash,same,fail,uuid,validateShape} from './boundary.mjs';
 import {receiveConversationRequest} from '../../../packages/contracts/dist/conversation-application.mjs';
 import {assertConversationInputReceipt} from '../../../packages/contracts/conversation-input/validate.mjs';
 import {assertModelSelection} from '../../../packages/contracts/model-selection.mjs';
+import {assertObjectiveRunStartRecord,objectiveAcceptedRequest} from '../../runtime/objective-source/run-starts.mjs';
+import {OBJECTIVE_ACCEPTED_REQUEST_MAX_BYTES} from '../../../packages/runtime/objective-input-capacity.mjs';
 const identityKeys=['binding','scopes','versions','selectedClientId','requestId','inputSha256','requestSha256'];
 const integer=v=>Number.isSafeInteger(v)&&v>=0;
 const digest=v=>typeof v==='string'&&/^[a-f0-9]{64}$/u.test(v);
@@ -20,6 +22,25 @@ export async function prepareOriginalInputFacts({binding,scopes,versions,selecte
  const run={binding:f.binding,state:'queued',scopes:f.scopes,versions:f.versions,createdAt:new Date(f.allocatedAtMs).toISOString(),policyRevision:f.scopes[0].policyRevision};
  // This is semantic validation only, never an event, stored admission, dispatch or proof a run exists.
  await assertConversationInputReceipt({run,request:r,lastSequence:1,replayed:false},i);return f;
+}
+/** Private Objective entry: the immutable Core selection supplies the entire five-field
+ * request. No caller-controlled capacity switch reaches the ordinary submit path. */
+export function assertObjectiveOriginalInput({record,binding,request,selectedClientId,scopes}){
+ const proof=assertObjectiveRunStartRecord(record),r=bounded(request,OBJECTIVE_ACCEPTED_REQUEST_MAX_BYTES);
+ if(!same(proof.binding,binding)||!same(objectiveAcceptedRequest(proof.selection),r)||
+  selectedClientId!==proof.selection.sourceAdmission.canonical.clientId||scopes.length!==1||
+  scopes[0].kind!=='client'||scopes[0].tenantId!==binding.tenantId||scopes[0].resourceId!==selectedClientId)fail('INITIAL_INPUT_REFUSED');
+ return r;
+}
+export async function prepareObjectiveInputFacts({record,...options}){
+ const request=assertObjectiveOriginalInput({record,...options}),input=bounded(options.input,OBJECTIVE_ACCEPTED_REQUEST_MAX_BYTES);
+ own(input,['requestId','prompt']);if(input.requestId!==request.requestId||input.prompt!==request.prompt)fail('INITIAL_INPUT_REFUSED');
+ // Only the already-checked prompt is projected for the public size validator.
+ // All non-prompt shape, scope, version and receipt correlation checks still use
+ // the canonical owner. The projection is never persisted or returned.
+ const prompt='Validated private Objective prompt';
+ const facts=await prepareOriginalInputFacts({...options,input:{...input,prompt},request:{...request,prompt}});
+ return assertOriginalInputFacts({...facts,inputSha256:hash(input),requestSha256:hash(request)});
 }
 export function sameOriginalInputIdentity(left,right){return identityKeys.every(key=>same(left[key],right[key]))&&same(left.modelSelection??null,right.modelSelection??null);}
 export function assertOriginalInputActive(facts,at){if(!integer(at)||at<facts.allocatedAtMs||at>=facts.expiresAtMs)fail('INITIAL_INPUT_EXPIRED');}

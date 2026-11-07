@@ -6,12 +6,13 @@ import {canonicalSha256 as hash,validateShape,assertWorkspacePaths} from '../con
 import {coreApplicationSha256} from './core-application-digest.mjs';
 import {assertNativeSessionCapture} from '../contracts/runtime-0.2/session.mjs';
 import {objectiveDescriptorProtocol,objectiveRequestProtocol,OBJECTIVE_DRAFT_PROTOCOL} from './objective-strategy-protocol.mjs';
+import {assertObjectivePrompt,OBJECTIVE_SELECTION_MAX_BYTES} from './objective-input-capacity.mjs';
 export {own,data,hash};
 export const OBJECTIVE_DRAFT_PATH=OBJECTIVE_DRAFT_PROTOCOL.path;
 export const MAX_TYPED_RESULT_BYTES=2097152;
 // The journal retains the accepted request and execution context together. Keep this
 // bound shared with pre-query admission so a valid query cannot finish unjournalable.
-export const MAX_OBJECTIVE_SELECTION_BYTES=1048576;
+export const MAX_OBJECTIVE_SELECTION_BYTES=OBJECTIVE_SELECTION_MAX_BYTES;
 export const typedFault=()=>Error('OBJECTIVE_TYPED_RESULT_REFUSED');
 const refuse=()=>{throw typedFault();};
 const boundedSelection=value=>{if(Buffer.byteLength(JSON.stringify(value),'utf8')>MAX_OBJECTIVE_SELECTION_BYTES)refuse();return value;};
@@ -20,6 +21,7 @@ const uuid=v=>{if(typeof v!=='string'||v.length!==36||!/^[a-f0-9]{8}-[a-f0-9]{4}
 export const rawTypedSha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 export function assertObjectiveExecutionContext(value,{request,acceptedRequest}){
  const c=data(own(value,['schemaVersion','prompt','promptSha256','ownerRefs','contextPacketId']));
+ assertObjectivePrompt(c.prompt);
  if(c.schemaVersion!==1||typeof c.prompt!=='string'||c.prompt!==acceptedRequest.prompt||rawTypedSha256(Buffer.from(c.prompt,'utf8'))!==c.promptSha256||c.contextPacketId!==request.context.packetId||!Array.isArray(c.ownerRefs)||c.ownerRefs.length!==request.context.ownerRefs.length)refuse();
  const refs=new Set();for(const p of c.ownerRefs){own(p,['ownerRef','clerkUserId']);if(typeof p.ownerRef!=='string'||typeof p.clerkUserId!=='string'||!p.clerkUserId||refs.has(p.ownerRef)||!request.context.ownerRefs.includes(p.ownerRef))refuse();refs.add(p.ownerRef);}return c;
 }

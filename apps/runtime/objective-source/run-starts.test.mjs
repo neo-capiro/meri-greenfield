@@ -68,7 +68,7 @@ test('native run-start preserves a real Objective selection above 128KiB and rej
  const f=runStartFixture({prompt:'é'.repeat(65000)});
  assert.ok(Buffer.byteLength(JSON.stringify(f.record),'utf8')>131072);
  assert.deepEqual(assertObjectiveRunStartRecord(f.record),f.record);
- assert.throws(()=>runStartFixture({prompt:'é'.repeat(100001)}),refused);
+ assert.throws(()=>runStartFixture({prompt:'é'.repeat(393217)}),refused);
  for(const change of [x=>{x.selection.executionContext.prompt='substituted';},x=>{x.selection.request.privateCredential='synthetic';},x=>{x.selection.sourceAdmission.privateCredential='synthetic';},x=>{x.selection.executionContext.extra='synthetic';}]){
   const record=structuredClone(f.record);change(record);assert.throws(()=>assertObjectiveRunStartRecord(record),refused);
  }

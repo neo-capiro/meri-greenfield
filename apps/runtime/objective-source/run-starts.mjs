@@ -17,6 +17,7 @@ import {assertRequest} from '../../../packages/contracts/strategy-operations-can
 import {assertRequest as assertRegenerationRequest} from '../../../packages/contracts/objective-regeneration-private/validate.mjs';
 import {strategyTypes} from '../../../packages/contracts/strategy-operations-candidate/shapes.mjs';
 import {assertObjectiveSourceSelection,sourceAdmissionDigest} from '../../../packages/runtime/objective-generation-custody.mjs';
+import {assertObjectivePrompt,OBJECTIVE_ACCEPTED_REQUEST_MAX_BYTES} from '../../../packages/runtime/objective-input-capacity.mjs';
 
 export const OBJECTIVE_RUN_START_SCHEMA_VERSION=1;
 const fault=()=>Object.assign(Error('OBJECTIVE_RUN_START_REFUSED'),{code:'OBJECTIVE_RUN_START_REFUSED'});
@@ -55,8 +56,9 @@ export function objectiveAcceptedRequest(selection){
  try{
   const s=own(selection,SELECTION_KEYS);
   const requestId=s.sourceAdmission?.generationRequestId,prompt=s.executionContext?.prompt;
-  if(!uuid(requestId)||typeof prompt!=='string'||!prompt.trim()||prompt.length>100000)refuse();
-  return data({requestId,prompt,skill:null,window:null,windowRequest:null});
+  if(!uuid(requestId))refuse();assertObjectivePrompt(prompt);
+  const request=data({requestId,prompt,skill:null,window:null,windowRequest:null});
+  if(Buffer.byteLength(JSON.stringify(request),'utf8')>OBJECTIVE_ACCEPTED_REQUEST_MAX_BYTES)refuse();return request;
  }catch{refuse();}
 }
 

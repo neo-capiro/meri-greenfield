@@ -14,6 +14,7 @@ import {assertNativeFileState} from '../../../packages/contracts/runtime-0.2/fil
 import {isMailContext,mailContextRecord} from './mail-context-record.mjs';
 import {decodeConversationContentRows} from './retention-content-rows.mjs';
 import {assertCandidate} from '../memory/candidate.mjs';
+import {assertObjectiveStoredRequest} from '../../../packages/runtime/objective-input-capacity.mjs';
 
 const corrupt=()=>fail('STORE_CORRUPT');
 const requireFact=value=>{if(!value)corrupt();};
@@ -45,7 +46,10 @@ function decodeRun(row,owner){
   b.tenantId===owner.subject.tenantId&&b.conversationId===owner.subject.subjectId&&
   b.actorId===owner.subject.ownerActorId&&same(p.scopes,owner.projection.scopes)&&
   p.policyRevision===owner.projection.policyRevision);
- uuid(row.request_id);bounded(row.request);
+ uuid(row.request_id);
+ // Retention reads already-persisted owner rows, including an Objective that has
+ // not completed. This grants no submission or model authority.
+ if(Buffer.byteLength(JSON.stringify(row.request),'utf8')>131072)assertObjectiveStoredRequest(row.request);else bounded(row.request);
  const lastSequence=number(row.last_sequence),sequenceBase=number(row.sequence_base);
  requireFact(lastSequence>=1&&lastSequence+sequenceBase<=Number.MAX_SAFE_INTEGER);
  const sequenceEnd=row.sequence_end==null?null:number(row.sequence_end);

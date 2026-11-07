@@ -16,7 +16,7 @@ import {documentRevisionContextSuffix} from './document-revision.mjs';
 import {prepareUploadReadSources} from './upload-sources.mjs';
 import {requestContextSuffix} from './request-context.mjs';
 import {assertAutomaticClientContext} from './automatic-client-context.mjs';
-import {createConversationInput} from './continuation/input.mjs';
+import {createConversationInput,createObjectiveConversationInput} from './continuation/input.mjs';
 import {createActivityLifecycle,assertLifecycleConfiguration,HOLD_CHECKPOINT_FAILED} from './continuation/activity-lifecycle.mjs';
 import {terminalReasonCode} from './terminal-reason.mjs';
 import {turnBudgetHooks} from './turn-budget.mjs';
@@ -169,7 +169,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     finally{browserLife?.close();}
    }
    const objectiveRuntime=objectiveGeneration===undefined?null:await setupRun(signal=>objectiveGeneration.prepare({binding,request:saved.request,versions:saved.run.versions,scopes:saved.run.scopes,cwd:runtime.cwd,model:runtime.model,deadlineMs:runtime.deadlineMs,signal}));
-   if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');
+   if(objectiveRuntime){if(lineage||saved.request.skill||typeof lifecycle?.captureCompletion!=='function'||typeof objectiveRuntime.capture!=='function'||objectiveRuntime.sdkModel!==runtime.model+'[1m]')throw fault('OBJECTIVE_COMPLETION_UNAVAILABLE');
     // Objective Questions are a Core-defined lifecycle, not the SDK's clarifying-question tool: a headless Objective run has
     // no human to answer it, so a policy that admits the tool is refused here instead of hanging until its deadline.
     if(policy?.userQuestions===true)throw fault('OBJECTIVE_QUESTIONS_UNSUPPORTED');life.limitDeadline(objectiveRuntime.deadlineMs);}
@@ -180,6 +180,10 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
    if(automaticClientContext!=null)assertAutomaticClientContext(automaticClientContext,{binding,scopes:saved.run.scopes});
    const options=buildConversationOptions(sdkRuntime,controller,lineage?{...lineage,request:saved.request,
     sourceRequest,scopes:saved.run.scopes,started:prepareStarted,now}:undefined,skillRuntime?.sdkOptions,capabilities?.options,readRuntime?.sdkOptions??undefined,intentRuntime?.sdkOptions??undefined,browserRun?.fragment,objectiveRuntime?.outputFormat??outreachRuntime?.outputFormat);if(lineage&&!saved.nextTurn?.sdkSession&&saved.continuation?.kind!=='native-session')life.limitDeadline(runtime.restoreReceipt.expiresAtMs);let selected;
+   if(objectiveRuntime){
+    options.model=objectiveRuntime.sdkModel;
+    for(const key of ['ANTHROPIC_DEFAULT_HAIKU_MODEL','ANTHROPIC_DEFAULT_SONNET_MODEL','ANTHROPIC_DEFAULT_OPUS_MODEL'])options.env[key]=objectiveRuntime.sdkModel;
+   }
    if(saved.request.skill){
     selected=selectSkill(saved.request.skill.skillId,saved.request.skill.skillVersion);if(!same(selected.pin,saved.request.skill))throw fault('SKILL_PIN_REFUSED');
     if(skillRuntime){if(!same(skillRuntime.selected,selected)||typeof skillRuntime.finish!=='function'||typeof skillRuntime.close!=='function')throw fault('SKILL_RUNTIME_REFUSED');}
@@ -207,7 +211,7 @@ export function createConversationActivity({runOwner,prepareRuntime,query=sdkQue
     diagnostic('stage','activity-running');await publish('run.status',{state:'running',reasonCode:null});
    heartbeatTimer=setInterval(()=>{try{heartbeat({runId:binding.runId});}catch{controller.abort();}},5000);heartbeatTimer.unref?.();
    // query owns tool selection, compaction and the model loop. Its returned stream is consumed once.
-    diagnostic('stage','activity-query');modelLife=modelDeadlineMs===undefined?null:createOperationLifetime({deadlineMs:Math.min(modelDeadlineMs,runtime.deadlineMs-terminalAttemptMs),now,signal:life.signal,errorFactory:fault});if(lifecycle!==undefined)input=createConversationInput({requestId:saved.request.requestId,prompt:saved.request.prompt});
+    diagnostic('stage','activity-query');modelLife=modelDeadlineMs===undefined?null:createOperationLifetime({deadlineMs:Math.min(modelDeadlineMs,runtime.deadlineMs-terminalAttemptMs),now,signal:life.signal,errorFactory:fault});if(lifecycle!==undefined)input=(objectiveRuntime?createObjectiveConversationInput:createConversationInput)({requestId:saved.request.requestId,prompt:saved.request.prompt});
    stream=query({prompt:input?.prompt??saved.request.prompt,options});if(typeof stream?.[Symbol.asyncIterator]!=='function')throw fault('SDK_STREAM_REFUSED');iterator=stream[Symbol.asyncIterator]();const textParts=createTextProjector(newId),progressParts=createProgressProjector({policy,newId});
    // Every display publication is a full authorization round at control (seconds), so the deltas the SDK produced meanwhile join the
    // next one instead of each waiting for its own. Each folded message is still observed, projected and counted in order; nothing is
