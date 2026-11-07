@@ -24,7 +24,7 @@ const positive = {
   search_federal_contract_awards: { clientId: 'client-synthetic', query: 'bridge', agency: 'DOT', state: 'ca', district: '07', fiscalYear: 2024, recipient: 'Acme', dateFrom: '2024-01-01', dateTo: '2024-12-31', page: 2, limit: 25 },
   search_federal_subawards: { query: 'subaward', state: 'NY', fiscalYear: 2023, recipient: 'Prime', dateFrom: '2023-01-01', dateTo: '2023-06-30' },
   search_contract_vehicles: { query: 'vehicle', agency: 'GSA', state: 'TX', district: 'AL' },
-  search_procurement_forecasts: { clientId: 'client-synthetic', query: 'cloud forecast', agency: 'VA', state: 'VA', fiscalYear: 2025 },
+  search_procurement_forecasts: { clientId: 'client-synthetic', query: 'cloud forecast', agency: 'VA', fiscalYear: 2025 },
   get_district_federal_market: { clientId: 'client-synthetic', state: 'ny', district: 'al', agency: 'HUD' },
 };
 
@@ -79,6 +79,13 @@ test('materializes page/limit defaults only when absent without mutating the cal
   assert.equal('page' in district.query, false);
   assert.equal('limit' in district.query, false);
   assert.throws(() => normalizeFederalMarketInput('get_district_federal_market', { state: 'NY', district: 'AL', page: 1 }), /additional properties/);
+});
+test('forecast geography is unsupported rather than a place-text match or an ignored district', () => {
+  for (const selector of [{ state: 'AL' }, { district: '99' }, { state: 'MD', district: '07' }, { state: null }, { district: '' }]) {
+    assert.throws(() => normalizeFederalMarketInput('search_procurement_forecasts', selector), /state and district filters are not supported/i);
+  }
+  const request = { query: 'counter drone', agency: 'DHS', fiscalYear: 2026, page: 2, limit: 5 };
+  assert.deepEqual(normalizeFederalMarketInput('search_procurement_forecasts', request).query, request);
 });
 
 test('enforces the shared page (1-10000) and limit (1-25) bounds', () => {

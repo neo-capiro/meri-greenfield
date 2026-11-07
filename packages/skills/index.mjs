@@ -19,7 +19,7 @@ const cache=new Map();
 const compilers=new Map(Object.entries(assets.documentCompilers??{}).flatMap(([skillId,versions])=>versions.map(version=>[key(skillId,version),skillId])));
 for(const identity of compilers.keys())if(!index.has(identity))fail('SKILL_COMPILER_REGISTRY');
 // Current process installation, distinct from immutable persisted selection pins.
-const installationCatalogSha256='348cb620a239e0b7e19fb606b61db4e5b673cfc7887dec3b237db10f7bf03649';
+const installationCatalogSha256='d01e6d9bd82f9c6825f42946daf2413635fb6751f7f833fec6427c3d16546d8f';
 
 function verifyCatalog(){
   assertCatalog(catalog);

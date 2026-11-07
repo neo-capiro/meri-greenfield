@@ -4,6 +4,15 @@ import {canonicalSha256 as hash} from '../../../../../packages/contracts/validat
 import {createFederalMarketHandlers} from '../handler.mjs';
 import {storedCase,ids,clientId} from './fixture.mjs';
 
+test('unsupported forecast geography returns invalid arguments before credential or source access',async()=>{
+ for(const selector of [{state:'AL'},{district:'99'},{state:'MD',district:'07'}]){
+  const f=storedCase(ids[3]),input={...f.call().input,...selector};
+  const call={...f.call(),request:selector,input,argumentsSha256:hash(input)};
+  await assert.rejects(f.handler()(call),{message:'INVALID_ARGUMENTS'});
+  assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+ }
+});
+
 for(const id of ids){
  test(`${id}: fixed native POST preserves distinct raw DTO and original request proof`,async()=>{
   const f=storedCase(id),call=f.call(),out=JSON.parse(await f.handler()(call)),[wire]=f.wire;

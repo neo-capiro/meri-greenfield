@@ -110,6 +110,8 @@ export function createFederalMarketValidators({ validateShape, schema }) {
     const rule = RULES[operationId];
     assertInertData(input);
     if (input === null || typeof input !== 'object' || Array.isArray(input)) fail('Federal-market input requires a plain object');
+    if (operationId === 'search_procurement_forecasts' && (Object.hasOwn(input, 'state') || Object.hasOwn(input, 'district')))
+      fail('Forecast state and district filters are not supported; omit them and use query, agency or fiscalYear. Free-text place of performance does not establish state or district coverage.');
     if (operationId === 'search_contract_vehicles' && Object.hasOwn(input, 'fiscalYear')) fail('fiscalYear is not supported for contract vehicles');
     for (const field of INTEGER_FIELDS) if (typeof input[field] === 'string') fail(`Federal-market ${field} requires an integer; string coercion is refused`);
     if (rule.geography && (input.state === undefined || input.district === undefined)) fail('state and district are required for the district federal market');

@@ -7,6 +7,19 @@ import {createPublicWebHandlers} from '../handler.mjs';
 import {createHandlers,id as family} from '../../../general-reads/families/public-web.mjs';
 import {storedCase,ids} from './fixture.mjs';
 
+test('oversized page URL refuses before credentials or native transport, never dispatching its prefix',async()=>{
+ const prefix='https://public.example.invalid/?q=',exact=prefix+'x'.repeat(2000-prefix.length);
+ for(const url of [exact+'x',' '+exact,' '.repeat(2001)]){
+  const f=storedCase(ids[1]),input={...f.call().input,url:url.trim().slice(0,2000)};
+  const call={...f.call(),request:{url},input,argumentsSha256:hash(input)};
+  await assert.rejects(f.handler()(call),{message:'INVALID_ARGUMENTS'});
+  assert.equal(f.credentialCalls.length,0);assert.equal(f.wire.length,0);
+ }
+ const f=storedCase(ids[1],{request:{url:exact}});
+ assert.equal(JSON.parse(await f.handler()(f.call())).result.url,exact);
+ assert.equal(f.wire[0].body.url,exact);
+});
+
 for(const id of ids){
  test(`${id}: exact native flat POST, current proof and private result carrier`,async()=>{
   const f=storedCase(id),call=f.call(),out=JSON.parse(await f.handler()(call)),[wire]=f.wire,[proof]=f.credentialCalls;
