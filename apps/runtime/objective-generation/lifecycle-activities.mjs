@@ -39,12 +39,24 @@ export function createObjectiveGenerationActivities({clientFor,runs,context=()=>
  // Core admission and publication: Core replays both by job, so a retry is an effect.
  async function objectiveGenerationSource(value){
   const v=parse(value),{signal,deadlineMs,client}=scope(v);if(!client)return unconfirmed();
+  const retainedFailure=async()=>{
+   // Retained visibility does not renew an effect. A committed failure can be
+   // reconciled after the original deadline, including a lost final reply.
+   const readDeadlineMs=now()+maxRequestMs;
+   try{
+    const a=await client.readAdmission({signal,deadlineMs:readDeadlineMs}),p=await client.readRequest({admission:a.sourceAdmission,signal,deadlineMs:readDeadlineMs});
+    if(p.kind==='failed'&&a.acceptance===null)return data(p);
+   }catch{}
+   return unconfirmed();
+  };
+  if(deadlineMs<=now())return retainedFailure();
   try{
    await client.current({signal,deadlineMs});
    const a=await client.admit({signal,deadlineMs}),p=await client.publish({admission:a.sourceAdmission,signal,deadlineMs});
+   if(p.kind==='failed')return data(p);
    return data({kind:'ready',sourceAdmissionSha256:a.sourceAdmissionSha256,requestSha256:p.requestSha256,
     effectExpiresAtMs:Math.min(a.sourceAdmission.effectExpiresAtMs,p.request.originalExpiresAtMs)});
-  }catch{return unconfirmed();}
+  }catch{return retainedFailure();}
  }
  async function objectiveGenerationStartRun(value){
   const v=parse(value,['mode','requestSha256']);if(!['effect','read'].includes(v.mode)||!sha(v.requestSha256))throw fault();

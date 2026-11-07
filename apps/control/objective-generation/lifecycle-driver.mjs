@@ -32,6 +32,10 @@ export async function driveObjectiveGeneration(input,{source,startRun,readRun,co
  for(;;){
   view('admitting');
   const s=await call(source,input);
+  if(s?.kind==='failed'&&/^[a-f0-9]{64}$/u.test(s.sourceAdmissionSha256??'')&&/^[a-f0-9]{64}$/u.test(s.objectiveReceiptSha256??'')){
+   summary={sourceAdmissionSha256:s.sourceAdmissionSha256};
+   result={objectiveReceiptSha256:s.objectiveReceiptSha256};return view('source_failed');
+  }
   if(s?.kind==='ready'&&typeof s.sourceAdmissionSha256==='string'&&typeof s.requestSha256==='string'&&Number.isSafeInteger(s.effectExpiresAtMs)){
    summary={sourceAdmissionSha256:s.sourceAdmissionSha256,requestSha256:s.requestSha256,effectExpiresAtMs:s.effectExpiresAtMs};break;
   }

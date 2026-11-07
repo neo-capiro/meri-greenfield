@@ -14,7 +14,7 @@ function harness({replies={},available=true,clock=NOW}={}){
   readAdmission:[x.replies.admissionRead(),x.replies.admissionRead()],readRequest:[x.replies.publication()],...replies};
  const respond=method=>async value=>{calls.push({method,value});const next=queue[method].shift();
   if(next instanceof Error)throw next;if(next===undefined||next==='unavailable')return {kind:'unavailable'};
-  return {kind:'unqualified-response',status:method.startsWith('read')?200:201,value:next};};
+  return {kind:'unqualified-response',status:next?.outcome==='failed'?409:method.startsWith('read')?200:201,value:next};};
  const transport={available:()=>state.available,...Object.fromEntries(['admit','publish','accept','readAdmission','readRequest','complete','readCompletion'].map(m=>[m,respond(m)]))};
  const create=(options={})=>createCoreObjectiveGenerationClient({transport,source:x.source,now:()=>state.now,...options});
  return {x,calls,state,queue,transport,create};
@@ -51,4 +51,17 @@ test('completion is an effect (UNKNOWN when lost) and readCompletion a read-only
  assert.equal((await client.readCompletion(context)).objectiveReceiptSha256,done.objectiveReceiptSha256);
  const lost=harness({replies:{complete:['unavailable'],readCompletion:['unavailable']}}),other=lost.create();
  await assert.rejects(other.complete(context),unknown);await assert.rejects(other.readCompletion(context),unavailable);
+});
+
+test('only the request route decodes Core committed failure; invalid409 remains unknown after an effect',async()=>{
+ const reply=coreRepliesFixture().replies.publicationFailure(),h=harness({replies:{publish:[reply],readRequest:[reply],admit:[reply]}}),client=h.create();
+ const expected={kind:'failed',sourceAdmissionSha256:h.x.sourceAdmissionSha256,objectiveReceiptSha256:reply.objectiveReceiptSha256};
+ assert.deepEqual(await client.publish({admission:h.x.admission}),expected);
+ assert.deepEqual(await client.readRequest({admission:h.x.admission}),expected);
+ await assert.rejects(client.admit(),unknown);
+ for(const bad of [{...reply,objectiveReceiptSha256:'0'.repeat(64)},{...reply,generationJobId:'foreign'},
+  {...reply,objectiveReceipt:null},{schemaVersion:1,outcome:'failed',code:'SOURCE_STALE'}]){
+  const f=harness({replies:{publish:[bad],readRequest:[bad]}}),c=f.create();
+  await assert.rejects(c.publish({admission:f.x.admission}),unknown);await assert.rejects(c.readRequest({admission:f.x.admission}),unavailable);
+ }
 });

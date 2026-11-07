@@ -29,3 +29,14 @@ test('cancelled and timed-out operations do not return late success',async()=>{
  const a=new AbortController();a.abort();const x=fixture();assert.deepEqual(await x.client.admit({...x.call,signal:a.signal}),{kind:'unavailable'});assert.equal(x.state.calls.length,0);assert.equal(x.state.secrets,0);
  const waiting=fixture({fetchImpl:async()=>new Promise(()=>{})});assert.deepEqual(await waiting.client.admit(waiting.call),{kind:'unavailable'});
 });
+
+test('409 bodies reach the decoder only on publication and its retained read route',async()=>{
+ for(const method of ['admit','publish','accept','complete','current','readAdmission','readRequest','readCompletion']){
+  const x=fixture({fetchImpl:async()=>Response.json({outcome:'unqualified'},{status:409})}),reply=await x.client[method](x.call);
+  if(['publish','readRequest'].includes(method))assert.deepEqual(reply,{kind:'unqualified-response',status:409,value:{outcome:'unqualified'}});
+  else assert.deepEqual(reply,{kind:'unavailable'});
+ }
+ for(const status of [400,403,404,500,503]){
+  const x=fixture({fetchImpl:async()=>Response.json({outcome:'failed'},{status})});assert.deepEqual(await x.client.publish(x.call),{kind:'unavailable'});
+ }
+});

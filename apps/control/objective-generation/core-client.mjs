@@ -3,7 +3,7 @@ import {types} from 'node:util';
 import {own,data,nativeSignal} from '../../../packages/contracts/commands-0.2/execution-boundary.mjs';
 import {validateShape} from '../../../packages/contracts/validate.mjs';
 import {ProductError} from '../product-access/errors.mjs';
-import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodeAcceptanceReply,decodeCompletionReply} from './core-replies.mjs';
+import {decodeAdmissionReply,decodeAdmissionReadReply,decodePublicationReply,decodePublicationFailureReply,decodeAcceptanceReply,decodeCompletionReply} from './core-replies.mjs';
 
 const unavailable=()=>new ProductError('OBJECTIVE_GENERATION_CORE_UNAVAILABLE');
 const unknownOutcome=()=>new ProductError('OBJECTIVE_GENERATION_CORE_OUTCOME_UNKNOWN','UNKNOWN');
@@ -26,11 +26,11 @@ export function createCoreObjectiveGenerationClient(configuration){
  async function call(method,value,effect){
   let reply;try{reply=await transport[method](value);}catch{reply={kind:'unavailable'};}
   if(reply?.kind!=='unqualified-response')throw effect?unknownOutcome():unavailable();
-  return reply.value;
+  return reply;
  }
- async function decoded(method,value,effect,decode){
-  const raw=await call(method,value,effect);
-  try{return decode(raw);}catch{throw effect?unknownOutcome():unavailable();}
+ async function decoded(method,value,effect,decode,decodeFailure){
+  const reply=await call(method,value,effect);
+  try{return reply.status===409?decodeFailure(reply.value):decode(reply.value);}catch{throw effect?unknownOutcome():unavailable();}
  }
 
  /** Current access belongs to Core's saved job, including original consent and client wall. */
@@ -50,7 +50,7 @@ export function createCoreObjectiveGenerationClient(configuration){
  const admit=value=>decoded('admit',options(value),true,raw=>decodeAdmissionReply(raw,source));
  /** POST publish: the immutable initial typed request bound to that admission. */
  const publish=value=>{const {admission,...rest}=own(value,['admission'],['signal','deadlineMs']);
-  return decoded('publish',options(rest),true,raw=>decodePublicationReply(raw,source,{admission}));};
+  return decoded('publish',options(rest),true,raw=>decodePublicationReply(raw,source,{admission}),raw=>decodePublicationFailureReply(raw,source,{admission}));};
  /** POST accept: Core pairs the job with its actual immutable accepted run. */
  const accept=value=>{const {admission,record,...rest}=own(value,['admission','record'],['signal','deadlineMs']);
   return decoded('accept',options(rest),true,raw=>decodeAcceptanceReply(raw,source,{admission,record}));};
@@ -59,7 +59,7 @@ export function createCoreObjectiveGenerationClient(configuration){
  const completion=method=>value=>{const {admission,publication,acceptance,...rest}=own(value,['admission','publication','acceptance'],['signal','deadlineMs']);
   return decoded(method,options(rest),method==='complete',raw=>decodeCompletionReply(raw,source,{admission,publication,acceptance}));};
  const readAdmission=value=>decoded('readAdmission',options(value),false,raw=>decodeAdmissionReadReply(raw,source));
- const readRequest=(value,admission)=>decoded('readRequest',options(value),false,raw=>decodePublicationReply(raw,source,{admission}));
+ const readRequest=(value,admission)=>decoded('readRequest',options(value),false,raw=>decodePublicationReply(raw,source,{admission}),raw=>decodePublicationFailureReply(raw,source,{admission}));
 
  return Object.freeze({available:()=>{try{return transport.available()===true;}catch{return false;}},
   current,admit,publish,accept,complete:completion('complete'),readCompletion:completion('readCompletion'),
