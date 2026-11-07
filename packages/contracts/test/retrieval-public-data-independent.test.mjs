@@ -18,7 +18,7 @@ const at = '2026-03-08T05:00:00.000Z';
 const off = {evidenceAccuracyMode: 'off'}, on = {evidenceAccuracyMode: 'enforce'};
 const norm = (id, raw, ctx = id === E ? {} : off) => api.normalizePublicDataInput(id, raw, ctx);
 const verify = (id, value, raw = {}, ctx = id === E ? {} : off) => api.assertPublicDataOutput(id, value, raw, ctx);
-const econ = (source, data) => ({tool: E, source, generatedAt: at, data});
+const econ = (source, data, applied = {}) => ({tool: E, source, generatedAt: at, data, ...applied});
 const census = () => ({id: 'district-key', state: 'NY', district: '12', congress: 119, totalPopulation: null,
   medianHouseholdIncome: null, medianAge: null, percentBachelorPlus: null, percentPoverty: null,
   unemploymentRate: null, laborForceSize: null, topIndustries: null});
@@ -64,14 +64,14 @@ test('uppercase expansion within typed bounds remains admitted without ASCII-onl
 });
 test('UTF-16 trim truncation and source alias precedence', () => {
   assert.equal(norm(G, {query: ' x' + '🦉'.repeat(130) + ' '}).input.query.length, 240);
-  assert.equal(norm(E, {datasetName: ' first ', dataset: 'second'}).input.datasetName, 'first');
-  assert.equal(norm(E, {datasetName: ' ', dataset: ' second '}).input.datasetName, 'second');
+  assert.equal(norm(E, {source: 'bea', datasetName: ' first ', dataset: 'second'}).input.datasetName, 'first');
+  assert.equal(norm(E, {source: 'bea', datasetName: ' ', dataset: ' second '}).input.datasetName, 'second');
   assert.equal(norm(E, {source: ' BlS '}).input.source, 'bls');
 });
-test('irrelevant selectors retained and zero year omitted without claiming source coverage', () => {
-  const n = norm(E, {source: 'bls', state: 'ny', dataset: 'unused', year: '0'}).input;
-  assert.equal(n.state, 'NY'); assert.equal(n.datasetName, 'unused'); assert.equal(Object.hasOwn(n, 'year'), false);
-  verify(E, econ('bls', [bls()]), {source: 'bls', state: 'ny', dataset: 'unused', year: 2020});
+test('unsupported source selectors refuse while explicit zero year remains a real filter', () => {
+  assert.throws(() => norm(E, {source: 'bls', state: 'ny', dataset: 'unused', year: '0'}));
+  assert.equal(norm(E, {source: 'bls', year: '0'}).input.year, 0);
+  for (const year of [undefined, null, '', '  ']) assert.equal(Object.hasOwn(norm(E, {source: 'bls', ...(year === undefined ? {} : {year})}).input, 'year'), false);
 });
 for (const year of ['2026.5', 'bad', 2147483648, true, []]) test(`typed year refusal ${JSON.stringify(year)}`, () => assert.throws(() => norm(E, {year})));
 for (const page of ['001', '+1', '1e2', '1.0', ' 1 ', 10001, 0, 1.2]) test(`strict page refusal ${JSON.stringify(page)}`, () => assert.throws(() => norm(A, {page})));
@@ -99,9 +99,9 @@ test('BLS bounded nested points keep reported period strings and negative values
   assert.throws(() => verify(E, econ('bls', [row]), {source: 'bls', seriesId: 'other'}));
 });
 test('BEA duplicate visible tuples permitted, nullable value and units required', () => {
-  verify(E, econ('bea', [bea(), bea()]), {source: 'bea', dataset: 'dataset', year: 2026});
+  verify(E, econ('bea', [bea(), bea()], {appliedYear: 2026}), {source: 'bea', dataset: 'dataset', year: 2026});
   for (const key of ['value', 'units']) { const row = bea(); delete row[key]; assert.throws(() => verify(E, econ('bea', [row]), {source: 'bea'})); }
-  assert.throws(() => verify(E, econ('bea', [bea()]), {source: 'bea', year: 2025}));
+  assert.throws(() => verify(E, econ('bea', [bea()], {appliedYear: 2025}), {source: 'bea', year: 2025}));
 });
 for (const id of [G, A]) test(`${id} requires trusted mode and freezes normalized metadata`, () => {
   for (const ctx of [{}, {evidenceAccuracyMode: 'automatic'}, {...off, actorId: 'x'}]) assert.throws(() => norm(id, {}, ctx));
