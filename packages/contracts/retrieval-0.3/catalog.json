@@ -2245,11 +2245,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/SearchFederalContractAwardsInput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/SearchFederalContractAwardsOutput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2312,11 +2312,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/SearchFederalSubawardsInput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/SearchFederalSubawardsOutput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2379,11 +2379,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/SearchContractVehiclesInput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/SearchContractVehiclesOutput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2429,6 +2429,7 @@
         "Source requirements are design declarations; current grants, availability and actual producer authority remain unqualified.",
         "Outputs are frozen declared types; runtime emitted rows, complete coverage and snapshots remain unverified.",
         "Forecasts use global public query scope; clientId cannot manufacture client relevance.",
+        "State and district filters are unsupported: omit them and use query, agency or fiscalYear. Free-text place of performance is not state or district coverage.",
         "Paging continuation does not establish total accuracy; the district geography shape has no page/limit."
       ],
       "positiveExamples": [
@@ -2446,11 +2447,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/SearchProcurementForecastsInput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/SearchProcurementForecastsOutput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -2513,11 +2514,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/GetDistrictFederalMarketInput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:federal-market:0.2.0#/$defs/GetDistrictFederalMarketOutput",
-        "sha256": "5ebd54c7a1e5d3a2ef99f5a69e76293aec227fbe50874f21ba69ea987417bada"
+        "sha256": "d441b33e168e99690593c066d8abe9f8da486f7013755a24770ee9d99efc8619"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -6036,11 +6037,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebSearchRequest",
-        "sha256": "78c2cf942f440c2240bedb52163ea891a25847377f39fa547f552d3b66a18cdb"
+        "sha256": "11bcdc7d0efff6f393b1b6017d788eefb58d30ec402b884d41e331952f9f8d05"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebSearchOutput",
-        "sha256": "78c2cf942f440c2240bedb52163ea891a25847377f39fa547f552d3b66a18cdb"
+        "sha256": "11bcdc7d0efff6f393b1b6017d788eefb58d30ec402b884d41e331952f9f8d05"
       },
       "aliases": [],
       "sideEffect": "none",
@@ -6104,11 +6105,11 @@
       ],
       "inputSchema": {
         "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebPageRequest",
-        "sha256": "78c2cf942f440c2240bedb52163ea891a25847377f39fa547f552d3b66a18cdb"
+        "sha256": "11bcdc7d0efff6f393b1b6017d788eefb58d30ec402b884d41e331952f9f8d05"
       },
       "outputSchema": {
         "id": "urn:meri:retrieval:public-web:0.2.0#/$defs/PublicWebPageOutput",
-        "sha256": "78c2cf942f440c2240bedb52163ea891a25847377f39fa547f552d3b66a18cdb"
+        "sha256": "11bcdc7d0efff6f393b1b6017d788eefb58d30ec402b884d41e331952f9f8d05"
       },
       "aliases": [],
       "sideEffect": "none",

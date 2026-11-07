@@ -45,6 +45,13 @@ test('page URL syntax rejects schemes and credentials without certifying network
  // Syntactic admission deliberately says nothing about DNS/SSRF. Never fetch these fixtures.
  for(const candidate of ['http://127.0.0.1/','http://localhost/','https://example.invalid/'])assert.equal(norm(scrape,{url:candidate}).input.url,candidate);
 });
+test('page URL admission bounds the whole raw target without fetching a truncated URL',()=>{
+ const prefix='https://example.invalid/?q=',exact=prefix+'x'.repeat(2000-prefix.length);
+ assert.equal(norm(scrape,{url:exact}).input.url,exact);
+ assert.equal(norm(scrape,{url:' '+url+' '}).input.url,url);
+ for(const raw of [exact+'x',' '+exact,' '.repeat(2001),prefix+'x'.repeat(1999-prefix.length)+'😀'])
+  assert.throws(()=>norm(scrape,{url:raw}),/2000|maximum/i);
+});
 for(const provider of ['tavily','serper','duckduckgo'])test(`${provider}: exact provider row nullability and returned count`,()=>{
  const p=result(provider,2);check(search,p);assert.equal(check(search,p).total,2);
  p.results[0].snippet='Synthetic snippet';check(search,p);p.total=1;assert.throws(()=>check(search,p));

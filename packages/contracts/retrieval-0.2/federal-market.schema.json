@@ -184,7 +184,7 @@
       "additionalProperties": false
     },
     "SearchProcurementForecastsInput": {
-      "description": "Candidate input for search_procurement_forecasts. Forecasts are global public data: clientId is accepted only so a client-scoped session cannot substitute another client, and it is never used to manufacture a client match. The boundary reports this global query scope explicitly.",
+      "description": "Candidate input for search_procurement_forecasts. Forecasts are global public data: clientId is accepted only so a client-scoped session cannot substitute another client, and it is never used to manufacture a client match. The boundary reports this global query scope explicitly. State and district filters are unsupported because the source has only free-text place of performance; omit them and use query, agency or fiscalYear without claiming geographic coverage.",
       "type": "object",
       "properties": {
         "clientId": {
@@ -195,12 +195,6 @@
         },
         "agency": {
           "$ref": "#/$defs/FederalMarketAgency"
-        },
-        "state": {
-          "$ref": "#/$defs/FederalMarketState"
-        },
-        "district": {
-          "$ref": "#/$defs/FederalMarketDistrict"
         },
         "fiscalYear": {
           "$ref": "#/$defs/FederalMarketFiscalYear"

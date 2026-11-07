@@ -33,7 +33,13 @@ test('inert admission refuses getters proxies cycles and hidden fields',()=>{let
 test('returned validated result is detached from every nested caller object',()=>{const page=detail(),accepted=check(page);page.programElement.peCode='other';page.programElement.years[0].raw.observation='changed';assert.equal(accepted.programElement.peCode,peCode);assert.equal(accepted.programElement.years[0].raw.observation,'synthetic');});
 test('search removes exactly unlabelled fields while retaining residual claims',()=>{for(const key of ['spark','latestCurrent','latestCurrentFy','latestCurrentStage','latestRequest','latestRequestFy','latestEnacted','latestEnactedFy','deltaPct']){const page=search();page.data[0][key]=0;assert.throws(()=>check(page));}const page=search();assert.equal(page.data[0].requestAtEnactedFy,null);check(page);});
 test('finder current model claim keeps unknown cycle unlike residual currentClaim',()=>{const page=search();assert.equal(page.data[0].currentClaim.cycleClass,'current');check(page);page.data[0].currentFundingClaim.cycleClass='current';assert.throws(()=>check(page));});
-test('empty later finder page total0 does not claim corpus absence',()=>{const page=search();page.data=[];page.page=4;page.total=0;check(page,{page:4});page.total=30;assert.throws(()=>check(page,{page:4}));});
+test('empty later finder page preserves totals up to the requested offset and refuses holes',()=>{
+ const page={...search(),data:[],page:4,limit:1};
+ for(const total of [0,2,3])check({...page,total},{page:4,limit:1});
+ assert.throws(()=>check({...page,total:4},{page:4,limit:1}),/paging projection/);
+ check({...page,page:1,total:0},{page:1,limit:1});
+ assert.throws(()=>check({...page,page:1,total:1},{page:1,limit:1}),/paging projection/);
+});
 test('finder page/limit bounds and identity uniqueness are enforced',()=>{for(const mutate of [x=>x.page=2,x=>x.limit=1,x=>x.data.push(finder())]){const page=search();mutate(page);assert.throws(()=>check(page));}const page=search();page.total=900;check(page);});
 test('hasData false does not invent a negative filter; true requires stored data',()=>{const page=search();check(page,{hasData:false});page.data[0].hasData=false;check(page,{hasData:false});assert.throws(()=>check(page,{hasData:true}));});
 test('no cross-fiscal-year numeric comparison is inferred',()=>{const page=search();page.data[0].funding.request.fy=2025;page.data[0].requestClaim.fiscalYear=2025;page.data[0].requestClaim.cycleClass='historical';page.data[0].requestClaim.enactmentStatus='unknown';page.data[0].funding.currentVsRequest='invalid cross year';assert.throws(()=>check(page));page.data[0].funding.currentVsRequest=null;check(page);});

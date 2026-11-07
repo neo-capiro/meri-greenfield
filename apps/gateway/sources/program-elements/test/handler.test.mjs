@@ -9,6 +9,16 @@ import {createProgramElementHandlers} from '../handler.mjs';
 import {assertProgramElementRequest} from '../request-context.mjs';
 import {storedCase,storedPage,ids} from './fixture.mjs';
 
+test('empty finder page retains matching total beyond the last row without accepting an in-range hole',async()=>{
+ for(const evidenceAccuracyMode of ['off','shadow','enforce']){
+  const f=storedCase(ids[0],{request:{page:4,limit:1},evidenceAccuracyMode});
+  f.state.page={...f.page,data:[],total:3};
+  assert.equal(JSON.parse(await f.handler()(f.call())).result.total,3);
+  f.state.page.total=0;assert.equal(JSON.parse(await f.handler()(f.call())).result.total,0);
+  f.state.page.total=4;await assert.rejects(f.handler()(f.call()),{message:'INVALID_RESULT'});
+ }
+});
+
 for(const id of ids){
  for(const evidenceAccuracyMode of ['off','shadow','enforce'])test(`${id}/${evidenceAccuracyMode}: exact mode, raw body, proof and full native DTO survive JSON transport`,async()=>{
   const f=storedCase(id,{evidenceAccuracyMode}),call=f.call(),out=JSON.parse(await f.handler()(call)),[wire]=f.wire,[proof]=f.credentialCalls;

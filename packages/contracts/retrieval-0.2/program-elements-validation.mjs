@@ -104,7 +104,8 @@ export function createProgramElementValidators({validateShape,schema}) {
     validateShape(name+'Input',input);return input;
   }
   function search(page,input,mode){
-    if(page.page!==input.page||page.limit!==input.limit||page.data.length>input.limit||page.data.length&&page.total<(input.page-1)*input.limit+page.data.length||!page.data.length&&page.total!==0)fail('Finder paging projection mismatch');
+    const offset=(input.page-1)*input.limit;
+    if(page.page!==input.page||page.limit!==input.limit||page.data.length>input.limit||page.data.length&&page.total<offset+page.data.length||!page.data.length&&page.total>offset)fail('Finder paging projection mismatch');
     const seen=new Set();
     for(const row of page.data){
       if(seen.has(row.peCode))fail('Duplicate finder identity');seen.add(row.peCode);instant(row.lastSyncedAt);identity(row);

@@ -92,7 +92,8 @@ export function createPublicWebValidators({validateShape, schema}) {
       if (!query) fail('Public-web query is required');
       input = {query, limit: clamped(raw.limit, 1, 12, 6)};
     } else {
-      const url = raw.url.trim().slice(0, 2000);
+      if (raw.url.length > 2000) fail('Public page URL must be at most 2000 UTF16 units; provide the complete target without truncation');
+      const url = raw.url.trim();
       if (!url) fail('Public-web URL is required');
       webUrl(url);
       const mode = raw.mode?.trim().slice(0, 20) || 'summary';

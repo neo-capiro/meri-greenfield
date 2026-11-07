@@ -53,7 +53,9 @@
       "additionalProperties": false,
       "properties": {
         "url": {
-          "type": "string"
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Complete public page URL, at most 2000 UTF16 units before trimming. Oversized URLs are refused, never shortened into another target."
         },
         "mode": {
           "anyOf": [
