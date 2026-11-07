@@ -5,19 +5,21 @@ import assert from 'node:assert/strict';
 import {createCoreObjectiveGenerationClient} from '../../control/objective-generation/core-client.mjs';
 import {coreRepliesFixture,NOW} from '../../control/objective-generation/test/core-replies-fixture.mjs';
 import {createObjectiveGenerationActivities} from './lifecycle-activities.mjs';
+import {driveObjectiveGeneration} from '../../control/objective-generation/lifecycle-driver.mjs';
 
 function harness({replies={},runs:runOptions={},withRuns=true,withClient=true}={}){
- const x=coreRepliesFixture(),calls=[],runState={run:runOptions.existing??null,starts:[]};
+ const x=coreRepliesFixture(),calls=[],options=[],runState={run:runOptions.existing??null,starts:[]};
  const queue={current:[{schemaVersion:1,generationJobId:x.source.generationJobId,tenantId:x.source.binding.tenantId,actorId:x.source.binding.actorId,clerkUserId:x.admission.clerkUserId,clientId:x.admission.canonical.clientId,role:'admin',consentId:x.admission.consentId,controlVersion:x.admission.controlVersion,checkedAtMs:NOW,effectExpiresAtMs:x.admission.effectExpiresAtMs}],admit:[x.replies.admit()],publish:[x.replies.publication()],accept:[],readAdmission:[x.replies.admissionRead()],readRequest:[x.replies.publication()],
   complete:[x.replies.completion()],readCompletion:['unavailable'],...replies};
  const transport={available:()=>true,...Object.fromEntries(Object.keys(queue).map(m=>[m,async value=>{calls.push(m);
-  const next=queue[m].length>1?queue[m].shift():queue[m][0];if(next===undefined||next==='unavailable')return {kind:'unavailable'};return {kind:'unqualified-response',status:200,value:structuredClone(next)};}]))};
+  options.push(value);
+  const next=queue[m].length>1?queue[m].shift():queue[m][0];if(next===undefined||next==='unavailable')return {kind:'unavailable'};return {kind:'unqualified-response',status:next?.outcome==='failed'?409:200,value:structuredClone(next)};}]))};
  const clientFor=source=>{assert.deepEqual(source,x.source);return createCoreObjectiveGenerationClient({transport,source,now:()=>NOW});};
  const runs={async start(value){runState.starts.push(value);if(runOptions.startFails)throw Error('lost');runState.run={state:'queued'};return runOptions.startAnswer??{kind:'started'};},
   async read(){if(runOptions.readFails)throw Error('down');return runState.run;}};
  const activities=createObjectiveGenerationActivities({...(withClient?{clientFor}:{}),...(withRuns?{runs}:{}),context:()=>({cancellationSignal:new AbortController().signal}),now:()=>NOW});
  const input={generationJobId:x.source.generationJobId,binding:x.source.binding,notAfterMs:NOW+3600000};
- return {x,calls,runState,activities,input};
+ return {x,calls,options,runState,activities,input};
 }
 
 test('source admits then publishes and returns digests and the effect bound only',async()=>{
@@ -26,6 +28,36 @@ test('source admits then publishes and returns digests and the effect bound only
  assert.deepEqual(h.calls,['current','admit','publish']);assert.equal(JSON.stringify(out).includes(h.x.executionContext.prompt),false);
  assert.deepEqual(await harness({withClient:false}).activities.objectiveGenerationSource(h.input),{kind:'unconfirmed'});
  assert.deepEqual(await harness({replies:{publish:['unavailable']}}).activities.objectiveGenerationSource(h.input),{kind:'unconfirmed'});
+});
+
+test('confirmed publication failure terminates source and a lost reply reconciles through retained reads',async()=>{
+ const reply=coreRepliesFixture().replies.publicationFailure(),expected={kind:'failed',sourceAdmissionSha256:reply.sourceAdmissionSha256,objectiveReceiptSha256:reply.objectiveReceiptSha256};
+ for(const replies of [{publish:[reply]},{publish:['unavailable'],readAdmission:[coreRepliesFixture().replies.admissionRead(null)],readRequest:[reply]},
+  {current:['unavailable'],readAdmission:[coreRepliesFixture().replies.admissionRead(null)],readRequest:[reply]}]){
+  const h=harness({replies}),out=await h.activities.objectiveGenerationSource(h.input);
+  assert.deepEqual(out,expected);assert.equal(h.runState.starts.length,0);
+  assert.equal(JSON.stringify(out).includes(reply.objectiveReceipt.failure.message),false);
+ }
+ const h=harness({replies:{current:['unavailable'],readRequest:[{...reply,objectiveReceiptSha256:'0'.repeat(64)}]}});
+ assert.deepEqual(await h.activities.objectiveGenerationSource(h.input),{kind:'unconfirmed'});
+ assert.deepEqual(h.calls,['current','readAdmission','readRequest']);
+ const contradictory=harness({replies:{current:['unavailable'],readRequest:[reply]}});
+ assert.deepEqual(await contradictory.activities.objectiveGenerationSource(contradictory.input),{kind:'unconfirmed'});
+});
+
+test('expired effects still reconcile committed failure through bounded reads without starting new work',async()=>{
+ const f=coreRepliesFixture(),reply=f.replies.publicationFailure();
+ for(const committed of [true,false]){
+  const h=harness({replies:{readAdmission:[f.replies.admissionRead(null)],readRequest:[committed?reply:'unavailable']}});
+  h.input.notAfterMs=NOW-1;
+  const unexpected=async()=>{assert.fail('expired source may only read its retained failure');};
+  const out=await driveObjectiveGeneration(h.input,{source:h.activities.objectiveGenerationSource,startRun:unexpected,
+   readRun:unexpected,complete:unexpected,wait:unexpected,publish(){},stopped:()=>false,now:()=>NOW});
+  assert.equal(out.phase,committed?'source_failed':'expired');
+  assert.deepEqual(h.calls,['readAdmission','readRequest']);
+  assert.ok(h.options.every(o=>o.deadlineMs===NOW+15000));
+  assert.equal(h.runState.starts.length,0);
+ }
 });
 
 test('run start re-reads Core, passes the published prompt and decoded selection to the run owner once',async()=>{

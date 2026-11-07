@@ -65,3 +65,13 @@ test('missing server bound refuses; an unbounded wait is impossible',async()=>{
 test('a refused effect start (publication mismatch, nothing written) ends the lifecycle',async()=>{
  const h=harness({start:[{kind:'refused'}]}),out=await h.run();assert.equal(out.phase,'refused');assert.deepEqual(names(h),['source','startRun']);
 });
+
+test('a confirmed Core source failure terminates without a model run, completion or another wait',async()=>{
+ const failed={kind:'failed',sourceAdmissionSha256:sha('a'),objectiveReceiptSha256:sha('c')};
+ const h=harness({source:[{kind:'unconfirmed'},failed]}),out=await h.run();
+ assert.equal(out.phase,'source_failed');assert.equal(out.runStartAttempted,false);assert.equal(out.sourceAdmissionSha256,sha('a'));
+ assert.deepEqual(out.result,{objectiveReceiptSha256:sha('c')});assert.deepEqual(names(h),['source','source']);
+ assert.deepEqual(h.state.waits,[OBJECTIVE_GENERATION_RETRY_MS]);
+ const invalid=harness({source:[{kind:'failed'}]});assert.equal((await invalid.run()).phase,'expired');
+ assert.equal(names(invalid).includes('startRun'),false);
+});
